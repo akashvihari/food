@@ -3,27 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mana Seva Hub • మన సేవ | All-in-One Village & City Super-App</title>
-  <meta name="description" content="Boddavara, Kiltampalem, Thatipudi, S.Kota, Kasipatnam, Vizianagaram, Vizag & Araku - Bus Timings, Rates, Live News, Bike Drop, Delivery, Jobs & Tourism.">
+  <title>Mana Seva Hub • మన సేవ | Boddavara • S.Kota • Vizag • Araku</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* =====================================================================
-       1. CORE DESIGN SYSTEM & VARIABLES (అల్మారా ఇంజనీరింగ్ స్టైల్)
-       ===================================================================== */
+    /* ==========================================================================
+       [BLOCK 1: CORE DESIGN VARIABLES - రంగులు & ఇంజనీరింగ్ లేఅవుట్ సెట్టింగ్స్]
+       ========================================================================== */
     :root {
-      --primary: #0F4C29;       /* Deep Emerald Green */
-      --primary-light: #166534;
+      --primary: #0F4C29;       /* డీప్ గ్రీన్ */
       --primary-dark: #062814;
-      --accent: #EA580C;        /* Vibrant Saffron/Orange */
+      --accent: #EA580C;        /* ఆరెంజ్ హైలైట్ */
+      --love: #BE185D;          /* సీక్రెట్ లవ్ పింక్ */
       --gold: #D97706;
-      --bg: #F4F1EA;            /* Warm Village-Modern Cream */
+      --bg: #F3EFE6;
       --card: #FFFFFF;
-      --surface: #EAE4D7;
+      --surface: #E7E0D0;
       --text: #1C1917;
       --muted: #57534E;
-      --border: #DCD3C0;
-      --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-      --radius: 16px;
+      --border: #D6CCB8;
+      --shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -34,1427 +32,1133 @@
       color: var(--text);
       line-height: 1.5;
       overflow-x: hidden;
-      padding-bottom: 70px;
+      padding-bottom: 68px;
     }
     a { text-decoration: none; color: inherit; }
     button, input, select, textarea { font-family: inherit; outline: none; }
     button { cursor: pointer; border: none; background: none; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 14px; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 12px; }
 
-    /* =====================================================================
-       2. TV CHANNEL STYLE RUNNING TICKERS (లైవ్ న్యూస్ & కోట్స్ టిక్కర్లు)
-       ===================================================================== */
-    .ticker-wrap {
-      background: #991B1B;
-      color: #FFFFFF;
+    /* ==========================================================================
+       [BLOCK 2: TV CHANNEL SCROLLING TICKERS - గోల్డ్ రేట్లు, బస్ & క్యూరియాసిటీ]
+       ========================================================================== */
+    .ticker-bar {
+      background: #111827;
+      color: #FACC15;
+      height: 32px;
       display: flex;
       align-items: center;
-      height: 34px;
       overflow: hidden;
-      font-size: 13px;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+      font-size: 12.5px;
+      font-weight: 700;
+      border-bottom: 1px solid #374151;
     }
-    .ticker-badge {
-      background: #FACC15;
-      color: #7F1D1D;
-      padding: 0 12px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      font-weight: 800;
-      white-space: nowrap;
-      z-index: 2;
-      box-shadow: 4px 0 10px rgba(0,0,0,0.3);
-    }
-    .ticker-track {
-      display: flex;
-      white-space: nowrap;
-      animation: marqueeScroll 38s linear infinite;
-      padding-left: 100%;
-    }
-    .ticker-track:hover { animation-play-state: paused; }
-    @keyframes marqueeScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .quote-ticker {
-      background: #1E293B;
-      color: #FDE68A;
-      height: 30px;
-      font-size: 12px;
-      border-bottom: 1px solid #334155;
-    }
-    .quote-badge {
-      background: #0284C7;
+    .ticker-tag {
+      background: #DC2626;
       color: #fff;
       padding: 0 10px;
       height: 100%;
       display: flex;
       align-items: center;
-      font-weight: 700;
       white-space: nowrap;
       z-index: 2;
+      font-size: 11.5px;
     }
+    .ticker-move {
+      display: flex;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: runTicker 36s linear infinite;
+    }
+    .ticker-move:hover { animation-play-state: paused; }
+    @keyframes runTicker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-    /* =====================================================================
-       3. STICKY HEADER, SEARCH & AREA PILLS
-       ===================================================================== */
+    /* ==========================================================================
+       [BLOCK 3: STICKY HEADER & COMPACT AREA PILLS]
+       ========================================================================== */
     .app-header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(244, 241, 234, 0.96);
-      backdrop-filter: blur(12px);
+      background: rgba(243, 239, 230, 0.96);
+      backdrop-filter: blur(10px);
       border-bottom: 1.5px solid var(--border);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      padding: 8px 0;
     }
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      gap: 8px;
+    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .menu-trigger {
+      background: var(--primary); color: #fff; padding: 8px 12px;
+      border-radius: 10px; font-weight: 700; font-size: 13.5px;
     }
-    .brand-group { display: flex; align-items: center; gap: 10px; }
-    .menu-btn {
-      background: var(--primary);
+    .logo-txt h1 { font-size: 17px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+    .logo-txt small { font-size: 10.5px; color: var(--muted); font-weight: 600; display: block; }
+    .top-btns { display: flex; gap: 6px; }
+    .circle-btn {
+      width: 35px; height: 35px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; color: #fff; font-size: 15px;
+    }
+    .search-box {
+      width: 100%; margin: 7px 0; padding: 8px 14px; border-radius: 999px;
+      border: 1.5px solid var(--border); background: #fff; font-size: 13px;
+    }
+    .pills-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+    .pills-scroll::-webkit-scrollbar { display: none; }
+    .pill {
+      padding: 4px 12px; border-radius: 999px; background: #fff;
+      border: 1px solid var(--border); font-size: 11.5px; font-weight: 700; white-space: nowrap;
+    }
+    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* ==========================================================================
+       [BLOCK 4: HERO PROFILE (FIXED NO-BREAK) + SONGS & COLLAPSIBLE YOUTUBE]
+       ========================================================================== */
+    .hero-card {
+      margin: 12px 0;
+      background: linear-gradient(135deg, #062814 0%, #0F4C29 100%);
       color: #fff;
-      padding: 9px 13px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 10px rgba(15, 76, 41, 0.25);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(15, 76, 41, 0.25);
     }
-    .brand-title h1 { font-size: 18px; font-weight: 800; color: var(--primary); line-height: 1.1; }
-    .brand-title span { font-size: 11px; color: var(--muted); font-weight: 600; display: block; }
-    .quick-icons { display: flex; gap: 7px; }
-    .q-icon {
-      width: 38px; height: 38px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    }
-
-    .search-filter-box { padding-bottom: 10px; }
-    .global-search {
-      width: 100%;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1.5px solid var(--border);
-      background: #fff;
-      font-size: 13.5px;
-      margin-bottom: 8px;
-      transition: 0.2s;
-    }
-    .global-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,76,41,0.12); }
-    .area-pills { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; }
-    .area-pills::-webkit-scrollbar { display: none; }
-    .area-pill {
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-      color: var(--text);
-      transition: 0.2s;
-    }
-    .area-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    /* Slide-out Drawer */
-    .drawer-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1500;
-      opacity: 0; pointer-events: none; transition: 0.3s;
-    }
-    .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
-    .side-drawer {
-      position: fixed; top: 0; left: 0; bottom: 0; width: 300px; max-width: 85vw;
-      background: var(--bg); z-index: 1600; transform: translateX(-100%);
-      transition: 0.3s ease; display: flex; flex-direction: column; overflow-y: auto;
-    }
-    .side-drawer.open { transform: translateX(0); }
-    .drawer-header {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      color: #fff; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .drawer-links { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .drawer-link {
-      display: flex; align-items: center; gap: 12px; padding: 11px;
-      background: #fff; border-radius: 12px; border: 1px solid var(--border);
-      text-align: left; font-weight: 700; font-size: 13.5px; color: var(--primary);
-    }
-
-    /* =====================================================================
-       4. HERO PROFILE CARD & LIVE TELUGU FM RADIO PLAYER
-       ===================================================================== */
-    .hero-panel {
-      margin: 14px 0;
-      background: linear-gradient(135deg, rgba(6, 40, 20, 0.94), rgba(15, 76, 41, 0.9)),
-                  url('https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp') center/cover;
-      color: #fff;
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 12px 28px rgba(15, 76, 41, 0.25);
-    }
-    .hero-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-    .avatar-ring {
-      width: 82px; height: 82px; border-radius: 50%;
+    .profile-flex { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .profile-pic-box {
+      width: 84px; height: 84px; border-radius: 50%;
       border: 3px solid #FACC15; overflow: hidden; flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      background: #14532D; position: relative;
     }
-    .avatar-ring img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-    .hero-info { flex: 1; min-width: 210px; }
-    .hero-info h2 { font-size: 20px; font-weight: 800; color: #FACC15; }
-    .hero-info p { font-size: 12.5px; color: #E2E8F0; margin: 3px 0 10px; }
-    .hero-actions { display: flex; gap: 7px; flex-wrap: wrap; }
-    .h-btn {
-      padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
-      display: inline-flex; align-items: center; gap: 5px; color: #fff;
-      background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28);
+    /* ప్రొఫైల్ ఫోటో కట్ అవ్వకుండా ఖచ్చితమైన ఫిట్ */
+    .profile-pic-box img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
     }
-    .h-btn.green { background: #16A34A; border: none; }
-    .h-btn.orange { background: var(--accent); border: none; }
+    .profile-meta { flex: 1; min-width: 200px; }
+    .profile-meta h2 { font-size: 19px; font-weight: 800; color: #FACC15; }
+    .profile-meta p { font-size: 12px; color: #E2E8F0; margin: 2px 0 8px; }
+    .hero-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip-btn {
+      padding: 6px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+      color: #fff; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
+    }
 
-    /* Advanced Telugu FM Radio Deck */
-    .radio-deck {
-      margin-top: 14px;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1.5px solid rgba(250, 204, 21, 0.45);
+    /* Songs & YouTube Toggle Box */
+    .music-hub {
+      margin-top: 12px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1.5px solid rgba(250, 204, 21, 0.4);
       border-radius: 14px;
-      padding: 12px 14px;
+      padding: 12px;
     }
-    .radio-header {
-      display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    .music-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .station-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+    .st-pill {
+      padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;
+      background: rgba(255,255,255,0.12); color: #F8FAFC;
     }
-    .radio-status { display: flex; align-items: center; gap: 10px; }
-    .eq-bars { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-    .eq-bar { width: 4px; background: #FACC15; border-radius: 2px; height: 5px; transition: 0.2s; }
-    .playing .eq-bar { animation: eqBounce 0.6s infinite alternate; }
-    .playing .eq-bar:nth-child(2) { animation-delay: 0.2s; }
-    .playing .eq-bar:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes eqBounce { 0% { height: 4px; } 100% { height: 18px; } }
+    .st-pill.active { background: #FACC15; color: #0F172A; }
 
-    .radio-controls { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-    .st-btn {
-      padding: 6px 11px; border-radius: 8px; font-size: 11.5px; font-weight: 700;
-      background: rgba(255,255,255,0.12); color: #E2E8F0; border: 1px solid rgba(255,255,255,0.15);
+    /* Collapsible YouTube Accordion Drawer */
+    .yt-drawer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s ease, margin-top 0.3s ease;
     }
-    .st-btn.active { background: #FACC15; color: #0F172A; border-color: #FACC15; }
-    .play-master {
-      background: #22C55E; color: #052E16; font-weight: 800; padding: 7px 15px;
-      border-radius: 999px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px;
+    .yt-drawer.open {
+      max-height: 360px;
+      margin-top: 12px;
     }
-
-    /* =====================================================================
-       5. CUPBOARD 7-SHELF QUICK JUMP MENU (అల్మారా షెల్ఫ్ మెనూ)
-       ===================================================================== */
-    .cupboard-nav {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
-      gap: 8px;
-      margin: 14px 0 20px;
-    }
-    .shelf-tab {
-      background: var(--card);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 6px;
-      text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.03);
-      transition: 0.2s;
-    }
-    .shelf-tab:active, .shelf-tab:hover { border-color: var(--primary); transform: translateY(-2px); background: #ECFDF5; }
-    .shelf-tab span { font-size: 22px; display: block; margin-bottom: 3px; }
-    .shelf-tab strong { font-size: 11.5px; color: var(--primary); display: block; line-height: 1.2; }
-
-    /* =====================================================================
-       6. MODULAR CUPBOARD SHELF CONTAINERS (ప్రతి అర ఒక స్వతంత్ర బ్లాక్)
-       ===================================================================== */
-    .cupboard-shelf {
-      background: var(--card);
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 18px 15px;
-      margin-bottom: 22px;
-      box-shadow: var(--shadow);
+    .yt-frame-wrap {
       position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #DC2626;
+      background: #000;
     }
-    .shelf-label {
-      display: inline-block;
-      background: var(--primary);
-      color: #FACC15;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 12px;
-      border-radius: 999px;
-      margin-bottom: 6px;
-      letter-spacing: 0.5px;
+    .yt-frame-wrap iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
     }
-    .shelf-title { font-size: 20px; font-weight: 800; color: var(--primary-dark); margin-bottom: 4px; }
-    .shelf-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; border-bottom: 1.5px dashed var(--border); padding-bottom: 10px; }
 
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 14px; }
+    /* ==========================================================================
+       [BLOCK 5: MODULAR SHELF ARCHITECTURE (అల్మారా అరల డిజైన్)]
+       ========================================================================== */
+    .shelf {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+    .shelf-tag {
+      display: inline-block; background: var(--primary); color: #FACC15;
+      font-size: 10.5px; font-weight: 800; padding: 2px 10px; border-radius: 999px; margin-bottom: 4px;
+    }
+    .shelf-head { font-size: 18px; font-weight: 800; color: var(--primary-dark); }
+    .shelf-desc { font-size: 12px; color: var(--muted); margin-bottom: 12px; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
 
-    /* Utility Boxes & Cards */
-    .sub-box {
-      background: #FAF8F5;
-      border: 1px solid var(--border);
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+
+    /* Compact Bus & Rates Strip */
+    .compact-strip {
+      background: #FAF8F5; border: 1px solid var(--border); border-radius: 12px; padding: 10px;
+      font-size: 12px; margin-bottom: 10px;
+    }
+    .bus-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dotted var(--border); }
+    .bus-row:last-child { border-bottom: none; }
+
+    /* Secret Love & Curiosity Box */
+    .love-box {
+      background: linear-gradient(135deg, #FFF1F2, #FCE7F3);
+      border: 1.5px solid #F472B6;
       border-radius: 14px;
-      padding: 14px;
+      padding: 13px;
     }
-    .sub-box h3 { font-size: 16px; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-
-    /* Live News Tabs & Auto-Scroll Box */
-    .news-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; scrollbar-width: none; }
-    .news-tab {
-      padding: 5px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
-      background: var(--surface); color: var(--text); white-space: nowrap;
+    .secret-card {
+      background: #fff; border-left: 4px solid var(--love); padding: 9px 11px;
+      border-radius: 9px; margin-bottom: 8px; font-size: 12.5px;
+      box-shadow: 0 2px 6px rgba(190,24,93,0.08);
     }
-    .news-tab.active { background: #B91C1C; color: #fff; }
-    .news-feed-box {
-      height: 230px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-      padding-right: 4px;
-    }
-    .news-item {
-      background: #fff; padding: 10px; border-radius: 10px; border-left: 4px solid #B91C1C;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13px;
-    }
-    .news-item small { color: var(--muted); font-size: 11px; display: block; margin-top: 3px; }
-
-    /* Tables for Bus & Market Rates */
-    .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 10px; }
-    .data-table th { background: var(--primary); color: #fff; text-align: left; padding: 7px 9px; }
-    .data-table td { padding: 7px 9px; border-bottom: 1px solid var(--border); background: #fff; }
-    .rate-chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .rate-chip {
-      background: #fff; border: 1px solid var(--border); border-radius: 10px;
-      padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;
-    }
-    .rate-chip strong { color: var(--primary); }
-
-    /* Calculators */
-    .calc-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-    .c-tab {
-      padding: 7px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
-      background: var(--surface); color: var(--text);
-    }
-    .c-tab.active { background: var(--primary); color: #fff; }
-    .calc-pane { display: none; background: #FAF8F5; padding: 14px; border-radius: 14px; border: 1px solid var(--border); }
-    .calc-pane.active { display: block; }
-    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 10px; }
-    .inp-group label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-bottom: 3px; }
-    .inp-group input, .inp-group select {
-      width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 9px;
-      background: #fff; font-size: 14px; font-weight: 600;
-    }
-    .result-banner {
-      background: #ECFDF5; border: 1.5px solid #16A34A; color: #064E3B;
-      padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-top: 8px;
+    .locked-blur {
+      background: #FDF2F8; color: #9D174D; padding: 5px 8px; border-radius: 6px;
+      font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-top: 4px;
     }
 
-    /* Item Cards (Jobs, Store, Tourism, Services) */
-    .item-card {
+    /* Flipkart-Style Product & Service Cards */
+    .ecom-card {
       background: #fff; border: 1px solid var(--border); border-radius: 14px;
       overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+      transition: 0.2s;
     }
-    .card-media { position: relative; height: 155px; background: #1C1917; }
-    .card-media img { width: 100%; height: 100%; object-fit: cover; }
-    .badge-top-right {
-      position: absolute; top: 9px; right: 9px; background: rgba(15,76,41,0.95);
-      color: #FACC15; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 8px;
+    .ecom-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.08); }
+    .ecom-img { position: relative; height: 145px; background: #1C1917; }
+    .ecom-img img { width: 100%; height: 100%; object-fit: cover; }
+    .price-tag {
+      position: absolute; bottom: 8px; left: 8px; background: #15803D; color: #fff;
+      font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 6px;
     }
-    .badge-top-left {
-      position: absolute; top: 9px; left: 9px; background: rgba(180,83,9,0.92);
-      color: #fff; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    .off-tag {
+      position: absolute; top: 8px; right: 8px; background: #DC2626; color: #fff;
+      font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 6px;
     }
-    .card-content { padding: 13px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .card-content h4 { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .card-content p { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+    .ecom-body { padding: 11px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .ecom-body h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; }
+    .ecom-body p { font-size: 12px; color: var(--muted); margin-bottom: 9px; }
 
-    /* Buttons */
+    /* Buttons & Inputs */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
-      color: #fff; background: var(--primary); width: 100%; text-align: center;
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 9px 12px; border-radius: 9px; font-size: 12.5px; font-weight: 700;
+      color: #fff; background: var(--primary); width: 100%;
     }
     .btn-wa { background: #15803D; }
     .btn-orange { background: var(--accent); }
-    .btn-red { background: #DC2626; }
+    .btn-love { background: var(--love); }
     .btn-light { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-    .btn-pair { display: flex; gap: 8px; }
+    .btn-split { display: flex; gap: 6px; }
 
-    /* Modal Popup */
-    .modal-overlay {
+    .inp {
+      width: 100%; padding: 8px 10px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 13px; background: #fff;
+    }
+
+    /* Multi-Tab Smart Popup Modal */
+    .modal-bg {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82);
-      z-index: 2000; justify-content: center; align-items: center; padding: 14px;
+      z-index: 2500; justify-content: center; align-items: center; padding: 12px;
     }
-    .modal-card {
-      background: var(--bg); width: 100%; max-width: 780px; max-height: 86vh;
-      overflow-y: auto; border-radius: 18px; padding: 18px;
+    .modal-box {
+      background: var(--bg); width: 100%; max-width: 720px; max-height: 88vh;
+      overflow-y: auto; border-radius: 18px; padding: 16px;
     }
-    .modal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 10px; margin: 14px 0; }
-    .mini-box { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; text-align: center; }
-    .mini-box img { width: 100%; height: 100px; object-fit: cover; }
-    .mini-box div { padding: 8px; }
+    .inner-tabs { display: flex; gap: 6px; margin: 10px 0; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    .i-tab {
+      padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      background: var(--surface); color: var(--text);
+    }
+    .i-tab.active { background: var(--primary); color: #fff; }
+    .i-pane { display: none; }
+    .i-pane.active { display: block; }
 
-    /* Floating Bottom Bar */
-    .bottom-dock {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
-      border-top: 1.5px solid var(--border); display: flex; justify-content: space-around;
-      padding: 7px 4px; z-index: 1100; box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
+    /* Side Drawer */
+    .drawer-mask { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1800; }
+    .drawer-panel {
+      position: fixed; top: 0; left: -290px; bottom: 0; width: 280px; background: var(--bg);
+      z-index: 1900; transition: 0.3s; padding: 14px; overflow-y: auto;
     }
-    .dock-item { text-align: center; font-size: 11px; font-weight: 700; color: var(--primary); flex: 1; }
-    .dock-item span { display: block; font-size: 18px; }
+    .drawer-panel.open { left: 0; }
+    .d-link {
+      display: block; padding: 10px 12px; background: #fff; border-radius: 10px;
+      margin-bottom: 7px; font-size: 13px; font-weight: 700; color: var(--primary);
+      border: 1px solid var(--border);
+    }
+
+    /* Bottom Dock */
+    .dock {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
+      border-top: 1.5px solid var(--border); display: flex; padding: 6px 0; z-index: 1200;
+    }
+    .dock a { flex: 1; text-align: center; font-size: 10.5px; font-weight: 700; color: var(--primary); }
+    .dock span { display: block; font-size: 17px; }
   </style>
 </head>
 <body>
 
-  <!-- =====================================================================
-       TOP TICKER 1: LIVE BREAKING TELUGU NEWS (TV CHANNEL STYLE)
-       ===================================================================== -->
-  <div class="ticker-wrap">
-    <div class="ticker-badge">🔴 LIVE వార్తలు</div>
-    <div class="ticker-track" id="topNewsTicker">
-      <span>⚡ మన సేవ హబ్ (Mana Seva Hub) కు స్వాగతం! బొడ్డవార, కిల్తాంపాలెం, తాటిపూడి, ఎస్.కోట, కాశీపట్నం, విజయనగరం, వైజాగ్ & అరకు ప్రాంతాల బస్సు వేళలు, మార్కెట్ ధరలు, బైక్ డ్రాప్ & ఉద్యోగాల సమాచారం ఒక్క క్లిక్‌తో మీ చేతిలో...</span>
+  <!-- ==========================================================================
+       [TOP RUNNING TICKER]: బంగారం రేట్లు, అరకు వాతావరణం & క్యూరియాసిటీ అప్‌డేట్స్
+       ========================================================================== -->
+  <div class="ticker-bar">
+    <div class="ticker-tag">⚡ LIVE అప్‌డేట్స్</div>
+    <div class="ticker-move">
+      <span>🪙 నేటి 22K బంగారం (10g): ₹71,850 | 🥈 వెండి (1Kg): ₹91,500 | 🍅 టమాటా: ₹30/Kg | 🥛 పాలు: ₹66/L | 🏍️ బొడ్డవార ⇄ తాటిపూడి ⇄ S.Kota రాత్రి వేళ బైక్ డ్రాప్ & ఎమర్జెన్సీ సేవలు 24/7 అందుబాటులో ఉన్నాయి (8985240287) | 💌 సీక్రెట్ లవ్ వాల్‌లో కొత్త మెసేజ్ పోస్ట్ అయింది — మీ కోడ్‌తో చెక్ చేయండి!</span>
     </div>
   </div>
 
-  <!-- =====================================================================
-       TOP TICKER 2: CINEMA & MOTIVATIONAL / LOVE QUOTES TICKER
-       ===================================================================== -->
-  <div class="ticker-wrap quote-ticker">
-    <div class="quote-badge">✨ నేటి సూక్తి</div>
-    <div class="ticker-track" style="animation-duration: 32s;">
-      <span>💛 "కష్టపడే తత్వం ఉంటే ఏ ఊరి నుంచైనా ప్రపంచాన్ని జయించవచ్చు!" • 🎬 "ప్రేమ అంటే ఒకరినొకరు అర్థం చేసుకోవడం... ప్రయాణం అంటే కొత్త జ్ఞాపకాలను పోగు చేసుకోవడం!" • 🚀 "అత్యవసర బైక్ డ్రాప్ లేదా రాత్రి వేళ ఆహారం కోసం 8985240287 కి కాల్ చేయండి."</span>
-    </div>
-  </div>
-
-  <!-- =====================================================================
-       STICKY HEADER, GLOBAL SEARCH & AREA FILTER PILLS
-       ===================================================================== -->
+  <!-- ==========================================================================
+       [STICKY HEADER]: మెనూ, గ్లోబల్ సెర్చ్ & ప్రాంతాల ఫిల్టర్లు
+       ========================================================================== -->
   <header class="app-header">
     <div class="container">
-      <div class="top-bar">
-        <div class="brand-group">
-          <button class="menu-btn" onclick="toggleDrawer(true)">☰ మెనూ</button>
-          <div class="brand-title">
+      <div class="header-row">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="menu-trigger" onclick="toggleMenu(true)">☰ మెనూ</button>
+          <div class="logo-txt">
             <h1>Mana Seva Hub • మన సేవ</h1>
-            <span>గ్రామం నుండి నగరం వరకు • All-in-One Super App</span>
+            <small>బొడ్డవార • కిల్తాంపాలెం • తాటిపూడి • S.Kota • VZM • వైజాగ్ • అరకు</small>
           </div>
         </div>
-        <div class="quick-icons">
-          <a href="https://instagram.com/hipraka" target="_blank" class="q-icon" style="background:#C13584;" title="Instagram">📸</a>
-          <a href="tel:+918985240287" class="q-icon" style="background:#DC2626;" title="Call">📞</a>
-          <a href="https://wa.me/918985240287" target="_blank" class="q-icon" style="background:#16A34A;" title="WhatsApp">💬</a>
+        <div class="top-btns">
+          <a href="https://instagram.com/hipraka" target="_blank" class="circle-btn" style="background:#C13584;">📸</a>
+          <a href="tel:+918985240287" class="circle-btn" style="background:#DC2626;">📞</a>
+          <a href="https://wa.me/918985240287" target="_blank" class="circle-btn" style="background:#16A34A;">💬</a>
         </div>
       </div>
 
-      <div class="search-filter-box">
-        <input type="text" id="globalSearch" class="global-search" onkeyup="filterAll()" placeholder="🔍 వెతకండి: బస్సు సమయాలు, కూరగాయల ధరలు, బైక్ డ్రాప్, జాబ్స్, అరకు, మెకానిక్...">
-        <div class="area-pills">
-          <button class="area-pill active" onclick="setArea('all', this)">🌍 అన్ని ప్రాంతాలు (All)</button>
-          <button class="area-pill" onclick="setArea('Boddavara', this)">📍 బొడ్డవార / కిల్తాంపాలెం</button>
-          <button class="area-pill" onclick="setArea('S.Kota', this)">📍 ఎస్.కోట (S.Kota)</button>
-          <button class="area-pill" onclick="setArea('Thatipudi', this)">📍 తాటిపూడి</button>
-          <button class="area-pill" onclick="setArea('Kasipatnam', this)">📍 కాశీపట్నం</button>
-          <button class="area-pill" onclick="setArea('VZM', this)">📍 విజయనగరం (VZM)</button>
-          <button class="area-pill" onclick="setArea('Vizag', this)">📍 వైజాగ్ (Vizag)</button>
-          <button class="area-pill" onclick="setArea('Araku', this)">📍 అరకు (Araku)</button>
-        </div>
+      <input type="text" id="searchInp" class="search-box" onkeyup="runSearch()" placeholder="🔍 వెతకండి: బైక్ డ్రాప్, బస్సు వేళలు, వడ్డీ లెక్క, ఉద్యోగాలు, అరకు, పాత పుస్తకాలు...">
+
+      <div class="pills-scroll">
+        <button class="pill active" onclick="filterByArea('all', this)">🌍 అన్నీ (All)</button>
+        <button class="pill" onclick="filterByArea('Boddavara', this)">📍 బొడ్డవార / కిల్తాంపాలెం</button>
+        <button class="pill" onclick="filterByArea('Thatipudi', this)">📍 తాటిపూడి</button>
+        <button class="pill" onclick="filterByArea('S.Kota', this)">📍 ఎస్.కోట</button>
+        <button class="pill" onclick="filterByArea('Kasipatnam', this)">📍 కాశీపట్నం</button>
+        <button class="pill" onclick="filterByArea('VZM', this)">📍 విజయనగరం</button>
+        <button class="pill" onclick="filterByArea('Vizag', this)">📍 వైజాగ్</button>
+        <button class="pill" onclick="filterByArea('Araku', this)">📍 అరకు</button>
       </div>
     </div>
   </header>
 
   <!-- Slide-out Navigation Drawer -->
-  <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer(false)"></div>
-  <aside class="side-drawer" id="sideDrawer">
-    <div class="drawer-header">
-      <div>
-        <h3 style="font-size:18px;">మన సేవ హబ్ (అల్మారా)</h3>
-        <span style="font-size:12px;color:#FDE68A;">Prakash (@hipraka) • 8985240287</span>
-      </div>
-      <button onclick="toggleDrawer(false)" style="color:#fff;font-size:22px;">✖</button>
+  <div class="drawer-mask" id="drawerMask" onclick="toggleMenu(false)"></div>
+  <nav class="drawer-panel" id="drawerPanel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong style="color:var(--primary);font-size:16px;">మన సేవ అల్మారా మెనూ</strong>
+      <button onclick="toggleMenu(false)" style="font-size:20px;color:#DC2626;">✖</button>
     </div>
-    <div class="drawer-links">
-      <a href="#shelf-1" class="drawer-link" onclick="toggleDrawer(false)">📰 అర 1: వార్తలు, బస్సు వేళలు & ధరలు</a>
-      <a href="#shelf-2" class="drawer-link" onclick="toggleDrawer(false)">🧮 అర 2: ఉచిత క్యాలిక్యులేటర్లు (వడ్డీ, GST, భూమి)</a>
-      <a href="#shelf-3" class="drawer-link" onclick="toggleDrawer(false)">💼 అర 3: ఉద్యోగాలు, GK క్విజ్ & యూత్ హబ్</a>
-      <a href="#shelf-4" class="drawer-link" onclick="toggleDrawer(false)">🏍️ అర 4: బైక్ డ్రాప్ & రాత్రి ఫుడ్ డెలివరీ</a>
-      <a href="#shelf-5" class="drawer-link" onclick="toggleDrawer(false)">🏔️ అర 5: టూరిజం ప్యాకేజీలు (6 ప్రాంతాలు)</a>
-      <a href="#shelf-6" class="drawer-link" onclick="toggleDrawer(false)">🛍️ అర 6: స్టోర్, పాత పుస్తకాలు & టికెట్ బుకింగ్</a>
-      <a href="#shelf-7" class="drawer-link" onclick="toggleDrawer(false)">🚑 అర 7: గ్రామ సేవలు, మ్యాప్స్ & ఎమర్జెన్సీ</a>
-    </div>
-  </aside>
+    <a href="#sec-ride" class="d-link" onclick="toggleMenu(false)">🏍️ 1. బైక్ డ్రాప్ & రాత్రి డెలివరీ</a>
+    <a href="#sec-love" class="d-link" onclick="toggleMenu(false)">💌 2. సీక్రెట్ లవ్ & క్యూరియాసిటీ వాల్</a>
+    <a href="#sec-news-bus" class="d-link" onclick="toggleMenu(false)">📰 3. తాజా వార్తలు & బస్సు వేళలు</a>
+    <a href="#sec-edu" class="d-link" onclick="toggleMenu(false)">🎓 4. ఎడ్యుకేషన్, GK & క్యాలిక్యులేటర్లు</a>
+    <a href="#sec-store" class="d-link" onclick="toggleMenu(false)">🛒 5. స్మార్ట్ స్టోర్, బుక్స్ & Buy/Sell</a>
+    <a href="#sec-jobs" class="d-link" onclick="toggleMenu(false)">💼 6. ఉద్యోగాలు & డైలీ డ్యూటీలు</a>
+    <a href="#sec-tourism" class="d-link" onclick="toggleMenu(false)">🏔️ 7. టూరిజం ప్యాకేజీలు (6 ప్రాంతాలు)</a>
+    <a href="#sec-services" class="d-link" onclick="toggleMenu(false)">🚑 8. గ్రామ సేవలు, టెక్నీషియన్లు & 108</a>
+  </nav>
 
   <main class="container">
 
-    <!-- =====================================================================
-         HERO PROFILE CARD + 24/7 TELUGU SONGS FM PLAYER (BACKGROUND PLAY)
-         ===================================================================== -->
-    <section class="hero-panel">
-      <div class="hero-top">
-        <div class="avatar-ring">
-          <img id="heroAvatar" src="https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp" alt="Prakash">
+    <!-- ==========================================================================
+         [SECTION 0]: HERO PROFILE (FIXED PHOTO) + SONGS & YOUTUBE TOGGLE DRAWER
+         ========================================================================== -->
+    <section class="hero-card">
+      <div class="profile-flex">
+        <div class="profile-pic-box">
+          <!-- ప్రొఫైల్ ఫోటో కట్ అవ్వకుండా & ఎర్రర్ రాకుండా Fallback తో -->
+          <img id="prakashAvatar"
+               src="https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp"
+               onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Prakash&background=FACC15&color=062814&size=200&bold=true';"
+               alt="Prakash">
         </div>
-        <div class="hero-info">
+        <div class="profile-meta">
           <h2>ప్రకాష్ (Prakash) • @hipraka</h2>
-          <p>మీ ఊరి డిజిటల్ నేస్తం • బస్సు వేళలు, మార్కెట్ ధరలు, సురక్షిత బైక్ డ్రాప్, డెలివరీ, ఉద్యోగాలు & టూరిజం గైడ్.</p>
-          <div class="hero-actions">
-            <a href="tel:+918985240287" class="h-btn orange">📞 8985240287</a>
-            <a href="https://wa.me/918985240287" target="_blank" class="h-btn green">💬 WhatsApp</a>
-            <button onclick="sendLiveGPS()" class="h-btn">📍 Send Live GPS</button>
-            <button onclick="shareAppToGroup()" class="h-btn" style="background:#0284C7;border:none;">📲 ఊరి గ్రూప్‌కి షేర్ చేయండి</button>
+          <p>మీ ఊరి డిజిటల్ నేస్తం • బైక్ డ్రాప్, డెలివరీ, సీక్రెట్ లవ్ వాల్, ఉద్యోగాలు, క్యాలిక్యులేటర్లు & టూరిజం.</p>
+          <div class="hero-chips">
+            <a href="tel:+918985240287" class="chip-btn" style="background:#EA580C;border:none;">📞 8985240287</a>
+            <a href="https://wa.me/918985240287" target="_blank" class="chip-btn" style="background:#16A34A;border:none;">💬 WhatsApp</a>
+            <button onclick="sendMyGPS()" class="chip-btn">📍 Live GPS పంపండి</button>
+            <button onclick="shareGroup()" class="chip-btn" style="background:#0284C7;border:none;">📲 ఊరి గ్రూప్ షేర్</button>
           </div>
         </div>
       </div>
 
-      <!-- 24/7 Telugu Cinema Songs Live Radio with Auto-Failover & MediaSession -->
-      <div class="radio-deck" id="radioDeck">
-        <div class="radio-header">
-          <div class="radio-status">
-            <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
-            <div>
-              <strong style="font-size:13.5px;color:#FACC15;display:block;" id="stationTitle">🎵 తెలుగు సినిమా పాటలు (24/7 Live FM)</strong>
-              <span style="font-size:11px;color:#CBD5E1;" id="radioStatusText">ఫోన్ స్క్రీన్ ఆఫ్ చేసినా పాటలు ఆగకుండా ప్లే అవుతాయి!</span>
-            </div>
+      <!-- పాటల విభాగం: Live Telugu Songs Radio + Collapsible YouTube Channel/Jukebox -->
+      <div class="music-hub">
+        <div class="music-top">
+          <div>
+            <strong style="font-size:13.5px;color:#FACC15;display:block;" id="radioName">🎶 తెలుగు లవ్ & సినిమా పాటలు (Live Songs)</strong>
+            <span style="font-size:11px;color:#CBD5E1;" id="radioMsg">పాటలు వినడానికి Play నొక్కండి లేదా పక్కనే YouTube ఓపెన్ చేయండి</span>
           </div>
-          <div style="display:flex;gap:6px;">
-            <button class="play-master" id="playPauseBtn" onclick="toggleRadio()">▶ పాటలు వినండి</button>
-            <a href="https://www.youtube.com/results?search_query=non+stop+telugu+melody+and+mass+hit+songs+jukebox" target="_blank" class="h-btn" style="background:#DC2626;border:none;">▶ YouTube Jukebox</a>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button id="radioBtn" onclick="toggleSongs()" style="background:#22C55E;color:#052E16;font-weight:800;padding:6px 13px;border-radius:999px;font-size:12px;">▶ పాటలు Play</button>
+            <!-- YouTube Icon నొక్కితే కిందకు ఓపెన్ అయ్యి మళ్ళీ నొక్కితే క్లోజ్ అయ్యే బటన్ -->
+            <button id="ytToggleBtn" onclick="toggleYouTubeBox()" style="background:#DC2626;color:#fff;font-weight:800;padding:6px 13px;border-radius:999px;font-size:12px;">🎬 YouTube పాటలు / ఛానల్ ▾</button>
           </div>
         </div>
-        <div class="radio-controls">
-          <button class="st-btn active" onclick="switchStation(0, this)">📻 చానల్ 1: తెలుగు హిట్స్ FM</button>
-          <button class="st-btn" onclick="switchStation(1, this)">🎶 చానల్ 2: మెలొడీ & లవ్ సాంగ్స్</button>
-          <button class="st-btn" onclick="switchStation(2, this)">🔥 చానల్ 3: మాస్ & DJ బీట్స్</button>
-          <button class="st-btn" onclick="switchStation(3, this)">🕉️ చానల్ 4: భక్తి & సుప్రభాతం</button>
+
+        <div class="station-pills">
+          <button class="st-pill active" onclick="selectSongChannel(0, this)">💖 1. తెలుగు లవ్ & మెలొడీ పాటలు</button>
+          <button class="st-pill" onclick="selectSongChannel(1, this)">🎬 2. కొత్త సినిమా సూపర్ హిట్స్</button>
+          <button class="st-pill" onclick="selectSongChannel(2, this)">🔥 3. మాస్ & ఫోక్ DJ పాటలు</button>
+          <button class="st-pill" onclick="selectSongChannel(3, this)">🕉️ 4. భక్తి పాటలు & స్తోత్రాలు</button>
         </div>
-        <audio id="teluguAudio" preload="none" crossorigin="anonymous"></audio>
+
+        <!-- Collapsible YouTube Player Drawer (నొక్కితే కిందకు తెరుచుకుంటుంది, మళ్ళీ నొక్కితే మూసుకుంటుంది) -->
+        <div class="yt-drawer" id="ytDrawer">
+          <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+            <button class="st-pill active" onclick="loadYTPlaylist('PL4fGSI1pDJn5kI81J1fYWK5eZRl1zJ5kM', this)">💖 నాన్-స్టాప్ తెలుగు లవ్ సాంగ్స్</button>
+            <button class="st-pill" onclick="loadYTPlaylist('RDCLAK5uy_n9Fbdw7e6ap-98_A-8JYBmPv64v-Uaq1g', this)">🔥 ట్రెండింగ్ తెలుగు హిట్స్</button>
+            <a href="https://www.youtube.com/@hipraka" target="_blank" class="st-pill" style="background:#FACC15;color:#000;">📺 నా YouTube ఛానల్ (@hipraka)</a>
+          </div>
+          <div class="yt-frame-wrap">
+            <iframe id="ytPlayerFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <audio id="liveSongPlayer" preload="none" crossorigin="anonymous"></audio>
       </div>
-      <div id="gpsStatusMsg" style="font-size:12px;color:#FDE68A;margin-top:8px;text-align:center;"></div>
+      <div id="gpsToast" style="font-size:11.5px;color:#FACC15;margin-top:6px;text-align:center;"></div>
     </section>
 
-    <!-- =====================================================================
-         CUPBOARD 7-SHELF QUICK NAVIGATION GRID (అల్మారా అరల షార్ట్‌కట్స్)
-         ===================================================================== -->
-    <nav class="cupboard-nav">
-      <a href="#shelf-1" class="shelf-tab"><span>🚌</span><strong>1. బస్ & ధరలు</strong></a>
-      <a href="#shelf-2" class="shelf-tab"><span>🧮</span><strong>2. క్యాలిక్యులేటర్లు</strong></a>
-      <a href="#shelf-3" class="shelf-tab"><span>💼</span><strong>3. జాబ్స్ & క్విజ్</strong></a>
-      <a href="#shelf-4" class="shelf-tab"><span>🏍️</span><strong>4. బైక్ & ఫుడ్</strong></a>
-      <a href="#shelf-5" class="shelf-tab"><span>🏔️</span><strong>5. టూరిజం (6)</strong></a>
-      <a href="#shelf-6" class="shelf-tab"><span>🛍️</span><strong>6. స్టోర్ & బుక్స్</strong></a>
-      <a href="#shelf-7" class="shelf-tab"><span>🚑</span><strong>7. సేవలు & 108</strong></a>
-    </nav>
-
-    <!-- =====================================================================
-         [అర 1 - SHELF 1]: LIVE TELUGU NEWS, BUS TIMINGS & DAILY MARKET RATES
-         ===================================================================== -->
-    <section id="shelf-1" class="cupboard-shelf">
-      <span class="shelf-label">అర 1 • DAILY FREE UTILITIES</span>
-      <h2 class="shelf-title">📰 లైవ్ తెలుగు వార్తలు, పల్లెవెలుగు బస్సు వేళలు & నేటి ధరలు</h2>
-      <p class="shelf-sub">ప్రతిరోజూ ఉచితంగా తాజా వార్తలు, బస్సు సమయాలు మరియు కూరగాయలు/బంగారం ధరలు తెలుసుకోండి.</p>
+    <!-- ==========================================================================
+         [SECTION 1 - పైన ప్రధాన అర]: BIKE RIDES (BODDAVARA - THATIPUDI - S.KOTA) & NIGHT DELIVERY
+         ========================================================================== -->
+    <section id="sec-ride" class="shelf searchable" data-area="Boddavara" data-keywords="bike ride drop boddavara thatipudi s.kota night emergency food delivery">
+      <span class="shelf-tag">అర 1 • PRIORITY TRANSPORT & NIGHT EXPRESS</span>
+      <h2 class="shelf-head">🏍️ పర్సనల్ బైక్ డ్రాప్ & రాత్రి ఎమర్జెన్సీ డెలివరీ</h2>
+      <p class="shelf-desc">బొడ్డవార ⇄ తాటిపూడి ⇄ కిల్తాంపాలెం ⇄ S.Kota రూట్‌లో రాత్రి వేళల్లో వాహనాలు తక్కువగా ఉన్నప్పుడు సురక్షిత బైక్ డ్రాప్ & ఫుడ్/మందుల డెలివరీ.</p>
 
       <div class="grid-2">
-        <!-- Box 1A: Triple-Backup Live Telugu News -->
-        <div class="sub-box">
-          <h3><span>📺 లైవ్ తెలుగు వార్తలు</span><button onclick="loadTeluguNews(currentNewsCat)" style="font-size:11px;background:#DC2626;color:#fff;padding:3px 8px;border-radius:6px;">🔄 Refresh</button></h3>
-          <div class="news-tabs">
-            <button class="news-tab active" onclick="changeNewsCat('latest', this)">తాజా వార్తలు</button>
-            <button class="news-tab" onclick="changeNewsCat('cinema', this)">కొత్త సినిమాలు & OTT</button>
-            <button class="news-tab" onclick="changeNewsCat('vizag', this)">వైజాగ్ & విజయనగరం</button>
-            <button class="news-tab" onclick="changeNewsCat('politics', this)">రాజకీయాలు</button>
-          </div>
-          <div class="news-feed-box" id="newsFeedBox">
-            <div class="news-item">⏳ తాజా తెలుగు వార్తలు లోడ్ అవుతున్నాయి...</div>
-          </div>
-        </div>
-
-        <!-- Box 1B: Pallevelugu Bus Timings & Daily Market Rates -->
-        <div class="sub-box">
-          <h3><span>🚌 పల్లెవెలుగు బస్సు వేళలు</span><a href="https://apsrtclivetrack.com/" target="_blank" style="font-size:11px;background:#0284C7;color:#fff;padding:3px 8px;border-radius:6px;">📡 APSRTC Live GPS</a></h3>
-          <table class="data-table">
-            <thead>
-              <tr><th>రూట్ (Route)</th><th>బయలుదేరు సమయాలు</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><strong>VZM ⇄ తాటిపూడి ⇄ S.Kota</strong></td><td>06:30 AM, 08:15 AM, 10:30 AM, 01:45 PM, 04:30 PM, 06:45 PM</td></tr>
-              <tr><td><strong>S.Kota ⇄ బొడ్డవార ⇄ అరకు</strong></td><td>06:00 AM, 07:30 AM, 09:30 AM, 12:15 PM, 03:00 PM, 05:30 PM</td></tr>
-              <tr><td><strong>S.Kota ⇄ విశాఖపట్నం (Non-Stop)</strong></td><td>ప్రతి 20 నిమిషాలకు ఒక బస్సు (05:00 AM - 09:30 PM)</td></tr>
-            </tbody>
-          </table>
-          <a href="#shelf-4" class="btn btn-orange" style="margin-bottom:14px;">🏍️ బస్సు మిస్ అయ్యారా? వెంటనే బైక్ డ్రాప్ బుక్ చేయండి</a>
-
-          <h3 style="margin-top:6px;"><span>🥬 నేటి మార్కెట్ & బంగారం ధరలు</span><span style="font-size:11px;color:#16A34A;">Updated Today</span></h3>
-          <div class="rate-chips">
-            <div class="rate-chip"><span>🍅 టమాటా (1 Kg)</span><strong>₹28 - ₹35</strong></div>
-            <div class="rate-chip"><span>🧅 ఉల్లిపాయలు (1 Kg)</span><strong>₹32 - ₹40</strong></div>
-            <div class="rate-chip"><span>🥛 పాలు (1 లీటర్)</span><strong>₹64 - ₹72</strong></div>
-            <div class="rate-chip"><span>🥚 కోడిగుడ్లు (1 డజన్)</span><strong>₹72 - ₹78</strong></div>
-            <div class="rate-chip"><span>🪙 22K బంగారం (10g)</span><strong>₹71,850</strong></div>
-            <div class="rate-chip"><span>🥈 వెండి (1 Kg)</span><strong>₹91,500</strong></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================================
-         [అర 2 - SHELF 2]: FREE DAILY CALCULATORS WITH WHATSAPP SHARE
-         ===================================================================== -->
-    <section id="shelf-2" class="cupboard-shelf">
-      <span class="shelf-label">అర 2 • SMART VILLAGE & BUSINESS TOOLS</span>
-      <h2 class="shelf-title">🧮 ఉచిత క్యాలిక్యులేటర్లు (WhatsApp షేర్ సదుపాయంతో)</h2>
-      <p class="shelf-sub">నూటికి వడ్డీ, GST బిల్లు, భూమి కొలతలు (సెంట్లు/ఎకరాలు/గజాలు), లోన్ EMI మరియు ఖచ్చితమైన వయస్సు లెక్కించండి.</p>
-
-      <div class="calc-tabs">
-        <button class="c-tab active" onclick="openCalc('c-interest', this)">💰 నూటికి వడ్డీ</button>
-        <button class="c-tab" onclick="openCalc('c-land', this)">🌾 భూమి కొలతలు</button>
-        <button class="c-tab" onclick="openCalc('c-gst', this)">🧾 GST బిల్లు</button>
-        <button class="c-tab" onclick="openCalc('c-emi', this)">🏦 లోన్ EMI</button>
-        <button class="c-tab" onclick="openCalc('c-age', this)">🎂 వయస్సు (Age)</button>
-      </div>
-
-      <!-- 1. Village Interest Calculator -->
-      <div id="c-interest" class="calc-pane active">
-        <div class="form-row">
-          <div class="inp-group"><label>అసలు మొత్తం (₹)</label><input type="number" id="intP" value="50000" oninput="calcVillageInterest()"></div>
-          <div class="inp-group"><label>నూటికి వడ్డీ (₹ / నెలకు)</label><input type="number" id="intR" value="2" step="0.25" oninput="calcVillageInterest()"></div>
-          <div class="inp-group"><label>నెలలు (Months)</label><input type="number" id="intM" value="12" oninput="calcVillageInterest()"></div>
-        </div>
-        <div class="result-banner" id="intOut">నెలవారీ వడ్డీ: ₹1,000 | మొత్తం వడ్డీ: ₹12,000 | అసలు + వడ్డీ: ₹62,000</div>
-        <button onclick="shareCalcResult('intOut', 'నూటికి వడ్డీ లెక్క')" class="btn btn-wa" style="margin-top:8px;">💬 ఈ లెక్కను WhatsApp లో షేర్ చేయండి</button>
-      </div>
-
-      <!-- 2. Land Converter -->
-      <div id="c-land" class="calc-pane">
-        <div class="form-row">
-          <div class="inp-group"><label>విలువ (Value)</label><input type="number" id="landVal" value="10" oninput="calcLand()"></div>
-          <div class="inp-group"><label>యూనిట్ ఎంచుకోండి</label>
-            <select id="landUnit" onchange="calcLand()">
-              <option value="cents">సెంట్లు (Cents)</option>
-              <option value="acres">ఎకరాలు (Acres)</option>
-              <option value="sqyards">గజాలు (Sq. Yards)</option>
-            </select>
-          </div>
-        </div>
-        <div class="result-banner" id="landOut">10 సెంట్లు = 0.10 ఎకరాలు | 484 గజాలు | 4,356 చ.అడుగులు (Sq.Ft)</div>
-        <button onclick="shareCalcResult('landOut', 'భూమి కొలతల వివరాలు')" class="btn btn-wa" style="margin-top:8px;">💬 WhatsApp లో షేర్ చేయండి</button>
-      </div>
-
-      <!-- 3. GST Calculator -->
-      <div id="c-gst" class="calc-pane">
-        <div class="form-row">
-          <div class="inp-group"><label>బిల్లు మొత్తం (₹)</label><input type="number" id="gstAmt" value="1000" oninput="calcGST()"></div>
-          <div class="inp-group"><label>GST శాతం (%)</label>
-            <select id="gstRate" onchange="calcGST()">
-              <option value="5">5%</option>
-              <option value="12">12%</option>
-              <option value="18" selected>18%</option>
-              <option value="28">28%</option>
-            </select>
-          </div>
-        </div>
-        <div class="result-banner" id="gstOut">అసలు: ₹1,000 | GST (18%): ₹180 | మొత్తం బిల్లు: ₹1,180</div>
-        <button onclick="shareCalcResult('gstOut', 'GST బిల్లు వివరాలు')" class="btn btn-wa" style="margin-top:8px;">💬 WhatsApp లో షేర్ చేయండి</button>
-      </div>
-
-      <!-- 4. EMI Calculator -->
-      <div id="c-emi" class="calc-pane">
-        <div class="form-row">
-          <div class="inp-group"><label>లోన్ మొత్తం (₹)</label><input type="number" id="emiP" value="100000" oninput="calcEMI()"></div>
-          <div class="inp-group"><label>వార్షిక వడ్డీ (%)</label><input type="number" id="emiR" value="12" oninput="calcEMI()"></div>
-          <div class="inp-group"><label>నెలలు (Tenure)</label><input type="number" id="emiN" value="24" oninput="calcEMI()"></div>
-        </div>
-        <div class="result-banner" id="emiOut">నెలవారీ EMI: ₹4,707 | మొత్తం చెల్లింపు: ₹1,12,976</div>
-        <button onclick="shareCalcResult('emiOut', 'లోన్ EMI వివరాలు')" class="btn btn-wa" style="margin-top:8px;">💬 WhatsApp లో షేర్ చేయండి</button>
-      </div>
-
-      <!-- 5. Age Calculator -->
-      <div id="c-age" class="calc-pane">
-        <div class="form-row">
-          <div class="inp-group"><label>పుట్టిన తేదీ (Date of Birth)</label><input type="date" id="dobInp" value="1998-07-15" onchange="calcAge()"></div>
-        </div>
-        <div class="result-banner" id="ageOut">మీ వయస్సు: 28 సంవత్సరాలు, 4 నెలలు, 5 రోజులు</div>
-        <button onclick="shareCalcResult('ageOut', 'వయస్సు వివరాలు')" class="btn btn-wa" style="margin-top:8px;">💬 WhatsApp లో షేర్ చేయండి</button>
-      </div>
-    </section>
-
-    <!-- =====================================================================
-         [అర 3 - SHELF 3]: JOBS, DAILY DUTIES, EXAM GK QUIZ & LOVE WALL
-         ===================================================================== -->
-    <section id="shelf-3" class="cupboard-shelf">
-      <span class="shelf-label">అర 3 • JOBS & YOUTH ZONE</span>
-      <h2 class="shelf-title">💼 స్థానిక ఉద్యోగాలు, డైలీ డ్యూటీలు, GK క్విజ్ & యూత్ వాల్</h2>
-      <p class="shelf-sub">ఎస్.కోట, కిల్తాంపాలెం, విజయనగరం & వైజాగ్‌లో నేటి ఉద్యోగ అవకాశాలు మరియు పోటీ పరీక్షల క్విజ్.</p>
-
-      <div class="grid-3" style="margin-bottom:16px;">
-        <div class="item-card searchable" data-area="S.Kota" data-keywords="catering loading daily duty job ₹600">
-          <div class="card-content">
+        <!-- Bike Fare Calculator -->
+        <div style="background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:14px;padding:12px;">
+          <strong style="color:#92400E;font-size:14.5px;display:block;margin-bottom:4px;">🛵 బైక్ రైడ్ ఛార్జీ లెక్క (Extra Helmet Available)</strong>
+          <p style="font-size:11.5px;color:#78350F;margin-bottom:8px;">0–3 KM: <strong>₹30</strong> | ఆపై ప్రతి KM: <strong>+₹10</strong> | రాత్రి 8 తర్వాత / ఎమర్జెన్సీ: <strong>+₹20</strong></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
             <div>
-              <span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;">⚡ డైలీ డ్యూటీ • ₹550 - ₹700/రోజు</span>
-              <h4 style="margin-top:6px;">క్యాటరింగ్, లోడింగ్ & ఈవెంట్ హెల్పర్లు</h4>
-              <p>ప్రదేశం: ఎస్.కోట, తాటిపూడి & విజయనగరం • రోజువారీ వేతనం సాయంత్రమే చెల్లించబడును.</p>
+              <label style="font-size:11px;font-weight:700;">దూరం (KM)</label>
+              <input type="number" id="kmVal" class="inp" value="5" min="1" oninput="calcBike()">
             </div>
-            <a href="https://wa.me/918985240287?text=నమస్కారం%20ప్రకాష్,%20నేను%20Daily%20Duty%20(Catering/Loading)%20పని%20కోసం%20అప్లై%20చేస్తున్నాను." target="_blank" class="btn btn-wa">💬 Apply on WhatsApp</a>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Boddavara" data-keywords="security guard site duty kiltampalem s.kota monthly job">
-          <div class="card-content">
             <div>
-              <span style="background:#DCFCE7;color:#166534;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;">🏢 నెలవారీ ఉద్యోగం • ₹13,500 - ₹16,000</span>
-              <h4 style="margin-top:6px;">సైట్ సెక్యూరిటీ గార్డ్ & సూపర్‌వైజర్</h4>
-              <p>ప్రదేశం: కిల్తాంపాలెం, ఎస్.కోట & భోగాపురం • 12 గంటల డే/నైట్ షిఫ్ట్‌లు.</p>
-            </div>
-            <a href="https://wa.me/918985240287?text=నమస్కారం%20ప్రకాష్,%20నేను%20Security%20Guard%20ఉద్యోగం%20కోసం%20వివరాలు%20తెలుసుకోవాలనుకుంటున్నాను." target="_blank" class="btn btn-wa">💬 Apply on WhatsApp</a>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="VZM" data-keywords="billing tally shop salesman driver vzm vizag job">
-          <div class="card-content">
-            <div>
-              <span style="background:#E0F2FE;color:#075985;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;">💻 ఆఫీస్ / షాప్ • ₹12,000 - ₹18,000</span>
-              <h4 style="margin-top:6px;">బిల్లింగ్ ఆపరేటర్, షాప్ సేల్స్ & డ్రైవర్</h4>
-              <p>ప్రదేశం: విజయనగరం & విశాఖపట్నం • కంప్యూటర్ / Tally / డ్రైవింగ్ లైసెన్స్ ఉన్నవారికి ప్రాధాన్యత.</p>
-            </div>
-            <a href="https://wa.me/918985240287?text=నమస్కారం%20ప్రకాష్,%20నేను%20Billing/Shop/Driver%20ఉద్యోగం%20కోసం%20అప్లై%20చేస్తున్నాను." target="_blank" class="btn btn-wa">💬 Apply on WhatsApp</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Interactive GK Quiz + Anonymous Love/Crush Wall -->
-      <div class="grid-2">
-        <div class="sub-box">
-          <h3><span>🧠 నేటి GK క్విజ్ (RRB / SSC / AP Police)</span><span style="font-size:11px;color:#EA580C;">Daily Practice</span></h3>
-          <p id="quizQ" style="font-weight:700;font-size:13.5px;margin-bottom:8px;">1. ఆంధ్రప్రదేశ్‌లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?</p>
-          <div id="quizOptions" style="display:flex;flex-direction:column;gap:6px;">
-            <button class="btn btn-light" onclick="checkQuiz(this, false)">A) హార్సిలీ హిల్స్</button>
-            <button class="btn btn-light" onclick="checkQuiz(this, true)">B) లంబసింగి</button>
-            <button class="btn btn-light" onclick="checkQuiz(this, false)">C) పాపి కొండలు</button>
-          </div>
-          <div id="quizFeedback" style="font-size:12.5px;font-weight:700;margin-top:8px;"></div>
-          <button onclick="nextQuiz()" class="btn" style="margin-top:8px;padding:7px;">➡️ తదుపరి ప్రశ్న (Next Question)</button>
-        </div>
-
-        <div class="sub-box">
-          <h3><span>💌 Anonymous Love / Crush & Youth Wall</span><span style="font-size:11px;color:#DB2777;">100% Secret</span></h3>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">మీ పేరు బయటకు రాకుండా మీ మనసులోని మాట లేదా అంకితం ఇక్కడ పోస్ట్ చేయండి:</p>
-          <div id="crushWallFeed" style="max-height:110px;overflow-y:auto;background:#fff;padding:8px;border-radius:8px;border:1px solid var(--border);font-size:12px;margin-bottom:8px;">
-            <p style="margin-bottom:5px;">💖 <strong>#S.Kota కాలేజ్:</strong> "బస్ స్టాప్ దగ్గర రోజూ కనిపించే ఆ నవ్వు నా రోజు మొత్తాన్ని అందంగా మారుస్తుంది!"</p>
-            <p>🌟 <strong>#బొడ్డవార యూత్:</strong> "మన ఊరి పేరు నిలబెట్టేలా అందరం కలిసి ఎదుగుదాం!"</p>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <input type="text" id="crushInput" placeholder="మీ సీక్రెట్ మెసేజ్ రాయండి..." style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;">
-            <button onclick="postCrushMsg()" class="btn" style="width:auto;background:#DB2777;">Post 💌</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================================
-         [అర 4 - SHELF 4]: BIKE DROP & 30-MIN LATE NIGHT EXPRESS DELIVERY
-         ===================================================================== -->
-    <section id="shelf-4" class="cupboard-shelf">
-      <span class="shelf-label">అర 4 • INSTANT RIDE & EXPRESS DELIVERY</span>
-      <h2 class="shelf-title">🏍️ పర్సనల్ బైక్ డ్రాప్ & 30-నిమిషాల డోర్‌స్టెప్ డెలివరీ</h2>
-      <p class="shelf-sub">రాపిడో (Rapido) అందుబాటులో లేకపోయినా, అత్యవసర ప్రయాణాలు & రాత్రి వేళ ఆహారం/మందుల కోసం నేరుగా బుక్ చేయండి.</p>
-
-      <div class="grid-2">
-        <!-- Rapido Style Fare Calculator -->
-        <div class="sub-box" style="background:#FFFBEB;border-color:#F59E0B;">
-          <h3 style="color:#92400E;"><span>🏍️ బైక్ రైడ్ ఛార్జీ క్యాలిక్యులేటర్</span><span>🪖 Extra Helmet</span></h3>
-          <p style="font-size:12px;color:#78350F;margin-bottom:8px;">0–3 KM: <strong>₹30</strong> | ఆపై ప్రతి KM కు: <strong>+₹10</strong> | రాత్రి/ఎమర్జెన్సీ: <strong>+₹20</strong></p>
-          <div class="form-row">
-            <div class="inp-group">
-              <label>దూరం (KM)</label>
-              <input type="number" id="rideKm" value="5" min="1" oninput="updateBikeFare()">
-            </div>
-            <div class="inp-group">
-              <label>సమయం / రకం</label>
-              <select id="rideType" onchange="updateBikeFare()">
-                <option value="0">సాధారణ సమయం (Day)</option>
-                <option value="20">రాత్రి / అత్యవసరం (+₹20)</option>
+              <label style="font-size:11px;font-weight:700;">సమయం</label>
+              <select id="nightVal" class="inp" onchange="calcBike()">
+                <option value="0">పగలు (Day Ride)</option>
+                <option value="20" selected>రాత్రి / ఎమర్జెన్సీ (+₹20)</option>
               </select>
             </div>
           </div>
-          <div class="result-banner" style="background:#FEF3C7;border-color:#D97706;color:#78350F;">
-            అంచనా ఛార్జీ (Est. Fare): <span id="bikeFareDisplay" style="font-size:18px;">₹50</span>
+          <div style="background:#FEF3C7;padding:8px 10px;border-radius:8px;font-weight:800;color:#78350F;font-size:14px;margin-bottom:8px;">
+            అంచనా ఛార్జీ: <span id="fareRes" style="font-size:17px;color:#B45309;">₹70</span>
           </div>
-          <div class="btn-pair" style="margin-top:10px;">
-            <button onclick="sendLiveGPS()" class="btn btn-light">📍 పికప్ GPS పంపండి</button>
-            <a id="bikeBookBtn" href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20need%20a%20Bike%20Drop%20for%205%20KM%20(Est.%20₹50)" target="_blank" class="btn btn-orange">🏍️ రైడ్ బుక్ చేయండి</a>
+          <div class="btn-split">
+            <button onclick="sendMyGPS()" class="btn btn-light">📍 పికప్ GPS</button>
+            <a id="rideWaLink" href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20need%20a%20Night/Emergency%20Bike%20Drop%20for%205%20KM%20(₹70)" target="_blank" class="btn btn-orange">🏍️ రైడ్ బుక్ చేయండి</a>
           </div>
         </div>
 
-        <!-- 30-Min & Late-Night Doorstep Delivery -->
-        <div class="sub-box" style="background:#F0FDF4;border-color:#16A34A;">
-          <h3 style="color:#166534;"><span>🍔 30-నిమిషాల డోర్‌స్టెప్ డెలివరీ</span><span>🌙 Late Night Active</span></h3>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
-            <div class="rate-chip"><span>🍗 చికెన్ దమ్ బిర్యానీ / మీల్స్</span><a href="https://wa.me/918985240287?text=Order:%20Chicken%20Dum%20Biryani%20(₹140)" target="_blank" style="background:#16A34A;color:#fff;padding:4px 10px;border-radius:6px;font-weight:700;">₹140 Order</a></div>
-            <div class="rate-chip"><span>☕ ఈవెనింగ్ స్నాక్స్ + అల్లం టీ</span><a href="https://wa.me/918985240287?text=Order:%20Snacks%20+%20Ginger%20Tea%20(₹50)" target="_blank" style="background:#16A34A;color:#fff;padding:4px 10px;border-radius:6px;font-weight:700;">₹50 Order</a></div>
-            <div class="rate-chip"><span>💧 20L మినరల్ వాటర్ క్యాన్ & కూల్ డ్రింక్స్</span><a href="https://wa.me/918985240287?text=Order:%2020L%20Water%20Can%20/%20Cool%20Drinks" target="_blank" style="background:#16A34A;color:#fff;padding:4px 10px;border-radius:6px;font-weight:700;">₹35 Order</a></div>
-            <div class="rate-chip"><span>💊 అత్యవసర మందులు (Urgent Medicines)</span><a href="https://wa.me/918985240287?text=Urgent%20Medicine%20Delivery%20Needed:" target="_blank" style="background:#DC2626;color:#fff;padding:4px 10px;border-radius:6px;font-weight:700;">SOS Order</a></div>
+        <!-- Fast Food, Water & Medicine Delivery -->
+        <div style="background:#F0FDF4;border:1.5px solid #16A34A;border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <strong style="color:#166534;font-size:14.5px;display:block;margin-bottom:6px;">🍔 30-నిమిషాల డోర్‌స్టెప్ డెలివరీ (Night Active)</strong>
+            <div class="bus-row"><span>🍗 చికెన్ బిర్యానీ / నైట్ టిఫిన్</span><a href="https://wa.me/918985240287?text=Order:%20Chicken%20Biryani%20/%20Tiffin" target="_blank" style="color:#15803D;font-weight:800;">Order ₹140 →</a></div>
+            <div class="bus-row"><span>💧 20L వాటర్ క్యాన్ & కూల్ డ్రింక్స్</span><a href="https://wa.me/918985240287?text=Order:%2020L%20Water%20Can%20/%20Cool%20Drinks" target="_blank" style="color:#15803D;font-weight:800;">Order ₹35 →</a></div>
+            <div class="bus-row"><span>💊 అత్యవసర మందులు (Medicines)</span><a href="https://wa.me/918985240287?text=Urgent%20Medicine%20Delivery:" target="_blank" style="color:#DC2626;font-weight:800;">SOS Order →</a></div>
           </div>
-          <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20want%20custom%20doorstep%20delivery:" target="_blank" class="btn btn-wa">🛍️ మీకు కావాల్సిన వస్తువు ఆర్డర్ చేయండి</a>
+          <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20need%20doorstep%20delivery:" target="_blank" class="btn btn-wa" style="margin-top:8px;">🛍️ కస్టమ్ డెలివరీ ఆర్డర్ చేయండి</a>
         </div>
       </div>
     </section>
 
-    <!-- =====================================================================
-         [అర 5 - SHELF 5]: TOURISM PACKAGES (6 PACKAGES WITH 6-SPOTS POPUP)
-         ===================================================================== -->
-    <section id="shelf-5" class="cupboard-shelf">
-      <span class="shelf-label">అర 5 • LOCAL PARTNER TOURISM</span>
-      <h2 class="shelf-title">🏔️ ఆంధ్రా ఊటీ & కోస్టల్ టూరిజం (6 ప్యాకేజీలు)</h2>
-      <p class="shelf-sub">స్థానిక అనుభవజ్ఞులైన డ్రైవర్లతో సురక్షిత ప్రయాణం. ప్రతి ప్యాకేజీలోని 6 ప్రధాన ప్రదేశాలను చూడటానికి బటన్ నొక్కండి.</p>
+    <!-- ==========================================================================
+         [SECTION 2 - సీక్రెట్ లవ్ & క్యూరియాసిటీ అర]: SECRET CODE WHISPER WALL
+         ========================================================================== -->
+    <section id="sec-love" class="shelf">
+      <span class="shelf-tag" style="background:var(--love);">అర 2 • SECRET LOVE & CURIOSITY ZONE</span>
+      <h2 class="shelf-head" style="color:var(--love);">💌 సీక్రెట్ లవ్ ఎక్స్‌ప్రెషన్ & కోడ్ లాక్ వాల్</h2>
+      <p class="shelf-desc">మీ పేరు బయటపడకుండా మీ మనసులోని ప్రేమను వ్యక్తపరచండి! 4-అంకెల సీక్రెట్ కోడ్ పెడితే, ఆ కోడ్ తెలిసిన వారికి మాత్రమే మీ అసలు మెసేజ్ కనిపిస్తుంది.</p>
+
+      <div class="grid-2">
+        <!-- Post Secret Message with Optional 4-Digit Lock -->
+        <div class="love-box">
+          <strong style="font-size:14px;color:#9D174D;display:block;margin-bottom:6px;">✍️ మీ సీక్రెట్ మెసేజ్ రాయండి (100% Anonymous)</strong>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+            <input type="text" id="loveHint" class="inp" placeholder="హింట్ (ఉదా: S.Kota బస్ స్టాప్)">
+            <input type="password" id="lovePin" class="inp" maxlength="4" placeholder="సీక్రెట్ కోడ్ (4 అంకెలు - Optional)">
+          </div>
+          <textarea id="loveText" class="inp" rows="2" placeholder="మీ మనసులోని మాట లేదా ప్రపోజల్ ఇక్కడ రాయండి..."></textarea>
+          <button onclick="addSecretLove()" class="btn btn-love" style="margin-top:7px;">💖 సీక్రెట్ వాల్‌లో పోస్ట్ చేయండి</button>
+        </div>
+
+        <!-- Live Secret Feed with Curiosity Unlock -->
+        <div style="background:#FAF8F5;border:1px solid var(--border);border-radius:14px;padding:12px;">
+          <strong style="font-size:13.5px;color:var(--love);display:block;margin-bottom:6px;">🔐 తాజా సీక్రెట్ మెసేజ్‌లు (కోడ్ నొక్కి అన్‌లాక్ చేయండి)</strong>
+          <div id="secretFeedList" style="max-height:190px;overflow-y:auto;">
+            <div class="secret-card">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#9D174D;font-weight:700;">
+                <span>📍 హింట్: బొడ్డవార - S.Kota రూట్</span>
+                <span>🔒 Code Locked</span>
+              </div>
+              <div class="locked-blur" id="demoLockBox">
+                <span>🤫 ఇందులో ఒక సీక్రెట్ ప్రపోజల్ ఉంది...</span>
+                <button onclick="unlockDemo()" style="background:#BE185D;color:#fff;padding:3px 8px;border-radius:5px;font-size:11px;">🔑 కోడ్ (1432)</button>
+              </div>
+            </div>
+            <div class="secret-card">
+              <div style="font-size:11px;color:#9D174D;font-weight:700;">📍 హింట్: విజయనగరం కాలేజ్</div>
+              <p style="margin-top:3px;">"రోజూ నిన్ను చూసినా ధైర్యం సరిపోక చెప్పలేకపోతున్నా... నువ్వంటే నాకు చాలా ఇష్టం ❤️"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         [SECTION 3 - తాజా వార్తలు (SINGLE CLEAN TAB) & COMPACT BUS TIMINGS]
+         ========================================================================== -->
+    <section id="sec-news-bus" class="shelf">
+      <span class="shelf-tag">అర 3 • LIVE TELUGU NEWS & COMPACT BUS TIMINGS</span>
+      <h2 class="shelf-head">📰 తాజా తెలుగు వార్తలు & పల్లెవెలుగు బస్సు వేళలు</h2>
+      <p class="shelf-desc">రాజకీయాలు, సినిమాలు, స్థానిక వార్తలు అన్నీ ఒకే చోట & తక్కువ స్థలంలో ముఖ్యమైన బస్సు సమయాలు.</p>
+
+      <div class="grid-2">
+        <!-- Single Clean Latest Telugu News Feed -->
+        <div style="background:#FAF8F5;border:1px solid var(--border);border-radius:12px;padding:11px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="color:#B91C1C;font-size:14.5px;">🔴 తాజా వార్తలు (Live Feed)</strong>
+            <button onclick="fetchLatestNews()" style="background:#B91C1C;color:#fff;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;">🔄 Refresh</button>
+          </div>
+          <div id="cleanNewsBox" style="height:175px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;">
+            <div style="background:#fff;padding:8px;border-radius:8px;font-size:12.5px;">⏳ తాజా వార్తలు లోడ్ అవుతున్నాయి...</div>
+          </div>
+        </div>
+
+        <!-- Compact Bus Timings -->
+        <div style="background:#FAF8F5;border:1px solid var(--border);border-radius:12px;padding:11px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <strong style="color:var(--primary);font-size:14.5px;">🚌 ముఖ్య బస్సు వేళలు</strong>
+              <a href="https://apsrtclivetrack.com/" target="_blank" style="background:#0284C7;color:#fff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">📡 APSRTC Live</a>
+            </div>
+            <div class="compact-strip">
+              <div class="bus-row"><strong>VZM ⇄ తాటిపూడి ⇄ S.Kota</strong><span>06:30, 08:15, 10:30, 01:45, 04:30, 06:45</span></div>
+              <div class="bus-row"><strong>S.Kota ⇄ బొడ్డవార ⇄ అరకు</strong><span>06:00, 07:30, 09:30, 12:15, 03:00, 05:30</span></div>
+              <div class="bus-row"><strong>S.Kota ⇄ వైజాగ్ (Vizag)</strong><span>ప్రతి 20 నిమిషాలకు ఒక బస్సు</span></div>
+            </div>
+          </div>
+          <a href="#sec-ride" class="btn btn-orange">🏍️ బస్సు మిస్ అయితే బైక్ డ్రాప్ బుక్ చేయండి</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         [SECTION 4 - EDUCATION HUB]: ALL CALCULATORS + CURRENT AFFAIRS & GK QUIZ
+         ========================================================================== -->
+    <section id="sec-edu" class="shelf">
+      <span class="shelf-tag">అర 4 • EDUCATION, CALCULATORS & CURRENT AFFAIRS</span>
+      <h2 class="shelf-head">🎓 ఎడ్యుకేషన్ హబ్: అన్ని క్యాలిక్యులేటర్లు & కరెంట్ అఫైర్స్ GK</h2>
+      <p class="shelf-desc">విద్యార్థులు, వ్యాపారులు మరియు రైతుల కోసం అన్ని లెక్కలు (వడ్డీ, భూమి, GST, EMI, Age) మరియు పోటీ పరీక్షల GK క్విజ్.</p>
+
+      <div class="grid-2">
+        <!-- All Calculators in One Unified Box -->
+        <div style="background:#FAF8F5;border:1px solid var(--border);border-radius:12px;padding:12px;">
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">
+            <button class="pill active" onclick="switchCalc('interest', this)">💰 వడ్డీ</button>
+            <button class="pill" onclick="switchCalc('land', this)">🌾 భూమి</button>
+            <button class="pill" onclick="switchCalc('gst', this)">🧾 GST</button>
+            <button class="pill" onclick="switchCalc('emi', this)">🏦 EMI</button>
+            <button class="pill" onclick="switchCalc('age', this)">🎂 Age</button>
+          </div>
+
+          <div id="calcInputsArea">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+              <input type="number" id="c1" class="inp" value="50000" placeholder="అసలు ₹" oninput="computeNow()">
+              <input type="number" id="c2" class="inp" value="2" placeholder="వడ్డీ ₹" oninput="computeNow()">
+              <input type="number" id="c3" class="inp" value="12" placeholder="నెలలు" oninput="computeNow()">
+            </div>
+          </div>
+
+          <div id="calcOutput" style="background:#ECFDF5;border:1px solid #16A34A;padding:9px;border-radius:8px;font-size:13px;font-weight:700;color:#064E3B;">
+            నెలవారీ వడ్డీ: ₹1,000 | మొత్తం వడ్డీ: ₹12,000 | మొత్తం: ₹62,000
+          </div>
+          <button onclick="shareCalcWa()" class="btn btn-wa" style="margin-top:7px;">💬 లెక్కను WhatsApp లో షేర్ చేయండి</button>
+        </div>
+
+        <!-- Current Affairs & GK Practice -->
+        <div style="background:#FAF8F5;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <strong style="color:var(--primary);font-size:14px;display:block;margin-bottom:6px;">📚 నేటి కరెంట్ అఫైర్స్ & GK క్విజ్ (RRB / SSC / APPSC)</strong>
+            <p id="gkQuestion" style="font-size:13px;font-weight:700;margin-bottom:8px;">1. ఆంధ్రప్రదేశ్‌లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?</p>
+            <div id="gkOpts" style="display:flex;flex-direction:column;gap:5px;">
+              <button class="btn btn-light" onclick="ansGK(false)">A) హార్సిలీ హిల్స్</button>
+              <button class="btn btn-light" onclick="ansGK(true)">B) లంబసింగి</button>
+              <button class="btn btn-light" onclick="ansGK(false)">C) పాపి కొండలు</button>
+            </div>
+            <div id="gkStatus" style="font-size:12px;font-weight:700;margin-top:6px;"></div>
+          </div>
+          <button onclick="nextGK()" class="btn" style="margin-top:8px;">➡️ తదుపరి ప్రశ్న (Next GK)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         [SECTION 5 - FLIPKART STYLE COMMERCE & BUY/SELL HUB]
+         ========================================================================== -->
+    <section id="sec-store" class="shelf">
+      <span class="shelf-tag">అర 5 • SMART COMMERCE & BUY / SELL EXCHANGE</span>
+      <h2 class="shelf-head">🛒 మన సేవ స్టోర్, పాత పుస్తకాలు, టికెట్లు & Buy/Sell</h2>
+      <p class="shelf-desc">కార్డులపై "వ్యూ & ఇన్నర్ ట్యాబ్స్" నొక్కితే లోపల ధరలు, వివరాలు మరియు ఆర్డర్ ట్యాబ్స్ ఓపెన్ అవుతాయి.</p>
 
       <div class="grid-3">
-        <div class="item-card searchable" data-area="Araku" data-keywords="araku borra caves coffee tourism">
-          <div class="card-media"><span class="badge-top-right">₹1,499 నుండి</span><span class="badge-top-left">Araku</span><img src="https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=600&q=80" alt="Araku"></div>
-          <div class="card-content">
-            <div><h4>1. అరకు వ్యాలీ & బొర్రా గుహలు</h4><p>బొర్రా గుహలు, కటికి జలపాతం, కాఫీ మ్యూజియం & గాలికొండ వ్యూ పాయింట్.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('araku')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20Araku%20Tourism%20Package" target="_blank" class="btn btn-wa">Book</a></div>
+        <div class="ecom-card searchable" data-area="S.Kota" data-keywords="araku coffee honey water pump earphones store">
+          <div class="ecom-img"><span class="off-tag">20% OFF</span><span class="price-tag">₹180 నుండి</span><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=500&q=80" alt="Store"></div>
+          <div class="ecom-body">
+            <div><h4>అరకు కాఫీ, తేనె & హోమ్ ఐటమ్స్</h4><p>స్వచ్ఛమైన అరకు కాఫీ పొడి, 20L వాటర్ క్యాన్ పంప్ & ఇయర్‌ఫోన్స్.</p></div>
+            <div class="btn-split">
+              <button class="btn btn-light" onclick="openSmartModal('store')">📂 వ్యూ & ట్యాబ్స్</button>
+              <a href="https://wa.me/918985240287?text=Order%20Store%20Items" target="_blank" class="btn btn-wa">Buy</a>
+            </div>
           </div>
         </div>
 
-        <div class="item-card searchable" data-area="Vizag" data-keywords="vizag beach kailasagiri rushikonda tourism">
-          <div class="card-media"><span class="badge-top-right">₹999 నుండి</span><span class="badge-top-left">Vizag</span><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="Vizag"></div>
-          <div class="card-content">
-            <div><h4>2. విశాఖపట్నం బీచ్ & సిటీ టూర్</h4><p>RK బీచ్, కైలాసగిరి, రుషికొండ, సింహాచలం & యారాడ బీచ్.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('vizag')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20Vizag%20Tourism%20Package" target="_blank" class="btn btn-wa">Book</a></div>
+        <div class="ecom-card searchable" data-area="VZM" data-keywords="old books rrb ssc degree inter buy sell">
+          <div class="ecom-img"><span class="off-tag">50% SAVE</span><span class="price-tag">₹99 నుండి</span><img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=500&q=80" alt="Books"></div>
+          <div class="ecom-body">
+            <div><h4>పాత పుస్తకాలు (Old Books Buy & Sell)</h4><p>RRB, SSC, పోలీస్, ఇంటర్ & డిగ్రీ పుస్తకాలు కొనండి లేదా అమ్మండి.</p></div>
+            <div class="btn-split">
+              <button class="btn btn-light" onclick="openSmartModal('books')">📂 వ్యూ & ట్యాబ్స్</button>
+              <a href="https://wa.me/918985240287?text=Buy/Sell%20Old%20Books" target="_blank" class="btn btn-wa">Chat</a>
+            </div>
           </div>
         </div>
 
-        <div class="item-card searchable" data-area="VZM" data-keywords="vizianagaram fort ramanarayanam temple tourism">
-          <div class="card-media"><span class="badge-top-right">₹899 నుండి</span><span class="badge-top-left">VZM</span><img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80" alt="VZM"></div>
-          <div class="card-content">
-            <div><h4>3. విజయనగరం కోట & ఆలయాల టూర్</h4><p>రామనారాయణం, పైడితల్లి అమ్మవారి ఆలయం, బొబ్బిలి కోట & రామతీర్థం.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('vzm')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20VZM%20Tourism%20Package" target="_blank" class="btn btn-wa">Book</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Thatipudi" data-keywords="thatipudi kasipatnam tyda dam waterfalls tourism">
-          <div class="card-media"><span class="badge-top-right">₹1,199 నుండి</span><span class="badge-top-left">Thatipudi / Kasipatnam</span><img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80" alt="Thatipudi"></div>
-          <div class="card-content">
-            <div><h4>4. తాటిపూడి డ్యామ్ & కాశీపట్నం టైడా</h4><p>తాటిపూడి రిజర్వాయర్, టైడా జంగిల్ బెల్స్, దముకు వ్యూ పాయింట్ & బొంగు చికెన్.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('thatipudi')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20Thatipudi%20Kasipatnam%20Package" target="_blank" class="btn btn-wa">Book</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Araku" data-keywords="vanjangi paderu clouds sunrise tourism">
-          <div class="card-media"><span class="badge-top-right">₹1,399 నుండి</span><span class="badge-top-left">Vanjangi / Paderu</span><img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80" alt="Vanjangi"></div>
-          <div class="card-content">
-            <div><h4>5. వంజంగి మేఘాల కొండ & పాడేరు</h4><p>వంజంగి సూర్యోదయం, మోదకొండమ్మ ఆలయం, మత్స్యగుండం & కాఫీ తోటలు.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('vanjangi')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20Vanjangi%20Paderu%20Package" target="_blank" class="btn btn-wa">Book</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Araku" data-keywords="lambasingi tajangi waterfalls strawberry tourism">
-          <div class="card-media"><span class="badge-top-right">₹1,599 నుండి</span><span class="badge-top-left">Lambasingi</span><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80" alt="Lambasingi"></div>
-          <div class="card-content">
-            <div><h4>6. లంబసింగి & తాజంగి జలాశయం</h4><p>లంబసింగి మంచు కొండలు, కొత్తపల్లి జలపాతం, స్ట్రాబెర్రీ తోటలు & తాజంగి డ్యామ్.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('lambasingi')">📂 6 స్పాట్స్ చూడండి</button><a href="https://wa.me/918985240287?text=Book%20Lambasingi%20Package" target="_blank" class="btn btn-wa">Book</a></div>
+        <div class="ecom-card searchable" data-area="Boddavara" data-keywords="buy sell old bike mobile house land cattle free ad">
+          <div class="ecom-img"><span class="off-tag">FREE AD</span><span class="price-tag">Direct Deal</span><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=500&q=80" alt="Buy Sell"></div>
+          <div class="ecom-body">
+            <div><h4>లోకల్ Buy & Sell (బైక్, మొబైల్, ఇల్లు)</h4><p>మీ పాత బైక్, మొబైల్ లేదా స్థలం అమ్మడానికి ఉచితంగా పోస్ట్ చేయండి.</p></div>
+            <div class="btn-split">
+              <button class="btn btn-light" onclick="openSmartModal('buysell')">📂 వ్యూ & ట్యాబ్స్</button>
+              <a href="https://wa.me/918985240287?text=Post%20Free%20Buy/Sell%20Ad" target="_blank" class="btn btn-orange">Post Ad</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =====================================================================
-         [అర 6 - SHELF 6]: STORE, OLD BOOKS, TICKET BOOKING & FREE LISTING
-         ===================================================================== -->
-    <section id="shelf-6" class="cupboard-shelf">
-      <span class="shelf-label">అర 6 • MARKETPLACE & BOOKINGS</span>
-      <h2 class="shelf-title">🛍️ స్టోర్, పాత పుస్తకాలు, టికెట్ బుకింగ్ & ఉచిత ప్రకటనలు</h2>
-      <p class="shelf-sub">తక్కువ ధరకే నాణ్యమైన వస్తువులు, విద్యార్థుల పాత పుస్తకాలు, రైలు/బస్సు టికెట్ సహాయం మరియు మీ పాత వస్తువుల అమ్మకం.</p>
-
+    <!-- ==========================================================================
+         [SECTION 6 - JOBS & DAILY DUTIES]: స్థానిక ఉద్యోగాలు
+         ========================================================================== -->
+    <section id="sec-jobs" class="shelf">
+      <span class="shelf-tag">అర 6 • LOCAL JOBS & DAILY DUTIES</span>
+      <h2 class="shelf-head">💼 నేటి ఉద్యోగాలు & డైలీ డ్యూటీ అవకాశాలు</h2>
       <div class="grid-3">
-        <div class="item-card searchable" data-area="S.Kota" data-keywords="araku coffee honey water pump earphones store">
-          <div class="card-media"><span class="badge-top-right">₹180 నుండి</span><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=600&q=80" alt="Store"></div>
-          <div class="card-content">
-            <div><h4>అరకు ఆర్గానిక్ కాఫీ, తేనె & గృహోపకరణాలు</h4><p>స్వచ్ఛమైన అరకు కాఫీ పొడి (₹250), 20L వాటర్ క్యాన్ పంప్ (₹180), వైర్డ్ ఇయర్‌ఫోన్స్ (₹299).</p></div>
-            <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20want%20to%20buy%20items%20from%20Mana%20Seva%20Store" target="_blank" class="btn btn-wa">💬 Buy on WhatsApp</a>
+        <div class="ecom-card searchable" data-area="S.Kota" data-keywords="catering loading daily duty job">
+          <div class="ecom-body">
+            <div><span style="color:#B45309;font-size:11px;font-weight:800;">⚡ ₹550 - ₹700 / రోజు</span><h4>క్యాటరింగ్ & లోడింగ్ డైలీ డ్యూటీలు</h4><p>S.Kota, తాటిపూడి & VZM • సాయంత్రమే వేతనం.</p></div>
+            <a href="https://wa.me/918985240287?text=Apply%20Daily%20Duty" target="_blank" class="btn btn-wa">💬 Apply Now</a>
           </div>
         </div>
-
-        <div class="item-card searchable" data-area="VZM" data-keywords="old books rrb ssc degree inter buy sell">
-          <div class="card-media"><span class="badge-top-right">50% Off</span><img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80" alt="Books"></div>
-          <div class="card-content">
-            <div><h4>పాత పుస్తకాల కొనుగోలు & అమ్మకం (Old Books)</h4><p>RRB, SSC, APPSC, ఇంటర్ & డిగ్రీ పాత పుస్తకాలను సగం ధరకే కొనండి లేదా మీ పాత పుస్తకాలు అమ్మండి.</p></div>
-            <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20want%20to%20Buy/Sell%20Old%20Books:" target="_blank" class="btn">📚 పుస్తకాల వివరాలు పంపండి</a>
+        <div class="ecom-card searchable" data-area="Boddavara" data-keywords="security guard kiltampalem s.kota monthly job">
+          <div class="ecom-body">
+            <div><span style="color:#15803D;font-size:11px;font-weight:800;">🏢 ₹13,500 - ₹16,000 / నెల</span><h4>సైట్ సెక్యూరిటీ గార్డ్ (కిల్తాంపాలెం / S.Kota)</h4><p>12 గంటల డే/నైట్ షిఫ్ట్‌లు • వెంటనే జాయినింగ్.</p></div>
+            <a href="https://wa.me/918985240287?text=Apply%20Security%20Guard" target="_blank" class="btn btn-wa">💬 Apply Now</a>
           </div>
         </div>
-
-        <div class="item-card searchable" data-area="Vizag" data-keywords="train ticket apsrtc bus booking tatkal help">
-          <div class="card-media"><span class="badge-top-right">Instant Help</span><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=600&q=80" alt="Tickets"></div>
-          <div class="card-content">
-            <div><h4>APSRTC బస్సు & రైలు టికెట్ బుకింగ్ సహాయం</h4><p>తత్కాల్ (Tatkal) రైలు టికెట్లు, ప్రైవేట్ ట్రావెల్స్ & బస్సు టికెట్ బుకింగ్‌కు తక్షణ సహాయం.</p></div>
-            <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20need%20Train/Bus%20Ticket%20Booking%20help:" target="_blank" class="btn btn-orange">🎫 టికెట్ బుక్ చేయండి</a>
+        <div class="ecom-card searchable" data-area="Vizag" data-keywords="billing tally salesman driver vzm vizag job">
+          <div class="ecom-body">
+            <div><span style="color:#0369A1;font-size:11px;font-weight:800;">💻 ₹12,000 - ₹18,000 / నెల</span><h4>బిల్లింగ్, షాప్ సేల్స్ & డ్రైవర్ (VZM / వైజాగ్)</h4><p>అనుభవం ఉన్నవారికి మరియు ఫ్రెషర్స్‌కు అవకాశం.</p></div>
+            <a href="https://wa.me/918985240287?text=Apply%20Billing/Sales/Driver" target="_blank" class="btn btn-wa">💬 Apply Now</a>
           </div>
         </div>
-      </div>
-
-      <!-- Free Local Exchange / Classifieds Banner -->
-      <div class="sub-box" style="margin-top:14px;background:#EFF6FF;border-color:#3B82F6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <h4 style="color:#1E3A8A;font-size:15px;">📢 ఉచిత లోకల్ ఎక్స్ఛేంజ్ (Free Village Classifieds)</h4>
-          <p style="font-size:12.5px;color:#1E40AF;">మీ పాత బైక్, ఇల్లు/స్థలం, పశువులు లేదా మొబైల్ అమ్మాలనుకుంటున్నారా? ఫోటో పంపితే ఇక్కడ ఉచితంగా పోస్ట్ చేస్తాము!</p>
-        </div>
-        <a href="https://wa.me/918985240287?text=Hi%20Prakash,%20I%20want%20to%20post%20a%20FREE%20ad%20to%20sell%20my%20item:" target="_blank" class="btn" style="width:auto;background:#1D4ED8;">📸 ఉచిత ప్రకటన పంపండి</a>
       </div>
     </section>
 
-    <!-- =====================================================================
-         [అర 7 - SHELF 7]: VILLAGE SERVICES, MAPS & EMERGENCY (108 / 100)
-         ===================================================================== -->
-    <section id="shelf-7" class="cupboard-shelf">
-      <span class="shelf-label">అర 7 • TECHNICIANS, MAPS & EMERGENCY</span>
-      <h2 class="shelf-title">🚑 గ్రామ సేవలు, టెక్నీషియన్లు & అత్యవసర నంబర్లు</h2>
-      <p class="shelf-sub">మెకానిక్, ఎలక్ట్రీషియన్, ప్లంబర్, ట్రాక్టర్/లేబర్ మరియు 108/100/రక్తదాతల అత్యవసర సహాయం.</p>
+    <!-- ==========================================================================
+         [SECTION 7 - TOURISM PACKAGES]: 6 టూరిజం ప్యాకేజీలు (MULTI-TAB POPUP)
+         ========================================================================== -->
+    <section id="sec-tourism" class="shelf">
+      <span class="shelf-tag">అర 7 • LOCAL PARTNER TOURISM</span>
+      <h2 class="shelf-head">🏔️ టూరిజం ప్యాకేజీలు (6 ప్రధాన ప్రాంతాలు)</h2>
+      <div class="grid-3">
+        <div class="ecom-card searchable" data-area="Araku" data-keywords="araku borra caves tourism">
+          <div class="ecom-img"><span class="price-tag">₹1,499</span><img src="https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=500&q=80" alt="Araku"></div>
+          <div class="ecom-body"><div><h4>1. అరకు వ్యాలీ & బొర్రా గుహలు</h4><p>6 ప్రధాన స్పాట్స్ + లోకల్ పార్టనర్ డ్రైవర్.</p></div><button class="btn" onclick="openSmartModal('araku')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+        <div class="ecom-card searchable" data-area="Vizag" data-keywords="vizag beach kailasagiri tourism">
+          <div class="ecom-img"><span class="price-tag">₹999</span><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80" alt="Vizag"></div>
+          <div class="ecom-body"><div><h4>2. విశాఖపట్నం బీచ్ & సిటీ టూర్</h4><p>RK బీచ్, కైలాసగిరి, రుషికొండ & యారాడ.</p></div><button class="btn" onclick="openSmartModal('vizag')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+        <div class="ecom-card searchable" data-area="Thatipudi" data-keywords="thatipudi kasipatnam tyda tourism">
+          <div class="ecom-img"><span class="price-tag">₹1,199</span><img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=500&q=80" alt="Thatipudi"></div>
+          <div class="ecom-body"><div><h4>3. తాటిపూడి డ్యామ్ & కాశీపట్నం టైడా</h4><p>డ్యామ్, జంగిల్ ట్రైల్స్ & బొంగు చికెన్ స్పాట్.</p></div><button class="btn" onclick="openSmartModal('thatipudi')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+        <div class="ecom-card searchable" data-area="VZM" data-keywords="vzm vizianagaram fort tourism">
+          <div class="ecom-img"><span class="price-tag">₹899</span><img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=500&q=80" alt="VZM"></div>
+          <div class="ecom-body"><div><h4>4. విజయనగరం కోట & రామనారాయణం</h4><p>చారిత్రక కోటలు & ప్రముఖ ఆలయాల దర్శనం.</p></div><button class="btn" onclick="openSmartModal('vzm')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+        <div class="ecom-card searchable" data-area="Araku" data-keywords="vanjangi paderu clouds tourism">
+          <div class="ecom-img"><span class="price-tag">₹1,399</span><img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=500&q=80" alt="Vanjangi"></div>
+          <div class="ecom-body"><div><h4>5. వంజంగి మేఘాల కొండ & పాడేరు</h4><p>సూర్యోదయ వ్యూ పాయింట్ & మత్స్యగుండం.</p></div><button class="btn" onclick="openSmartModal('vanjangi')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+        <div class="ecom-card searchable" data-area="Araku" data-keywords="lambasingi tajangi tourism">
+          <div class="ecom-img"><span class="price-tag">₹1,599</span><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80" alt="Lambasingi"></div>
+          <div class="ecom-body"><div><h4>6. లంబసింగి & తాజంగి జలాశయం</h4><p>ఆంధ్రా కాశ్మీర్ మంచు కొండలు & జలపాతాలు.</p></div><button class="btn" onclick="openSmartModal('lambasingi')">📂 ఓపెన్ (ఇన్నర్ ట్యాబ్స్)</button></div>
+        </div>
+      </div>
+    </section>
 
-      <!-- Emergency SOS Strip -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin-bottom:16px;">
-        <a href="tel:108" class="btn btn-red">🚑 అంబులెన్స్ (108)</a>
+    <!-- ==========================================================================
+         [SECTION 8 - VILLAGE SERVICES & EMERGENCY 108/100]
+         ========================================================================== -->
+    <section id="sec-services" class="shelf">
+      <span class="shelf-tag">అర 8 • VILLAGE SERVICES & EMERGENCY</span>
+      <h2 class="shelf-head">🚑 గ్రామ సేవలు, టెక్నీషియన్లు & ఎమర్జెన్సీ</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:7px;margin-bottom:12px;">
+        <a href="tel:108" class="btn" style="background:#DC2626;">🚑 అంబులెన్స్ (108)</a>
         <a href="tel:100" class="btn" style="background:#1E293B;">🚓 పోలీస్ (100)</a>
-        <a href="https://wa.me/918985240287?text=URGENT%20BLOOD%20DONOR%20NEEDED!%20Group:%20___%20Hospital:%20___" target="_blank" class="btn btn-orange">🩸 బ్లడ్ డోనర్ సహాయం</a>
-        <a href="https://maps.google.com/?q=Srungavarapukota+Hospital" target="_blank" class="btn btn-light">🗺️ దగ్గరలోని ఆసుపత్రులు</a>
+        <a href="https://wa.me/918985240287?text=URGENT%20BLOOD%20DONOR%20NEEDED" target="_blank" class="btn btn-orange">🩸 బ్లడ్ డోనర్ సహాయం</a>
       </div>
-
       <div class="grid-3">
-        <div class="item-card searchable" data-area="Kasipatnam" data-keywords="mechanic puncture bike car breakdown repair">
-          <div class="card-content">
-            <div><h4>🔧 1. బైక్ & కారు మెకానిక్</h4><p>పంక్చర్, ఆయిల్ చేంజ్, బ్యాటరీ జంప్‌స్టార్ట్ & రోడ్‌సైడ్ రిపేర్ (Visit ₹100 నుండి).</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('mechanic')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="S.Kota" data-keywords="electrician fan wiring inverter switch repair">
-          <div class="card-content">
-            <div><h4>⚡ 2. ఎలక్ట్రీషియన్ (Electrician)</h4><p>సీలింగ్ ఫ్యాన్, స్విచ్ బోర్డ్, ఇన్వర్టర్ & కొత్త ఇంటి వైరింగ్ పనులు (Visit ₹100 నుండి).</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('electrician')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Boddavara" data-keywords="plumber tap pipe motor tank cleaning">
-          <div class="card-content">
-            <div><h4>🚰 3. ప్లంబర్ (Plumber)</h4><p>ట్యాప్ లీకేజీ, వాటర్ మోటార్ రిపేర్, ట్యాంక్ క్లీనింగ్ & పైప్ ఫిట్టింగ్ (Visit ₹100 నుండి).</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('plumber')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="Boddavara" data-keywords="labour tractor helpers loading construction">
-          <div class="card-content">
-            <div><h4>🚜 4. లేబర్ & ట్రాక్టర్ సప్లై</h4><p>భవన నిర్మాణ హెల్పర్లు, లోడింగ్, వ్యవసాయ పనులు & ట్రాక్టర్ అద్దెకు.</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('labour')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="S.Kota" data-keywords="water tanker bulk supply marriage construction">
-          <div class="card-content">
-            <div><h4>💧 5. వాటర్ ట్యాంకర్ సప్లై</h4><p>పెళ్లిళ్లు, ఫంక్షన్లు & నిర్మాణ పనులకు 2000L నుండి 5000L వాటర్ ట్యాంకర్లు (₹500 నుండి).</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('tanker')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
-
-        <div class="item-card searchable" data-area="VZM" data-keywords="auto mini transport tata ace shifting goods">
-          <div class="card-content">
-            <div><h4>🛺 6. ఆటో & మినీ ట్రాన్స్‌పోర్ట్</h4><p>సామాన్ల రవాణా, ఇల్లు షిఫ్టింగ్ & రైల్వే స్టేషన్ పికప్/డ్రాప్ (₹150 నుండి).</p></div>
-            <div class="btn-pair"><button class="btn btn-light" onclick="openPopup('transport')">📋 6 పనుల ధరలు</button><a href="tel:+918985240287" class="btn btn-wa">📞 Call</a></div>
-          </div>
-        </div>
+        <div class="ecom-card searchable" data-area="Kasipatnam" data-keywords="mechanic electrician plumber service"><div class="ecom-body"><div><h4>🔧 మెకానిక్, ఎలక్ట్రీషియన్ & ప్లంబర్</h4><p>అత్యవసర రిపేర్లు & ఇంటి పనులు (Visit ₹100 నుండి).</p></div><button class="btn btn-light" onclick="openSmartModal('tech')">📂 6 పనులు & ధరలు</button></div></div>
+        <div class="ecom-card searchable" data-area="Boddavara" data-keywords="labour tractor water tanker supply"><div class="ecom-body"><div><h4>🚜 లేబర్, ట్రాక్టర్ & వాటర్ ట్యాంకర్</h4><p>వ్యవసాయ, నిర్మాణ పనులు & ట్యాంకర్ సప్లై.</p></div><button class="btn btn-light" onclick="openSmartModal('labour')">📂 6 పనులు & ధరలు</button></div></div>
+        <div class="ecom-card searchable" data-area="VZM" data-keywords="auto mini transport shifting"><div class="ecom-body"><div><h4>🛺 ఆటో & మినీ ట్రాన్స్‌పోర్ట్</h4><p>సామాన్ల రవాణా, ఇల్లు షిఫ్టింగ్ & స్టేషన్ డ్రాప్.</p></div><button class="btn btn-light" onclick="openSmartModal('auto')">📂 6 పనులు & ధరలు</button></div></div>
       </div>
     </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer style="background:var(--primary-dark);color:#fff;text-align:center;padding:24px 14px;font-size:13px;">
-    <h3 style="color:#FACC15;font-size:18px;">Mana Seva Hub • మన సేవ</h3>
-    <p style="margin:6px 0;">Owner: Prakash (@hipraka) | Phone & WhatsApp: <strong>+91 89852 40287</strong></p>
-    <p style="font-size:11.5px;color:#CBD5E1;">బొడ్డవార • కిల్తాంపాలెం • తాటిపూడి • ఎస్.కోట • కాశీపట్నం • విజయనగరం • విశాఖపట్నం • అరకు</p>
-  </footer>
-
-  <!-- Bottom Quick Navigation Dock -->
-  <div class="bottom-dock">
-    <a href="#shelf-1" class="dock-item"><span>🚌</span>బస్ & ధరలు</a>
-    <a href="#shelf-2" class="dock-item"><span>🧮</span>లెక్కలు</a>
-    <a href="#shelf-4" class="dock-item"><span>🏍️</span>బైక్ డ్రాప్</a>
-    <a href="#shelf-3" class="dock-item"><span>💼</span>జాబ్స్</a>
-    <a href="#shelf-7" class="dock-item"><span>🚑</span>ఎమర్జెన్సీ</a>
-  </div>
-
-  <!-- 6-Items Popup Modal -->
-  <div class="modal-overlay" id="popupModal" onclick="if(event.target.id==='popupModal')closePopup()">
-    <div class="modal-card">
+  <!-- ==========================================================================
+       [ADVANCED MULTI-TAB POPUP MODAL - లోపల ఇన్నర్ ట్యాబ్స్ ఓపెన్ అయ్యే బాక్స్]
+       ========================================================================== -->
+  <div class="modal-bg" id="smartModal" onclick="if(event.target.id==='smartModal')closeSmartModal()">
+    <div class="modal-box">
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 id="popTitle" style="color:var(--primary);font-size:18px;"></h3>
-        <button onclick="closePopup()" style="background:#DC2626;color:#fff;padding:5px 12px;border-radius:8px;font-weight:700;">✖ మూయండి</button>
+        <h3 id="mTitle" style="color:var(--primary);font-size:18px;"></h3>
+        <button onclick="closeSmartModal()" style="background:#DC2626;color:#fff;padding:5px 11px;border-radius:8px;font-weight:700;">✖ క్లోజ్</button>
       </div>
-      <p id="popSub" style="font-size:12.5px;color:var(--muted);margin-top:3px;"></p>
-      <div class="modal-grid" id="popGrid"></div>
-      <a id="popWaBtn" href="https://wa.me/918985240287" target="_blank" class="btn btn-wa">💬 WhatsApp ద్వారా బుక్ చేయండి</a>
+
+      <!-- ఇన్నర్ ట్యాబ్స్ (Inner Tabs inside Popup) -->
+      <div class="inner-tabs">
+        <button class="i-tab active" onclick="switchInnerTab('tab-items', this)">📋 1. ముఖ్య అంశాలు & ధరలు</button>
+        <button class="i-tab" onclick="switchInnerTab('tab-info', this)">ℹ️ 2. నియమాలు & సమాచారం</button>
+        <button class="i-tab" onclick="switchInnerTab('tab-book', this)">💬 3. డైరెక్ట్ బుకింగ్</button>
+      </div>
+
+      <!-- Inner Tab 1: Grid Items -->
+      <div id="tab-items" class="i-pane active">
+        <div id="mGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px;"></div>
+      </div>
+
+      <!-- Inner Tab 2: Details & Rules -->
+      <div id="tab-info" class="i-pane">
+        <div style="background:#fff;padding:12px;border-radius:10px;border:1px solid var(--border);font-size:13px;" id="mInfoText"></div>
+      </div>
+
+      <!-- Inner Tab 3: Direct Booking Form -->
+      <div id="tab-book" class="i-pane">
+        <div style="background:#fff;padding:12px;border-radius:10px;border:1px solid var(--border);">
+          <input type="text" id="mUserName" class="inp" placeholder="మీ పేరు" style="margin-bottom:8px;">
+          <input type="text" id="mUserPlace" class="inp" placeholder="మీ ఊరు / పికప్ ప్రదేశం" style="margin-bottom:8px;">
+          <button onclick="submitModalBooking()" class="btn btn-wa">💬 WhatsApp ద్వారా వివరాలు పంపండి</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- =====================================================================
-       JAVASCRIPT ENGINE (LIVE RADIO, TRIPLE-BACKUP NEWS, CALCULATORS, FILTERS)
-       ===================================================================== -->
+  <!-- Bottom Quick Dock -->
+  <div class="dock">
+    <a href="#sec-ride"><span>🏍️</span>బైక్ డ్రాప్</a>
+    <a href="#sec-love"><span>💌</span>సీక్రెట్ లవ్</a>
+    <a href="#sec-news-bus"><span>📰</span>వార్తలు/బస్</a>
+    <a href="#sec-edu"><span>🎓</span>లెక్కలు/GK</a>
+    <a href="#sec-store"><span>🛒</span>స్టోర్</a>
+  </div>
+
+  <!-- ==========================================================================
+       [JAVASCRIPT ENGINE - క్లియర్ తెలుగు కామెంట్లతో]
+       ========================================================================== -->
   <script>
-    /* 1. PROFILE AVATAR AUTO-ROTATION */
-    const avatarList = [
+    /* 1. ప్రొఫైల్ ఫోటో రొటేషన్ (ఎర్రర్ లేకుండా) */
+    const myPhotos = [
       "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp",
       "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kkbcg6swdqwu9jcej9ox",
       "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/vwiijklnmkbjhjtqnryy",
       "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/lepd84cp56mzwtmnlgfi"
     ];
-    let avIndex = 0;
+    let pIdx = 0;
     setInterval(() => {
-      avIndex = (avIndex + 1) % avatarList.length;
-      document.getElementById("heroAvatar").src = avatarList[avIndex];
-    }, 4000);
+      pIdx = (pIdx + 1) % myPhotos.length;
+      document.getElementById("prakashAvatar").src = myPhotos[pIdx];
+    }, 4500);
 
-    /* 2. 24/7 TELUGU SONGS FM STREAMER WITH MEDIA SESSION & FAILOVER */
-    const radioStations = [
-      {
-        name: "తెలుగు సినిమా హిట్స్ FM (24/7 Live)",
-        urls: [
-          "https://stream.zeno.fm/4d272295908tv",
-          "https://stream.zeno.fm/0r0xa792kwzuv",
-          "https://prclond1.listenon.in/telugu"
-        ]
-      },
-      {
-        name: "తెలుగు మెలొడీ & లవ్ సాంగ్స్ FM",
-        urls: [
-          "https://stream.zeno.fm/0r0xa792kwzuv",
-          "https://stream.zeno.fm/4d272295908tv"
-        ]
-      },
-      {
-        name: "తెలుగు మాస్ & DJ బీట్స్ FM",
-        urls: [
-          "https://stream.zeno.fm/q6c95995908tv",
-          "https://stream.zeno.fm/4d272295908tv"
-        ]
-      },
-      {
-        name: "తెలుగు భక్తి & సుప్రభాతం FM",
-        urls: [
-          "https://stream.zeno.fm/29335295908tv",
-          "https://stream.zeno.fm/4d272295908tv"
-        ]
-      }
+    /* 2. తెలుగు పాటల లైవ్ రేడియో + బ్యాకప్ స్ట్రీమ్స్ */
+    const songChannels = [
+      { title: "తెలుగు లవ్ & మెలొడీ పాటలు FM", streams: ["https://stream.zeno.fm/0r0xa792kwzuv", "https://stream.zeno.fm/4d272295908tv"] },
+      { title: "కొత్త సినిమా సూపర్ హిట్స్ FM", streams: ["https://stream.zeno.fm/4d272295908tv", "https://stream.zeno.fm/0r0xa792kwzuv"] },
+      { title: "మాస్ & ఫోక్ DJ పాటలు FM", streams: ["https://stream.zeno.fm/q6c95995908tv", "https://stream.zeno.fm/4d272295908tv"] },
+      { title: "భక్తి పాటలు & సుప్రభాతం FM", streams: ["https://stream.zeno.fm/29335295908tv", "https://stream.zeno.fm/4d272295908tv"] }
     ];
+    let chIdx = 0, tryIdx = 0, songPlaying = false;
+    const player = document.getElementById("liveSongPlayer");
 
-    let curStation = 0;
-    let curStreamTry = 0;
-    let isPlaying = false;
-    const audioEl = document.getElementById("teluguAudio");
-
-    function updateMediaSession(title) {
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: title,
-          artist: "Mana Seva Hub • @hipraka",
-          album: "24/7 Telugu FM",
-          artwork: [{ src: avatarList[0], sizes: "512x512", type: "image/jpeg" }]
-        });
-        navigator.mediaSession.setActionHandler("play", () => startAudio());
-        navigator.mediaSession.setActionHandler("pause", () => pauseAudio());
-      }
-    }
-
-    function startAudio() {
-      const st = radioStations[curStation];
-      audioEl.src = st.urls[curStreamTry];
-      document.getElementById("radioStatusText").innerText = "⏳ కనెక్ట్ అవుతోంది...";
-      audioEl.play().then(() => {
-        isPlaying = true;
-        document.getElementById("radioDeck").classList.add("playing");
-        document.getElementById("playPauseBtn").innerText = "⏸ పాట ఆపండి";
-        document.getElementById("radioStatusText").innerText = "🔊 లైవ్ ప్లే అవుతోంది (బ్యాక్‌గ్రౌండ్ సపోర్ట్ ఆన్)";
-        updateMediaSession(st.name);
+    function playSongs() {
+      const ch = songChannels[chIdx];
+      player.src = ch.streams[tryIdx];
+      document.getElementById("radioMsg").innerText = "⏳ పాటలు కనెక్ట్ అవుతున్నాయి...";
+      player.play().then(() => {
+        songPlaying = true;
+        document.getElementById("radioBtn").innerText = "⏸ Pause";
+        document.getElementById("radioMsg").innerText = "🔊 లైవ్ పాటలు ప్లే అవుతున్నాయి (బ్యాక్‌గ్రౌండ్ ఆన్)";
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({ title: ch.title, artist: "Mana Seva Hub • @hipraka" });
+        }
       }).catch(() => {
-        if (curStreamTry + 1 < st.urls.length) {
-          curStreamTry++;
-          startAudio();
-        } else {
-          document.getElementById("radioStatusText").innerText = "⚠️ నెట్‌వర్క్ స్లోగా ఉంది — YouTube Jukebox నొక్కండి.";
+        if (tryIdx + 1 < ch.streams.length) { tryIdx++; playSongs(); }
+        else {
+          document.getElementById("radioMsg").innerText = "⚠️ FM బిజీగా ఉంది — కింద YouTube పాటలు ఆటోమేటిక్‌గా ఓపెన్ చేస్తున్నాము!";
+          toggleYouTubeBox(true);
         }
       });
     }
 
-    function pauseAudio() {
-      audioEl.pause();
-      isPlaying = false;
-      document.getElementById("radioDeck").classList.remove("playing");
-      document.getElementById("playPauseBtn").innerText = "▶ పాటలు వినండి";
-      document.getElementById("radioStatusText").innerText = "పాజ్ చేయబడింది";
+    function toggleSongs() {
+      if (songPlaying) {
+        player.pause(); songPlaying = false;
+        document.getElementById("radioBtn").innerText = "▶ పాటలు Play";
+        document.getElementById("radioMsg").innerText = "పాజ్ చేయబడింది";
+      } else { playSongs(); }
     }
 
-    function toggleRadio() {
-      if (isPlaying) pauseAudio(); else startAudio();
-    }
-
-    function switchStation(idx, btn) {
-      curStation = idx;
-      curStreamTry = 0;
-      document.querySelectorAll(".st-btn").forEach(b => b.classList.remove("active"));
+    function selectSongChannel(idx, btn) {
+      chIdx = idx; tryIdx = 0;
+      document.querySelectorAll(".station-pills .st-pill").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      document.getElementById("stationTitle").innerText = "🎵 " + radioStations[idx].name;
-      startAudio();
+      document.getElementById("radioName").innerText = "🎶 " + songChannels[idx].title;
+      playSongs();
     }
 
-    /* 3. TRIPLE-BACKUP LIVE TELUGU NEWS ENGINE */
-    let currentNewsCat = "latest";
-    const rssFeeds = {
-      latest: "https://news.google.com/rss?hl=te&gl=IN&ceid=IN:te",
-      cinema: "https://news.google.com/rss/search?q=Telugu+Cinema+Movies+OTT&hl=te&gl=IN&ceid=IN:te",
-      vizag: "https://news.google.com/rss/search?q=Visakhapatnam+Vizianagaram+Srungavarapukota&hl=te&gl=IN&ceid=IN:te",
-      politics: "https://news.google.com/rss/search?q=Andhra+Pradesh+Politics+News&hl=te&gl=IN&ceid=IN:te"
-    };
+    /* 3. YouTube Accordion Toggle (నొక్కితే ఓపెన్, మళ్ళీ నొక్కితే క్లోజ్) */
+    let ytOpen = false;
+    function toggleYouTubeBox(forceOpen = false) {
+      const box = document.getElementById("ytDrawer");
+      const frame = document.getElementById("ytPlayerFrame");
+      const btn = document.getElementById("ytToggleBtn");
+      ytOpen = forceOpen ? true : !ytOpen;
+      if (ytOpen) {
+        box.classList.add("open");
+        btn.innerText = "✖ YouTube మూయండి ▴";
+        if (!frame.src) {
+          frame.src = "https://www.youtube.com/embed/videoseries?list=PL4fGSI1pDJn5kI81J1fYWK5eZRl1zJ5kM&autoplay=1";
+        }
+      } else {
+        box.classList.remove("open");
+        btn.innerText = "🎬 YouTube పాటలు / ఛానల్ ▾";
+        frame.src = ""; // మూసినప్పుడు వీడియో ఆగిపోవడానికి
+      }
+    }
 
-    const fallbackHeadlines = [
-      { title: "విశాఖపట్నం - అరకు ఘాట్ రోడ్డులో పర్యాటకుల సందడి; వీకెండ్ ప్రత్యేక బస్సులు సిద్ధం.", pubDate: "తాజా అప్‌డేట్" },
-      { title: "విజయనగరం జిల్లా ఎస్.కోట, తాటిపూడి ప్రాంతాల్లో ఉదయం నుంచే ఆహ్లాదకర వాతావరణం.", pubDate: "స్థానిక వార్త" },
-      { title: "తెలుగు సినిమా బాక్సాఫీస్ వద్ద కొత్త చిత్రాల సందడి; ఈ వారం OTT లో విడుదలయ్యే సినిమాలు ఇవే!", pubDate: "వినోదం" },
-      { title: "రైతులకు శుభవార్త: స్థానిక మార్కెట్లలో కూరగాయల ధరలు స్థిరంగా కొనసాగుతున్నాయి.", pubDate: "మార్కెట్" }
-    ];
+    function loadYTPlaylist(listId, btn) {
+      document.querySelectorAll("#ytDrawer .st-pill").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      document.getElementById("ytPlayerFrame").src = `https://www.youtube.com/embed/videoseries?list=${listId}&autoplay=1`;
+    }
 
-    async function loadTeluguNews(cat) {
-      currentNewsCat = cat;
-      const box = document.getElementById("newsFeedBox");
-      box.innerHTML = `<div class="news-item">⏳ తాజా తెలుగు వార్తలు లోడ్ అవుతున్నాయి...</div>`;
-      const rssUrl = encodeURIComponent(rssFeeds[cat]);
+    /* 4. Bike Ride Fare Calculator */
+    function calcBike() {
+      const km = Math.max(1, parseInt(document.getElementById("kmVal").value) || 1);
+      const extra = parseInt(document.getElementById("nightVal").value) || 0;
+      const fare = (km <= 3 ? 30 : 30 + (km - 3) * 10) + extra;
+      document.getElementById("fareRes").innerText = "₹" + fare;
+      document.getElementById("rideWaLink").href = `https://wa.me/918985240287?text=${encodeURIComponent(`Hi Prakash, I need a Bike Drop for ${km} KM (Est. Fare: ₹${fare})`)}`;
+    }
 
+    /* 5. Secret Love & Curiosity Code Lock System */
+    let secretPosts = [];
+    function addSecretLove() {
+      const hint = document.getElementById("loveHint").value.trim() || "రహస్య ప్రాంతం";
+      const pin = document.getElementById("lovePin").value.trim();
+      const msg = document.getElementById("loveText").value.trim();
+      if (!msg) return alert("దయచేసి మీ మెసేజ్ రాయండి!");
+      const id = Date.now();
+      secretPosts.push({ id, hint, pin, msg });
+      const feed = document.getElementById("secretFeedList");
+      const card = document.createElement("div");
+      card.className = "secret-card";
+      if (pin) {
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#9D174D;font-weight:700;">
+            <span>📍 హింట్: ${hint}</span><span>🔒 Code Locked</span>
+          </div>
+          <div class="locked-blur" id="post_${id}">
+            <span>🤫 సీక్రెట్ మెసేజ్ లాక్ అయి ఉంది...</span>
+            <button onclick="unlockPost(${id})" style="background:#BE185D;color:#fff;padding:3px 8px;border-radius:5px;font-size:11px;">🔑 అన్‌లాక్</button>
+          </div>`;
+      } else {
+        card.innerHTML = `<div style="font-size:11px;color:#9D174D;font-weight:700;">📍 హింట్: ${hint}</div><p style="margin-top:3px;">"${msg}" 💖</p>`;
+      }
+      feed.prepend(card);
+      document.getElementById("loveHint").value = "";
+      document.getElementById("lovePin").value = "";
+      document.getElementById("loveText").value = "";
+    }
+
+    function unlockPost(id) {
+      const item = secretPosts.find(x => x.id === id);
+      if (!item) return;
+      const entered = prompt("ఈ సీక్రెట్ మెసేజ్ చదవడానికి 4-అంకెల కోడ్ ఎంటర్ చేయండి:");
+      if (entered === item.pin) {
+        document.getElementById("post_" + id).outerHTML = `<p style="margin-top:4px;color:#831843;font-weight:600;">💖 "${item.msg}"</p>`;
+      } else if (entered !== null) {
+        alert("❌ తప్పు కోడ్! సరైన కోడ్ తెలిసిన వారు మాత్రమే చదవగలరు.");
+      }
+    }
+
+    function unlockDemo() {
+      const entered = prompt("సీక్రెట్ కోడ్ ఎంటర్ చేయండి (Hint: 1432):");
+      if (entered === "1432") {
+        document.getElementById("demoLockBox").outerHTML = `<p style="margin-top:4px;color:#831843;font-weight:600;">💖 "బస్సులో నువ్వు కిటికీ పక్కన కూర్చున్న ప్రతిసారీ కాలం ఆగిపోతే బాగుండు అనిపిస్తుంది... I Like You!"</p>`;
+      } else if (entered !== null) {
+        alert("❌ తప్పు కోడ్!");
+      }
+    }
+
+    /* 6. Single Clean Telugu News Feed (Triple Backup) */
+    async function fetchLatestNews() {
+      const box = document.getElementById("cleanNewsBox");
+      const rss = encodeURIComponent("https://news.google.com/rss?hl=te&gl=IN&ceid=IN:te");
       try {
-        // Backup 1: rss2json API
-        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rss}`);
         const data = await res.json();
-        if (data.items && data.items.length > 0) {
-          renderNews(data.items.slice(0, 8));
+        if (data.items && data.items.length) {
+          box.innerHTML = data.items.slice(0, 7).map(n => `<div style="background:#fff;padding:8px;border-radius:8px;border-left:3px solid #B91C1C;font-size:12.5px;"><a href="${n.link}" target="_blank">${n.title}</a></div>`).join("");
           return;
         }
-        throw new Error("Backup 1 empty");
-      } catch (e1) {
-        try {
-          // Backup 2: allorigins XML proxy
-          const res2 = await fetch(`https://api.allorigins.win/get?url=${rssUrl}`);
-          const data2 = await res2.json();
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(data2.contents, "text/xml");
-          const items = Array.from(xml.querySelectorAll("item")).slice(0, 8).map(el => ({
-            title: el.querySelector("title")?.textContent || "",
-            link: el.querySelector("link")?.textContent || "#",
-            pubDate: "Live Update"
-          }));
-          if (items.length > 0) { renderNews(items); return; }
-          throw new Error("Backup 2 empty");
-        } catch (e2) {
-          // Backup 3: Built-in Local Fallback
-          renderNews(fallbackHeadlines);
+        throw new Error();
+      } catch (e) {
+        box.innerHTML = `
+          <div style="background:#fff;padding:8px;border-radius:8px;border-left:3px solid #B91C1C;font-size:12.5px;">🔴 విశాఖపట్నం - అరకు ఘాట్ రోడ్డులో పర్యాటకుల సందడి; వీకెండ్ ప్రత్యేక బస్సులు సిద్ధం.</div>
+          <div style="background:#fff;padding:8px;border-radius:8px;border-left:3px solid #B91C1C;font-size:12.5px;">🔴 విజయనగరం జిల్లా ఎస్.కోట, తాటిపూడి ప్రాంతాల్లో ప్రశాంత వాతావరణం.</div>
+          <div style="background:#fff;padding:8px;border-radius:8px;border-left:3px solid #B91C1C;font-size:12.5px;">🔴 తెలుగు సినిమా బాక్సాఫీస్ వద్ద కొత్త చిత్రాల సందడి & తాజా రాజకీయ విశేషాలు.</div>`;
+      }
+    }
+
+    /* 7. Unified Education Calculators */
+    let activeCalcMode = "interest";
+    function switchCalc(mode, btn) {
+      activeCalcMode = mode;
+      document.querySelectorAll("#sec-edu .pill").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      const area = document.getElementById("calcInputsArea");
+      if (mode === "interest") {
+        area.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;"><input type="number" id="c1" class="inp" value="50000" oninput="computeNow()"><input type="number" id="c2" class="inp" value="2" oninput="computeNow()"><input type="number" id="c3" class="inp" value="12" oninput="computeNow()"></div>`;
+      } else if (mode === "land") {
+        area.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;"><input type="number" id="c1" class="inp" value="10" oninput="computeNow()"><select id="c2" class="inp" onchange="computeNow()"><option value="cents">సెంట్లు (Cents)</option><option value="acres">ఎకరాలు (Acres)</option><option value="yards">గజాలు (Sq.Yards)</option></select></div>`;
+      } else if (mode === "gst") {
+        area.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;"><input type="number" id="c1" class="inp" value="1000" oninput="computeNow()"><select id="c2" class="inp" onchange="computeNow()"><option value="5">5% GST</option><option value="12">12% GST</option><option value="18" selected>18% GST</option><option value="28">28% GST</option></select></div>`;
+      } else if (mode === "emi") {
+        area.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;"><input type="number" id="c1" class="inp" value="100000" oninput="computeNow()"><input type="number" id="c2" class="inp" value="12" oninput="computeNow()"><input type="number" id="c3" class="inp" value="24" oninput="computeNow()"></div>`;
+      } else if (mode === "age") {
+        area.innerHTML = `<div style="margin-bottom:8px;"><input type="date" id="c1" class="inp" value="1998-07-15" onchange="computeNow()"></div>`;
+      }
+      computeNow();
+    }
+
+    function computeNow() {
+      const out = document.getElementById("calcOutput");
+      if (activeCalcMode === "interest") {
+        const p = +document.getElementById("c1").value || 0, r = +document.getElementById("c2").value || 0, m = +document.getElementById("c3").value || 0;
+        const mi = (p / 100) * r, ti = mi * m;
+        out.innerText = `నెలవారీ వడ్డీ: ₹${mi.toLocaleString('en-IN')} | మొత్తం వడ్డీ: ₹${ti.toLocaleString('en-IN')} | మొత్తం: ₹${(p + ti).toLocaleString('en-IN')}`;
+      } else if (activeCalcMode === "land") {
+        const v = +document.getElementById("c1").value || 0, u = document.getElementById("c2").value;
+        let cents = u === "acres" ? v * 100 : u === "yards" ? v / 48.4 : v;
+        out.innerText = `${cents.toFixed(2)} సెంట్లు = ${(cents / 100).toFixed(3)} ఎకరాలు | ${(cents * 48.4).toFixed(1)} గజాలు`;
+      } else if (activeCalcMode === "gst") {
+        const a = +document.getElementById("c1").value || 0, r = +document.getElementById("c2").value || 0;
+        const g = (a * r) / 100;
+        out.innerText = `అసలు: ₹${a} | GST (${r}%): ₹${g} | మొత్తం బిల్లు: ₹${a + g}`;
+      } else if (activeCalcMode === "emi") {
+        const p = +document.getElementById("c1").value || 0, r = (+document.getElementById("c2").value || 0) / 1200, n = +document.getElementById("c3").value || 1;
+        const emi = r === 0 ? p / n : (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        out.innerText = `నెలవారీ EMI: ₹${Math.round(emi).toLocaleString('en-IN')} | మొత్తం చెల్లింపు: ₹${Math.round(emi * n).toLocaleString('en-IN')}`;
+      } else if (activeCalcMode === "age") {
+        const d = new Date(document.getElementById("c1").value), now = new Date();
+        if (!isNaN(d)) {
+          let y = now.getFullYear() - d.getFullYear(), m = now.getMonth() - d.getMonth();
+          if (m < 0) { y--; m += 12; }
+          out.innerText = `ఖచ్చితమైన వయస్సు: ${y} సంవత్సరాలు, ${m} నెలలు`;
         }
       }
     }
 
-    function renderNews(items) {
-      const box = document.getElementById("newsFeedBox");
-      box.innerHTML = items.map(i => `
-        <div class="news-item">
-          <a href="${i.link || '#'}" target="_blank">${i.title}</a>
-          <small>🕒 ${i.pubDate ? i.pubDate.slice(0, 16) : 'ఇప్పుడే'}</small>
-        </div>
-      `).join("");
-      // Update Top Running Ticker too
-      document.getElementById("topNewsTicker").innerHTML = `<span>${items.map(x => "🔴 " + x.title).join(" &nbsp;&nbsp;•&nbsp;&nbsp; ")}</span>`;
+    function shareCalcWa() {
+      window.open("https://wa.me/?text=" + encodeURIComponent("*Mana Seva Hub లెక్క:*\n" + document.getElementById("calcOutput").innerText), "_blank");
     }
 
-    function changeNewsCat(cat, btn) {
-      document.querySelectorAll(".news-tab").forEach(t => t.classList.remove("active"));
-      btn.classList.add("active");
-      loadTeluguNews(cat);
-    }
-
-    /* 4. FREE CALCULATORS WITH WHATSAPP SHARE */
-    function openCalc(id, btn) {
-      document.querySelectorAll(".c-tab").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.querySelectorAll(".calc-pane").forEach(p => p.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
-
-    function calcVillageInterest() {
-      const p = parseFloat(document.getElementById("intP").value) || 0;
-      const r = parseFloat(document.getElementById("intR").value) || 0;
-      const m = parseFloat(document.getElementById("intM").value) || 0;
-      const monthly = (p / 100) * r;
-      const totalInt = monthly * m;
-      const grand = p + totalInt;
-      document.getElementById("intOut").innerText = `నెలవారీ వడ్డీ: ₹${monthly.toLocaleString('en-IN')} | మొత్తం వడ్డీ (${m} నెలలకు): ₹${totalInt.toLocaleString('en-IN')} | అసలు + వడ్డీ: ₹${grand.toLocaleString('en-IN')}`;
-    }
-
-    function calcLand() {
-      const val = parseFloat(document.getElementById("landVal").value) || 0;
-      const unit = document.getElementById("landUnit").value;
-      let cents = val;
-      if (unit === "acres") cents = val * 100;
-      if (unit === "sqyards") cents = val / 48.4;
-      const acres = (cents / 100).toFixed(3);
-      const sqyards = (cents * 48.4).toFixed(1);
-      const sqft = (cents * 435.6).toFixed(0);
-      document.getElementById("landOut").innerText = `${cents.toFixed(2)} సెంట్లు = ${acres} ఎకరాలు | ${sqyards} గజాలు | ${sqft} చ.అడుగులు (Sq.Ft)`;
-    }
-
-    function calcGST() {
-      const amt = parseFloat(document.getElementById("gstAmt").value) || 0;
-      const rate = parseFloat(document.getElementById("gstRate").value) || 0;
-      const gst = (amt * rate) / 100;
-      document.getElementById("gstOut").innerText = `అసలు: ₹${amt.toFixed(2)} | GST (${rate}%): ₹${gst.toFixed(2)} | మొత్తం బిల్లు: ₹${(amt + gst).toFixed(2)}`;
-    }
-
-    function calcEMI() {
-      const p = parseFloat(document.getElementById("emiP").value) || 0;
-      const r = (parseFloat(document.getElementById("emiR").value) || 0) / 12 / 100;
-      const n = parseFloat(document.getElementById("emiN").value) || 1;
-      const emi = r === 0 ? p / n : (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-      document.getElementById("emiOut").innerText = `నెలవారీ EMI: ₹${Math.round(emi).toLocaleString('en-IN')} | మొత్తం చెల్లింపు: ₹${Math.round(emi * n).toLocaleString('en-IN')}`;
-    }
-
-    function calcAge() {
-      const dob = new Date(document.getElementById("dobInp").value);
-      if (isNaN(dob)) return;
-      const now = new Date();
-      let years = now.getFullYear() - dob.getFullYear();
-      let months = now.getMonth() - dob.getMonth();
-      let days = now.getDate() - dob.getDate();
-      if (days < 0) { months--; days += 30; }
-      if (months < 0) { years--; months += 12; }
-      document.getElementById("ageOut").innerText = `మీ వయస్సు: ${years} సంవత్సరాలు, ${months} నెలలు, ${days} రోజులు`;
-    }
-
-    function shareCalcResult(elId, title) {
-      const txt = document.getElementById(elId).innerText;
-      window.open(`https://wa.me/?text=${encodeURIComponent("*Mana Seva Hub - " + title + "*\n" + txt)}`, "_blank");
-    }
-
-    /* 5. BIKE RIDE FARE CALCULATOR */
-    function updateBikeFare() {
-      const km = Math.max(1, parseInt(document.getElementById("rideKm").value) || 1);
-      const extra = parseInt(document.getElementById("rideType").value) || 0;
-      const fare = (km <= 3 ? 30 : 30 + (km - 3) * 10) + extra;
-      document.getElementById("bikeFareDisplay").innerText = "₹" + fare;
-      const msg = `Hi Prakash, I need a Bike Drop for ${km} KM${extra > 0 ? ' (Night/Emergency)' : ''}. Est. Fare: ₹${fare}`;
-      document.getElementById("bikeBookBtn").href = "https://wa.me/918985240287?text=" + encodeURIComponent(msg);
-    }
-
-    /* 6. DAILY EXAM GK QUIZ & ANONYMOUS CRUSH WALL */
-    const quizData = [
-      { q: "1. ఆంధ్రప్రదేశ్‌లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?", opts: ["A) హార్సిలీ హిల్స్", "B) లంబసింగి", "C) పాపి కొండలు"], ans: 1 },
-      { q: "2. బొర్రా గుహలు ఏ జిల్లాలో ఉన్నాయి?", opts: ["A) అల్లూరి సీతారామరాజు జిల్లా", "B) శ్రీకాకుళం జిల్లా", "C) కర్నూలు జిల్లా"], ans: 0 },
-      { q: "3. భారత రాజ్యాంగ పితామహుడు ఎవరు?", opts: ["A) మహాత్మా గాంధీ", "B) డా. బి.ఆర్. అంబేద్కర్", "C) జవహర్‌లాల్ నెహ్రూ"], ans: 1 }
+    /* 8. GK Quiz Engine */
+    const gkBank = [
+      { q: "1. ఆంధ్రప్రదేశ్‌లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?", o: ["A) హార్సిలీ హిల్స్", "B) లంబసింగి", "C) పాపి కొండలు"], a: 1 },
+      { q: "2. భారతదేశపు మొదటి ఉపగ్రహం ఏది?", o: ["A) ఆర్యభట్ట", "B) రోహిణి", "C) భాస్కర"], a: 0 },
+      { q: "3. తాటిపూడి రిజర్వాయర్ ఏ నదిపై నిర్మించబడింది?", o: ["A) నాగావళి", "B) గోస్తనీ నది", "C) వంశధార"], a: 1 }
     ];
-    let qIdx = 0;
-
-    function checkQuiz(btn, isCorrect) {
-      const fb = document.getElementById("quizFeedback");
-      if (isCorrect) {
-        fb.style.color = "#16A34A";
-        fb.innerText = "✅ సరైన సమాధానం! అభినందనలు!";
-      } else {
-        fb.style.color = "#DC2626";
-        fb.innerText = "❌ తప్పు సమాధానం! మళ్ళీ ప్రయత్నించండి.";
-      }
+    let gkI = 0;
+    function ansGK(ok) {
+      const s = document.getElementById("gkStatus");
+      s.style.color = ok ? "#15803D" : "#DC2626";
+      s.innerText = ok ? "✅ అద్భుతం! సరైన సమాధానం!" : "❌ తప్పు సమాధానం! మళ్ళీ ప్రయత్నించండి.";
+    }
+    function nextGK() {
+      gkI = (gkI + 1) % gkBank.length;
+      const item = gkBank[gkI];
+      document.getElementById("gkQuestion").innerText = item.q;
+      document.getElementById("gkStatus").innerText = "";
+      document.getElementById("gkOpts").innerHTML = item.o.map((opt, idx) => `<button class="btn btn-light" onclick="ansGK(${idx === item.a})">${opt}</button>`).join("");
     }
 
-    function nextQuiz() {
-      qIdx = (qIdx + 1) % quizData.length;
-      const item = quizData[qIdx];
-      document.getElementById("quizQ").innerText = item.q;
-      document.getElementById("quizFeedback").innerText = "";
-      document.getElementById("quizOptions").innerHTML = item.opts.map((o, i) =>
-        `<button class="btn btn-light" onclick="checkQuiz(this, ${i === item.ans})">${o}</button>`
-      ).join("");
-    }
-
-    function postCrushMsg() {
-      const inp = document.getElementById("crushInput");
-      const val = inp.value.trim();
-      if (!val) return;
-      const feed = document.getElementById("crushWallFeed");
-      feed.innerHTML = `<p style="margin-bottom:5px;color:#BE185D;">💌 <strong>#New Secret:</strong> "${val}"</p>` + feed.innerHTML;
-      inp.value = "";
-    }
-
-    /* 7. AREA FILTER, GLOBAL SEARCH, GPS & WHATSAPP GROUP SHARE */
-    let activeArea = "all";
-    function setArea(area, btn) {
-      activeArea = area;
-      document.querySelectorAll(".area-pill").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      filterAll();
-    }
-
-    function filterAll() {
-      const q = document.getElementById("globalSearch").value.toLowerCase();
-      document.querySelectorAll(".searchable").forEach(card => {
-        const area = card.getAttribute("data-area") || "all";
-        const text = (card.getAttribute("data-keywords") + " " + card.innerText).toLowerCase();
-        const areaMatch = activeArea === "all" || area === activeArea;
-        const textMatch = text.includes(q);
-        card.style.display = (areaMatch && textMatch) ? "flex" : "none";
-      });
-    }
-
-    function toggleDrawer(open) {
-      document.getElementById("sideDrawer").classList.toggle("open", open);
-      document.getElementById("drawerBackdrop").classList.toggle("open", open);
-    }
-
-    function sendLiveGPS() {
-      const msgEl = document.getElementById("gpsStatusMsg");
-      msgEl.innerText = "📡 మీ లొకేషన్ తీసుకుంటోంది...";
-      if (!navigator.geolocation) { msgEl.innerText = "⚠️ మీ బ్రౌజర్‌లో GPS సపోర్ట్ లేదు."; return; }
-      navigator.geolocation.getCurrentPosition(pos => {
-        const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        msgEl.innerText = "✅ లొకేషన్ దొరికింది! WhatsApp ఓపెన్ అవుతోంది...";
-        window.open(`https://wa.me/918985240287?text=${encodeURIComponent("📍 నా లైవ్ GPS లొకేషన్:\n" + link)}`, "_blank");
-      }, () => {
-        msgEl.innerText = "⚠️ దయచేసి మీ ఫోన్‌లో Location (GPS) ఆన్ చేసి మళ్ళీ నొక్కండి.";
-      });
-    }
-
-    function shareAppToGroup() {
-      const text = "🌟 *Mana Seva Hub • మన సేవ* 🌟\nమన ఊరి బస్సు వేళలు, నేటి కూరగాయల/బంగారం ధరలు, వడ్డీ & భూమి క్యాలిక్యులేటర్లు, బైక్ డ్రాప్, డెలివరీ, ఉద్యోగాలు & టూరిజం అన్నీ ఒకే యాప్‌లో!\nఇప్పుడే ఓపెన్ చేయండి 👇\n" + window.location.href;
-      window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
-    }
-
-    /* 8. POPUP MODAL DATA FOR TOURISM & SERVICES (6 ITEMS EACH) */
-    const popupCatalog = {
-      araku: { title: "అరకు వ్యాలీ & బొర్రా గుహలు (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹1,499 నుండి", items: [
-        { n: "1. బొర్రా గుహలు", p: "Included", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. కటికి జలపాతం", p: "Included", img: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. కాఫీ మ్యూజియం", p: "Included", img: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. గాలికొండ వ్యూ పాయింట్", p: "Included", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. పద్మాపురం గార్డెన్స్", p: "Included", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. చాపరాయి వాటర్ ఫాల్స్", p: "Included", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=300&q=80" }
+    /* 9. Multi-Tab Smart Popup System (ఇన్నర్ ట్యాబ్స్ ఓపెన్ అయ్యేలా) */
+    const smartData = {
+      store: { title: "మన సేవ స్మార్ట్ స్టోర్", info: "• క్యాష్ ఆన్ డెలివరీ (COD) సదుపాయం కలదు.\n• బొడ్డవార, తాటిపూడి, ఎస్.కోట పరిధిలో 30 నిమిషాల్లో డెలివరీ.", items: [
+        { n: "అరకు ఆర్గానిక్ కాఫీ (500g)", p: "₹250" }, { n: "స్వచ్ఛమైన అడవి తేనె", p: "₹280" },
+        { n: "20L వాటర్ క్యాన్ పంప్", p: "₹180" }, { n: "వైర్డ్ ఇయర్‌ఫోన్స్ (HD Mic)", p: "₹299" }
       ]},
-      vizag: { title: "విశాఖపట్నం సిటీ & బీచ్ టూర్ (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹999 నుండి", items: [
-        { n: "1. RK బీచ్", p: "Included", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. కైలాసగిరి", p: "Included", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. రుషికొండ బీచ్", p: "Included", img: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. సింహాచలం ఆలయం", p: "Included", img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. తొట్లకొండ", p: "Included", img: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. యారాడ బీచ్", p: "Included", img: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=300&q=80" }
+      books: { title: "పాత పుస్తకాలు (Buy & Sell)", info: "• మీ దగ్గర ఉన్న పోటీ పరీక్షల పుస్తకాలు లేదా కాలేజీ పుస్తకాలను 50% ధరకు అమ్మవచ్చు/కొనవచ్చు.", items: [
+        { n: "RRB NTPC / Group-D మెటీరియల్", p: "₹150" }, { n: "SSC CHSL / Arithmetic బుక్స్", p: "₹180" },
+        { n: "B.Com / Degree ఆల్ సబ్జెక్ట్స్", p: "₹200" }, { n: "AP Police SI/Constable గైడ్స్", p: "₹160" }
       ]},
-      vzm: { title: "విజయనగరం హెరిటేజ్ టూర్ (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹899 నుండి", items: [
-        { n: "1. విజయనగరం కోట", p: "Included", img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. రామనారాయణం", p: "Included", img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. పైడితల్లి అమ్మవారి ఆలయం", p: "Included", img: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. బొబ్బిలి కోట", p: "Included", img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. రామతీర్థం", p: "Included", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. గోస్తనీ నది తీరం", p: "Included", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80" }
+      buysell: { title: "లోకల్ Buy & Sell ఎక్స్ఛేంజ్", info: "• ఎటువంటి కమీషన్ లేకుండా నేరుగా యజమానితో మాట్లాడి కొనుగోలు చేయండి.", items: [
+        { n: "సెకండ్ హ్యాండ్ బైక్‌లు", p: "Direct Deal" }, { n: "పాత మొబైల్ ఫోన్లు", p: "Direct Deal" },
+        { n: "ఇంటి స్థలాలు & పొలాలు", p: "Direct Deal" }, { n: "పాడి పశువులు & మేకలు", p: "Direct Deal" }
       ]},
-      thatipudi: { title: "తాటిపూడి & కాశీపట్నం టూర్ (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹1,199 నుండి", items: [
-        { n: "1. తాటిపూడి రిజర్వాయర్", p: "Included", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. టైడా జంగిల్ బెల్స్", p: "Included", img: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. దముకు వ్యూ పాయింట్", p: "Included", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. కాశీపట్నం వాటర్ స్ట్రీమ్స్", p: "Included", img: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. అనంతగిరి కాఫీ తోటలు", p: "Included", img: "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. బొంగు చికెన్ స్పాట్", p: "Food", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=300&q=80" }
+      araku: { title: "అరకు వ్యాలీ & బొర్రా గుహలు (6 స్పాట్స్)", info: "• ఉదయం 6:00 గంటలకు బయలుదేరి సాయంత్రం 7:00 గంటలకు తిరిగి చేరుకుంటారు.\n• అనుభవజ్ఞులైన లోకల్ డ్రైవర్ గైడ్.", items: [
+        { n: "1. బొర్రా గుహలు", p: "Included" }, { n: "2. కటికి జలపాతం", p: "Included" },
+        { n: "3. కాఫీ మ్యూజియం", p: "Included" }, { n: "4. గాలికొండ వ్యూ పాయింట్", p: "Included" },
+        { n: "5. పద్మాపురం గార్డెన్స్", p: "Included" }, { n: "6. చాపరాయి వాటర్ ఫాల్స్", p: "Included" }
       ]},
-      vanjangi: { title: "వంజంగి & పాడేరు టూర్ (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹1,399 నుండి", items: [
-        { n: "1. వంజంగి మేఘాల కొండ", p: "Included", img: "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. మోదకొండమ్మ ఆలయం", p: "Included", img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. మత్స్యగుండం", p: "Included", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. పసుపు తోటలు", p: "Included", img: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. దల్లపల్లి వ్యూ పాయింట్", p: "Included", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. పాడేరు కాఫీ ఎస్టేట్స్", p: "Included", img: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=300&q=80" }
+      vizag: { title: "విశాఖపట్నం బీచ్ & సిటీ టూర్", info: "• ఫ్యామిలీ & ఫ్రెండ్స్ గ్రూప్‌లకు అనువైన వన్-డే ప్యాకేజీ.", items: [
+        { n: "1. RK బీచ్ & సబ్‌మెరైన్", p: "Included" }, { n: "2. కైలాసగిరి హిల్ టాప్", p: "Included" },
+        { n: "3. రుషికొండ బీచ్", p: "Included" }, { n: "4. సింహాచలం ఆలయం", p: "Included" },
+        { n: "5. తొట్లకొండ", p: "Included" }, { n: "6. యారాడ బీచ్", p: "Included" }
       ]},
-      lambasingi: { title: "లంబసింగి & తాజంగి టూర్ (6 స్పాట్స్)", sub: "ప్యాకేజీ: ₹1,599 నుండి", items: [
-        { n: "1. లంబసింగి మిస్ట్ పాయింట్", p: "Included", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. తాజంగి రిజర్వాయర్", p: "Included", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. కొత్తపల్లి జలపాతం", p: "Included", img: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. స్ట్రాబెర్రీ తోటలు", p: "Included", img: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. సుసాన్ గార్డెన్", p: "Included", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. ఘాట్ సన్‌రైజ్", p: "Included", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80" }
+      thatipudi: { title: "తాటిపూడి & కాశీపట్నం టైడా టూర్", info: "• ప్రకృతి ఒడిలో ప్రశాంతమైన వన్-డే పిక్నిక్ స్పాట్స్.", items: [
+        { n: "1. తాటిపూడి రిజర్వాయర్", p: "Included" }, { n: "2. టైడా జంగిల్ బెల్స్", p: "Included" },
+        { n: "3. దముకు వ్యూ పాయింట్", p: "Included" }, { n: "4. కాశీపట్నం వాటర్ స్ట్రీమ్స్", p: "Included" },
+        { n: "5. అనంతగిరి కాఫీ తోటలు", p: "Included" }, { n: "6. బొంగు చికెన్ స్పాట్", p: "Food" }
       ]},
-      mechanic: { title: "మెకానిక్ సర్వీస్ (6 పనులు)", sub: "కనీస విజిట్ ఛార్జీ: ₹100", items: [
-        { n: "1. టైర్ పంక్చర్", p: "₹80 నుండి", img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. ఇంజన్ ఆయిల్ చేంజ్", p: "₹150 నుండి", img: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. బ్యాటరీ జంప్‌స్టార్ట్", p: "₹120 నుండి", img: "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. బ్రేక్ & క్లచ్ రిపేర్", p: "₹100 నుండి", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. ఫుల్ బైక్ సర్వీస్", p: "₹350 నుండి", img: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. రోడ్‌సైడ్ టోయింగ్", p: "Call Rate", img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=300&q=80" }
+      vzm: { title: "విజయనగరం కోట & ఆలయాల టూర్", info: "• చారిత్రక మరియు ఆధ్యాత్మిక ప్రదేశాల సందర్శన.", items: [
+        { n: "1. విజయనగరం కోట", p: "Included" }, { n: "2. రామనారాయణం", p: "Included" },
+        { n: "3. పైడితల్లి అమ్మవారి ఆలయం", p: "Included" }, { n: "4. బొబ్బిలి కోట", p: "Included" },
+        { n: "5. రామతీర్థం", p: "Included" }, { n: "6. గోస్తనీ నది తీరం", p: "Included" }
       ]},
-      electrician: { title: "ఎలక్ట్రీషియన్ (6 పనులు)", sub: "కనీస విజిట్ ఛార్జీ: ₹100", items: [
-        { n: "1. సీలింగ్ ఫ్యాన్ రిపేర్", p: "₹120 నుండి", img: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. స్విచ్ బోర్డ్ రిపేర్", p: "₹100 నుండి", img: "https://images.unsplash.com/photo-1558402529-d2638a7023e9?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. ఇన్వర్టర్ సెటప్", p: "₹250 నుండి", img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. LED లైట్ ఫిట్టింగ్", p: "₹80 నుండి", img: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. MCB & ఫ్యూజ్ రిపేర్", p: "₹150 నుండి", img: "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. కొత్త ఇంటి వైరింగ్", p: "Estimate", img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=300&q=80" }
+      vanjangi: { title: "వంజంగి మేఘాల కొండ & పాడేరు", info: "• తెల్లవారుజామున మేఘాల మధ్య సూర్యోదయ దర్శనం.", items: [
+        { n: "1. వంజంగి హిల్స్", p: "Included" }, { n: "2. మోదకొండమ్మ ఆలయం", p: "Included" },
+        { n: "3. మత్స్యగుండం", p: "Included" }, { n: "4. పసుపు తోటలు", p: "Included" },
+        { n: "5. దల్లపల్లి వ్యూ పాయింట్", p: "Included" }, { n: "6. పాడేరు కాఫీ ఎస్టేట్స్", p: "Included" }
       ]},
-      plumber: { title: "ప్లంబర్ (6 పనులు)", sub: "కనీస విజిట్ ఛార్జీ: ₹100", items: [
-        { n: "1. ట్యాప్ లీకేజీ రిపేర్", p: "₹100 నుండి", img: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. వాటర్ మోటార్ రిపేర్", p: "₹250 నుండి", img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. వాటర్ ట్యాంక్ క్లీనింగ్", p: "₹300 నుండి", img: "https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. బాత్రూమ్ ఫిట్టింగ్", p: "₹150 నుండి", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. సింక్ బ్లాకేజ్ క్లియర్", p: "₹150 నుండి", img: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. కొత్త పైప్ లైన్", p: "Estimate", img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=300&q=80" }
+      lambasingi: { title: "లంబసింగి & తాజంగి జలాశయం", info: "• శీతాకాలపు మంచు అందాలు & స్ట్రాబెర్రీ తోటలు.", items: [
+        { n: "1. లంబసింగి మిస్ట్ పాయింట్", p: "Included" }, { n: "2. తాజంగి రిజర్వాయర్", p: "Included" },
+        { n: "3. కొత్తపల్లి జలపాతం", p: "Included" }, { n: "4. స్ట్రాబెర్రీ తోటలు", p: "Included" },
+        { n: "5. సుసాన్ గార్డెన్", p: "Included" }, { n: "6. ఘాట్ సన్‌రైజ్", p: "Included" }
       ]},
-      labour: { title: "లేబర్ & ట్రాక్టర్ సప్లై (6 రకాలు)", sub: "రోజువారీ / షిఫ్ట్ పనులు", items: [
-        { n: "1. లోడింగ్ హెల్పర్లు", p: "₹600/రోజు", img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. భవన నిర్మాణ హెల్పర్లు", p: "₹650/రోజు", img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. ఫంక్షన్ వర్కర్లు", p: "₹550/షిఫ్ట్", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. వ్యవసాయ కూలీలు", p: "₹500/రోజు", img: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. ట్రాక్టర్ లోడింగ్/ట్రిప్", p: "₹700 నుండి", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. ఇల్లు షిఫ్టింగ్ హెల్పర్లు", p: "₹500/ట్రిప్", img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=300&q=80" }
+      tech: { title: "మెకానిక్, ఎలక్ట్రీషియన్ & ప్లంబర్", info: "• కనీస విజిట్ ఛార్జీ: ₹100 మాత్రమే. స్పేర్ పార్ట్స్ అదనం.", items: [
+        { n: "1. టైర్ పంక్చర్ & ఆయిల్ చేంజ్", p: "₹80 నుండి" }, { n: "2. బ్యాటరీ జంప్‌స్టార్ట్", p: "₹120 నుండి" },
+        { n: "3. సీలింగ్ ఫ్యాన్ & స్విచ్ బోర్డ్", p: "₹100 నుండి" }, { n: "4. ఇన్వర్టర్ సెటప్ & వైరింగ్", p: "₹250 నుండి" },
+        { n: "5. ట్యాప్ లీకేజీ & పైప్ ఫిట్టింగ్", p: "₹100 నుండి" }, { n: "6. వాటర్ మోటార్ & ట్యాంక్ క్లీన్", p: "₹250 నుండి" }
       ]},
-      tanker: { title: "వాటర్ ట్యాంకర్ సప్లై (6 రకాలు)", sub: "వేగవంతమైన డెలివరీ", items: [
-        { n: "1. మినీ ట్యాంకర్ 2000L", p: "₹500", img: "https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. మీడియం 4000L", p: "₹850", img: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. ట్రాక్టర్ ట్యాంకర్ 5000L", p: "₹1,000", img: "https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. పెళ్లిళ్లు & ఫంక్షన్లకు", p: "Custom", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. కన్‌స్ట్రక్షన్ వాటర్", p: "₹800", img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. RO మినరల్ వాటర్ ట్యాంకర్", p: "₹1,200", img: "https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=300&q=80" }
+      labour: { title: "లేబర్, ట్రాక్టర్ & వాటర్ ట్యాంకర్", info: "• ముందురోజు బుక్ చేసుకుంటే ఉదయాన్నే సమయానికి చేరుకుంటారు.", items: [
+        { n: "1. లోడింగ్ & నిర్మాణ హెల్పర్లు", p: "₹600/రోజు" }, { n: "2. ఫంక్షన్ వర్కర్లు", p: "₹550/షిఫ్ట్" },
+        { n: "3. ట్రాక్టర్ ట్రిప్ / లోడింగ్", p: "₹700 నుండి" }, { n: "4. మినీ వాటర్ ట్యాంకర్ 2000L", p: "₹500" },
+        { n: "5. ట్రాక్టర్ ట్యాంకర్ 5000L", p: "₹1,000" }, { n: "6. పెళ్లిళ్ల బల్క్ వాటర్ సప్లై", p: "Custom" }
       ]},
-      transport: { title: "ఆటో & మినీ ట్రాన్స్‌పోర్ట్ (6 రకాలు)", sub: "పికప్ & డ్రాప్", items: [
-        { n: "1. ప్యాసింజర్ ఆటో", p: "₹100 నుండి", img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=300&q=80" },
-        { n: "2. గూడ్స్ ఆటో", p: "₹250 నుండి", img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=300&q=80" },
-        { n: "3. టాటా ఏస్ (Tata Ace)", p: "₹500 నుండి", img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=300&q=80" },
-        { n: "4. హౌస్ షిఫ్టింగ్", p: "₹1,200 నుండి", img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=300&q=80" },
-        { n: "5. రైల్వే స్టేషన్ పికప్", p: "₹150 నుండి", img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=300&q=80" },
-        { n: "6. బైక్ పార్శిల్ డెలివరీ", p: "₹50 నుండి", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=80" }
+      auto: { title: "ఆటో & మినీ ట్రాన్స్‌పోర్ట్", info: "• లోకల్ మరియు అవుట్‌స్టేషన్ సామాన్ల రవాణా సదుపాయం.", items: [
+        { n: "1. ప్యాసింజర్ ఆటో", p: "₹100 నుండి" }, { n: "2. గూడ్స్ ఆటో", p: "₹250 నుండి" },
+        { n: "3. టాటా ఏస్ (Tata Ace)", p: "₹500 నుండి" }, { n: "4. ఇల్లు షిఫ్టింగ్", p: "₹1,200 నుండి" },
+        { n: "5. రైల్వే స్టేషన్ పికప్", p: "₹150 నుండి" }, { n: "6. బైక్ పార్శిల్ డెలివరీ", p: "₹50 నుండి" }
       ]}
     };
 
-    function openPopup(key) {
-      const d = popupCatalog[key];
+    let currentModalTopic = "";
+    function openSmartModal(key) {
+      const d = smartData[key];
       if (!d) return;
-      document.getElementById("popTitle").innerText = d.title;
-      document.getElementById("popSub").innerText = d.sub;
-      document.getElementById("popWaBtn").href = "https://wa.me/918985240287?text=" + encodeURIComponent("Hi Prakash, I want to book: " + d.title);
-      document.getElementById("popGrid").innerHTML = d.items.map(i => `
-        <div class="mini-box">
-          <img src="${i.img}" alt="${i.n}">
-          <div>
-            <h4 style="font-size:12.5px;">${i.n}</h4>
-            <span style="display:inline-block;margin-top:3px;background:#DCFCE7;color:#166534;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;">${i.p}</span>
-          </div>
-        </div>
-      `).join("");
-      document.getElementById("popupModal").style.display = "flex";
+      currentModalTopic = d.title;
+      document.getElementById("mTitle").innerText = d.title;
+      document.getElementById("mInfoText").innerText = d.info;
+      document.getElementById("mGrid").innerHTML = d.items.map(i => `
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;">
+          <strong style="font-size:13px;display:block;margin-bottom:4px;">${i.n}</strong>
+          <span style="background:#DCFCE7;color:#166534;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:6px;">${i.p}</span>
+        </div>`).join("");
+      switchInnerTab("tab-items", document.querySelector(".inner-tabs .i-tab"));
+      document.getElementById("smartModal").style.display = "flex";
     }
-    function closePopup() { document.getElementById("popupModal").style.display = "none"; }
 
-    /* Initialize Live News on Load */
-    window.addEventListener("DOMContentLoaded", () => loadTeluguNews("latest"));
+    function switchInnerTab(paneId, btn) {
+      document.querySelectorAll(".i-tab").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      document.querySelectorAll(".i-pane").forEach(p => p.classList.remove("active"));
+      document.getElementById(paneId).classList.add("active");
+    }
+
+    function submitModalBooking() {
+      const n = document.getElementById("mUserName").value.trim() || "Customer";
+      const p = document.getElementById("mUserPlace").value.trim() || "Local";
+      const msg = `Hi Prakash, I want to book: *${currentModalTopic}*\nName: ${n}\nPlace: ${p}`;
+      window.open("https://wa.me/918985240287?text=" + encodeURIComponent(msg), "_blank");
+    }
+
+    function closeSmartModal() { document.getElementById("smartModal").style.display = "none"; }
+
+    /* 10. Search, Area Filter, Menu Drawer & GPS */
+    let curArea = "all";
+    function filterByArea(area, btn) {
+      curArea = area;
+      document.querySelectorAll(".pills-scroll .pill").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      runSearch();
+    }
+
+    function runSearch() {
+      const q = document.getElementById("searchInp").value.toLowerCase();
+      document.querySelectorAll(".searchable").forEach(el => {
+        const a = el.getAttribute("data-area") || "all";
+        const k = (el.getAttribute("data-keywords") + " " + el.innerText).toLowerCase();
+        el.style.display = ((curArea === "all" || a === curArea) && k.includes(q)) ? "" : "none";
+      });
+    }
+
+    function toggleMenu(open) {
+      document.getElementById("drawerPanel").classList.toggle("open", open);
+      document.getElementById("drawerMask").style.display = open ? "block" : "none";
+    }
+
+    function sendMyGPS() {
+      const t = document.getElementById("gpsToast");
+      t.innerText = "📡 మీ GPS లొకేషన్ తీసుకుంటోంది...";
+      if (!navigator.geolocation) { t.innerText = "⚠️ GPS సపోర్ట్ లేదు."; return; }
+      navigator.geolocation.getCurrentPosition(pos => {
+        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        t.innerText = "✅ లొకేషన్ దొరికింది! WhatsApp ఓపెన్ అవుతోంది...";
+        window.open(`https://wa.me/918985240287?text=${encodeURIComponent("📍 నా లైవ్ GPS లొకేషన్:\n" + url)}`, "_blank");
+      }, () => { t.innerText = "⚠️ దయచేసి ఫోన్‌లో Location (GPS) ఆన్ చేయండి."; });
+    }
+
+    function shareGroup() {
+      const txt = "🌟 *Mana Seva Hub • మన సేవ* 🌟\nబొడ్డవార, తాటిపూడి, S.Kota, VZM, వైజాగ్ & అరకు — బైక్ డ్రాప్, రాత్రి డెలివరీ, సీక్రెట్ లవ్ వాల్, బస్సు వేళలు, క్యాలిక్యులేటర్లు & ఉద్యోగాలు అన్నీ ఒకే యాప్‌లో!\n" + window.location.href;
+      window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank");
+    }
+
+    window.addEventListener("DOMContentLoaded", fetchLatestNews);
   </script>
 </body>
 </html>
