@@ -3,689 +3,574 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Hub & Services • Mana Seva | Prakash (@hipraka)</title>
+  <title>Mana Seva Hub • మన సేవ | Boddavara • Kiltampalem • S.Kota</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
     /* 
-       ==========================================================================
-       అడ్మిన్ పాస్‌వర్డ్ & సెక్యూరిటీ సెట్టింగ్స్ (ADMIN PASSWORD CONFIGURATION)
-       ==========================================================================
-       1. Master Admin Password (పైన ఉన్న 'Admin' బటన్ నొక్కి పోస్ట్‌లు డిలీట్ చేయడానికి & 
-          సెట్టింగ్స్ మార్చడానికి): 1430
+       ========================================================================
+       ADMIN PASSWORD & SECURITY CONFIGURATION (అడ్మిన్ పాస్‌వర్డ్ సెట్టింగ్స్)
+       ========================================================================
+       1. Master Admin Password (పైన ఉన్న 'Admin ON/Locked' బటన్ నొక్కి పోస్ట్‌లు 
+          డిలీట్ చేయడానికి & సెట్టింగ్స్ మార్చడానికి): 1430
        2. Secret Night Vault PIN (రహస్య డెలివరీ విభాగం ఓపెన్ చేయడానికి): 9999
-       3. మీకు నచ్చినప్పుడు కింద ఉన్న నంబర్లను మార్చుకోవచ్చు.
-       ==========================================================================
+       3. మీకు నచ్చినప్పుడు కింద ఉన్న నంబర్లను కోడ్‌లో మార్చుకోవచ్చు.
+       ========================================================================
     */
-    const MASTER_ADMIN_PIN = "1430";
-    const SECRET_VAULT_PIN = "9999";
-    const OWNER_WHATSAPP = "918985240287"; // మీ వాట్సాప్ నంబర్
+    const ADMIN_PASS_CONFIG = "1430"; 
+    const VAULT_PIN_CONFIG = "9999";
+    const OWNER_PHONE = "918985240287"; // మీ వాట్సాప్ నంబర్
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <style>
     body { font-family: "Instrument Sans", "Noto Sans Telugu", sans-serif; scroll-behavior: smooth; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+    @keyframes eqPulse { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+    .eq-bar { animation: eqPulse 0.8s ease-in-out infinite; }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 </head>
-<body class="bg-[#f4f1ea] text-slate-900 antialiased pb-16">
+<body class="bg-slate-100 text-slate-900 antialiased pb-24">
+  <div id="app-root" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col">
 
-  <!-- MAIN CONTAINER -->
-  <div class="max-w-lg mx-auto bg-[#fbf9f5] min-h-screen shadow-2xl border-x border-stone-200 flex flex-col">
+    <!-- =======================================================================
+         1. FULL WIDTH TOP PROFILE & BEAUTIFUL MUSIC BANNER (ప్రొఫైల్ & మ్యూజిక్ బ్యానర్)
+         ======================================================================= -->
+    <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-950 text-white p-4 shadow-lg relative overflow-hidden">
+      <!-- Decorative Glow -->
+      <div class="absolute -top-10 -right-10 w-36 h-36 bg-amber-400/15 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none"></div>
 
-    <!-- =====================================================================
-         1. TOP PROFILE, CONTACT & IN-APP MEDIA BANNER (ప్రొఫైల్ & మీడియా బ్యానర్)
-         ===================================================================== -->
-    <header class="bg-gradient-to-br from-[#14532d] via-[#166534] to-[#064e3b] text-white p-4 shadow-md">
-      <div class="flex items-center justify-between gap-2 mb-3">
-        <!-- Profile Badge -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 border-2 border-amber-200 flex flex-col items-center justify-center text-center shadow">
-            <span class="text-[11px] font-bold leading-tight text-slate-950">Prakash</span>
-            <span class="text-[9px] font-semibold leading-tight text-slate-900">Profile</span>
-          </div>
+      <!-- Profile & Admin Lock Row -->
+      <div class="flex items-center justify-between mb-3.5 relative z-10">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-md bg-gradient-to-tr from-emerald-700 to-teal-600 font-bold flex items-center justify-center text-lg text-amber-300">P</div>
           <div>
-            <h1 class="text-lg font-bold tracking-tight text-white">Community Hub &amp; Services</h1>
-            <p class="text-[11px] text-emerald-200">Eastern Ghats Tourism • Quick Delivery • Local Experts</p>
+            <h1 class="text-lg font-bold text-amber-300 flex items-center gap-1.5">
+              Prakash (@hipraka) 
+              <span class="text-[10px] bg-emerald-800/90 px-2 py-0.5 rounded-full text-emerald-100 border border-emerald-500/50">Admin</span>
+            </h1>
+            <p class="text-xs text-emerald-200">Mana Seva Hub • Boddavara • S.Kota</p>
           </div>
         </div>
-
-        <!-- Admin Master Control Button -->
-        <button onclick="toggleAdminMode()" id="admin-toggle-btn" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-full shadow flex items-center gap-1 transition">
-          <span class="material-symbols-outlined text-sm" id="admin-lock-icon">lock</span>
-          <span id="admin-status-label">Admin: OFF</span>
+        <button id="admin-master-toggle" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-full shadow-md flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-sm" id="admin-icon">lock</span> 
+          <span id="admin-btn-text">Admin Locked</span>
         </button>
       </div>
-
-      <!-- Social & Direct Contact Pills -->
-      <div class="flex flex-wrap items-center justify-center gap-2 mb-3 text-xs">
-        <span class="bg-white/15 px-3 py-1 rounded-full border border-white/20 font-medium">@hipraka</span>
-        <a href="https://wa.me/918985240287" target="_blank" class="bg-white/15 hover:bg-white/25 px-3 py-1 rounded-full border border-white/20 font-medium flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> WhatsApp: 8985240287
-        </a>
-      </div>
-
-      <!-- Direct Call & WhatsApp Action Strip -->
-      <div class="bg-white/95 text-slate-900 rounded-xl p-2 flex flex-wrap items-center justify-between gap-2 shadow-inner mb-3">
-        <span class="text-[11px] font-bold text-amber-800 pl-1">🙏 Need Help? Direct Tap:</span>
-        <div class="flex gap-1.5">
-          <a href="tel:8985240287" class="bg-[#9a3412] hover:bg-[#7c2d12] text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg shadow">Call Now (8985240287)</a>
-          <a href="https://wa.me/918985240287" target="_blank" class="bg-[#15803d] hover:bg-[#166534] text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg shadow">Send Voice/Text on WhatsApp</a>
-        </div>
-      </div>
-
-      <!-- Compact In-App FM & YouTube Media Player (స్థలం ఆదా చేస్తూ ఎంటర్‌టైన్‌మెంట్) -->
-      <div class="bg-black/35 rounded-xl p-2.5 border border-emerald-400/25">
-        <div class="flex items-center justify-between text-[11px] text-amber-300 font-semibold mb-1.5">
-          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-red-400 animate-pulse">radio</span> Live Telugu FM &amp; Chill</span>
-          <span id="fm-now-playing" class="text-emerald-200">Tap channel to play</span>
-        </div>
-        <audio id="live-fm-audio" preload="none"></audio>
-        <div class="grid grid-cols-4 gap-1.5 mb-2">
-          <button onclick="startFM('https://stream.zeno.fm/0r0xa792kwzuv', 'Melody FM')" class="py-1 bg-emerald-700 hover:bg-emerald-600 rounded text-[11px] font-semibold">1. Melody</button>
-          <button onclick="startFM('https://stream.zeno.fm/4d272295908tv', 'Cinema Hits')" class="py-1 bg-slate-700 hover:bg-slate-600 rounded text-[11px] font-semibold">2. Hits</button>
-          <button onclick="startFM('https://stream.zeno.fm/f3wvbbqmdg8uv', 'Mass Beats')" class="py-1 bg-slate-700 hover:bg-slate-600 rounded text-[11px] font-semibold">3. Beats</button>
-          <button onclick="stopFM()" class="py-1 bg-rose-800 hover:bg-rose-700 rounded text-[11px] font-semibold">Stop</button>
-        </div>
-        <details class="text-xs">
-          <summary class="cursor-pointer text-amber-200 font-semibold select-none">📺 Open/Close YouTube Video Player</summary>
-          <div class="aspect-video w-full rounded-lg overflow-hidden mt-2 bg-black">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk" allowfullscreen></iframe>
+      
+      <!-- Beautiful Glassmorphic In-App Music & Video Player (టాప్ బ్యానర్ దగ్గర అందమైన మ్యూజిక్ ప్లేయర్) -->
+      <div class="rounded-2xl bg-white/10 p-3.5 border border-white/15 backdrop-blur-md shadow-inner relative z-10">
+        <div class="flex items-center justify-between text-xs mb-2.5">
+          <div class="flex items-center gap-2 font-bold text-amber-300">
+            <span class="w-6 h-6 rounded-full bg-rose-500/20 border border-rose-400/40 flex items-center justify-center">
+              <span class="material-symbols-outlined text-sm text-rose-400 animate-pulse">radio</span>
+            </span>
+            <span>Live Telugu Melody FM</span>
           </div>
-        </details>
-      </div>
-    </header>
-
-    <!-- =====================================================================
-         2. STICKY NAVIGATION BAR (సెక్షన్ నావిగేషన్ బార్)
-         ===================================================================== -->
-    <nav class="sticky top-0 z-40 bg-[#9a3412] text-white px-2 py-2 flex gap-2 overflow-x-auto no-scrollbar shadow-md text-xs font-semibold">
-      <a href="#tourism-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">Tourism (6)</a>
-      <a href="#love-chat-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">💖 1-Min Secret Chat</a>
-      <a href="#ride-query-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">🏍️ Ride &amp; Private Query</a>
-      <a href="#delivery-vault-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">📦 Quick Delivery &amp; Vault</a>
-      <a href="#services-calc-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">⚡ Recharge &amp; Calcs</a>
-      <a href="#jobs-feedback-section" class="px-2.5 py-1 bg-white/15 hover:bg-white/25 rounded-lg whitespace-nowrap">💼 Jobs &amp; Feedback</a>
-    </nav>
-
-    <!-- MAIN SECTIONS CONTAINER -->
-    <main class="p-3.5 flex flex-col gap-7">
-
-      <!-- ===================================================================
-           3. EASTERN GHATS & COASTAL EXPLORER (2-COLUMN OLD FORMAT LAYOUT)
-           =================================================================== -->
-      <section id="tourism-section">
-        <div class="mb-3">
-          <h2 class="text-lg font-bold text-[#14532d]">Eastern Ghats &amp; Coastal Explorer</h2>
-          <p class="text-xs text-slate-600">ఏ ప్యాకేజీ పైన నొక్కినా 6 సైట్‌సీయింగ్ స్పాట్స్, ఫోటోలు &amp; ధరల వివరాలు వస్తాయి.</p>
-        </div>
-
-        <!-- 2-Column Card Grid (మీరు పంపిన ఫోటో లేఅవుట్ ప్రకారం) -->
-        <div class="grid grid-cols-2 gap-3" id="tourism-grid">
-          <!-- Cards JS ద్వారా ఆటోమేటిక్‌గా లోడ్ అవుతాయి -->
-        </div>
-      </section>
-
-      <hr class="border-stone-300">
-
-      <!-- ===================================================================
-           4. SECRET LOVE WALL & 1-MINUTE AUTO-DELETE LIVE CHAT
-           =================================================================== -->
-      <section id="love-chat-section" class="bg-white rounded-2xl border border-rose-200 p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-1">
-          <h2 class="text-base font-bold text-rose-900 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-rose-600 text-lg">favorite</span> Secret Love Wall &amp; 1-Min Chat
-          </h2>
-          <span id="chat-lock-status" class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Posting: ON</span>
-        </div>
-        <p class="text-xs text-slate-500 mb-3">ఇక్కడ పెట్టిన మెసేజ్ 60 సెకన్ల తర్వాత ఆటోమేటిక్‌గా మాయమవుతుంది (100% Privacy).</p>
-
-        <!-- Admin Control to Enable/Disable Public Posting (ఎవరినీ పోస్ట్ చేయకుండా ఆపే కంట్రోల్) -->
-        <div id="admin-chat-controls" class="hidden mb-3 p-2.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between">
-          <span class="text-xs font-bold text-amber-900">Admin: పబ్లిక్ పోస్టింగ్ కంట్రోల్</span>
-          <button onclick="togglePublicPosting()" id="toggle-post-btn" class="px-3 py-1 bg-rose-600 text-white text-xs font-bold rounded-lg">Disable Posting</button>
-        </div>
-
-        <div id="chat-input-area" class="flex gap-2 mb-3">
-          <input type="text" id="secret-msg-input" placeholder="సీక్రెట్ మెసేజ్ రాయండి..." class="flex-1 text-xs rounded-xl border-rose-300 focus:border-rose-500 focus:ring-rose-500">
-          <button onclick="addVanishingMessage()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow">Post</button>
-        </div>
-
-        <div id="vanishing-chat-box" class="flex flex-col gap-2 min-h-[70px] max-h-60 overflow-y-auto bg-rose-50/40 border border-rose-100 rounded-xl p-2.5">
-          <p class="text-[11px] text-slate-400 text-center my-auto" id="empty-chat-hint">ప్రస్తుతం లైవ్ మెసేజ్‌లు లేవు. మొదటి మెసేజ్ పంపండి!</p>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           5. RAPIDO-STYLE EASY RIDE & PRIVATE NIGHT/TRAVEL QUERY BOX
-           =================================================================== -->
-      <section id="ride-query-section" class="bg-white rounded-2xl border border-emerald-200 p-4 shadow-sm">
-        <h2 class="text-base font-bold text-[#14532d] mb-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-emerald-700 text-lg">two_wheeler</span> Rapido Ride &amp; Private Travel Query
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">నైట్/ఈవెనింగ్ ప్రయాణాలకు బైక్/ఆటో కావాలంటే వివరాలు పంపండి. మీ నంబర్ పబ్లిక్‌గా కనిపించదు, నేరుగా అడ్మిన్ వాట్సాప్‌కు మాత్రమే వెళ్తుంది.</p>
-
-        <!-- One-Tap Live GPS Share -->
-        <button onclick="shareLiveGPS()" class="w-full py-3 mb-4 bg-[#15803d] hover:bg-[#166534] text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-base">my_location</span> నా లైవ్ GPS లొకేషన్ పంపండి (Instant Pickup)
-        </button>
-
-        <!-- Private Query Form (ఇతరులకు నంబర్ కనిపించకుండా ప్రైవేట్‌గా అడ్మిన్‌కు వెళ్లే ఫామ్) -->
-        <div class="bg-emerald-50/60 border border-emerald-200 rounded-xl p-3">
-          <h3 class="text-xs font-bold text-emerald-950 mb-2">🔒 Private Ride / Emergency Query (100% Confidential)</h3>
-          <div class="flex flex-col gap-2">
-            <input type="text" id="q-route" placeholder="ఎక్కడి నుండి ఎక్కడికి? (ఉదా: Kiltampalem to VZM)" class="text-xs rounded-lg border-emerald-300 p-2">
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="q-time" placeholder="సమయం (ఉదా: Night 9 PM)" class="text-xs rounded-lg border-emerald-300 p-2">
-              <input type="tel" id="q-phone" placeholder="మీ ఫోన్ నంబర్ (Private)" class="text-xs rounded-lg border-emerald-300 p-2">
+          <!-- Animated Equalizer + Status -->
+          <div class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-full border border-white/10">
+            <div class="flex items-end gap-0.5 h-3" id="eq-bars">
+              <span class="w-0.5 bg-emerald-400 h-1 rounded-full"></span>
+              <span class="w-0.5 bg-amber-400 h-2 rounded-full"></span>
+              <span class="w-0.5 bg-emerald-400 h-1 rounded-full"></span>
             </div>
-            <button onclick="submitPrivateRideQuery()" class="w-full py-2 bg-[#b45309] hover:bg-[#92400e] text-white rounded-lg text-xs font-bold shadow">
-              Send Private Request (Admin Only)
-            </button>
+            <span id="fm-status" class="text-[11px] text-emerald-200 font-medium">Tap Channel</span>
           </div>
         </div>
 
-        <!-- Admin Only: Received Private Queries List -->
-        <div id="admin-private-queries" class="hidden mt-3 p-3 bg-slate-900 text-white rounded-xl">
-          <h4 class="text-xs font-bold text-amber-400 mb-2">👑 Admin Inbox: Private Ride Requests</h4>
-          <div id="private-query-list" class="flex flex-col gap-2 text-xs"></div>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           6. QUICK DELIVERY & PASSWORD-PROTECTED SECRET NIGHT VAULT
-           =================================================================== -->
-      <section id="delivery-vault-section" class="bg-white rounded-2xl border border-amber-300 p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <h2 class="text-base font-bold text-amber-950 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-amber-700 text-lg">local_shipping</span> Quick Delivery &amp; Secret Night Vault
-            </h2>
-            <p class="text-xs text-slate-500">6 KM లోపు ఫుడ్, కిరాణా &amp; అత్యవసర వస్తువుల డెలివరీ.</p>
-          </div>
-          <span id="vault-status-pill" class="px-2 py-0.5 bg-amber-100 text-amber-900 rounded text-[10px] font-bold">Vault Locked</span>
+        <audio id="fm-audio" src="https://stream.zeno.fm/0r0xa792kwzuv" preload="none"></audio>
+        
+        <!-- Stylish Music Channel Buttons -->
+        <div class="grid grid-cols-4 gap-1.5 mb-3">
+          <button onclick="playFM('https://stream.zeno.fm/0r0xa792kwzuv', 'Love Hits', this)" class="fm-btn py-1.5 bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] rounded-xl font-semibold shadow-xs transition-all border border-emerald-400/30">🎵 Love</button>
+          <button onclick="playFM('https://stream.zeno.fm/4d272295908tv', 'Cinema FM', this)" class="fm-btn py-1.5 bg-white/10 hover:bg-white/20 text-white text-[11px] rounded-xl font-semibold transition-all border border-white/10">🎬 Cinema</button>
+          <button onclick="playFM('https://stream.zeno.fm/f3wvbbqmdg8uv', 'Mass Beats', this)" class="fm-btn py-1.5 bg-white/10 hover:bg-white/20 text-white text-[11px] rounded-xl font-semibold transition-all border border-white/10">🔥 Beats</button>
+          <button onclick="stopFM()" class="py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] rounded-xl font-semibold transition-all">⏹ Stop</button>
         </div>
 
-        <!-- Standard Delivery Buttons -->
-        <div class="grid grid-cols-2 gap-2 mb-4">
-          <button onclick="orderWhatsApp('Food / Tiffin Delivery')" class="p-2.5 bg-stone-100 hover:bg-stone-200 rounded-xl text-left border border-stone-200">
-            <span class="text-sm font-bold block text-slate-800">🍛 Food &amp; Groceries</span>
-            <span class="text-[11px] text-slate-500">30 నిమిషాల్లో డెలివరీ</span>
-          </button>
-          <button onclick="orderWhatsApp('Medicines / Emergency')" class="p-2.5 bg-stone-100 hover:bg-stone-200 rounded-xl text-left border border-stone-200">
-            <span class="text-sm font-bold block text-slate-800">💊 Medicines &amp; Milk</span>
-            <span class="text-[11px] text-slate-500">అత్యవసర హోమ్ డెలివరీ</span>
-          </button>
-        </div>
-
-        <!-- Secret Night Vault (PIN: 9999 ఎంటర్ చేస్తేనే కనిపిస్తుంది) -->
-        <div class="border-t border-amber-200 pt-3">
-          <p class="text-[11px] font-semibold text-amber-900 mb-2">🔐 Secret Night &amp; Personal Essentials Vault (PIN Required):</p>
-          <div id="vault-unlock-bar" class="flex gap-2">
-            <input type="password" id="vault-pin-field" placeholder="Enter Vault PIN (9999)" class="flex-1 text-xs rounded-lg border-amber-300 p-2">
-            <button onclick="unlockSecretVault()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg">Unlock Vault</button>
-          </div>
-
-          <!-- Hidden Sensitive Services (PIN కరెక్ట్ అయితేనే ఓపెన్ అవుతుంది) -->
-          <div id="vault-secret-items" class="hidden mt-3 flex flex-col gap-2 animate-fadeIn">
-            <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between">
-              <div>
-                <p class="text-xs font-bold text-red-950">🍺 Cool Beverages / Night Stuff Supply</p>
-                <p class="text-[11px] text-red-700">100% గోప్యంగా &amp; సురక్షితంగా డెలివరీ</p>
-              </div>
-              <button onclick="orderWhatsApp('Private Night Beverage/Stuff Request')" class="px-3 py-1.5 bg-red-700 text-white text-xs font-bold rounded-lg">Request</button>
-            </div>
-            <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl flex items-center justify-between">
-              <div>
-                <p class="text-xs font-bold text-purple-950">🛡️ Personal Wellness &amp; Privacy Essentials</p>
-                <p class="text-[11px] text-purple-700">Discreet Packing • No Questions Asked</p>
-              </div>
-              <button onclick="orderWhatsApp('Discreet Personal Wellness Supply')" class="px-3 py-1.5 bg-purple-700 text-white text-xs font-bold rounded-lg">Request</button>
-            </div>
-            <button onclick="lockSecretVault()" class="text-[11px] text-slate-500 underline self-end">Lock Vault Again</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           7. RECHARGES (+₹2 PROFIT) & VILLAGE INTEREST CALCULATOR
-           =================================================================== -->
-      <section id="services-calc-section" class="bg-white rounded-2xl border border-blue-200 p-4 shadow-sm">
-        <h2 class="text-base font-bold text-blue-950 mb-1 flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-blue-700 text-lg">calculate</span> Mobile Recharge &amp; Village Calculators
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">రీఛార్జ్ సర్వీస్ (+₹2 నామినల్ ఛార్జ్) మరియు నూటికి వడ్డీ లెక్కలు.</p>
-
-        <div class="grid grid-cols-1 gap-3">
-          <!-- Recharge Box -->
-          <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200">
-            <h3 class="text-xs font-bold text-blue-900 mb-2">📱 Instant Mobile / DTH Recharge (+₹2 Service Fee)</h3>
-            <div class="grid grid-cols-2 gap-2 mb-2">
-              <input type="tel" id="rec-mobile" placeholder="Phone / DTH Number" class="text-xs rounded-lg border-blue-300 p-2">
-              <input type="number" id="rec-amount" placeholder="Plan Amount (₹)" class="text-xs rounded-lg border-blue-300 p-2">
-            </div>
-            <button onclick="processRecharge()" class="w-full py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold">Send Recharge Request (+₹2)</button>
-          </div>
-
-          <!-- Village Interest Calculator -->
-          <div class="p-3 bg-stone-50 rounded-xl border border-stone-200">
-            <h3 class="text-xs font-bold text-slate-800 mb-2">📊 నూటికి వడ్డీ లెక్క (Village Monthly Interest)</h3>
-            <div class="grid grid-cols-3 gap-1.5 mb-2">
-              <input type="number" id="calc-p" placeholder="అసలు (₹)" class="text-xs rounded-lg border-stone-300 p-1.5">
-              <input type="number" id="calc-r" placeholder="వడ్డీ (ఉదా: 2)" value="2" class="text-xs rounded-lg border-stone-300 p-1.5">
-              <input type="number" id="calc-m" placeholder="నెలలు" class="text-xs rounded-lg border-stone-300 p-1.5">
-            </div>
-            <button onclick="calculateVillageInterest()" class="w-full py-1.5 bg-slate-800 text-white rounded-lg text-xs font-bold">లెక్కించండి (Calculate)</button>
-            <p id="calc-output" class="mt-2 text-xs font-bold text-emerald-700"></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           8. LOCAL JOBS HUB & COMMUNITY FEEDBACK
-           =================================================================== -->
-      <section id="jobs-feedback-section" class="bg-white rounded-2xl border border-teal-200 p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-base font-bold text-teal-950 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-teal-700 text-lg">work</span> Local Jobs (S.Kota • Kiltampalem • Vizag)
-          </h2>
-          <button id="add-job-btn" onclick="addNewJobPrompt()" class="hidden px-2.5 py-1 bg-emerald-700 text-white text-[11px] font-bold rounded-lg">+ Add Job</button>
-        </div>
-        <div id="jobs-container" class="flex flex-col gap-2 mb-4"></div>
-
-        <!-- Feedback Box -->
-        <div class="border-t border-stone-200 pt-3">
-          <h3 class="text-xs font-bold text-slate-700 mb-1.5">💬 మీ అభిప్రాయం / సలహా పంపండి</h3>
-          <div class="flex gap-2">
-            <input type="text" id="feedback-text" placeholder="ఏదైనా కొత్త సర్వీస్ కావాలా? ఇక్కడ రాయండి..." class="flex-1 text-xs rounded-lg border-stone-300 p-2">
-            <button onclick="sendFeedback()" class="px-3 py-2 bg-[#14532d] text-white text-xs font-bold rounded-lg">Send</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- =====================================================================
-         TOURISM POPUP MODAL (6 SIGHTSEEING SPOTS & PACKAGE RATE)
-         ===================================================================== -->
-    <div id="package-modal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl max-w-sm w-full overflow-hidden shadow-2xl animate-fadeIn">
-        <div class="bg-[#14532d] text-white p-3.5 flex items-center justify-between">
-          <div>
-            <span id="m-badge" class="text-[10px] bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded uppercase"></span>
-            <h3 id="m-title" class="text-base font-bold mt-1"></h3>
-          </div>
-          <button onclick="closePackageModal()" class="p-1 bg-white/15 rounded-full"><span class="material-symbols-outlined text-base">close</span></button>
-        </div>
-        <div class="p-4">
-          <p id="m-price" class="text-sm font-bold text-[#b45309] mb-2"></p>
-          <p class="text-xs font-bold text-slate-700 mb-1.5">📍 కవర్ అయ్యే 6 ముఖ్యమైన ప్రదేశాలు:</p>
-          <ul id="m-spots" class="text-xs text-slate-600 list-disc pl-4 space-y-1 mb-4"></ul>
-          <button onclick="confirmTripBooking()" class="w-full py-2.5 bg-[#15803d] hover:bg-[#166534] text-white rounded-xl text-xs font-bold shadow">
-            Book Trip on WhatsApp
-          </button>
+        <!-- YouTube Video Box -->
+        <div class="aspect-video w-full rounded-xl overflow-hidden bg-black/80 border border-white/15 relative shadow">
+          <iframe id="yt-player" class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk" allowfullscreen></iframe>
         </div>
       </div>
     </div>
 
-  </div>
+    <!-- =======================================================================
+         2. SECTION TABS (నావిగేషన్ ట్యాబ్స్)
+         ======================================================================= -->
+    <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 p-2 flex gap-1.5 overflow-x-auto no-scrollbar shadow-sm">
+      <a href="#love-chat-sec" class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-semibold whitespace-nowrap">💖 Love &amp; 1Min Chat</a>
+      <a href="#ride-sec" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold whitespace-nowrap">🏍️ Rapido &amp; Private Query</a>
+      <a href="#vault-sec" class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold whitespace-nowrap">🔒 Secret Vault</a>
+      <a href="#services-sec" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold whitespace-nowrap">⚡ Recharges &amp; Calcs</a>
+      <a href="#tourism-sec" class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold whitespace-nowrap">🏞️ Tourism</a>
+      <a href="#jobs-sec" class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold whitespace-nowrap">💼 Jobs</a>
+    </nav>
 
-  <!-- =======================================================================
-       JAVASCRIPT LOGIC (అన్ని ఫీచర్ల కంట్రోల్ కోడ్)
-       ======================================================================= -->
-  <script>
-    let adminActive = false;
-    let publicPostingAllowed = true;
-    let selectedPackage = null;
+    <!-- =======================================================================
+         MAIN CONTENT AREA
+         ======================================================================= -->
+    <main class="p-4 flex flex-col gap-6">
 
-    // 1. TOURISM DATA (మీ స్క్రీన్‌షాట్‌లోని 6 ప్యాకేజీలు)
-    const TOURISM_PACKAGES = [
-      {
-        tag: "HILL STATION",
-        title: "Araku Valley & Borra Caves",
-        desc: "Tribal coffee plantations, misty viewpoints, and ancient limestone caves.",
-        price: "Starts ₹1,499",
-        img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=80",
-        spots: ["Borra Caves", "Ananthagiri Coffee Plantations", "Galikonda Viewpoint", "Tribal Museum", "Padmapuram Gardens", "Chaparai Water Cascade"]
-      },
-      {
-        tag: "COASTAL",
-        title: "Visakhapatnam Coastline",
-        desc: "RK Beach waves, Kailasagiri hilltop views, and Rushikonda serenity.",
-        price: "Starts ₹999",
-        img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80",
-        spots: ["RK Beach & Submarine Museum", "Kailasagiri Ropeway", "Rushikonda Beach", "Thotlakonda Buddhist Complex", "Bheemili Beach", "Simhachalam Temple"]
-      },
-      {
-        tag: "WATERFALLS",
-        title: "Kasipatnam & Tyda",
-        desc: "Jungle camp trails, refreshing stream crossings, and hidden waterfalls.",
-        price: "Starts ₹1,199",
-        img: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=500&q=80",
-        spots: ["Thatipudi Reservoir", "Tyda Jungle Bells", "Katiki Waterfalls", "Damuku Viewpoint", "Kasipatnam Forest Trail", "S.Kota Local Point"]
-      },
-      {
-        tag: "HIGHLANDS",
-        title: "Paderu Coffee Highlands",
-        desc: "Cloud-kissed sunrise viewpoints and organic tribal turmeric farms.",
-        price: "Starts ₹1,399",
-        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80",
-        spots: ["Vanajangi Hills Sunrise", "Modakondamma Temple", "Matsyagundam Fish Pool", "Paderu Coffee Estates", "Chintapalli Forest", "Kothapalli Waterfalls"]
-      },
-      {
-        tag: "HERITAGE",
-        title: "Vizianagaram Royal Fort",
-        desc: "Historic Gajapathi stone architecture and Ramanarayanam cultural temple.",
-        price: "Starts ₹899",
-        img: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=500&q=80",
-        spots: ["Vizianagaram Fort", "Ramanarayanam Spiritual Park", "Pydithalli Ammavari Temple", "Kumili Temple", "Bobbili Fort", "Tatipudi Dam"]
-      },
-      {
-        tag: "ANDHRA KASHMIR",
-        title: "Lambasingi & Tajangi",
-        desc: "Misty winter mornings, strawberry farms, and reservoir boating.",
-        price: "Starts ₹1,599",
-        img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=500&q=80",
-        spots: ["Lambasingi Mist Point", "Tajangi Reservoir", "Strawberry Farms", "Cheruvulavenam Sunrise", "Narsipatnam Ghat", "Boating Point"]
-      }
-    ];
+      <!-- 3. SECRET LOVE WALL & 1-MINUTE LIVE VANISHING CHAT (60 సెకన్లలో మాయమయ్యే చాట్) -->
+      <section id="love-chat-sec" class="rounded-2xl border border-rose-200 bg-gradient-to-b from-rose-50/50 to-white p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="text-base font-bold text-rose-900 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-rose-600">favorite</span> 100% Secret Love Wall &amp; Vanishing Chat
+          </h2>
+          <span id="post-permission-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Open</span>
+        </div>
+        <p class="text-xs text-slate-500 mb-3">Live చాట్ మెసేజ్ సరిగ్గా 1 నిమిషం (60 Secs) తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతుంది.</p>
 
-    function renderTourismCards() {
-      const grid = document.getElementById('tourism-grid');
-      grid.innerHTML = TOURISM_PACKAGES.map((pkg, idx) => `
-        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="h-28 relative bg-slate-200">
-              <img src="${pkg.img}" alt="${pkg.title}" class="w-full h-full object-cover">
-              <span class="absolute top-2 right-2 bg-[#14532d] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">${pkg.price}</span>
-            </div>
-            <div class="p-2.5">
-              <span class="inline-block bg-amber-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded mb-1">${pkg.tag}</span>
-              <h3 class="text-xs font-bold text-slate-900 leading-snug mb-1">${pkg.title}</h3>
-              <p class="text-[10px] text-slate-500 leading-relaxed line-clamp-3">${pkg.desc}</p>
-            </div>
+        <!-- Admin Only: పబ్లిక్ పోస్టింగ్ ఆపే/ఆన్ చేసే కంట్రోల్ -->
+        <div id="admin-chat-control-bar" class="hidden mb-3 p-2.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-900">👑 Admin: ఇతరుల పోస్టింగ్ కంట్రోల్</span>
+          <button onclick="togglePublicPosting()" id="toggle-posting-btn" class="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold">Stop Public Posts</button>
+        </div>
+
+        <!-- Message Input -->
+        <div id="love-input-wrapper" class="flex flex-col gap-2 mb-4">
+          <input type="text" id="love-input" placeholder="మీ సీక్రెట్ మెసేజ్ ఇక్కడ టైప్ చేయండి..." class="w-full text-sm rounded-xl border-rose-300 p-2.5 focus:border-rose-500 focus:ring-rose-500">
+          <button onclick="postLoveMessage()" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-md transition-all">Post to Live Chat (Auto-Destruct 1 Min)</button>
+        </div>
+
+        <!-- Live Feed container -->
+        <div id="love-feed" class="flex flex-col gap-2 min-h-[80px] border border-rose-100 rounded-xl p-3 bg-rose-50/30">
+          <p class="text-xs text-slate-400 text-center my-auto">ప్రస్తుతం మెసేజ్‌లు లేవు. మీ సీక్రెట్ మెసేజ్ పంపండి!</p>
+        </div>
+      </section>
+
+      <!-- 4. RAPIDO-STYLE EASY RIDE & PRIVATE TRAVEL QUERY (నైట్ ప్రయాణాలకు ప్రైవేట్ క్వెరీ బాక్స్) -->
+      <section id="ride-sec" class="rounded-2xl border border-teal-200 bg-emerald-50/30 p-4 shadow-sm">
+        <h2 class="text-base font-bold text-emerald-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-emerald-600">two_wheeler</span> Rapido-Style Easy Ride &amp; Private Query</h2>
+        <p class="text-xs text-slate-500 mb-3">క్రింద ఉన్న బటన్ నొక్కగానే మీ లైవ్ లొకేషన్ డ్రైవర్‌కు అందుతుంది.</p>
+
+        <div class="grid grid-cols-3 gap-2 mb-3">
+          <div class="p-2.5 bg-white rounded-xl border-2 border-emerald-600 text-center shadow-sm">
+            <span class="text-xl block mb-0.5">🏍️</span>
+            <p class="text-xs font-bold">Bike ₹5/km</p>
           </div>
-          <div class="p-2.5 pt-0 flex flex-col gap-1.5">
-            <button onclick="openPackageModal(${idx})" class="w-full py-1.5 bg-[#b45309] hover:bg-[#92400e] text-white text-[10px] font-bold rounded-lg shadow-xs">
-              👉 Open (6 Spots &amp; Price)
-            </button>
-            <button onclick="directBookTrip(${idx})" class="w-full py-1.5 bg-[#15803d] hover:bg-[#166534] text-white text-[10px] font-bold rounded-lg shadow-xs">
-              Book Trip
+          <div class="p-2.5 bg-white rounded-xl border border-slate-200 text-center opacity-80">
+            <span class="text-xl block mb-0.5">🛺</span>
+            <p class="text-xs font-bold">Auto</p>
+          </div>
+          <div class="p-2.5 bg-white rounded-xl border border-slate-200 text-center opacity-80">
+            <span class="text-xl block mb-0.5">🚗</span>
+            <p class="text-xs font-bold">Car</p>
+          </div>
+        </div>
+
+        <button onclick="sendLiveLocation()" class="w-full py-3.5 mb-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-sm font-bold shadow-lg flex items-center justify-center gap-2 transition-all">
+          <span class="material-symbols-outlined">near_me</span> నా లొకేషన్ పంపండి (Send My Live GPS)
+        </button>
+
+        <!-- Private Ride Query Box (నంబర్ పబ్లిక్‌గా కనిపించకుండా కేవలం అడ్మిన్ వాట్సాప్‌కు మాత్రమే వెళ్తుంది) -->
+        <div class="p-3 bg-white rounded-xl border border-emerald-200 shadow-2xs">
+          <h3 class="text-xs font-bold text-emerald-950 mb-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-emerald-700">lock_person</span> Private Ride Query (నంబర్ ఇతరులకు కనిపించదు)
+          </h3>
+          <p class="text-[11px] text-slate-500 mb-2">రాత్రి లేదా అత్యవసరంగా బైక్/ఆటో కావాలంటే వివరాలు పంపండి. నేరుగా అడ్మిన్‌కు మాత్రమే మెసేజ్ వస్తుంది.</p>
+          <div class="flex flex-col gap-2">
+            <input type="text" id="ride-route" placeholder="ఎక్కడి నుండి ఎక్కడికి? (ఉదా: Kiltampalem to VZM)" class="text-xs rounded-lg border-slate-300 p-2">
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="ride-time" placeholder="సమయం (ఉదా: Night 9 PM)" class="text-xs rounded-lg border-slate-300 p-2">
+              <input type="tel" id="ride-phone" placeholder="మీ ఫోన్ నంబర్ (Private)" class="text-xs rounded-lg border-slate-300 p-2">
+            </div>
+            <button onclick="sendPrivateRideQuery()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold">
+              Send Private Query to Admin WhatsApp
             </button>
           </div>
         </div>
-      `).join('');
-    }
 
-    function openPackageModal(index) {
-      selectedPackage = TOURISM_PACKAGES[index];
-      document.getElementById('m-badge').textContent = selectedPackage.tag;
-      document.getElementById('m-title').textContent = selectedPackage.title;
-      document.getElementById('m-price').textContent = `Package Rate: ${selectedPackage.price}`;
-      document.getElementById('m-spots').innerHTML = selectedPackage.spots.map(s => `<li>${s}</li>`).join('');
-      document.getElementById('package-modal').classList.remove('hidden');
-    }
+        <!-- Admin Only: వచ్చిన ప్రైవేట్ రైడ్ క్వెరీలు చూసే బాక్స్ -->
+        <div id="admin-ride-inbox" class="hidden mt-3 p-3 bg-slate-900 text-white rounded-xl">
+          <p class="text-xs font-bold text-amber-400 mb-2">👑 Admin Private Ride Inbox:</p>
+          <div id="admin-ride-list" class="flex flex-col gap-1.5 text-xs"></div>
+        </div>
+      </section>
 
-    function closePackageModal() {
-      document.getElementById('package-modal').classList.add('hidden');
-    }
+      <!-- 5. SECRET NIGHT VAULT (PIN: 9999 ఎంటర్ చేస్తేనే ఓపెన్ అయ్యే రహస్య విభాగం) -->
+      <section id="vault-sec" class="rounded-2xl border border-amber-300 bg-gradient-to-b from-amber-50 to-white p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <h2 class="text-base font-bold text-amber-900 flex items-center gap-1"><span class="material-symbols-outlined text-amber-600">visibility_off</span> Secret Night Vault</h2>
+            <p class="text-xs text-slate-500">వ్యక్తిగత &amp; అత్యవసర రహస్య డెలివరీ సర్వీస్ (PIN Required).</p>
+          </div>
+          <div id="vault-lock-badge" class="px-2 py-1 rounded bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">lock</span> Locked
+          </div>
+        </div>
 
-    function confirmTripBooking() {
-      if (!selectedPackage) return;
-      const text = `Hi Prakash, I want to book Tourism Package: ${selectedPackage.title} (${selectedPackage.price}).`;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
-    }
+        <!-- PIN Input Bar -->
+        <div id="vault-pin-bar" class="flex gap-2 mb-2">
+          <input type="password" id="vault-pin-input" placeholder="Enter Vault PIN (9999)" class="flex-1 text-xs rounded-lg border-amber-300 p-2">
+          <button onclick="unlockVault()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Unlock</button>
+        </div>
 
-    function directBookTrip(index) {
-      const pkg = TOURISM_PACKAGES[index];
-      const text = `Hi Prakash, Book Trip Inquiry: ${pkg.title} (${pkg.price}).`;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
-    }
+        <!-- Hidden Sensitive Content -->
+        <div id="vault-protected-content" class="hidden flex flex-col gap-2.5 mt-2 animate-fadeIn">
+          <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-red-900">🍺 Cool Beer, Drinks &amp; Night Stuff</p>
+              <p class="text-[11px] text-red-700">24/7 అత్యవసర రహస్య డెలివరీ సర్వీస్</p>
+            </div>
+            <button onclick="contactPrakash('Special Night Supply / Beverages')" class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold">Order Now</button>
+          </div>
+          <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-purple-900">🛡️ Personal Wellness &amp; Privacy Essentials</p>
+              <p class="text-[11px] text-purple-700">100% Discreet Packing • Safe Delivery</p>
+            </div>
+            <button onclick="contactPrakash('Private Personal Essentials')" class="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-bold">Order Now</button>
+          </div>
+          <button onclick="lockVault()" class="text-[11px] text-slate-500 underline self-end">Lock Vault</button>
+        </div>
+      </section>
 
-    // 2. ADMIN MASTER LOGIN & CONTROLS (పాస్‌వర్డ్: 1430)
-    function toggleAdminMode() {
-      if (!adminActive) {
-        const entered = prompt("అడ్మిన్ పాస్‌వర్డ్ ఎంటర్ చేయండి (Admin Password):");
-        if (entered === MASTER_ADMIN_PIN) {
-          adminActive = true;
-          updateAdminUI();
-          alert("Admin Mode Unlocked! ఇప్పుడు మీరు పోస్ట్‌లు డిలీట్ చేయవచ్చు & కంట్రోల్ చేయవచ్చు.");
-        } else if (entered !== null) {
+      <!-- 6. ALL RECHARGE + VILLAGE MATHEMATICS CALCULATIONS -->
+      <section id="services-sec" class="rounded-2xl border border-blue-200 bg-white p-4 shadow-sm">
+        <h2 class="text-base font-bold text-blue-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-blue-600">receipt_long</span> Recharges &amp; Village Calculators</h2>
+        <p class="text-xs text-slate-500 mb-4">మొబైల్ రీఛార్జ్ (+₹2) మరియు గ్రామ లెక్కలు సులువుగా చేసుకోండి.</p>
+
+        <div class="p-4 bg-blue-50 rounded-xl mb-4 border border-blue-100">
+          <h3 class="text-xs font-bold text-blue-900 mb-2 uppercase tracking-wide">📱 Mobile &amp; DTH Recharge (+₹2 Fee)</h3>
+          <div class="flex flex-col gap-2">
+            <input type="text" id="rech-num" placeholder="Mobile / DTH Number" class="text-sm rounded-lg border-blue-200 p-2">
+            <input type="number" id="rech-amt" placeholder="Plan Amount (₹)" class="text-sm rounded-lg border-blue-200 p-2">
+            <button onclick="payRecharge()" class="py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Pay via WhatsApp (+₹2 Service Fee)</button>
+          </div>
+        </div>
+
+        <!-- Village Calculators -->
+        <div class="flex flex-col gap-3">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-700 mb-1">📊 నూటికి వడ్డీ లెక్కింపు (Monthly Interest)</h4>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="number" id="prin" placeholder="అసలు (Principal)" class="text-xs p-1.5 rounded border">
+              <input type="number" id="months" placeholder="నెలలు (Months)" class="text-xs p-1.5 rounded border">
+            </div>
+            <button onclick="calcInterest()" class="mt-2 w-full py-1 bg-slate-800 text-white rounded text-xs font-bold">Calculate Interest</button>
+            <p id="interest-res" class="mt-1 text-xs font-bold text-emerald-600"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. TOURISM PACKAGES (2 BIG CARDS WITH POPUP) -->
+      <section id="tourism-sec" class="rounded-2xl border border-purple-200 bg-purple-50/20 p-4 shadow-sm">
+        <h2 class="text-base font-bold text-purple-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-purple-600">landscape</span> Tourism Packages</h2>
+        <p class="text-xs text-slate-500 mb-4">ఏ ప్లేస్ నొక్కినా గ్యాలరీ &amp; పూర్తి వివరాలు కనిపిస్తాయి.</p>
+
+        <div class="grid grid-cols-1 gap-4">
+          <div onclick="openTourismPopup('Araku Valley', 'starts ₹1,499', 'బొర్రా గుహలు, కాఫీ తోటలు, చాపరాయి వాటర్ ఫాల్స్.')" class="rounded-xl overflow-hidden shadow border border-purple-100 bg-white cursor-pointer hover:shadow-md transition-all">
+            <div class="h-36 bg-gradient-to-r from-emerald-600 to-teal-500 flex items-end p-3 text-white relative">
+              <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-xs font-bold px-2 py-0.5 rounded">Starts ₹1,499</span>
+              <div>
+                <h3 class="text-base font-bold">Araku Valley &amp; Borra Caves</h3>
+                <p class="text-xs text-emerald-100">Tribal Culture &amp; Misty Views</p>
+              </div>
+            </div>
+            <div class="p-3 bg-purple-50/50 flex justify-between items-center text-xs font-bold text-purple-900">
+              <span>View Gallery &amp; Book Trip</span> <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </div>
+
+          <div onclick="openTourismPopup('Lambasingi & Vizag', 'starts ₹1,599', 'మంచు కొండలు, కాశ్మీర్ లాంటి వాతావరణం, బీచ్.')" class="rounded-xl overflow-hidden shadow border border-purple-100 bg-white cursor-pointer hover:shadow-md transition-all">
+            <div class="h-36 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-end p-3 text-white relative">
+              <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-xs font-bold px-2 py-0.5 rounded">Starts ₹1,599</span>
+              <div>
+                <h3 class="text-base font-bold">Lambasingi Mist Dawn &amp; Vizag</h3>
+                <p class="text-xs text-blue-100">Cold Climate &amp; Beach Excursion</p>
+              </div>
+            </div>
+            <div class="p-3 bg-purple-50/50 flex justify-between items-center text-xs font-bold text-purple-900">
+              <span>View Gallery &amp; Book Trip</span> <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. LOCAL JOBS HUB -->
+      <section id="jobs-sec" class="rounded-2xl border border-teal-200 bg-teal-50/20 p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="text-base font-bold text-teal-900 flex items-center gap-1"><span class="material-symbols-outlined text-teal-600">work</span> Local Jobs &amp; Career Hub</h2>
+          <button id="add-job-admin-btn" onclick="addJobPrompt()" class="hidden px-2.5 py-1 bg-emerald-700 text-white text-[11px] font-bold rounded-lg">+ Add Job</button>
+        </div>
+        <p class="text-xs text-slate-500 mb-3">S.Kota • Kiltampalem • VZM • Vizag లోని తాజా ఉద్యోగ అవకాశాలు.</p>
+        <div id="jobs-list" class="flex flex-col gap-2"></div>
+      </section>
+    </main>
+
+    <!-- TOURISM POPUP MODAL -->
+    <div id="tour-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-4 relative shadow-2xl animate-fadeIn">
+        <button onclick="closeTourismPopup()" class="absolute top-3 right-3 p-1 rounded-full bg-slate-100"><span class="material-symbols-outlined">close</span></button>
+        <h3 id="modal-title" class="text-lg font-bold text-purple-900 mb-1"></h3>
+        <p id="modal-price" class="text-xs font-bold text-amber-600 mb-3"></p>
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <div class="h-20 bg-slate-200 rounded-lg overflow-hidden"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" class="w-full h-full object-cover"></div>
+          <div class="h-20 bg-slate-200 rounded-lg overflow-hidden"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" class="w-full h-full object-cover"></div>
+        </div>
+        <p id="modal-desc" class="text-xs text-slate-600 mb-4"></p>
+        <button onclick="bookTourismIntent()" class="w-full py-2.5 bg-purple-600 text-white rounded-xl text-sm font-bold shadow">Book Trip via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       JAVASCRIPT LOGIC (అడ్మిన్ కంట్రోల్స్ & ఆటోమేషన్ కోడ్)
+       ======================================================================= -->
+  <script>
+    let isAdminUnlocked = false;
+    let isPostingAllowed = true;
+
+    // 1. అడ్మిన్ మాస్టర్ లాక్ / అన్‌లాక్ (పాస్‌వర్డ్: 1430)
+    document.getElementById('admin-master-toggle').addEventListener('click', () => {
+      if (!isAdminUnlocked) {
+        const pass = prompt("అడ్మిన్ పాస్‌వర్డ్ ఎంటర్ చేయండి (Admin Password):");
+        if (pass === ADMIN_PASS_CONFIG) {
+          isAdminUnlocked = true;
+          updateAdminState();
+          alert("Admin Unlocked! ఇప్పుడు మీరు అన్ని కంట్రోల్స్ ఉపయోగించవచ్చు.");
+        } else if (pass !== null) {
           alert("తప్పు పాస్‌వర్డ్!");
         }
       } else {
-        adminActive = false;
-        updateAdminUI();
-        alert("Admin Mode Locked.");
+        isAdminUnlocked = false;
+        updateAdminState();
+        alert("Admin Locked.");
       }
-    }
+    });
 
-    function updateAdminUI() {
-      document.getElementById('admin-status-label').textContent = adminActive ? "Admin: ON" : "Admin: OFF";
-      document.getElementById('admin-lock-icon').textContent = adminActive ? "lock_open" : "lock";
-      document.getElementById('admin-chat-controls').classList.toggle('hidden', !adminActive);
-      document.getElementById('admin-private-queries').classList.toggle('hidden', !adminActive);
-      document.getElementById('add-job-btn').classList.toggle('hidden', !adminActive);
-      renderVanishingMessages();
+    function updateAdminState() {
+      document.getElementById('admin-btn-text').textContent = isAdminUnlocked ? 'Admin ON' : 'Admin Locked';
+      document.getElementById('admin-icon').textContent = isAdminUnlocked ? 'lock_open' : 'lock';
+      document.getElementById('admin-chat-control-bar').classList.toggle('hidden', !isAdminUnlocked);
+      document.getElementById('admin-ride-inbox').classList.toggle('hidden', !isAdminUnlocked);
+      document.getElementById('add-job-admin-btn').classList.toggle('hidden', !isAdminUnlocked);
+      renderLoveFeed();
       renderJobs();
     }
 
-    // 3. FM AUDIO CONTROLS
-    function startFM(streamUrl, label) {
-      const audio = document.getElementById('live-fm-audio');
-      audio.src = streamUrl;
+    // 2. బ్యూటిఫుల్ మ్యూజిక్ ప్లేయర్ కంట్రోల్స్
+    function playFM(url, title, btn) {
+      const audio = document.getElementById('fm-audio');
+      audio.src = url;
       audio.play().then(() => {
-        document.getElementById('fm-now-playing').textContent = `Playing: ${label}`;
+        document.getElementById('fm-status').textContent = title + ' Live';
+        document.querySelectorAll('#eq-bars span').forEach(bar => bar.classList.add('eq-bar'));
       }).catch(() => {
-        document.getElementById('fm-now-playing').textContent = "Stream busy, try another";
+        document.getElementById('fm-status').textContent = 'Tap again';
       });
     }
 
     function stopFM() {
-      const audio = document.getElementById('live-fm-audio');
+      const audio = document.getElementById('fm-audio');
       audio.pause();
-      document.getElementById('fm-now-playing').textContent = "Stopped";
+      document.getElementById('fm-status').textContent = 'Stopped';
+      document.querySelectorAll('#eq-bars span').forEach(bar => bar.classList.remove('eq-bar'));
     }
 
-    // 4. 1-MINUTE AUTO-DELETE CHAT & ADMIN POST LOCK
-    let liveMessages = [];
+    // 3. 1-నిమిషం ఆటో-డిలీట్ చాట్ & పబ్లిక్ పోస్టింగ్ కంట్రోల్
+    let loveMessages = [];
 
     function togglePublicPosting() {
-      publicPostingAllowed = !publicPostingAllowed;
-      const btn = document.getElementById('toggle-post-btn');
-      const statusBadge = document.getElementById('chat-lock-status');
-      const inputArea = document.getElementById('chat-input-area');
+      isPostingAllowed = !isPostingAllowed;
+      const btn = document.getElementById('toggle-posting-btn');
+      const badge = document.getElementById('post-permission-badge');
+      const inputWrap = document.getElementById('love-input-wrapper');
 
-      if (publicPostingAllowed) {
-        btn.textContent = "Disable Posting";
-        statusBadge.textContent = "Posting: ON";
-        statusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800";
-        inputArea.classList.remove('hidden');
+      if (isPostingAllowed) {
+        btn.textContent = 'Stop Public Posts';
+        badge.textContent = 'Open';
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        inputWrap.classList.remove('hidden');
       } else {
-        btn.textContent = "Enable Posting";
-        statusBadge.textContent = "Posting: LOCKED BY ADMIN";
-        statusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800";
-        inputArea.classList.add('hidden');
+        btn.textContent = 'Allow Public Posts';
+        badge.textContent = 'Locked by Admin';
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        inputWrap.classList.add('hidden');
       }
     }
 
-    function addVanishingMessage() {
-      if (!publicPostingAllowed) return alert("ప్రస్తుతం అడ్మిన్ పోస్టింగ్ ఆపివేశారు.");
-      const input = document.getElementById('secret-msg-input');
-      const txt = input.value.trim();
-      if (!txt) return;
-
-      const msgId = Date.now();
-      liveMessages.unshift({ id: msgId, text: txt });
-      input.value = "";
-      renderVanishingMessages();
+    function postLoveMessage() {
+      if (!isPostingAllowed) return alert('ప్రస్తుతం అడ్మిన్ పోస్టింగ్ ఆపివేశారు.');
+      const input = document.getElementById('love-input');
+      if (!input.value.trim()) return;
+      const msgObj = { text: input.value.trim(), id: Date.now() };
+      loveMessages.unshift(msgObj);
+      input.value = '';
+      renderLoveFeed();
 
       // 60 సెకన్ల తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతుంది
       setTimeout(() => {
-        liveMessages = liveMessages.filter(m => m.id !== msgId);
-        renderVanishingMessages();
+        loveMessages = loveMessages.filter(m => m.id !== msgObj.id);
+        renderLoveFeed();
       }, 60000);
     }
 
-    function deleteMessageByAdmin(id) {
-      liveMessages = liveMessages.filter(m => m.id !== id);
-      renderVanishingMessages();
+    function deleteLoveMsg(id) {
+      loveMessages = loveMessages.filter(m => m.id !== id);
+      renderLoveFeed();
     }
 
-    function renderVanishingMessages() {
-      const box = document.getElementById('vanishing-chat-box');
-      if (liveMessages.length === 0) {
-        box.innerHTML = `<p class="text-[11px] text-slate-400 text-center my-auto">ప్రస్తుతం లైవ్ మెసేజ్‌లు లేవు. మొదటి మెసేజ్ పంపండి!</p>`;
+    function renderLoveFeed() {
+      const container = document.getElementById('love-feed');
+      if (loveMessages.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center my-auto">ప్రస్తుతం మెసేజ్‌లు లేవు. మీ సీక్రెట్ మెసేజ్ పంపండి!</p>`;
         return;
       }
-      box.innerHTML = liveMessages.map(m => `
-        <div class="bg-white p-2 rounded-lg border border-rose-200 flex items-center justify-between gap-2 text-xs shadow-2xs animate-fadeIn">
-          <span class="text-slate-800">${m.text}</span>
+      container.innerHTML = loveMessages.map(m => `
+        <div class="p-2.5 bg-white rounded-xl border border-rose-200 text-xs text-slate-800 flex justify-between items-center shadow-2xs animate-fadeIn">
+          <span>${m.text}</span>
           <div class="flex items-center gap-1.5 shrink-0">
-            <span class="text-[9px] font-bold text-rose-600 bg-rose-100 px-1.5 py-0.5 rounded">60s</span>
-            ${adminActive ? `<button onclick="deleteMessageByAdmin(${m.id})" class="text-red-600 font-bold text-xs">✕</button>` : ''}
+            <span class="text-[10px] text-rose-600 font-bold bg-rose-100 px-1.5 py-0.5 rounded">60s Live</span>
+            ${isAdminUnlocked ? `<button onclick="deleteLoveMsg(${m.id})" class="text-red-600 font-bold px-1">✕</button>` : ''}
           </div>
         </div>
       `).join('');
     }
 
-    // 5. PRIVATE RIDE QUERY (నైట్/ఈవెనింగ్ ప్రయాణాలకు - నంబర్ ప్రైవేట్‌గా అడ్మిన్‌కు వెళ్తుంది)
-    let privateQueries = [];
+    // 4. ప్రైవేట్ రైడ్ క్వెరీ & లైవ్ GPS
+    let privateRides = [];
 
-    function submitPrivateRideQuery() {
-      const route = document.getElementById('q-route').value.trim();
-      const time = document.getElementById('q-time').value.trim();
-      const phone = document.getElementById('q-phone').value.trim();
+    function sendPrivateRideQuery() {
+      const route = document.getElementById('ride-route').value.trim();
+      const time = document.getElementById('ride-time').value.trim();
+      const phone = document.getElementById('ride-phone').value.trim();
 
-      if (!route || !phone) return alert("దయచేసి రూట్ మరియు మీ ఫోన్ నంబర్ ఇవ్వండి.");
+      if (!route || !phone) return alert('దయచేసి రూట్ మరియు మీ ఫోన్ నంబర్ ఇవ్వండి.');
 
-      privateQueries.unshift({ route, time: time || "Anytime", phone });
-      renderPrivateQueries();
+      privateRides.unshift({ route, time: time || 'Now', phone });
+      renderPrivateRides();
 
-      document.getElementById('q-route').value = "";
-      document.getElementById('q-time').value = "";
-      document.getElementById('q-phone').value = "";
+      document.getElementById('ride-route').value = '';
+      document.getElementById('ride-time').value = '';
+      document.getElementById('ride-phone').value = '';
 
-      const waMsg = `🔒 Private Ride Query:\nRoute: ${route}\nTime: ${time}\nCustomer Phone: ${phone}`;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(waMsg)}`, '_blank');
+      const msg = `🔒 Private Ride Query:\nRoute: ${route}\nTime: ${time}\nCustomer Phone: ${phone}`;
+      window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    function renderPrivateQueries() {
-      const list = document.getElementById('private-query-list');
-      list.innerHTML = privateQueries.map(q => `
-        <div class="p-2 bg-slate-800 rounded border border-slate-700 flex justify-between items-center">
+    function renderPrivateRides() {
+      const list = document.getElementById('admin-ride-list');
+      list.innerHTML = privateRides.map(r => `
+        <div class="p-2 bg-slate-800 rounded-lg border border-slate-700 flex justify-between items-center">
           <div>
-            <p class="font-bold text-emerald-400">${q.route} (${q.time})</p>
-            <p class="text-amber-300">📞 ${q.phone}</p>
+            <p class="font-bold text-emerald-400">${r.route} (${r.time})</p>
+            <p class="text-amber-300">📞 ${r.phone}</p>
           </div>
-          <a href="tel:${q.phone}" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Call</a>
+          <a href="tel:${r.phone}" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Call</a>
         </div>
       `).join('');
     }
 
-    function shareLiveGPS() {
-      if (!navigator.geolocation) return alert("మీ ఫోన్‌లో GPS సపోర్ట్ లేదు.");
+    function sendLiveLocation() {
+      if (!navigator.geolocation) return alert('GPS సపోర్ట్ లేదు');
       navigator.geolocation.getCurrentPosition(pos => {
-        const mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        const msg = `Hi Prakash, నా లైవ్ లొకేషన్ ఇక్కడ ఉంది (Pickup Needed):\n${mapLink}`;
-        window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
-      }, () => alert("దయచేసి ఫోన్‌లో Location ఆన్ చేయండి."));
+        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent("Hi Prakash, నా లైవ్ GPS లొకేషన్:\n" + url)}`, '_blank');
+      }, () => alert('ఫోన్లో Location ఆన్ చేయండి'));
     }
 
-    // 6. SECRET NIGHT VAULT (PIN: 9999)
-    function unlockSecretVault() {
-      const pin = document.getElementById('vault-pin-field').value;
-      if (pin === SECRET_VAULT_PIN) {
-        document.getElementById('vault-secret-items').classList.remove('hidden');
-        document.getElementById('vault-unlock-bar').classList.add('hidden');
-        document.getElementById('vault-status-pill').textContent = "Vault Unlocked";
-        document.getElementById('vault-status-pill').className = "px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded text-[10px] font-bold";
-        document.getElementById('vault-pin-field').value = "";
+    // 5. సీక్రెట్ నైట్ వాల్ట్ (PIN: 9999)
+    function unlockVault() {
+      const pin = document.getElementById('vault-pin-input').value;
+      const lockBadge = document.getElementById('vault-lock-badge');
+      if (pin === VAULT_PIN_CONFIG) {
+        document.getElementById('vault-protected-content').classList.remove('hidden');
+        document.getElementById('vault-pin-bar').classList.add('hidden');
+        document.getElementById('vault-pin-input').value = '';
+        lockBadge.innerHTML = '<span class="material-symbols-outlined text-xs">lock_open</span> Unlocked';
       } else {
-        alert("తప్పు Vault PIN!");
+        alert('తప్పు Vault PIN!');
       }
     }
 
-    function lockSecretVault() {
-      document.getElementById('vault-secret-items').classList.add('hidden');
-      document.getElementById('vault-unlock-bar').classList.remove('hidden');
-      document.getElementById('vault-status-pill').textContent = "Vault Locked";
-      document.getElementById('vault-status-pill').className = "px-2 py-0.5 bg-amber-100 text-amber-900 rounded text-[10px] font-bold";
+    function lockVault() {
+      document.getElementById('vault-protected-content').classList.add('hidden');
+      document.getElementById('vault-pin-bar').classList.remove('hidden');
+      document.getElementById('vault-lock-badge').innerHTML = '<span class="material-symbols-outlined text-xs">lock</span> Locked';
     }
 
-    function orderWhatsApp(serviceName) {
-      const msg = `Hi Prakash, I need service: ${serviceName}`;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+    // 6. గ్రామ వడ్డీ లెక్కలు, రీఛార్జ్ & టూరిజం
+    function calcInterest() {
+      const p = document.getElementById('prin').value;
+      const m = document.getElementById('months').value;
+      if (p && m) {
+        const res = (p * 2 * m) / 100;
+        document.getElementById('interest-res').textContent = `మొత్తం వడ్డీ (₹2 చొప్పున): ₹${res}`;
+      }
     }
 
-    // 7. RECHARGE & VILLAGE CALCULATOR
-    function processRecharge() {
-      const num = document.getElementById('rec-mobile').value.trim();
-      const amt = Number(document.getElementById('rec-amount').value);
-      if (!num || !amt) return alert("నంబర్ మరియు అమౌంట్ ఎంటర్ చేయండి.");
-      const total = amt + 2;
-      const msg = `Hi Prakash, Recharge Request:\nNumber: ${num}\nPlan: ₹${amt} + ₹2 Fee = Total ₹${total}`;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+    let activeTour = {};
+    function openTourismPopup(title, price, desc) {
+      activeTour = { title, price, desc };
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-price').textContent = price;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('tour-modal').classList.remove('hidden');
     }
 
-    function calculateVillageInterest() {
-      const p = Number(document.getElementById('calc-p').value);
-      const r = Number(document.getElementById('calc-r').value);
-      const m = Number(document.getElementById('calc-m').value);
-      if (!p || !r || !m) return;
-      const interest = (p * r * m) / 100;
-      const total = p + interest;
-      document.getElementById('calc-output').textContent = `వడ్డీ: ₹${interest.toLocaleString('en-IN')} | మొత్తం: ₹${total.toLocaleString('en-IN')}`;
+    function closeTourismPopup() {
+      document.getElementById('tour-modal').classList.add('hidden');
     }
 
-    // 8. LOCAL JOBS HUB
-    let localJobs = [
-      { title: "Site Helper & Security Staff", loc: "Kiltampalem / Tatipudi Site", pay: "₹12,000 - ₹15,000/mo" },
-      { title: "Delivery & Bike Rider (Part-Time)", loc: "S.Kota & Boddavara", pay: "Daily Commission" }
+    function bookTourismIntent() {
+      window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Tourism Booking Intent: ${activeTour.title} (${activeTour.price})`)}`, '_blank');
+    }
+
+    function payRecharge() {
+      const num = document.getElementById('rech-num').value;
+      const amt = document.getElementById('rech-amt').value;
+      if (num && amt) {
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Recharge Request:\nNumber: ${num}\nAmount: ₹${amt} + ₹2 Fee`)}`, '_blank');
+      }
+    }
+
+    function contactPrakash(svc) {
+      window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, I need: ${svc}`)}`, '_blank');
+    }
+
+    // 7. లోకల్ జాబ్స్ హబ్
+    let jobsData = [
+      { title: "Site Security & Helper", loc: "Kiltampalem / Tatipudi", pay: "₹12,000 - ₹15,000" },
+      { title: "Part-Time Bike Delivery", loc: "S.Kota & Boddavara", pay: "Daily Payout" }
     ];
 
     function renderJobs() {
-      const container = document.getElementById('jobs-container');
-      container.innerHTML = localJobs.map((j, i) => `
-        <div class="p-2.5 bg-teal-50/50 border border-teal-200 rounded-xl flex items-center justify-between">
+      const list = document.getElementById('jobs-list');
+      list.innerHTML = jobsData.map((j, i) => `
+        <div class="p-2.5 bg-white rounded-xl border border-teal-200 flex justify-between items-center">
           <div>
             <p class="text-xs font-bold text-teal-950">${j.title}</p>
-            <p class="text-[11px] text-slate-600">${j.loc} • <span class="font-semibold text-emerald-700">${j.pay}</span></p>
+            <p class="text-[11px] text-slate-500">${j.loc} • <span class="text-emerald-700 font-semibold">${j.pay}</span></p>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="orderWhatsApp('Job Inquiry: ${j.title}')" class="px-2.5 py-1 bg-teal-700 text-white text-[11px] font-bold rounded-lg">Apply</button>
-            ${adminActive ? `<button onclick="deleteJob(${i})" class="text-red-600 font-bold text-xs px-1">✕</button>` : ''}
+            <button onclick="contactPrakash('Job Apply: ${j.title}')" class="px-2.5 py-1 bg-teal-700 text-white rounded-lg text-[11px] font-bold">Apply</button>
+            ${isAdminUnlocked ? `<button onclick="deleteJob(${i})" class="text-red-600 font-bold text-xs px-1">✕</button>` : ''}
           </div>
         </div>
       `).join('');
     }
 
-    function addNewJobPrompt() {
+    function addJobPrompt() {
       const title = prompt("Job Title:");
-      const loc = prompt("Location (e.g. S.Kota / Vizag):");
-      const pay = prompt("Salary / Pay:");
+      const loc = prompt("Location:");
+      const pay = prompt("Salary:");
       if (title && loc) {
-        localJobs.unshift({ title, loc, pay: pay || "Negotiable" });
+        jobsData.unshift({ title, loc, pay: pay || "Negotiable" });
         renderJobs();
       }
     }
 
-    function deleteJob(index) {
-      localJobs.splice(index, 1);
+    function deleteJob(idx) {
+      jobsData.splice(idx, 1);
       renderJobs();
     }
 
-    function sendFeedback() {
-      const fb = document.getElementById('feedback-text').value.trim();
-      if (!fb) return;
-      window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent("Website Feedback: " + fb)}`, '_blank');
-      document.getElementById('feedback-text').value = "";
-    }
-
-    // INITIALIZE PAGE
-    renderTourismCards();
     renderJobs();
   </script>
 </body>
