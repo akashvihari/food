@@ -2,12 +2,14 @@
 <html lang="te">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mana Seva Hub • మన సేవ | Boddavara • S.Kota • VZM • Vizag • Araku</title>
-  <meta name="description" content="Mana Seva Hub by Prakash (@hipraka) - Bike Drop, Night Delivery, Secret Love Wall, Telugu News, Bus Timings, Calculators, Jobs & Tourism.">
+  <!-- మొబైల్ స్క్రీన్ ఫిట్ మరియు జూమ్ ఇన్/అవుట్ కోసం -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mana Seva Hub • మన సేవ | Boddavara • Kiltampalem • S.Kota • VZM • Vizag</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
+    /** @type {import('tailwindcss').Config} */
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -31,6 +33,7 @@
             'success': '#15803D',
             'on-success': '#FFFFFF',
             'warning': '#B45309',
+            'on-warning': '#FFFFFF',
             'error': '#DC2626',
             'on-error': '#FFFFFF',
             'light-surface': '#F8F5EE',
@@ -50,18 +53,32 @@
       }
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600;700&family=Noto+Sans+Telugu:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700&family=Instrument+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <style>
     .material-symbols-outlined {
       display: inline-block; width: 1em; height: 1em; line-height: 1 !important;
-      overflow: hidden; white-space: nowrap; vertical-align: middle;
+      vertical-align: middle;
     }
-    body { font-family: "Instrument Sans", "Noto Sans Telugu", sans-serif; -webkit-tap-highlight-color: transparent; }
-    @keyframes ticker-scroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-    .animate-ticker { display: flex; width: max-content; animation: ticker-scroll 28s linear infinite; }
+    body {
+      font-family: "Instrument Sans", "Noto Sans Telugu", sans-serif;
+    }
+    /* 1. లైవ్ టిక్కర్ & సీక్రెట్ లవ్ క్లూ యానిమేషన్ */
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-ticker {
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 28s linear infinite;
+    }
     .animate-ticker:hover { animation-play-state: paused; }
-    @keyframes eq-bounce { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+    /* 2. FM మ్యూజిక్ ఈక్వలైజర్ బార్స్ */
+    @keyframes eq-bounce {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
     .eq-bar { transform-origin: bottom; animation: eq-bounce 0.8s ease-in-out infinite; }
     .paused .eq-bar { animation-play-state: paused; transform: scaleY(0.4); }
     .eq-bar-2 { animation-delay: 0.2s; }
@@ -72,132 +89,159 @@
   </style>
 </head>
 <body class="bg-light-surface text-light-on-surface antialiased">
-
-  <!-- MAIN APP SHELL (Mobile-First & Responsive Desktop Frame) -->
-  <div class="min-h-screen w-full max-w-2xl mx-auto bg-light-surface relative shadow-2xl border-x border-light-outline/60">
+  <div id="app-root" class="min-h-screen w-full max-w-md md:max-w-2xl mx-auto bg-light-surface relative shadow-2xl border-x border-light-outline/60">
 
     <!-- ========================================================================
-         1. TOP DUAL LIVE TICKER BAR (గోల్డ్, వెండి, కూరగాయలు & ఎమర్జెన్సీ అలర్ట్)
+         విభాగం 1: లైవ్ మార్కెట్ & డైరీ రేట్ల టిక్కర్
+         (రోజువారీ కూరగాయలు, పాలు, బంగారం రేట్లు ఇక్కడ మార్చుకోవచ్చు)
          ======================================================================== -->
     <div class="bg-ticker-bg text-on-ticker-bg border-b border-saffron-gold/30 overflow-hidden py-1.5 px-2">
       <div class="animate-ticker items-center gap-6">
         <div class="flex items-center gap-4 whitespace-nowrap font-mono text-xs tabular-nums">
-          <span class="inline-flex items-center gap-1 text-saffron-gold font-bold">
-            <span class="material-symbols-outlined text-[14px]">toll</span>
+          <span class="inline-flex items-center gap-1 text-saffron-gold">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">toll</span>
             <span>22K GOLD: ₹7,185/g</span>
           </span>
-          <span class="text-white/50">•</span>
+          <span class="text-on-ticker-bg/60">•</span>
           <span>SILVER: ₹92/g</span>
-          <span class="text-white/50">•</span>
-          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • MILK: ₹66/L</span>
-          <span class="text-white/50">•</span>
-          <span class="inline-flex items-center gap-1 text-saffron-gold font-bold">
-            <span class="material-symbols-outlined text-[14px]">two_wheeler</span>
-            <span>NIGHT BIKE DROP: బొడ్డవార ⇄ తాటిపూడి ⇄ S.Kota 24/7 Active (8985240287)</span>
+          <span class="text-on-ticker-bg/60">•</span>
+          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • FRESH MILK: ₹66/L</span>
+          <span class="text-on-ticker-bg/60">•</span>
+          <span class="inline-flex items-center gap-1 text-saffron-gold">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">two_wheeler</span>
+            <span>BIKE ₹5/KM • JINDAL SITE / S.KOTA NIGHT DROP 24/7 (8985240287)</span>
           </span>
         </div>
+        <!-- లూప్ కోసం డూప్లికేట్ టెక్స్ట్ -->
         <div class="flex items-center gap-4 whitespace-nowrap font-mono text-xs tabular-nums" aria-hidden="true">
-          <span class="inline-flex items-center gap-1 text-saffron-gold font-bold">
-            <span class="material-symbols-outlined text-[14px]">toll</span>
+          <span class="inline-flex items-center gap-1 text-saffron-gold">
+            <span class="material-symbols-outlined text-sm">toll</span>
             <span>22K GOLD: ₹7,185/g</span>
           </span>
-          <span class="text-white/50">•</span>
+          <span class="text-on-ticker-bg/60">•</span>
           <span>SILVER: ₹92/g</span>
-          <span class="text-white/50">•</span>
-          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • MILK: ₹66/L</span>
-          <span class="text-white/50">•</span>
-          <span class="inline-flex items-center gap-1 text-saffron-gold font-bold">
-            <span class="material-symbols-outlined text-[14px]">two_wheeler</span>
-            <span>NIGHT BIKE DROP: బొడ్డవార ⇄ తాటిపూడి ⇄ S.Kota 24/7 Active (8985240287)</span>
+          <span class="text-on-ticker-bg/60">•</span>
+          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • FRESH MILK: ₹66/L</span>
+          <span class="text-on-ticker-bg/60">•</span>
+          <span class="inline-flex items-center gap-1 text-saffron-gold">
+            <span class="material-symbols-outlined text-sm">two_wheeler</span>
+            <span>BIKE ₹5/KM • JINDAL SITE / S.KOTA NIGHT DROP 24/7 (8985240287)</span>
           </span>
         </div>
       </div>
     </div>
 
     <!-- ========================================================================
-         2. STICKY GLASSMORPHIC HEADER, SEARCH & AREA PILLS
+         విభాగం 2: స్టికీ హెడర్, గ్లోబల్ సెర్చ్ & ఏరియా ఫిల్టర్ పిల్స్
          ======================================================================== -->
-    <header class="sticky top-0 z-30 bg-light-surface/95 backdrop-blur-md border-b border-light-outline/80 px-4 py-3 flex flex-col gap-2.5">
+    <header class="sticky top-0 z-30 bg-light-surface/95 backdrop-blur-md border-b border-light-outline/80 px-4 py-3 flex flex-col gap-2">
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5">
-          <button id="open-drawer-btn" type="button" aria-label="Open menu" class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-royal-emerald text-white shadow-sm hover:bg-emerald-deep">
-            <span class="material-symbols-outlined text-[20px]">menu</span>
+        <div class="flex items-center gap-2">
+          <button id="open-drawer-btn" type="button" aria-label="మెనూ ఓపెన్ చేయండి" class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-royal-emerald text-on-royal-emerald shadow-sm hover:bg-emerald-deep">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">menu</span>
           </button>
           <div>
-            <h1 class="font-headline font-bold text-base text-royal-emerald leading-tight">Mana Seva Hub • మన సేవ</h1>
-            <p class="text-[11px] font-semibold text-light-on-surface-muted">బొడ్డవార • కిల్తాంపాలెం • S.Kota • VZM • వైజాగ్ • అరకు</p>
+            <h1 class="font-headline text-base font-bold text-royal-emerald leading-tight">Mana Seva Hub • మన సేవ</h1>
+            <p class="text-[11px] font-semibold text-light-on-surface-muted">Boddavara • Kiltampalem • S.Kota • VZM • Vizag</p>
           </div>
         </div>
-
+        <!-- క్విక్ యాక్షన్ బటన్లు: జూమ్, కాల్, వాట్సాప్ -->
         <div class="flex items-center gap-1.5">
-          <a href="tel:+918985240287" aria-label="Call Prakash" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-royal-emerald text-white shadow-sm">
-            <span class="material-symbols-outlined text-[16px]">call</span>
+          <button id="btn-zoom-toggle" type="button" aria-label="స్క్రీన్ వెడల్పు మార్చండి" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint" title="Zoom In/Out">
+            <span id="zoom-icon" class="material-symbols-outlined text-sm" aria-hidden="true">zoom_in</span>
+          </button>
+          <a href="tel:+918985240287" aria-label="ప్రకాష్ కు కాల్ చేయండి" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-royal-emerald text-on-royal-emerald shadow-sm">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">call</span>
           </a>
-          <a href="https://wa.me/918985240287" target="_blank" aria-label="WhatsApp Prakash" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-success text-white shadow-sm">
-            <span class="material-symbols-outlined text-[16px]">chat</span>
-          </a>
-          <a href="https://instagram.com/hipraka" target="_blank" aria-label="Instagram @hipraka" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-pink text-white shadow-sm">
-            <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+          <a href="https://wa.me/918985240287" target="_blank" rel="noopener noreferrer" aria-label="వాట్సాప్ మెసేజ్ పంపండి" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-success text-on-success shadow-sm">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">chat</span>
           </a>
         </div>
       </div>
 
-      <!-- Global Search -->
+      <!-- గ్లోబల్ సెర్చ్ బార్ -->
       <div class="relative">
-        <span class="material-symbols-outlined text-[18px] text-light-on-surface-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
-        <input id="global-search" type="search" placeholder="వెతకండి: Bike, Araku, Bus, Books, Electrician, Jobs..." class="w-full pl-9 pr-4 py-1.5 rounded-full bg-white border border-light-outline text-xs text-light-on-surface focus:border-royal-emerald focus:ring-1 focus:ring-royal-emerald">
+        <span class="material-symbols-outlined text-base text-light-on-surface-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">search</span>
+        <input id="global-search" type="search" placeholder="వెతకండి: Bike, Milk, OLX, Jindal Jobs, Araku, Results..." class="w-full pl-9 pr-4 py-1.5 rounded-full bg-light-surface-container-low border border-light-outline text-xs text-light-on-surface placeholder:text-light-on-surface-muted focus:border-royal-emerald focus:ring-1 focus:ring-royal-emerald">
       </div>
 
-      <!-- Area Filter Pills -->
+      <!-- ఏరియా ఫిల్టర్ పిల్స్ -->
       <div id="area-filters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-        <button data-area="All" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-white text-[11px] font-bold shadow-sm">All</button>
-        <button data-area="Boddavara" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Boddavara</button>
-        <button data-area="Kiltampalem" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Kiltampalem</button>
-        <button data-area="Thatipudi" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Thatipudi</button>
-        <button data-area="S.Kota" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">S.Kota</button>
-        <button data-area="Kasipatnam" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Kasipatnam</button>
-        <button data-area="VZM" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">VZM</button>
-        <button data-area="Vizag" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Vizag</button>
-        <button data-area="Araku" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-white border border-light-outline text-[11px] font-semibold">Araku</button>
+        <button data-area="All" aria-pressed="true" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald shadow-sm text-[11px] font-semibold">All</button>
+        <button data-area="Boddavara" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">Boddavara</button>
+        <button data-area="Kiltampalem" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">Kiltampalem</button>
+        <button data-area="Thatipudi" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">Thatipudi</button>
+        <button data-area="S.Kota" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">S.Kota</button>
+        <button data-area="VZM" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">VZM</button>
+        <button data-area="Vizag" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">Vizag</button>
+        <button data-area="Araku" aria-pressed="false" type="button" class="area-pill shrink-0 px-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface hover:bg-emerald-tint text-[11px] font-semibold">Araku</button>
       </div>
     </header>
 
     <!-- ========================================================================
-         MAIN MODULAR CUPBOARD SHELVES (అల్మారా లాంటి స్వతంత్ర విభాగాలు)
+         సీక్రెట్ లవ్ లైవ్ క్లూ టిక్కర్ (క్లిక్ చేస్తే సీక్రెట్ వాల్ కు వెళ్తుంది)
+         ======================================================================== -->
+    <a href="#whisper-wall" class="block bg-rose-tint border-b border-rose-pink/25 overflow-hidden py-1.5 px-2">
+      <div id="secret-clue-ticker" class="animate-ticker items-center gap-6">
+        <div class="flex items-center gap-4 whitespace-nowrap text-[11px] font-semibold text-on-rose-tint">
+          <span class="inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-rose-pink" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
+            <span>100% SECRET CLUE: 7:30 AM బొడ్డవార బస్సు స్టాండ్ దగ్గర నీకోసం ఒక సీక్రెట్ మెసేజ్ ఉంది!</span>
+          </span>
+          <span>•</span>
+          <span>తాటిపూడి డ్యామ్: "నువ్వు నవ్వితే..." (Open Now)</span>
+          <span>•</span>
+          <span>S.Kota కాలేజీ గేట్: కొత్త సీక్రెట్ నోట్ పోస్ట్ అయింది — చదవండి!</span>
+        </div>
+        <div class="flex items-center gap-4 whitespace-nowrap text-[11px] font-semibold text-on-rose-tint" aria-hidden="true">
+          <span class="inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-rose-pink" style="font-variation-settings: 'FILL' 1;">favorite</span>
+            <span>100% SECRET CLUE: 7:30 AM బొడ్డవార బస్సు స్టాండ్ దగ్గర నీకోసం ఒక సీక్రెట్ మెసేజ్ ఉంది!</span>
+          </span>
+          <span>•</span>
+          <span>తాటిపూడి డ్యామ్: "నువ్వు నవ్వితే..." (Open Now)</span>
+          <span>•</span>
+          <span>S.Kota కాలేజీ గేట్: కొత్త సీక్రెట్ నోట్ పోస్ట్ అయింది — చదవండి!</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ========================================================================
+         ప్రధాన కంటెంట్
          ======================================================================== -->
     <main class="px-4 py-4 pb-24 flex flex-col gap-5">
 
       <!-- ======================================================================
-           3. HERO PROFILE (FIXED NO-BREAK AVATAR) & LIVE SONGS + YOUTUBE DECK
+           విభాగం 3: హీరో ప్రొఫైల్ (@hipraka), లైవ్ GPS & తెలుగు FM రేడియో
            ====================================================================== -->
-      <section id="hero-deck" class="rounded-2xl bg-gradient-to-br from-emerald-deep via-royal-emerald to-emerald-deep text-on-emerald-deep p-4 shadow-xl border border-saffron-gold/35 flex flex-col gap-3.5">
-        <div class="flex items-center gap-3.5">
+      <section id="hero-deck" class="rounded-2xl bg-gradient-to-br from-emerald-deep via-royal-emerald to-emerald-deep text-on-emerald-deep p-4 shadow-lg border border-saffron-gold/30 flex flex-col gap-3">
+        <div class="flex items-center gap-3">
           <div class="relative shrink-0">
-            <img id="prakash-avatar"
-                 src="https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp"
-                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Prakash&background=F59E0B&color=022C22&size=200&bold=true';"
-                 alt="Prakash (@hipraka)"
-                 class="w-16 h-16 rounded-full object-cover object-top ring-2 ring-saffron-gold ring-offset-2 ring-offset-emerald-deep">
-            <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold font-bold text-[10px] leading-none">LIVE</span>
+            <!-- ప్రొఫైల్ అవతార్: మీ ఫోటో URL లేకపోయినా మొదటి అక్షరం 'P' అందంగా కనిపిస్తుంది -->
+            <div class="w-16 h-16 rounded-full bg-saffron-gold/20 border-2 border-saffron-gold flex items-center justify-center overflow-hidden">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrBplgpvmJ2Azvmn6n4HDcBZehrrhmj27VTCJl7Gb_zwnkmzc0aLHqm8ZLh_Ezbh84oQ-Y6euCSgpDO74EYMBZbfNVOF2J9bGGjgdcTgxc24C8TLTAIOxLPI9eXyXt52LlbJBfAoYVHP4aMcFFz_VEoHFGszD6NU_5AvV3BIcgBeVzP-U0f-2qsw5__L44pAN-RSU_fxxD-GHNBYSMrjMAGIQ10wfTwShKBJEL-s3rqsYX5T0u0YaOhl" alt="Prakash (@hipraka)" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <span style="display:none" class="w-full h-full items-center justify-center font-headline text-2xl font-bold text-saffron-gold">P</span>
+            </div>
+            <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold leading-none">LIVE</span>
           </div>
           <div class="min-w-0 flex-1">
-            <h2 class="font-headline font-bold text-lg text-white leading-tight">Prakash (@hipraka)</h2>
-            <p class="text-xs text-emerald-tint">బొడ్డవార &amp; S.Kota కమ్యూనిటీ లీడ్ • 8985240287</p>
+            <h2 class="font-headline text-lg font-bold text-on-emerald-deep">Prakash (@hipraka)</h2>
+            <p class="text-xs text-emerald-tint">బొడ్డవార • కిల్తంపాలెం • S.Kota కమ్యూనిటీ లీడ్ • 8985240287</p>
             <div class="flex flex-wrap items-center gap-1.5 mt-2">
-              <button id="btn-live-gps" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold active:scale-95 transition">
-                <span class="material-symbols-outlined text-[14px]">share_location</span>
+              <button id="btn-live-gps" type="button" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-saffron-gold text-on-saffron-gold hover:opacity-90 active:scale-95 transition-transform text-[11px] font-bold">
+                <span class="material-symbols-outlined text-xs" aria-hidden="true">share_location</span>
                 <span>Send Live GPS</span>
               </button>
-              <button id="btn-share-village" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 border border-white/25 text-white text-[11px] font-semibold hover:bg-white/25">
-                <span class="material-symbols-outlined text-[14px]">groups</span>
+              <button id="btn-share-village" type="button" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-on-emerald-deep/15 border border-on-emerald-deep/25 text-on-emerald-deep hover:bg-on-emerald-deep/25 text-[11px] font-semibold">
+                <span class="material-symbols-outlined text-xs" aria-hidden="true">groups</span>
                 <span>Share to Village Group</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Live Telugu Songs FM & Backup Streamer -->
-        <div id="fm-box" class="paused rounded-xl bg-ticker-bg/80 backdrop-blur-sm border border-white/15 p-3 flex items-center justify-between gap-2">
+        <!-- తెలుగు FM మ్యూజిక్ ప్లేయర్ -->
+        <div id="fm-box" class="paused rounded-xl bg-ticker-bg/75 backdrop-blur-sm border border-on-emerald-deep/15 p-3 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2.5 min-w-0">
             <div class="flex items-end gap-0.5 h-5 w-5 shrink-0" aria-hidden="true">
               <span class="eq-bar w-1 h-full bg-saffron-gold rounded-full"></span>
@@ -206,115 +250,154 @@
               <span class="eq-bar eq-bar-4 w-1 h-2/3 bg-saffron-gold rounded-full"></span>
             </div>
             <div class="min-w-0">
-              <p id="fm-track-title" class="text-xs font-bold text-white truncate">Telugu Love &amp; Melody FM</p>
-              <p id="fm-track-sub" class="text-[11px] text-emerald-tint truncate">Tap Play for 24/7 Live Songs</p>
+              <p id="fm-track-title" class="text-xs font-bold text-on-emerald-deep truncate">Telugu Love &amp; Melody FM</p>
+              <p id="fm-track-sub" class="text-[11px] text-emerald-tint truncate">Play నొక్కితే 24/7 తెలుగు పాటలు వస్తాయి</p>
             </div>
           </div>
           <div class="flex items-center gap-1 shrink-0">
-            <button id="fm-prev" type="button" aria-label="Previous station" class="w-8 h-8 rounded-full inline-flex items-center justify-center hover:bg-white/15 text-white">
-              <span class="material-symbols-outlined text-[18px]">skip_previous</span>
+            <button id="fm-prev" type="button" aria-label="ముందు పాట" class="w-8 h-8 rounded-full inline-flex items-center justify-center hover:bg-on-emerald-deep/15 text-on-emerald-deep">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">skip_previous</span>
             </button>
-            <button id="fm-play" type="button" aria-label="Play or pause" class="w-8 h-8 rounded-full inline-flex items-center justify-center bg-saffron-gold text-on-saffron-gold shadow">
-              <span id="fm-play-icon" class="material-symbols-outlined text-[18px]">play_arrow</span>
+            <button id="fm-play" type="button" aria-label="ప్లే లేదా పాజ్" class="w-8 h-8 rounded-full inline-flex items-center justify-center bg-saffron-gold text-on-saffron-gold">
+              <span id="fm-play-icon" class="material-symbols-outlined text-lg" aria-hidden="true">play_arrow</span>
             </button>
-            <button id="fm-next" type="button" aria-label="Next station" class="w-8 h-8 rounded-full inline-flex items-center justify-center hover:bg-white/15 text-white">
-              <span class="material-symbols-outlined text-[18px]">skip_next</span>
+            <button id="fm-next" type="button" aria-label="తర్వాతి పాట" class="w-8 h-8 rounded-full inline-flex items-center justify-center hover:bg-on-emerald-deep/15 text-on-emerald-deep">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">skip_next</span>
             </button>
           </div>
           <audio id="telugu-fm-audio" preload="none" crossorigin="anonymous"></audio>
         </div>
 
-        <!-- Collapsible YouTube Jukebox & Channel Accordion (నొక్కితే కిందకు ఓపెన్, మళ్ళీ నొక్కితే క్లోజ్) -->
-        <div class="rounded-xl bg-white/10 border border-white/20 overflow-hidden">
-          <button id="yt-accordion-btn" type="button" aria-expanded="false" class="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-white/10 transition">
+        <!-- యూట్యూబ్ జూక్‌బాక్స్ అకార్డియన్ -->
+        <div class="rounded-xl bg-on-emerald-deep/10 border border-on-emerald-deep/20 overflow-hidden">
+          <button id="yt-accordion-btn" type="button" aria-expanded="false" aria-controls="yt-accordion-panel" class="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-on-emerald-deep/10">
             <span class="inline-flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[18px] text-saffron-gold">smart_display</span>
-              <span class="text-xs font-bold text-white">YouTube Jukebox &amp; Channel (@hipraka)</span>
+              <span class="material-symbols-outlined text-lg text-saffron-gold" aria-hidden="true">smart_display</span>
+              <span class="text-xs font-semibold text-on-emerald-deep">YouTube Vlogs &amp; Reels (@hipraka)</span>
             </span>
-            <span id="yt-accordion-chevron" class="material-symbols-outlined text-[18px] text-emerald-tint transition-transform duration-200">expand_more</span>
+            <span id="yt-accordion-chevron" class="material-symbols-outlined text-lg text-emerald-tint transition-transform" aria-hidden="true">expand_more</span>
           </button>
-          <div id="yt-accordion-panel" hidden class="px-3 pb-3 pt-1 flex flex-col gap-2 border-t border-white/15">
-            <div class="flex gap-1.5 flex-wrap">
-              <button type="button" class="yt-mood-btn px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold" data-list="PL4fGSI1pDJn5kI81J1fYWK5eZRl1zJ5kM">💖 Love &amp; Melody Hits</button>
-              <button type="button" class="yt-mood-btn px-2.5 py-1 rounded-full bg-white/15 text-white text-[11px] font-semibold" data-list="RDCLAK5uy_n9Fbdw7e6ap-98_A-8JYBmPv64v-Uaq1g">🔥 Mass &amp; Trending</button>
-              <a href="https://www.youtube.com/@hipraka" target="_blank" class="px-2.5 py-1 rounded-full bg-error text-white text-[11px] font-bold">📺 My Channel</a>
-            </div>
-            <div class="relative w-full pt-[56.25%] rounded-lg overflow-hidden bg-black border border-saffron-gold/40">
-              <iframe id="yt-iframe" class="absolute inset-0 w-full h-full" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          <div id="yt-accordion-panel" hidden class="px-3 pb-3 pt-1 flex flex-col gap-2 border-t border-on-emerald-deep/15">
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" class="open-detail-btn text-left p-2 rounded-lg bg-ticker-bg/60 border border-on-emerald-deep/15 hover:border-saffron-gold" data-item-id="araku-tour">
+                <p class="text-[10px] font-bold text-saffron-gold">VLOG #14</p>
+                <p class="text-xs text-on-emerald-deep">Araku Misty Ride</p>
+              </button>
+              <button type="button" class="open-detail-btn text-left p-2 rounded-lg bg-ticker-bg/60 border border-on-emerald-deep/15 hover:border-saffron-gold" data-item-id="lambasingi-tour">
+                <p class="text-[10px] font-bold text-saffron-gold">VLOG #15</p>
+                <p class="text-xs text-on-emerald-deep">Lambasingi Dawn</p>
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ======================================================================
-           4. PRIORITY NIGHT BIKE DROP & 30-MIN EXPRESS DELIVERY (పైన ప్రధాన విభాగం)
+           విభాగం 4 (ఆదాయం #1 - ట్రాన్స్‌పోర్ట్ & నైట్ డెలివరీ):
+           - Bike (₹5/km), Auto (₹12/km), Car (₹18/km)
+           - కమిషన్ లెక్క (5km లోపు ₹5, పైన ₹10)
+           - కస్టమర్ లొకేషన్ & మొబైల్ నంబర్ ఇస్తే ఆ ఏరియా రైడర్ నంబర్ అన్‌లాక్ అవుతుంది!
+           - Jindal Site / S.Kota / Boddavara నైట్ ఫుడ్, పాలు, వాటర్ & మెడిసిన్ డెలివరీ
            ====================================================================== -->
-      <section id="bike-drop" class="rounded-2xl bg-white border border-saffron-gold/50 p-4 shadow-sm flex flex-col gap-3">
+      <section id="bike-drop" class="rounded-2xl bg-light-surface-container-low border border-saffron-gold/50 p-4 shadow-sm flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[20px] text-warning">two_wheeler</span>
-            <h2 class="font-headline font-bold text-base text-light-on-surface">Priority Bike Drop &amp; Night Express</h2>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-2xl text-warning" aria-hidden="true">two_wheeler</span>
+            <div>
+              <h2 class="font-headline text-lg font-bold text-light-on-surface">Bike, Auto, Car &amp; Night Delivery</h2>
+              <p class="text-xs text-light-on-surface-muted">₹5/km నుండి రైడ్ • కస్టమర్ నంబర్ ఇస్తే దగ్గరలోని రైడర్ నంబర్ ఓపెన్!</p>
+            </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint font-bold text-[10px]">24/7 ACTIVE</span>
+          <button id="open-rider-reg-btn" type="button" class="shrink-0 px-3 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold">+ Add Rider</button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Left: Rapido-Style Fare Calculator -->
-          <div class="rounded-xl bg-emerald-tint/50 border border-royal-emerald/20 p-3 flex flex-col justify-between gap-2.5">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-bold text-on-emerald-tint">బొడ్డవార ⇄ తాటిపూడి ⇄ S.Kota</span>
-                <span id="bike-fare-badge" class="px-2.5 py-0.5 rounded-full bg-royal-emerald text-white font-mono text-xs font-bold">₹50</span>
-              </div>
-              <label for="bike-km-range" class="flex items-center justify-between text-xs text-on-emerald-tint mt-1">
-                <span>దూరం (Distance KM)</span>
-                <span id="bike-km-label" class="font-mono font-bold">5 km</span>
-              </label>
-              <input id="bike-km-range" type="range" min="1" max="35" value="5" class="w-full accent-royal-emerald cursor-pointer my-1">
-              <div class="flex items-center justify-between gap-2 pt-1">
-                <span class="text-[11px] font-semibold text-on-emerald-tint">Night / Emergency (+₹20)</span>
-                <button id="bike-night-toggle" type="button" role="switch" aria-checked="false" class="relative inline-flex h-5 w-10 shrink-0 items-center rounded-full bg-light-outline-strong transition-colors">
-                  <span id="bike-night-knob" class="inline-block h-3.5 w-3.5 translate-x-1 rounded-full bg-white transition-transform"></span>
+        <!-- వాహనం ఎంపిక ట్యాబ్లు -->
+        <div role="tablist" aria-label="వాహనం రకం" class="grid grid-cols-3 gap-1 p-1 rounded-full bg-light-surface-container border border-light-outline">
+          <button role="tab" aria-selected="true" data-vehicle="bike" data-rate="5" data-base="10" type="button" class="vehicle-tab py-1.5 px-2 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold">Bike (₹5/km)</button>
+          <button role="tab" aria-selected="false" data-vehicle="auto" data-rate="12" data-base="20" type="button" class="vehicle-tab py-1.5 px-2 rounded-full text-light-on-surface-muted text-[11px] font-semibold">Auto (₹12/km)</button>
+          <button role="tab" aria-selected="false" data-vehicle="car" data-rate="18" data-base="50" type="button" class="vehicle-tab py-1.5 px-2 rounded-full text-light-on-surface-muted text-[11px] font-semibold">Car (₹18/km)</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- ఎడమవైపు: KM కాలిక్యులేటర్ + రైడర్ నంబర్ అన్‌లాక్ -->
+          <div class="rounded-xl bg-emerald-tint/50 border border-royal-emerald/20 p-3 flex flex-col gap-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-on-emerald-tint">Fare &amp; Commission</span>
+              <span id="bike-fare-badge" class="px-3 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald font-mono text-xs font-bold tabular-nums">₹35</span>
+            </div>
+
+            <label for="bike-km-range" class="flex items-center justify-between text-xs text-on-emerald-tint">
+              <span>దూరం (Distance KM)</span>
+              <span id="bike-km-label" class="font-mono font-bold tabular-nums">5 km</span>
+            </label>
+            <input id="bike-km-range" type="range" min="1" max="40" value="5" class="w-full accent-royal-emerald cursor-pointer">
+
+            <!-- మీడియేటర్ కమిషన్ & నైట్ ఛార్జ్ -->
+            <div class="flex items-center justify-between text-xs text-on-emerald-tint bg-light-surface-container-low/80 rounded-lg px-2.5 py-1.5">
+              <span>Mediator Fee (<span id="comm-rule-text">≤5km: ₹5</span>)</span>
+              <span id="bike-comm-badge" class="font-mono font-bold text-royal-emerald tabular-nums">₹5</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs text-on-emerald-tint">Night / Emergency (+₹20)</span>
+              <button id="bike-night-toggle" type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-light-outline-strong transition-colors">
+                <span id="bike-night-knob" class="inline-block h-4 w-4 translate-x-1 rounded-full bg-light-surface-container-low transition-transform"></span>
+              </button>
+            </div>
+
+            <!-- కస్టమర్ లొకేషన్ & మొబైల్ నంబర్ -->
+            <div class="border-t border-royal-emerald/20 pt-2 flex flex-col gap-1.5">
+              <input id="cust-location" type="text" placeholder="మీ ఊరు / పికప్ (ఉదా: Kiltampalem, Boddavara, S.Kota)" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 text-xs">
+              <input id="cust-mobile" type="tel" maxlength="10" placeholder="మీ మొబైల్ నంబర్ (10 అంకెలు)" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 font-mono text-xs">
+              <div class="grid grid-cols-2 gap-1.5 pt-1">
+                <button id="unlock-rider-btn" type="button" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-full bg-royal-emerald text-on-royal-emerald hover:bg-emerald-deep text-[11px] font-bold">
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">lock_open</span>
+                  <span>Unlock Rider</span>
+                </button>
+                <button id="mediator-book-btn" type="button" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold">
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">support_agent</span>
+                  <span>Mediator Book</span>
                 </button>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-1.5 pt-1">
-              <button id="bike-gps-btn" type="button" class="inline-flex items-center justify-center gap-1 py-2 px-2 rounded-full bg-white border border-royal-emerald/30 text-royal-emerald text-[11px] font-bold">
-                <span class="material-symbols-outlined text-[14px]">my_location</span>
-                <span>GPS Pickup</span>
-              </button>
-              <button id="bike-book-btn" type="button" class="inline-flex items-center justify-center gap-1 py-2 px-2 rounded-full bg-royal-emerald text-white text-[11px] font-bold shadow">
-                <span class="material-symbols-outlined text-[14px]">bolt</span>
-                <span>Book Bike</span>
-              </button>
+            <!-- అన్‌లాక్ అయిన తర్వాత కనిపించే రైడర్ కార్డు -->
+            <div id="unlocked-rider-box" hidden class="rounded-lg bg-light-surface-container-low border border-success p-2.5 flex items-center justify-between gap-2">
+              <div>
+                <p id="rider-found-name" class="text-xs font-bold text-success">Prakash (Splendor • Boddavara)</p>
+                <p id="rider-found-phone" class="font-mono text-xs text-light-on-surface tabular-nums">8985240287</p>
+              </div>
+              <a id="rider-call-link" href="tel:+918985240287" class="px-3 py-1 rounded-full bg-success text-on-success text-[11px] font-bold">Call Rider</a>
             </div>
           </div>
 
-          <!-- Right: 30-Min Late-Night Food, Water & Medicine -->
+          <!-- కుడివైపు: 30-Min Night Express & Site Workers Delivery -->
           <div class="rounded-xl bg-saffron-tint/60 border border-saffron-gold/35 p-3 flex flex-col gap-2">
-            <span class="text-xs font-bold text-on-saffron-tint">30-Min Night Express Delivery</span>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-on-saffron-tint">30-Min Site &amp; Night Delivery</span>
+              <span class="px-2 py-0.5 rounded-full bg-warning text-on-warning text-[10px] font-bold">RIDER DROP</span>
+            </div>
             <div class="flex flex-col gap-1.5">
-              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-white border border-light-outline/60">
+              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-light-surface-container-low border border-light-outline/60">
                 <div>
-                  <p class="text-xs font-bold text-light-on-surface">Chicken Dum Biryani</p>
-                  <p class="text-[11px] text-light-on-surface-muted font-mono">₹150 • Hot Pack</p>
+                  <p class="text-xs font-bold text-light-on-surface">Fresh Milk / Curd Crate</p>
+                  <p class="text-[11px] text-light-on-surface-muted tabular-nums">₹66/L • Morning &amp; Evening Drop</p>
                 </div>
-                <button type="button" class="express-order-btn px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold font-bold text-[11px]" data-item="Chicken Dum Biryani (₹150)">Order</button>
+                <button type="button" class="express-order-btn px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="Fresh Milk / Curd Order (₹66/L)">Order</button>
               </div>
-              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-white border border-light-outline/60">
+              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-light-surface-container-low border border-light-outline/60">
                 <div>
-                  <p class="text-xs font-bold text-light-on-surface">20L Mineral Water Can</p>
-                  <p class="text-[11px] text-light-on-surface-muted font-mono">₹35 • Doorstep</p>
+                  <p class="text-xs font-bold text-light-on-surface">Chicken Biryani / Night Tiffin</p>
+                  <p class="text-[11px] text-light-on-surface-muted tabular-nums">₹150 + Rider KM Charge</p>
                 </div>
-                <button type="button" class="express-order-btn px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold font-bold text-[11px]" data-item="20L Water Can (₹35)">Order</button>
+                <button type="button" class="express-order-btn px-3 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold" data-item="Chicken Biryani / Night Food (₹150)">Order</button>
               </div>
-              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-white border border-light-outline/60">
+              <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-light-surface-container-low border border-light-outline/60">
                 <div>
-                  <p class="text-xs font-bold text-light-on-surface">Urgent Pharmacy Drop</p>
-                  <p class="text-[11px] text-light-on-surface-muted">24/7 Emergency</p>
+                  <p class="text-xs font-bold text-light-on-surface">20L Water Can / Medicine SOS</p>
+                  <p class="text-[11px] text-light-on-surface-muted tabular-nums">₹35 • Jindal Site &amp; Village 24/7</p>
                 </div>
-                <button type="button" class="express-order-btn px-2.5 py-1 rounded-full bg-error text-white font-bold text-[11px]" data-item="Urgent Medicine Delivery">SOS</button>
+                <button type="button" class="express-order-btn px-3 py-1 rounded-full bg-error text-on-error text-[11px] font-bold" data-item="Urgent Water Can / Medicine">SOS</button>
               </div>
             </div>
           </div>
@@ -322,637 +405,846 @@
       </section>
 
       <!-- ======================================================================
-           5. SECRET LOVE & CURIOSITY WHISPER WALL (4-DIGIT PIN CODE LOCK)
+           విభాగం 5 (ఆదాయం #2): OLX Buy & Sell (కమిషన్ % తో) + కూరగాయల మార్కెట్ రేట్లు
            ====================================================================== -->
-      <section id="whisper-wall" class="rounded-2xl bg-gradient-to-br from-rose-pink to-on-rose-tint text-white p-4 shadow-md flex flex-col gap-3">
+      <section id="olx-business" class="rounded-2xl bg-light-surface-container-low border border-light-outline p-4 shadow-sm flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
-            <h2 class="font-headline font-bold text-base">Secret Love Whisper Wall</h2>
+          <div>
+            <h2 class="font-headline text-lg font-bold text-royal-emerald">OLX Buy &amp; Sell + Farm Market</h2>
+            <p class="text-xs text-light-on-surface-muted">అమ్మిన తర్వాత మాత్రమే 2%–5% కమిషన్ • నేరుగా డీల్ చేయండి</p>
           </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-white/20 text-[10px] font-bold">100% SECRET</span>
+          <button id="open-olx-post-btn" type="button" class="shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold">+ Post to Sell</button>
         </div>
 
-        <form id="whisper-form" class="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 flex flex-col gap-2">
-          <textarea id="whisper-text" rows="2" placeholder="పేరు బయటపడకుండా మీ మనసులోని ప్రేమను లేదా సీక్రెట్ మెసేజ్ రాయండి..." class="w-full rounded-lg bg-white text-light-on-surface placeholder:text-light-on-surface-muted border-0 text-xs p-2 focus:ring-2 focus:ring-saffron-gold"></textarea>
-          <div class="grid grid-cols-2 gap-2">
-            <input id="whisper-location" type="text" placeholder="హింట్ (ఉదా: S.Kota Bus Stop)" class="rounded-lg bg-white text-light-on-surface border-0 text-xs px-2.5 py-1.5">
-            <input id="whisper-pin" type="password" maxlength="4" inputmode="numeric" placeholder="Optional 4-digit PIN" class="rounded-lg bg-white text-light-on-surface border-0 font-mono text-xs px-2.5 py-1.5">
+        <!-- OLX ఐటమ్స్ గ్రిడ్ -->
+        <div id="olx-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 items-stretch">
+          <article data-area-tag="S.Kota" data-search="old books rrb ssc iti study" class="filterable-item h-full rounded-xl bg-light-surface-container/70 border border-light-outline p-2.5 flex flex-col justify-between gap-1.5">
+            <div>
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrD4G18JxKRbweNFDpni0pJIqUkOk2asDloMAnz3WUKebq754CWz1YgmvwFVQ59n2pMCthkxOd-wXBB_Ha-PvGE38K70CrHPFtl916uNpAEH4NiVyHYmh8QjV7B8Bh1VhVs_VRX9JqoYaSSASNLRorjCKjIWKJseSsej2KYILaSi9U5tdmZZ-iBp4pd1jcs6-U2cgMGuisLy3xQDxwlPrOC8f_DOc8HULVLt23nCfQqOhuFQzms1JymSUnI" alt="RRB SSC Books Bundle" class="w-full h-24 object-cover rounded-lg mb-1.5">
+              <span class="inline-block px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[10px] font-bold">5% Deal Fee</span>
+              <h3 class="text-xs font-bold text-light-on-surface mt-1">RRB / SSC / ITI Books</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹350 • S.Kota</p>
+            </div>
+            <button type="button" class="olx-buy-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="RRB / SSC / ITI Books (₹350)" data-comm="5%">Buy via Mediator</button>
+          </article>
+
+          <article data-area-tag="Boddavara" data-search="bike passion splendor second hand" class="filterable-item h-full rounded-xl bg-light-surface-container/70 border border-light-outline p-2.5 flex flex-col justify-between gap-1.5">
+            <div>
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrAgRHHpFzjbwsRW7_F_vhiMrX3bge4JEd5Oj9f0wtvv7J2T6k7tSOXniwy2xdIV0GBqC2AMfpFgGbVwmpqiFOjw5UQftg1KhKnpRGmbiHVRmCKETnE9xXp_zk-g53A3jlu6F-klt4MWHTMNpQEgRe_qzUcKBd6D0_M0Cf86bZm4wPcjfeGgpVl78YGO8RTHo0ELcT_2r5ucuDytas73RHpacG0Ih8emf71eE8lYhHMsmDXWS8rs" alt="Second Hand Bike" class="w-full h-24 object-cover rounded-lg mb-1.5">
+              <span class="inline-block px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[10px] font-bold">3% Deal Fee</span>
+              <h3 class="text-xs font-bold text-light-on-surface mt-1">Hero Passion (2021)</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹42,000 • Boddavara</p>
+            </div>
+            <button type="button" class="olx-buy-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="Hero Passion 2021 (₹42,000)" data-comm="3%">Buy via Mediator</button>
+          </article>
+
+          <article data-area-tag="Kiltampalem" data-search="land plot cents real estate kiltampalem thatipudi" class="filterable-item h-full rounded-xl bg-light-surface-container/70 border border-light-outline p-2.5 flex flex-col justify-between gap-1.5">
+            <div>
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrDTCRoS3sLgRtokCTmkoo7CKOcoqzAz36LG8cEpGg9sw62G8vr-hJSvLXkSpSDzT2kSdMHNvqsVlvYsQM-7iWoCoaT5ivI3qqaonjD2AGIlfhHQ7yEXBE654WPeu4hzKHRvX50QHgQOrP6591rPXixv__LfOoAtLjtjkP66tJSLuV2d-azTYPakNaRytTFQjIw_tPIe6MWRX4IhGze4OjbIdb1a-beO8vBpH6V6POiCe5G20dWlCQ" alt="House Plot" class="w-full h-24 object-cover rounded-lg mb-1.5">
+              <span class="inline-block px-2 py-0.5 rounded-full bg-emerald-tint text-on-emerald-tint text-[10px] font-bold">2% Land Fee</span>
+              <h3 class="text-xs font-bold text-light-on-surface mt-1">10 Cents House Plot</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹12L • Kiltampalem</p>
+            </div>
+            <button type="button" class="olx-buy-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="10 Cents Plot Kiltampalem (₹12L)" data-comm="2%">Contact Mediator</button>
+          </article>
+        </div>
+
+        <!-- లోకల్ కూరగాయలు, నిమ్మ & డైరీ మార్కెట్ రేట్లు -->
+        <div class="rounded-xl bg-light-surface-container p-3 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-royal-emerald">ఈరోజు మార్కెట్ రేట్లు (Direct Farm &amp; Dairy)</span>
+            <button id="shop-promote-btn" type="button" class="px-2.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold">Free / ₹99 Ad</button>
           </div>
-          <button type="submit" class="w-full py-2 rounded-full bg-saffron-gold text-on-saffron-gold font-bold text-xs shadow active:scale-95 transition">
-            💌 Post Secret Whisper
+          <div class="grid grid-cols-3 gap-1.5 font-mono text-[11px] tabular-nums text-center">
+            <div class="p-1.5 rounded-lg bg-light-surface-container-low border border-light-outline">టమాటా: ₹30/kg</div>
+            <div class="p-1.5 rounded-lg bg-light-surface-container-low border border-light-outline">నిమ్మ: ₹4/కాయ</div>
+            <div class="p-1.5 rounded-lg bg-light-surface-container-low border border-light-outline">పాలు: ₹66/L</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           విభాగం 6: 100% SECRET LOVE WHISPER WALL (LocalStorage సేవింగ్ తో)
+           ====================================================================== -->
+      <section id="whisper-wall" class="rounded-2xl bg-gradient-to-br from-rose-pink to-on-rose-tint text-on-rose-pink p-4 shadow-md flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
+            <div>
+              <h2 class="font-headline text-lg font-bold">Secret Love Whisper Wall</h2>
+              <p class="text-[11px] text-rose-tint">మీ పేరు/నంబర్ ఎక్కడా రాదు — 100% Secret &amp; Safe!</p>
+            </div>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold">100% SECRET</span>
+        </div>
+
+        <form id="whisper-form" class="rounded-xl bg-on-rose-pink/10 backdrop-blur-sm border border-on-rose-pink/20 p-3 flex flex-col gap-2">
+          <textarea id="whisper-text" rows="2" placeholder="మీ మనసులోని సీక్రెట్ ప్రేమ లేదా క్రష్ మెసేజ్ రాయండి..." class="w-full rounded-lg bg-light-surface-container-low text-light-on-surface placeholder:text-light-on-surface-muted border-0 text-xs p-2 focus:ring-2 focus:ring-saffron-gold"></textarea>
+          <div class="grid grid-cols-2 gap-1.5">
+            <input id="whisper-location" type="text" placeholder="క్లూ / ఏరియా (ఉదా: S.Kota Bus Stop)" class="rounded-lg bg-light-surface-container-low text-light-on-surface placeholder:text-light-on-surface-muted border-0 text-xs px-2.5 py-1.5">
+            <input id="whisper-pin" type="password" maxlength="6" placeholder="సీక్రెట్ PIN (Optional)" class="rounded-lg bg-light-surface-container-low text-light-on-surface placeholder:text-light-on-surface-muted border-0 font-mono text-xs px-2.5 py-1.5">
+          </div>
+          <button type="submit" class="w-full py-2 rounded-full bg-saffron-gold text-on-saffron-gold text-xs font-bold hover:opacity-95 active:scale-95 transition-transform">
+            Post 100% Secret Whisper
           </button>
         </form>
 
-        <div id="whisper-feed" class="flex flex-col gap-2 max-h-56 overflow-y-auto pr-0.5">
-          <article class="whisper-card rounded-xl bg-white text-light-on-surface p-3 flex flex-col gap-1" data-pin="1430" data-secret="ప్రతిరోజూ ఉదయం 7:30 బొడ్డవార బస్సులో నువ్వు నవ్వుతూ కనిపిస్తే ఆ రోజంతా నాకు పండగే! — నీ సైలెంట్ అభిమాని ❤️">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">lock</span>
-                Locked Confession • Boddavara
-              </span>
-              <span class="text-[10px] text-light-on-surface-muted">2m ago</span>
-            </div>
-            <p class="whisper-body text-xs text-light-on-surface-muted blur-sm select-none">
-              ప్రతిరోజూ ఉదయం 7:30 బొడ్డవార బస్సులో నువ్వు నవ్వుతూ కనిపిస్తే ఆ రోజంతా నాకు పండగే!
-            </p>
-            <div class="whisper-unlock-row flex items-center gap-1.5 pt-1">
-              <input type="password" maxlength="4" inputmode="numeric" placeholder="PIN (try 1430)" class="whisper-pin-input w-28 rounded-full border border-rose-pink/40 px-2.5 py-1 font-mono text-xs">
-              <button type="button" class="whisper-unlock-btn px-3 py-1 rounded-full bg-rose-pink text-white font-bold text-[11px]">Unlock with Code</button>
-            </div>
-          </article>
-
-          <article class="rounded-xl bg-white text-light-on-surface p-3 flex flex-col gap-1">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">lock_open</span>
-                Public Whisper • Thatipudi Dam
-              </span>
-              <span class="text-[10px] text-light-on-surface-muted">18m ago</span>
-            </div>
-            <p class="text-xs text-light-on-surface">“నువ్వు నవ్వితే తాటిపూడి జలాశయం కంటే అందంగా ఉంటుంది — Happy Day! 💖”</p>
-          </article>
+        <div id="whisper-feed" class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+          <!-- పాత మరియు కొత్త విస్పర్స్ ఇక్కడ లోడ్ అవుతాయి -->
         </div>
       </section>
 
       <!-- ======================================================================
-           6. COMPACT LIVE TELUGU NEWS (SINGLE CLEAN TAB) & BUS SCHEDULE
+           విభాగం 7: లోకల్ జాబ్స్ & ఇండస్ట్రియల్ డ్యూటీస్ (Kiltampalem Jindal / S.Kota)
            ====================================================================== -->
-      <section id="news-bus" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <!-- Left: Live Telugu News (Triple-Backup RSS) -->
-        <article class="rounded-2xl bg-white border border-light-outline p-3.5 shadow-sm flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <h2 class="font-headline font-bold text-sm text-royal-emerald">🔴 తాజా తెలుగు వార్తలు (Live)</h2>
-            <button id="refresh-news-btn" type="button" class="text-[10px] font-bold px-2 py-0.5 rounded bg-error text-white">Refresh</button>
-          </div>
-          <div id="live-news-list" class="max-h-40 overflow-y-auto flex flex-col gap-2 pr-1 text-xs">
-            <p class="text-light-on-surface-muted">⏳ తాజా వార్తలు లోడ్ అవుతున్నాయి...</p>
-          </div>
-        </article>
-
-        <!-- Right: Compact Pallevelugu Bus Timings -->
-        <article class="rounded-2xl bg-white border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <h2 class="font-headline font-bold text-sm text-royal-emerald">🚌 పల్లెవెలుగు బస్సు వేళలు</h2>
-              <span class="px-1.5 py-0.5 rounded-full bg-emerald-tint text-on-emerald-tint font-bold text-[10px]">APSRTC</span>
-            </div>
-            <div class="flex flex-col gap-1.5 font-mono text-[11px]">
-              <div class="flex items-center justify-between p-1.5 rounded bg-light-surface-container">
-                <span>VZM ⇄ తాటిపూడి ⇄ S.Kota</span>
-                <span class="text-royal-emerald font-bold">06:30, 08:15, 04:30</span>
-              </div>
-              <div class="flex items-center justify-between p-1.5 rounded bg-light-surface-container">
-                <span>S.Kota ⇄ బొడ్డవార ⇄ అరకు</span>
-                <span class="text-royal-emerald font-bold">06:00, 09:30, 03:00</span>
-              </div>
-              <div class="flex items-center justify-between p-1.5 rounded bg-light-surface-container">
-                <span>S.Kota ⇄ వైజాగ్ (Non-Stop)</span>
-                <span class="text-royal-emerald font-bold">ప్రతి 20 ని||లకు</span>
-              </div>
-            </div>
-          </div>
-          <a href="https://apsrtclivetrack.com/" target="_blank" class="mt-1 w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px] inline-flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">directions_bus</span>
-            <span>APSRTC Live GPS Track</span>
-          </a>
-        </article>
-      </section>
-
-      <!-- ======================================================================
-           7. UNIFIED EDUCATION & VILLAGE CALCULATORS HUB + MULTI-QUESTION GK QUIZ
-           ====================================================================== -->
-      <section id="calculators" class="rounded-2xl bg-white border border-light-outline p-4 shadow-sm flex flex-col gap-3">
+      <section id="jobs-hub" class="rounded-2xl bg-light-surface-container-low border border-light-outline p-4 shadow-sm flex flex-col gap-3">
         <div class="flex items-center justify-between">
-          <h2 class="font-headline font-bold text-base text-royal-emerald">🎓 Education, Calculators &amp; GK Hub</h2>
-          <span class="material-symbols-outlined text-[20px] text-saffron-gold">calculate</span>
+          <div>
+            <h2 class="font-headline text-lg font-bold text-royal-emerald">Local Jobs &amp; Site Duties</h2>
+            <p class="text-xs text-light-on-surface-muted">Kiltampalem (Jindal/Scon) • S.Kota • VZM • Vizag ఉద్యోగాలు</p>
+          </div>
+          <button id="post-job-btn" type="button" class="px-3 py-1 rounded-full bg-saffron-tint text-on-saffron-tint text-[11px] font-bold">Post Job (₹49)</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div data-area-tag="Kiltampalem" data-search="security guard jindal scon kiltampalem shift" class="filterable-item p-3 rounded-xl bg-emerald-tint/40 border border-royal-emerald/20 flex items-center justify-between gap-2">
+            <div>
+              <span class="px-2 py-0.5 rounded-full bg-success text-on-success text-[10px] font-bold">SITE DUTY</span>
+              <p class="text-xs font-bold text-light-on-surface mt-1">Site Security Guard (12 Hr)</p>
+              <p class="font-mono text-[11px] text-royal-emerald">Kiltampalem • Day/Night</p>
+            </div>
+            <button type="button" class="job-apply-btn px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-job="Site Security Guard (Kiltampalem)">Apply</button>
+          </div>
+          <div data-area-tag="S.Kota" data-search="delivery rider bike s.kota boddavara" class="filterable-item p-3 rounded-xl bg-light-surface-container border border-light-outline flex items-center justify-between gap-2">
+            <div>
+              <span class="px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[10px] font-bold">URGENT</span>
+              <p class="text-xs font-bold text-light-on-surface mt-1">Bike Delivery &amp; Dairy Rider</p>
+              <p class="font-mono text-[11px] text-royal-emerald">₹15,000/Mo • S.Kota</p>
+            </div>
+            <button type="button" class="job-apply-btn px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-job="Bike Delivery Rider (S.Kota)">Apply</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           విభాగం 8: ఎడ్యుకేషన్ హబ్ (ITI / RRB / SSC / Inter Results + Calculators + GK)
+           ====================================================================== -->
+      <section id="calculators" class="rounded-2xl bg-light-surface-container-low border border-light-outline p-4 shadow-sm flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-headline text-lg font-bold text-royal-emerald">Education, Results &amp; Calculators</h2>
+          <span class="material-symbols-outlined text-2xl text-saffron-gold" aria-hidden="true">school</span>
         </div>
 
-        <!-- Calculator Tabs -->
-        <div role="tablist" class="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-full bg-light-surface-container border border-light-outline">
-          <button role="tab" aria-selected="true" data-calc="vaddi" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-white font-bold text-[11px]">నూటికి వడ్డీ</button>
-          <button role="tab" aria-selected="false" data-calc="land" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted font-bold text-[11px]">Land (Cents)</button>
-          <button role="tab" aria-selected="false" data-calc="gst" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted font-bold text-[11px]">GST</button>
-          <button role="tab" aria-selected="false" data-calc="emi" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted font-bold text-[11px]">Loan EMI</button>
-          <button role="tab" aria-selected="false" data-calc="age" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted font-bold text-[11px]">Age</button>
+        <!-- ఎగ్జామ్ రిజల్ట్స్ చెకర్ -->
+        <div class="rounded-xl bg-saffron-tint/45 border border-saffron-gold/40 p-3 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-on-saffron-tint">AP &amp; Govt Exam Results Checker</span>
+            <span class="px-2 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold">FAST LINK</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+            <select id="exam-board" class="rounded-lg border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 text-xs">
+              <option value="rrb">RRB NTPC / Group D Results</option>
+              <option value="iti">AP ITI Electrician Results</option>
+              <option value="inter">AP Inter (1st / 2nd Yr)</option>
+              <option value="degree">AU / Degree Sem Results</option>
+              <option value="ssc10">AP 10th Class (SSC)</option>
+            </select>
+            <input id="exam-ht" type="text" placeholder="Hall Ticket / Roll No" class="rounded-lg border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 font-mono text-xs">
+            <button id="check-result-btn" type="button" class="py-1.5 px-3 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold">Check Result</button>
+          </div>
+          <div id="exam-result-box" hidden class="rounded-lg bg-light-surface-container-low border border-royal-emerald/30 p-2 text-xs flex items-center justify-between gap-2">
+            <span id="exam-result-text">Result portal ready!</span>
+            <a id="exam-portal-link" href="https://www.rrbapply.gov.in/" target="_blank" rel="noopener noreferrer" class="shrink-0 px-3 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-[11px] font-bold">Open Official Site</a>
+          </div>
         </div>
 
-        <div class="rounded-xl bg-light-surface-container/70 p-3 flex flex-col gap-2.5">
-          <div class="grid grid-cols-3 gap-2">
+        <!-- విలేజ్ & బిజినెస్ క్యాలిక్యులేటర్ ట్యాబ్లు -->
+        <div role="tablist" aria-label="Village Calculators" class="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 rounded-full bg-light-surface-container border border-light-outline">
+          <button role="tab" aria-selected="true" data-calc="vaddi" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold">నూటికి వడ్డీ</button>
+          <button role="tab" aria-selected="false" data-calc="land" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted text-[11px] font-semibold">Land (Cents)</button>
+          <button role="tab" aria-selected="false" data-calc="gst" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted text-[11px] font-semibold">GST Billing</button>
+          <button role="tab" aria-selected="false" data-calc="emi" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted text-[11px] font-semibold">Loan EMI</button>
+          <button role="tab" aria-selected="false" data-calc="age" type="button" class="calc-tab shrink-0 px-3 py-1 rounded-full text-light-on-surface-muted text-[11px] font-semibold">Age</button>
+        </div>
+        <div class="rounded-xl bg-light-surface-container/70 p-3 flex flex-col gap-2">
+          <div class="grid grid-cols-3 gap-1.5">
             <div>
-              <label id="calc-lbl-1" for="calc-in-1" class="block text-[10px] font-bold text-light-on-surface-muted mb-1">Amount (₹)</label>
-              <input id="calc-in-1" type="number" value="50000" class="w-full rounded-lg border border-light-outline bg-white px-2 py-1.5 font-mono text-xs font-bold">
+              <label id="calc-lbl-1" for="calc-in-1" class="block text-[11px] font-semibold text-light-on-surface-muted mb-1">Amount (₹)</label>
+              <input id="calc-in-1" type="number" value="50000" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-2 py-1 font-mono text-xs tabular-nums">
             </div>
             <div>
-              <label id="calc-lbl-2" for="calc-in-2" class="block text-[10px] font-bold text-light-on-surface-muted mb-1">Rate (₹/100)</label>
-              <input id="calc-in-2" type="number" step="0.1" value="2" class="w-full rounded-lg border border-light-outline bg-white px-2 py-1.5 font-mono text-xs font-bold">
+              <label id="calc-lbl-2" for="calc-in-2" class="block text-[11px] font-semibold text-light-on-surface-muted mb-1">Rate (₹/100)</label>
+              <input id="calc-in-2" type="number" step="0.1" value="2" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-2 py-1 font-mono text-xs tabular-nums">
             </div>
             <div>
-              <label id="calc-lbl-3" for="calc-in-3" class="block text-[10px] font-bold text-light-on-surface-muted mb-1">Months</label>
-              <input id="calc-in-3" type="number" value="12" class="w-full rounded-lg border border-light-outline bg-white px-2 py-1.5 font-mono text-xs font-bold">
+              <label id="calc-lbl-3" for="calc-in-3" class="block text-[11px] font-semibold text-light-on-surface-muted mb-1">Months</label>
+              <input id="calc-in-3" type="number" value="12" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-2 py-1 font-mono text-xs tabular-nums">
             </div>
           </div>
-
           <div class="flex items-center justify-between gap-2 pt-1">
             <div>
-              <p class="text-[10px] font-bold text-light-on-surface-muted">Calculated Result</p>
-              <p id="calc-output" class="font-mono text-xs font-bold text-royal-emerald">Interest: ₹12,000 • Total: ₹62,000</p>
+              <p class="text-[10px] font-semibold text-light-on-surface-muted">Calculated Result</p>
+              <p id="calc-output" class="font-mono text-xs font-bold text-royal-emerald tabular-nums">వడ్డీ: ₹12,000 • మొత్తం: ₹62,000</p>
             </div>
-            <button id="calc-whatsapp-btn" type="button" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-success text-white font-bold text-[11px]">
-              <span class="material-symbols-outlined text-[14px]">share</span>
+            <button id="calc-whatsapp-btn" type="button" class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-success text-on-success text-[11px] font-bold">
+              <span class="material-symbols-outlined text-xs" aria-hidden="true">share</span>
               <span>WhatsApp</span>
             </button>
           </div>
         </div>
 
-        <!-- Daily RRB / SSC Current Affairs & GK Quiz Card -->
-        <div class="rounded-xl bg-emerald-tint/45 border border-royal-emerald/20 p-3 flex flex-col gap-2">
+        <!-- డైలీ RRB / SSC GK క్విజ్ -->
+        <div class="rounded-xl bg-emerald-tint/45 border border-royal-emerald/20 p-3 flex flex-col gap-1.5">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-extrabold text-royal-emerald">DAILY RRB / SSC / APPSC GK QUIZ</span>
-            <button id="next-quiz-btn" type="button" class="px-2 py-0.5 rounded bg-royal-emerald text-white text-[10px] font-bold">Next Question →</button>
+            <span class="text-[10px] font-bold text-royal-emerald">DAILY RRB / SSC / AP GK QUIZ</span>
+            <button id="next-quiz-btn" type="button" class="px-2.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[10px] font-bold">Next Question</button>
           </div>
           <p id="quiz-q-text" class="text-xs font-bold text-light-on-surface">1. విజయనగరం జిల్లాలోని తాటిపూడి రిజర్వాయర్ ఏ నదిపై నిర్మించబడింది?</p>
-          <div id="quiz-options-grid" class="grid grid-cols-2 gap-1.5">
-            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-white border border-light-outline text-xs text-left font-semibold" data-correct="true">A. గోస్తనీ నది</button>
-            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-white border border-light-outline text-xs text-left font-semibold" data-correct="false">B. నాగావళి నది</button>
-            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-white border border-light-outline text-xs text-left font-semibold" data-correct="false">C. వంశధార నది</button>
-            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-white border border-light-outline text-xs text-left font-semibold" data-correct="false">D. శారదా నది</button>
+          <div id="quiz-options-grid" class="grid grid-cols-2 gap-1.5 pt-1">
+            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-light-surface-container-low border border-light-outline text-xs text-left hover:border-royal-emerald" data-correct="true">A. గోస్తనీ నది</button>
+            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-light-surface-container-low border border-light-outline text-xs text-left hover:border-royal-emerald" data-correct="false">B. నాగావళి నది</button>
+            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-light-surface-container-low border border-light-outline text-xs text-left hover:border-royal-emerald" data-correct="false">C. వంశధార నది</button>
+            <button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-light-surface-container-low border border-light-outline text-xs text-left hover:border-royal-emerald" data-correct="false">D. శారదా నది</button>
           </div>
           <p id="quiz-feedback" class="text-[11px] font-bold"></p>
         </div>
       </section>
 
       <!-- ======================================================================
-           8. FLIPKART-STYLE SMART COMMERCE, TOURISM (6 PACKAGES), BOOKS & JOBS
+           విభాగం 9: టూరిజం & విలేజ్ టెక్నీషియన్స్
            ====================================================================== -->
       <section id="marketplace" class="flex flex-col gap-3">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="font-headline font-bold text-base text-light-on-surface">🛒 Tourism, Smart Store, Books &amp; Jobs</h2>
-            <p class="text-[11px] text-light-on-surface-muted">ఏ కార్డుపైనైనా "View Details" నొక్కితే 3 ఇన్నర్ ట్యాబ్‌లు ఓపెన్ అవుతాయి</p>
+            <h2 class="font-headline text-lg font-bold text-light-on-surface">Tourism &amp; Village Technicians</h2>
+            <p class="text-xs text-light-on-surface-muted">ఏ కార్డుపైనైనా నొక్కితే ఫోటోలు, రేట్లు &amp; బుకింగ్ వస్తాయి</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-saffron-tint text-on-saffron-tint font-bold text-[10px]">6 Tours + Store</span>
+          <span class="px-3 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[11px] font-bold">6 Services</span>
         </div>
 
-        <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 items-stretch">
-          <!-- 1. Araku -->
-          <article data-area-tag="Araku" data-search="araku borra caves coffee valley tour" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+        <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 items-stretch">
+          <article data-area-tag="Araku" data-search="araku coffee valley tour cab" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=400&q=80" alt="Araku Valley" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-saffron-gold text-on-saffron-gold font-bold text-[9px]">20% OFF</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrAgRHHpFzjbwsRW7_F_vhiMrX3bge4JEd5Oj9f0wtvv7J2T6k7tSOXniwy2xdIV0GBqC2AMfpFgGbVwmpqiFOjw5UQftg1KhKnpRGmbiHVRmCKETnE9xXp_zk-g53A3jlu6F-klt4MWHTMNpQEgRe_qzUcKBd6D0_M0Cf86bZm4wPcjfeGgpVl78YGO8RTHo0ELcT_2r5ucuDytas73RHpacG0Ih8emf71eE8lYhHMsmDXWS8rs" alt="Araku Valley Tour" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold leading-none">5+ PICS</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Araku Valley (6 Spots)</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹1,499</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">Araku Valley</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹1,499</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="araku-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="araku-tour">View Photos</button>
           </article>
 
-          <!-- 2. Lambasingi -->
-          <article data-area-tag="Araku" data-search="lambasingi tajangi mist forest tour" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+          <article data-area-tag="Araku" data-search="lambasingi mist forest tour" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80" alt="Lambasingi" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-royal-emerald text-white font-bold text-[9px]">HOT</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrCNoqK2WVz8Gx37MUXLlt-7GE_0q-cUFKqb2_2a9s0wwjEGS-asHi2iw4ScB19q_9Z89AepQ1nTOlA4cNAhMlfgsQMgIxl60QkJygS5PNyBtuaVK9r5Fn6gTd9x4QAioGUZ-jqYO3tyu_febI-7XZrJsh8-idq5JzEV3CCeCNwhL1PTZMpLw32zlktnZv3FRPnqqSwQBzOcG1i6O3Q79hA4ugidg9LdVwy43NR5AAonjZtLWae5L88f" alt="Lambasingi Mist Tour" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[10px] font-bold leading-none">5+ PICS</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Lambasingi Mist</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹1,599</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">Lambasingi</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹1,599</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="lambasingi-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="lambasingi-tour">View Photos</button>
           </article>
 
-          <!-- 3. Vizag -->
-          <article data-area-tag="Vizag" data-search="vizag rk beach kailasagiri city tour" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+          <article data-area-tag="Vizag" data-search="vizag rk beach city tour" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80" alt="Vizag Beach" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-saffron-gold text-on-saffron-gold font-bold text-[9px]">15% OFF</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrCv1jLEj2g2lJNzmojABGoPoXWInCAURj5P2OfDBjNQwpo9ukKUP7BMvZ6p5r7D-AtmZ-H88IImgkGy-bd3lUvbGYIJ0Sw__60ET_8Zoi38tW0MhWgdUPcfcvy719nZV266F7EIzhFFZEB5oJTlOkpntengA_k4KrUrX-vF8KyNSACa6N_YQL1gmPX4GhRB3eIuKjSdXbmpQff83SCHZCSZxsOVKN_LM-Kdli9lFM9tv4MyZQ" alt="Vizag Beach Tour" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-[10px] font-bold leading-none">5+ PICS</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Vizag Coastline</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹999</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">Vizag Coast</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹999</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="vizag-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="vizag-tour">View Photos</button>
           </article>
 
-          <!-- 4. Vanjangi -->
-          <article data-area-tag="Araku" data-search="vanjangi paderu sunrise clouds hills" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+          <article data-area-tag="Araku" data-search="vanjangi sunrise clouds hills" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=400&q=80" alt="Vanjangi Hills" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-rose-pink text-white font-bold text-[9px]">TOP</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrAAQWKVNcLeH6A-U9FwgEuukommSnpWXbb0821WX0JJ28-CP84BvUU6hYTiyrMrUciujm2lzCviao8QUrvHpnrUfFpRmVqnY51jp2UYqUqJOXQQc0giDzr31_sTAaN53xnNPEdxAaI2xthMwOkNw2bjFB51QOBEz13E2OTU4AR_BclM75we_ItEQHj3ATMXgPCOqm54gP9qhgt3GWqyKpfe_z3TFO5ptYEDRK3iTGXaJBBFodq6LXMw" alt="Vanjangi Hills" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-rose-pink text-on-rose-pink text-[10px] font-bold leading-none">5+ PICS</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Vanjangi &amp; Paderu</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹1,399</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">Vanjangi Hills</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹1,399</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="vanjangi-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="vanjangi-tour">View Photos</button>
           </article>
 
-          <!-- 5. Thatipudi & Kasipatnam -->
-          <article data-area-tag="Thatipudi" data-search="thatipudi kasipatnam tyda dam waterfalls" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+          <article data-area-tag="Thatipudi" data-search="thatipudi dam tyda picnic" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=400&q=80" alt="Thatipudi" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-royal-emerald text-white font-bold text-[9px]">LOCAL</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrDTCRoS3sLgRtokCTmkoo7CKOcoqzAz36LG8cEpGg9sw62G8vr-hJSvLXkSpSDzT2kSdMHNvqsVlvYsQM-7iWoCoaT5ivI3qqaonjD2AGIlfhHQ7yEXBE654WPeu4hzKHRvX50QHgQOrP6591rPXixv__LfOoAtLjtjkP66tJSLuV2d-azTYPakNaRytTFQjIw_tPIe6MWRX4IhGze4OjbIdb1a-beO8vBpH6V6POiCe5G20dWlCQ" alt="Thatipudi Dam" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[10px] font-bold leading-none">LOCAL</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Thatipudi &amp; Tyda</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹1,199</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">Thatipudi &amp; Tyda</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹1,199</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="thatipudi-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="thatipudi-tour">View Photos</button>
           </article>
 
-          <!-- 6. Vizianagaram Heritage -->
-          <article data-area-tag="VZM" data-search="vzm vizianagaram fort ramanarayanam temple" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
+          <article data-area-tag="Boddavara" data-search="electrician mechanic plumber technician iti" class="filterable-item h-full rounded-2xl bg-light-surface-container-low border border-light-outline p-2.5 flex flex-col justify-between gap-1.5 shadow-sm">
             <div>
               <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=400&q=80" alt="VZM" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-saffron-gold text-on-saffron-gold font-bold text-[9px]">HERITAGE</span>
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrAyWPiINFf3b6-aIM7Yag7PoMZcnaw3kRZnSXKAMKs0l5DCajzIh3ZXfQzkGWohnjyw52L7Q7rhxhoOQYmEksfma_IexY62kOhWL9Hpy7b8sItUl3YaqUAc0HIj3srl_lHPFNBfS95JTy_us5Jv449Zx0JDH2c67Cwx44NOl9x5UoyRIcs8T9iFLEA-2L8Ckxi0GHcnmC5H8R4GZ4NqegtQ4bqjC5HBu-v9gySpAjBoPVU2WqZCEYtX0uc" alt="Village Technicians" class="w-full h-24 object-cover">
+                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[10px] font-bold leading-none">24/7</span>
               </div>
-              <h3 class="font-bold text-xs text-light-on-surface">VZM Royal Tour</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹899</p>
+              <h3 class="text-xs font-bold text-light-on-surface leading-tight">ITI Electrician &amp; Mech</h3>
+              <p class="font-mono text-xs text-royal-emerald tabular-nums">₹100+</p>
             </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="vzm-tour">View Details</button>
+            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item-id="electrician-seva">View Details</button>
           </article>
-
-          <!-- 7. Old Books Buy/Sell -->
-          <article data-area-tag="S.Kota" data-search="old books rrb ssc study bundle buy sell" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
-            <div>
-              <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=400&q=80" alt="Old Books" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-saffron-gold text-on-saffron-gold font-bold text-[9px]">50% OFF</span>
-              </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Old Books Buy/Sell</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹150+</p>
-            </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="books-bundle">View Details</button>
-          </article>
-
-          <!-- 8. Local Jobs & Daily Duties -->
-          <article data-area-tag="Kiltampalem" data-search="jobs security guard daily duty catering loading" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
-            <div>
-              <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80" alt="Local Jobs" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-success text-white font-bold text-[9px]">HIRING</span>
-              </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Local Jobs &amp; Duties</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹600/Day</p>
-            </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="local-jobs">View Details</button>
-          </article>
-
-          <!-- 9. Village Technicians -->
-          <article data-area-tag="Boddavara" data-search="electrician mechanic plumber technician tanker" class="catalog-card rounded-xl bg-white border border-light-outline p-2 flex flex-col justify-between gap-1.5 shadow-sm">
-            <div>
-              <div class="relative rounded-lg overflow-hidden mb-1.5">
-                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=400&q=80" alt="Technicians" class="w-full h-24 object-cover">
-                <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-royal-emerald text-white font-bold text-[9px]">24/7</span>
-              </div>
-              <h3 class="font-bold text-xs text-light-on-surface">Technicians &amp; Seva</h3>
-              <p class="font-mono text-xs font-bold text-royal-emerald">₹100+</p>
-            </div>
-            <button type="button" class="open-detail-btn w-full py-1.5 rounded-full bg-royal-emerald text-white font-bold text-[11px]" data-item-id="electrician-seva">View Details</button>
-          </article>
-        </div>
-
-        <!-- Quick Village Services & Emergency Strip -->
-        <div class="rounded-2xl bg-white border border-light-outline p-3.5 flex flex-col gap-2">
-          <p class="text-xs font-bold text-light-on-surface">🚑 గ్రామ సేవలు &amp; అత్యవసర నంబర్లు (1-Tap Action)</p>
-          <div class="grid grid-cols-3 gap-2">
-            <button type="button" class="open-detail-btn p-2 rounded-xl bg-light-surface-container text-center hover:bg-emerald-tint transition" data-item-id="electrician-seva">
-              <span class="material-symbols-outlined text-[18px] text-royal-emerald block mx-auto">build</span>
-              <span class="text-[11px] font-bold">Mechanic</span>
-            </button>
-            <button type="button" class="open-detail-btn p-2 rounded-xl bg-light-surface-container text-center hover:bg-emerald-tint transition" data-item-id="electrician-seva">
-              <span class="material-symbols-outlined text-[18px] text-royal-emerald block mx-auto">water_drop</span>
-              <span class="text-[11px] font-bold">Water Tanker</span>
-            </button>
-            <a href="tel:108" class="p-2 rounded-xl bg-error text-white text-center shadow-sm">
-              <span class="material-symbols-outlined text-[18px] block mx-auto">emergency</span>
-              <span class="text-[11px] font-bold">108 / 100 SOS</span>
-            </a>
-          </div>
         </div>
       </section>
 
+      <!-- ======================================================================
+           విభాగం 10: లైవ్ తెలుగు వార్తలు & APSRTC పల్లెవెలుగు బస్సు వేళలు
+           ====================================================================== -->
+      <section id="news-bus" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <article class="rounded-2xl bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-sm font-bold text-royal-emerald">తెలుగు వార్తలు (Live)</h2>
+            <button id="refresh-news-btn" type="button" class="px-2.5 py-0.5 rounded-full bg-error text-on-error text-[10px] font-bold">Refresh</button>
+          </div>
+          <div id="live-news-list" class="max-h-36 overflow-y-auto flex flex-col gap-1.5 pr-1 text-xs">
+            <p class="text-light-on-surface-muted">తాజా వార్తలు లోడ్ అవుతున్నాయి...</p>
+          </div>
+        </article>
+
+        <article class="rounded-2xl bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <h2 class="font-headline text-sm font-bold text-royal-emerald">పల్లెవెలుగు బస్సులు</h2>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-tint text-on-emerald-tint text-[10px] font-bold">APSRTC</span>
+            </div>
+            <div class="flex flex-col gap-1 font-mono text-xs tabular-nums">
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-light-surface-container">
+                <span>S.Kota → Vizag</span><span class="text-royal-emerald font-bold">06:30</span>
+              </div>
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-light-surface-container">
+                <span>VZM → Araku</span><span class="text-royal-emerald font-bold">07:15</span>
+              </div>
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-light-surface-container">
+                <span>Boddavara → S.Kota</span><span class="text-royal-emerald font-bold">08:00</span>
+              </div>
+            </div>
+          </div>
+          <a href="https://apsrtclivetrack.com/" target="_blank" rel="noopener noreferrer" class="w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold inline-flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-xs" aria-hidden="true">directions_bus</span>
+            <span>APSRTC Live GPS</span>
+          </a>
+        </article>
+      </section>
+
+      <!-- ======================================================================
+           విభాగం 11: జెన్యూన్ పెళ్ళి సంబంధాలు (Mediator Protected)
+           ====================================================================== -->
+      <section id="marriage-hub" class="rounded-2xl bg-light-surface-container-low border border-light-outline p-4 shadow-sm flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-rose-pink">పెళ్ళి సంబంధాలు (Verified Profiles)</h2>
+            <p class="text-xs text-light-on-surface-muted">100% జెన్యూన్ • ఫోన్ నంబర్లు మీడియేటర్ ద్వారా మాత్రమే ఇస్తారు</p>
+          </div>
+          <button id="add-marriage-btn" type="button" class="px-3 py-1 rounded-full bg-rose-tint text-on-rose-tint text-[11px] font-bold">+ Add Profile</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="p-3 rounded-xl bg-rose-tint/45 border border-rose-pink/20 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-bold text-light-on-surface">వరుడు (27 Yrs • B.Tech)</p>
+              <p class="text-[11px] text-light-on-surface-muted">Vizag Job • S.Kota Family</p>
+            </div>
+            <button type="button" class="marriage-connect-btn px-3 py-1 rounded-full bg-rose-pink text-on-rose-pink text-[11px] font-bold" data-profile="Groom 27 Yrs B.Tech (S.Kota)">Mediator</button>
+          </div>
+          <div class="p-3 rounded-xl bg-rose-tint/45 border border-rose-pink/20 flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs font-bold text-light-on-surface">వధువు (24 Yrs • Degree)</p>
+              <p class="text-[11px] text-light-on-surface-muted">Boddavara • Traditional</p>
+            </div>
+            <button type="button" class="marriage-connect-btn px-3 py-1 rounded-full bg-rose-pink text-on-rose-pink text-[11px] font-bold" data-profile="Bride 24 Yrs Degree (Boddavara)">Mediator</button>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- ========================================================================
-         9. FLOATING BOTTOM NAVIGATION DOCK
+         విభాగం 12: ఫ్లోటింగ్ బాటమ్ నావిగేషన్ డాక్
          ======================================================================== -->
-    <nav aria-label="Quick navigation dock" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-md rounded-full bg-emerald-deep/95 backdrop-blur-md text-white border border-saffron-gold/35 px-3 py-2 shadow-xl flex items-center justify-around">
+    <nav aria-label="క్విక్ నావిగేషన్" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-md rounded-full bg-emerald-deep/95 backdrop-blur-md text-on-emerald-deep border border-saffron-gold/30 px-3 py-2 shadow-xl flex items-center justify-around">
       <a href="#bike-drop" class="flex flex-col items-center gap-0.5 text-saffron-gold">
-        <span class="material-symbols-outlined text-[20px]">two_wheeler</span>
-        <span class="text-[10px] font-bold">Bike Drop</span>
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">two_wheeler</span>
+        <span class="text-[10px] font-bold">Bike ₹5</span>
       </a>
-      <a href="#whisper-wall" class="flex flex-col items-center gap-0.5 text-white hover:text-saffron-gold">
-        <span class="material-symbols-outlined text-[20px]">favorite</span>
-        <span class="text-[10px] font-bold">Secret Love</span>
+      <a href="#olx-business" class="flex flex-col items-center gap-0.5 text-on-emerald-deep hover:text-saffron-gold">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">storefront</span>
+        <span class="text-[10px] font-semibold">OLX/Rates</span>
       </a>
-      <a href="#news-bus" class="flex flex-col items-center gap-0.5 text-white hover:text-saffron-gold">
-        <span class="material-symbols-outlined text-[20px]">directions_bus</span>
-        <span class="text-[10px] font-bold">News/Bus</span>
+      <a href="#whisper-wall" class="flex flex-col items-center gap-0.5 text-on-emerald-deep hover:text-saffron-gold">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">favorite</span>
+        <span class="text-[10px] font-semibold">Secret</span>
       </a>
-      <a href="#calculators" class="flex flex-col items-center gap-0.5 text-white hover:text-saffron-gold">
-        <span class="material-symbols-outlined text-[20px]">calculate</span>
-        <span class="text-[10px] font-bold">Calculators</span>
+      <a href="#calculators" class="flex flex-col items-center gap-0.5 text-on-emerald-deep hover:text-saffron-gold">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">school</span>
+        <span class="text-[10px] font-semibold">Results</span>
       </a>
-      <a href="tel:108" class="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-full bg-error text-white">
-        <span class="material-symbols-outlined text-[18px]">sos</span>
+      <a href="tel:108" class="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-full bg-error text-on-error">
+        <span class="material-symbols-outlined text-base" aria-hidden="true">sos</span>
         <span class="text-[10px] font-bold">108 SOS</span>
       </a>
     </nav>
 
     <!-- ========================================================================
-         10. MULTI-TAB INTERACTIVE POPUP MODAL (3 INNER TABS)
+         మోడల్స్ (Tourism Details, Add Rider, Post OLX, Side Drawer)
          ======================================================================== -->
-    <dialog id="detail-modal" class="w-[calc(100%-24px)] max-w-md rounded-2xl bg-light-surface-container-low text-light-on-surface border border-light-outline p-0 shadow-2xl backdrop:bg-emerald-deep/75 backdrop:backdrop-blur-sm">
+    <dialog id="detail-modal" aria-labelledby="modal-title" class="w-[calc(100%-24px)] max-w-md rounded-2xl bg-light-surface-container-low text-light-on-surface border border-light-outline p-0 shadow-2xl backdrop:bg-emerald-deep/75">
       <header class="flex items-start justify-between gap-3 p-4 border-b border-light-outline">
         <div>
-          <h2 id="modal-title" class="font-headline font-bold text-base text-royal-emerald">Package Title</h2>
+          <h2 id="modal-title" class="font-headline text-base font-bold text-royal-emerald">Package Title</h2>
           <p id="modal-subtitle" class="text-xs text-light-on-surface-muted">Subtitle</p>
         </div>
-        <button id="close-detail-modal" type="button" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center">
-          <span class="material-symbols-outlined text-[18px]">close</span>
+        <button id="close-detail-modal" type="button" aria-label="మూసివేయండి" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-light-surface-container text-light-on-surface">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
         </button>
       </header>
-
       <div class="p-4 flex flex-col gap-3">
-        <!-- 3 Inner Tabs -->
         <div role="tablist" class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-light-surface-container border border-light-outline">
-          <button role="tab" aria-selected="true" data-modal-tab="rates" type="button" class="modal-tab py-1.5 px-2 rounded-lg bg-royal-emerald text-white font-bold text-[11px]">1. Rates &amp; Spots</button>
-          <button role="tab" aria-selected="false" data-modal-tab="video" type="button" class="modal-tab py-1.5 px-2 rounded-lg text-light-on-surface-muted font-bold text-[11px]">2. Info &amp; Rules</button>
-          <button role="tab" aria-selected="false" data-modal-tab="book" type="button" class="modal-tab py-1.5 px-2 rounded-lg text-light-on-surface-muted font-bold text-[11px]">3. Direct Book</button>
+          <button role="tab" aria-selected="true" data-modal-tab="rates" type="button" class="modal-tab py-1 px-1 rounded-lg bg-royal-emerald text-on-royal-emerald text-[11px] font-bold">1. Photos &amp; Rates</button>
+          <button role="tab" aria-selected="false" data-modal-tab="video" type="button" class="modal-tab py-1 px-1 rounded-lg text-light-on-surface-muted text-[11px] font-semibold">2. Details</button>
+          <button role="tab" aria-selected="false" data-modal-tab="book" type="button" class="modal-tab py-1 px-1 rounded-lg text-light-on-surface-muted text-[11px] font-semibold">3. Book</button>
         </div>
-
-        <!-- Tab 1 -->
-        <div id="modal-panel-rates" class="modal-panel flex flex-col gap-2.5">
-          <div class="grid grid-cols-2 gap-2">
-            <img id="modal-img-1" src="" alt="Preview 1" class="w-full h-24 object-cover rounded-lg">
-            <img id="modal-img-2" src="" alt="Preview 2" class="w-full h-24 object-cover rounded-lg">
-          </div>
-          <div id="modal-rates-list" class="flex flex-col gap-1.5 font-mono text-xs"></div>
+        <div id="modal-panel-rates" class="modal-panel flex flex-col gap-2">
+          <div id="modal-gallery-strip" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+          <div id="modal-rates-list" class="flex flex-col gap-1 font-mono text-xs tabular-nums"></div>
         </div>
-
-        <!-- Tab 2 -->
         <div id="modal-panel-video" hidden class="modal-panel flex flex-col gap-2">
-          <div id="modal-rules-box" class="rounded-xl bg-emerald-tint/40 p-3 text-xs text-light-on-surface flex flex-col gap-1.5"></div>
+          <div id="modal-rules-box" class="rounded-xl bg-emerald-tint/40 p-3 text-xs text-light-on-surface"></div>
         </div>
-
-        <!-- Tab 3 -->
         <div id="modal-panel-book" hidden class="modal-panel flex flex-col gap-2">
-          <input id="modal-book-name" type="text" placeholder="మీ పేరు (Your Name)" class="w-full rounded-lg border border-light-outline bg-white px-3 py-2 text-xs">
-          <input id="modal-book-place" type="text" placeholder="మీ ఊరు / పికప్ లొకేషన్" class="w-full rounded-lg border border-light-outline bg-white px-3 py-2 text-xs">
-          <button id="modal-book-submit" type="button" class="w-full py-2.5 rounded-full bg-success text-white font-bold text-xs shadow">💬 Confirm &amp; Open WhatsApp</button>
+          <input id="modal-book-name" type="text" placeholder="మీ పేరు (Your Name)" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-3 py-2 text-xs">
+          <input id="modal-book-place" type="text" placeholder="మీ ఊరు / పికప్ లొకేషన్" class="w-full rounded-lg border border-light-outline bg-light-surface-container-low px-3 py-2 text-xs">
+          <button id="modal-book-submit" type="button" class="w-full py-2 rounded-full bg-royal-emerald text-on-royal-emerald text-xs font-bold">Confirm &amp; Open WhatsApp</button>
         </div>
       </div>
     </dialog>
 
-    <!-- SLIDE-OUT NAVIGATION DRAWER -->
-    <dialog id="nav-drawer" class="w-72 m-0 min-h-screen rounded-r-2xl bg-light-surface text-light-on-surface border-r border-light-outline p-4 shadow-2xl backdrop:bg-emerald-deep/60">
-      <header class="flex items-center justify-between mb-4">
-        <h2 class="font-headline font-bold text-base text-royal-emerald">Mana Seva Hub • మన సేవ</h2>
-        <button id="close-drawer-btn" type="button" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center">
-          <span class="material-symbols-outlined text-[18px]">close</span>
+    <dialog id="rider-reg-modal" aria-labelledby="rider-reg-title" class="w-[calc(100%-24px)] max-w-md rounded-2xl bg-light-surface-container-low text-light-on-surface border border-light-outline p-4 shadow-2xl backdrop:bg-emerald-deep/75">
+      <header class="flex items-center justify-between mb-3">
+        <h2 id="rider-reg-title" class="font-headline text-base font-bold text-royal-emerald">Add Available Rider</h2>
+        <button id="close-rider-reg" type="button" aria-label="మూసివేయండి" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-base">close</span>
         </button>
       </header>
-      <nav class="flex flex-col gap-1.5 text-xs font-bold">
-        <a href="#hero-deck" class="drawer-link px-3 py-2.5 rounded-xl bg-white border border-light-outline">🎶 Profile, Songs &amp; YouTube</a>
-        <a href="#bike-drop" class="drawer-link px-3 py-2.5 rounded-xl bg-white border border-light-outline">🏍️ Priority Bike Drop &amp; Night Express</a>
-        <a href="#whisper-wall" class="drawer-link px-3 py-2.5 rounded-xl bg-rose-tint text-rose-pink">💌 Secret Love Whisper Wall</a>
-        <a href="#news-bus" class="drawer-link px-3 py-2.5 rounded-xl bg-white border border-light-outline">📰 Telugu News &amp; Bus Timings</a>
-        <a href="#calculators" class="drawer-link px-3 py-2.5 rounded-xl bg-white border border-light-outline">🎓 Education, Calculators &amp; GK</a>
-        <a href="#marketplace" class="drawer-link px-3 py-2.5 rounded-xl bg-white border border-light-outline">🛒 Tourism, Books, Jobs &amp; Services</a>
+      <form id="rider-reg-form" class="flex flex-col gap-2.5">
+        <input id="reg-rider-name" type="text" required placeholder="రైడర్ పేరు (Name)" class="rounded-lg border border-light-outline px-3 py-2 text-xs">
+        <select id="reg-rider-type" class="rounded-lg border border-light-outline px-3 py-2 text-xs">
+          <option value="bike">Bike Rider (₹5/km)</option>
+          <option value="auto">Auto Driver (₹12/km)</option>
+          <option value="car">Car / Cab (₹18/km)</option>
+        </select>
+        <input id="reg-rider-area" type="text" required placeholder="ఏరియా (ఉదా: Boddavara, Kiltampalem, S.Kota)" class="rounded-lg border border-light-outline px-3 py-2 text-xs">
+        <input id="reg-rider-phone" type="tel" required maxlength="10" placeholder="మొబైల్ నంబర్ (10 Digits)" class="rounded-lg border border-light-outline px-3 py-2 font-mono text-xs">
+        <button type="submit" class="w-full py-2 rounded-full bg-royal-emerald text-on-royal-emerald text-xs font-bold">Register Rider Now</button>
+      </form>
+    </dialog>
+
+    <dialog id="olx-post-modal" aria-labelledby="olx-post-title" class="w-[calc(100%-24px)] max-w-md rounded-2xl bg-light-surface-container-low text-light-on-surface border border-light-outline p-4 shadow-2xl backdrop:bg-emerald-deep/75">
+      <header class="flex items-center justify-between mb-3">
+        <h2 id="olx-post-title" class="font-headline text-base font-bold text-royal-emerald">Post Item on OLX Hub</h2>
+        <button id="close-olx-post" type="button" aria-label="మూసివేయండి" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-base">close</span>
+        </button>
+      </header>
+      <form id="olx-post-form" class="flex flex-col gap-2.5">
+        <input id="olx-item-title" type="text" required placeholder="వస్తువు పేరు (ఉదా: Second Hand Mobile)" class="rounded-lg border border-light-outline px-3 py-2 text-xs">
+        <input id="olx-item-price" type="number" required placeholder="ధర ₹ (Price)" class="rounded-lg border border-light-outline px-3 py-2 font-mono text-xs">
+        <input id="olx-item-area" type="text" required placeholder="ఊరు (ఉదా: Boddavara, S.Kota)" class="rounded-lg border border-light-outline px-3 py-2 text-xs">
+        <p class="text-[11px] text-light-on-surface-muted">గమనిక: అమ్మకం పూర్తయిన తర్వాత 3% మీడియేటర్ కమిషన్ వర్తిస్తుంది.</p>
+        <button type="submit" class="w-full py-2 rounded-full bg-royal-emerald text-on-royal-emerald text-xs font-bold">Add to OLX List</button>
+      </form>
+    </dialog>
+
+    <dialog id="nav-drawer" aria-labelledby="drawer-title" class="w-72 m-0 min-h-screen rounded-r-2xl bg-light-surface text-light-on-surface border-r border-light-outline p-4 shadow-2xl backdrop:bg-emerald-deep/60">
+      <header class="flex items-center justify-between mb-4">
+        <h2 id="drawer-title" class="font-headline text-base font-bold text-royal-emerald">Mana Seva Hub</h2>
+        <button id="close-drawer-btn" type="button" aria-label="మెనూ మూసివేయండి" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-light-surface-container">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+        </button>
+      </header>
+      <nav class="flex flex-col gap-1 text-sm">
+        <a href="#bike-drop" class="drawer-link px-3 py-2 rounded-xl hover:bg-emerald-tint">Bike ₹5/km, Auto &amp; Night Delivery</a>
+        <a href="#olx-business" class="drawer-link px-3 py-2 rounded-xl hover:bg-emerald-tint">OLX Buy &amp; Sell + Farm Market</a>
+        <a href="#whisper-wall" class="drawer-link px-3 py-2 rounded-xl hover:bg-rose-tint">100% Secret Love Wall</a>
+        <a href="#jobs-hub" class="drawer-link px-3 py-2 rounded-xl hover:bg-emerald-tint">Local Jobs &amp; Jindal Site Duties</a>
+        <a href="#calculators" class="drawer-link px-3 py-2 rounded-xl hover:bg-emerald-tint">Exam Results, Calculators &amp; GK</a>
+        <a href="#marketplace" class="drawer-link px-3 py-2 rounded-xl hover:bg-emerald-tint">Tourism &amp; ITI Technicians</a>
+        <a href="#marriage-hub" class="drawer-link px-3 py-2 rounded-xl hover:bg-rose-tint">పెళ్ళి సంబంధాలు (Mediator)</a>
       </nav>
     </dialog>
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="app-toast" hidden class="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-emerald-deep text-white border border-saffron-gold/50 shadow-lg font-bold text-xs whitespace-nowrap"></div>
-
+    <!-- టోస్ట్ నోటిఫికేషన్ -->
+    <div id="app-toast" hidden class="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-emerald-deep text-on-emerald-deep border border-saffron-gold/40 shadow-lg text-xs font-bold whitespace-nowrap"></div>
   </div>
 
   <!-- ==========================================================================
-       COMPLETE WORKING JAVASCRIPT ENGINE
+       COMPLETE JAVASCRIPT ENGINE (LocalStorage సేవింగ్ & తెలుగు కామెంట్లతో)
        ========================================================================== -->
   <script>
     (function () {
-      const OWNER_PHONE = "918985240287";
+      /* ======================================================================
+         1. ముఖ్యమైన సెట్టింగ్స్ (మీ వాట్సాప్ నంబర్ & కమిషన్ రేట్లు ఇక్కడ మార్చవచ్చు)
+         ====================================================================== */
+      const OWNER_PHONE = "918985240287"; // ప్రకాష్ (మీడియేటర్) వాట్సాప్ నంబర్
+      const COMMISSION_CONFIG = {
+        shortKmLimit: 5,     // 5 కి.మీ లోపు ఉంటే
+        shortKmFee: 5,       // మీడియేటర్ కమిషన్ ₹5
+        longKmFee: 10        // 5 కి.మీ దాటితే మీడియేటర్ కమిషన్ ₹10
+      };
+
       const toastEl = document.getElementById('app-toast');
       let toastTimer;
       function showToast(msg) {
         toastEl.textContent = msg;
         toastEl.hidden = false;
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
+        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2800);
       }
 
-      /* 1. PROFILE AVATAR AUTO-ROTATION */
-      const avatars = [
-        "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kl6k0mfg3zoorpxarfwp",
-        "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/kkbcg6swdqwu9jcej9ox",
-        "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/vwiijklnmkbjhjtqnryy",
-        "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/lepd84cp56mzwtmnlgfi"
-      ];
-      let avIdx = 0;
-      setInterval(() => {
-        avIdx = (avIdx + 1) % avatars.length;
-        document.getElementById('prakash-avatar').src = avatars[avIdx];
-      }, 4500);
+      /* ======================================================================
+         2. స్క్రీన్ జూమ్ ఇన్ / జూమ్ అవుట్ టోగుల్
+         ====================================================================== */
+      const appRoot = document.getElementById('app-root');
+      const zoomIcon = document.getElementById('zoom-icon');
+      let zoomedOut = false;
+      document.getElementById('btn-zoom-toggle').addEventListener('click', () => {
+        zoomedOut = !zoomedOut;
+        appRoot.classList.toggle('md:max-w-2xl', !zoomedOut);
+        appRoot.classList.toggle('max-w-full', zoomedOut);
+        zoomIcon.textContent = zoomedOut ? 'zoom_out' : 'zoom_in';
+        showToast(zoomedOut ? 'Full Width View Enabled' : 'Standard Mobile View');
+      });
 
-      /* 2. NAVIGATION DRAWER & GPS / WHATSAPP GROUP SHARE */
+      /* ======================================================================
+         3. డ్రాయర్ మెనూ & లైవ్ GPS షేర్
+         ====================================================================== */
       const drawer = document.getElementById('nav-drawer');
       document.getElementById('open-drawer-btn').addEventListener('click', () => drawer.showModal());
       document.getElementById('close-drawer-btn').addEventListener('click', () => drawer.close());
       document.querySelectorAll('.drawer-link').forEach(a => a.addEventListener('click', () => drawer.close()));
 
-      function sendLiveGPS(prefixText) {
-        showToast('📡 మీ GPS లొకేషన్ తీసుకుంటోంది...');
-        if (!navigator.geolocation) return showToast('⚠️ GPS సపోర్ట్ లేదు');
+      document.getElementById('btn-live-gps').addEventListener('click', () => {
+        showToast('మీ GPS లొకేషన్ తీసుకుంటోంది...');
+        if (!navigator.geolocation) return showToast('ఈ ఫోన్లో GPS సపోర్ట్ లేదు');
         navigator.geolocation.getCurrentPosition(pos => {
           const mapUrl = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(prefixText + "\n📍 Location: " + mapUrl)}`, '_blank');
-        }, () => showToast('⚠️ ఫోన్‌లో Location (GPS) ఆన్ చేయండి'));
-      }
-      document.getElementById('btn-live-gps').addEventListener('click', () => sendLiveGPS('Hi Prakash, నా లైవ్ GPS లొకేషన్ ఇక్కడ ఉంది:'));
+          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent("Hi Prakash, నా లైవ్ GPS లొకేషన్:\n" + mapUrl)}`, '_blank');
+        }, () => showToast('దయచేసి ఫోన్లో Location (GPS) ఆన్ చేయండి'));
+      });
+
       document.getElementById('btn-share-village').addEventListener('click', () => {
-        const shareTxt = `🌟 *Mana Seva Hub • మన సేవ* 🌟\nబొడ్డవార, తాటిపూడి, S.Kota, VZM, వైజాగ్ & అరకు — బైక్ డ్రాప్, రాత్రి డెలివరీ, సీక్రెట్ లవ్ వాల్, బస్సు వేళలు & క్యాలిక్యులేటర్లు అన్నీ ఒకే యాప్‌లో!\n${window.location.href}`;
+        const shareTxt = `Mana Seva Hub (మన సేవ) - Bike ₹5/km, OLX Buy/Sell, 100% Secret Love, Jobs & Tourism: ${window.location.href}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(shareTxt)}`, '_blank');
       });
 
-      /* 3. REAL TELUGU LIVE FM + AUTO-FALLBACK TO YOUTUBE JUKEBOX */
-      const stations = [
-        { title: 'Telugu Love & Melody FM', sub: '24/7 Romantic & Melody Hits', urls: ['https://stream.zeno.fm/0r0xa792kwzuv', 'https://stream.zeno.fm/4d272295908tv'] },
-        { title: 'Tollywood Super Hits FM', sub: 'Latest Cinema Songs Live', urls: ['https://stream.zeno.fm/4d272295908tv', 'https://stream.zeno.fm/0r0xa792kwzuv'] },
-        { title: 'Mass & Folk DJ Beats FM', sub: 'Non-Stop Teenmaar & Mass', urls: ['https://stream.zeno.fm/q6c95995908tv', 'https://stream.zeno.fm/4d272295908tv'] },
-        { title: 'Bhakti & Suprabhatam FM', sub: 'Morning Devotional Chants', urls: ['https://stream.zeno.fm/29335295908tv', 'https://stream.zeno.fm/4d272295908tv'] }
+      /* ======================================================================
+         4. తెలుగు FM రేడియో & యూట్యూబ్ అకార్డియన్
+         ====================================================================== */
+      const tracks = [
+        { title: 'Telugu Love & Melody FM', sub: '24/7 Romantic Hits', url: 'https://stream.zeno.fm/0r0xa792kwzuv' },
+        { title: 'Tollywood Super Hits FM', sub: 'Latest Cinema Songs', url: 'https://stream.zeno.fm/4d272295908tv' }
       ];
-      let stIdx = 0, stTry = 0, fmPlaying = false;
+      let trIdx = 0, fmPlaying = false;
       const fmAudio = document.getElementById('telugu-fm-audio');
       const fmBox = document.getElementById('fm-box');
       const playIcon = document.getElementById('fm-play-icon');
 
-      function startFM() {
-        const st = stations[stIdx];
-        fmAudio.src = st.urls[stTry];
-        document.getElementById('fm-track-sub').textContent = '⏳ కనెక్ట్ అవుతోంది...';
-        fmAudio.play().then(() => {
-          fmPlaying = true;
-          fmBox.classList.remove('paused');
-          playIcon.textContent = 'pause';
-          document.getElementById('fm-track-sub').textContent = '🔊 Live Playing (Background On)';
-          if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({ title: st.title, artist: 'Mana Seva Hub • @hipraka' });
-          }
-        }).catch(() => {
-          if (stTry + 1 < st.urls.length) { stTry++; startFM(); }
-          else {
-            document.getElementById('fm-track-sub').textContent = 'FM బిజీ — YouTube Jukebox ఓపెన్ అవుతోంది!';
-            openYTAccordion(true);
-          }
-        });
-      }
       document.getElementById('fm-play').addEventListener('click', () => {
-        if (fmPlaying) { fmAudio.pause(); fmPlaying = false; fmBox.classList.add('paused'); playIcon.textContent = 'play_arrow'; }
-        else { startFM(); }
+        if (fmPlaying) {
+          fmAudio.pause(); fmPlaying = false; fmBox.classList.add('paused'); playIcon.textContent = 'play_arrow';
+        } else {
+          fmAudio.src = tracks[trIdx].url;
+          fmAudio.play().then(() => {
+            fmPlaying = true; fmBox.classList.remove('paused'); playIcon.textContent = 'pause';
+            document.getElementById('fm-track-sub').textContent = 'Live Playing';
+          }).catch(() => showToast('నెట్ స్లోగా ఉంది — YouTube Vlogs చూడండి'));
+        }
       });
-      document.getElementById('fm-prev').addEventListener('click', () => { stIdx = (stIdx - 1 + stations.length) % stations.length; stTry = 0; document.getElementById('fm-track-title').textContent = stations[stIdx].title; startFM(); });
-      document.getElementById('fm-next').addEventListener('click', () => { stIdx = (stIdx + 1) % stations.length; stTry = 0; document.getElementById('fm-track-title').textContent = stations[stIdx].title; startFM(); });
+      document.getElementById('fm-prev').addEventListener('click', () => { trIdx = (trIdx - 1 + tracks.length) % tracks.length; document.getElementById('fm-track-title').textContent = tracks[trIdx].title; });
+      document.getElementById('fm-next').addEventListener('click', () => { trIdx = (trIdx + 1) % tracks.length; document.getElementById('fm-track-title').textContent = tracks[trIdx].title; });
 
-      /* YouTube Collapsible Accordion */
       const ytBtn = document.getElementById('yt-accordion-btn');
       const ytPanel = document.getElementById('yt-accordion-panel');
       const ytChev = document.getElementById('yt-accordion-chevron');
-      const ytFrame = document.getElementById('yt-iframe');
-
-      function openYTAccordion(forceOpen) {
-        const isOpen = ytBtn.getAttribute('aria-expanded') === 'true';
-        const nextState = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
-        ytBtn.setAttribute('aria-expanded', String(nextState));
-        ytPanel.hidden = !nextState;
-        ytChev.style.transform = nextState ? 'rotate(180deg)' : 'rotate(0deg)';
-        if (nextState && !ytFrame.src) {
-          ytFrame.src = 'https://www.youtube.com/embed/videoseries?list=PL4fGSI1pDJn5kI81J1fYWK5eZRl1zJ5kM&autoplay=1';
-        } else if (!nextState) {
-          ytFrame.src = '';
-        }
-      }
-      ytBtn.addEventListener('click', () => openYTAccordion());
-      document.querySelectorAll('.yt-mood-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          ytFrame.src = `https://www.youtube.com/embed/videoseries?list=${btn.dataset.list}&autoplay=1`;
-        });
+      ytBtn.addEventListener('click', () => {
+        const expanded = ytBtn.getAttribute('aria-expanded') === 'true';
+        ytBtn.setAttribute('aria-expanded', String(!expanded));
+        ytPanel.hidden = expanded;
+        ytChev.style.transform = expanded ? 'rotate(0deg)' : 'rotate(180deg)';
       });
 
-      /* 4. PRIORITY BIKE RIDE FARE CALCULATOR & WHATSAPP BOOKING */
+      /* ======================================================================
+         5. ట్రాన్స్‌పోర్ట్ (Bike ₹5/km | Auto | Car) + LocalStorage రైడర్ డేటాబేస్
+         ====================================================================== */
+      const DEFAULT_RIDERS = [
+        { name: 'Prakash (Splendor)', type: 'bike', area: 'Boddavara', phone: '8985240287' },
+        { name: 'Raju', type: 'bike', area: 'Kiltampalem', phone: '9848011223' },
+        { name: 'Srinu', type: 'bike', area: 'S.Kota', phone: '9848022334' },
+        { name: 'Kiran Auto', type: 'auto', area: 'Thatipudi', phone: '9848033445' },
+        { name: 'Suresh Cab', type: 'car', area: 'VZM', phone: '9848044556' }
+      ];
+      // ఫోన్ లో సేవ్ అయిన రైడర్లను లోడ్ చేయడం
+      let RIDER_LIST = JSON.parse(localStorage.getItem('msh_riders')) || DEFAULT_RIDERS;
+
+      let vehicleType = 'bike', ratePerKm = 5, baseFare = 10, isNight = false;
       const kmRange = document.getElementById('bike-km-range');
       const kmLabel = document.getElementById('bike-km-label');
       const fareBadge = document.getElementById('bike-fare-badge');
-      const nightToggle = document.getElementById('bike-night-toggle');
-      const nightKnob = document.getElementById('bike-night-knob');
-      let isNight = false;
+      const commBadge = document.getElementById('bike-comm-badge');
+      const commRuleText = document.getElementById('comm-rule-text');
 
-      function calcBikeFare() {
+      function updateTransportFare() {
         const km = Number(kmRange.value);
         kmLabel.textContent = km + ' km';
-        const base = km <= 3 ? 30 : 30 + (km - 3) * 10;
-        const total = base + (isNight ? 20 : 0);
+        const comm = km <= COMMISSION_CONFIG.shortKmLimit ? COMMISSION_CONFIG.shortKmFee : COMMISSION_CONFIG.longKmFee;
+        const total = baseFare + (km * ratePerKm) + (isNight ? 20 : 0);
         fareBadge.textContent = '₹' + total;
-        return { km, total };
+        commBadge.textContent = '₹' + comm;
+        commRuleText.textContent = km <= COMMISSION_CONFIG.shortKmLimit
+          ? `≤${COMMISSION_CONFIG.shortKmLimit}km: ₹${COMMISSION_CONFIG.shortKmFee}`
+          : `>${COMMISSION_CONFIG.shortKmLimit}km: ₹${COMMISSION_CONFIG.longKmFee}`;
+        return { km, total, comm };
       }
-      kmRange.addEventListener('input', calcBikeFare);
+      kmRange.addEventListener('input', updateTransportFare);
+
+      document.querySelectorAll('.vehicle-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.vehicle-tab').forEach(t => {
+            t.setAttribute('aria-selected', 'false');
+            t.classList.remove('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold');
+            t.classList.add('text-light-on-surface-muted');
+          });
+          tab.setAttribute('aria-selected', 'true');
+          tab.classList.add('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold');
+          tab.classList.remove('text-light-on-surface-muted');
+          vehicleType = tab.dataset.vehicle;
+          ratePerKm = Number(tab.dataset.rate);
+          baseFare = Number(tab.dataset.base);
+          updateTransportFare();
+        });
+      });
+
+      const nightToggle = document.getElementById('bike-night-toggle');
+      const nightKnob = document.getElementById('bike-night-knob');
       nightToggle.addEventListener('click', () => {
         isNight = !isNight;
         nightToggle.setAttribute('aria-checked', String(isNight));
         nightToggle.classList.toggle('bg-royal-emerald', isNight);
         nightToggle.classList.toggle('bg-light-outline-strong', !isNight);
-        nightKnob.classList.toggle('translate-x-5', isNight);
+        nightKnob.classList.toggle('translate-x-6', isNight);
         nightKnob.classList.toggle('translate-x-1', !isNight);
-        calcBikeFare();
+        updateTransportFare();
       });
-      document.getElementById('bike-gps-btn').addEventListener('click', () => {
-        const { km, total } = calcBikeFare();
-        sendLiveGPS(`🏍️ *Bike Ride Pickup Request*\nDistance: ${km} KM${isNight ? ' (Night/Emergency)' : ''}\nEst. Fare: ₹${total}`);
+
+      /* కస్టమర్ లొకేషన్ ఆధారంగా దగ్గరలోని రైడర్ ను వెతికి అన్‌లాక్ చేయడం */
+      document.getElementById('unlock-rider-btn').addEventListener('click', () => {
+        const loc = document.getElementById('cust-location').value.trim();
+        const mob = document.getElementById('cust-mobile').value.trim();
+        if (!loc || mob.length < 10) return showToast('దయచేసి మీ ఊరు & 10-అంకెల నంబర్ ఇవ్వండి!');
+
+        const sameTypeRiders = RIDER_LIST.filter(r => r.type === vehicleType);
+        // ముందుగా కస్టమర్ ఎంటర్ చేసిన ఏరియాకు మ్యాచ్ అయ్యే రైడర్ ను వెతకడం
+        const areaMatch = sameTypeRiders.find(r => r.area.toLowerCase().includes(loc.toLowerCase()) || loc.toLowerCase().includes(r.area.toLowerCase()));
+        const match = areaMatch || sameTypeRiders[0] || RIDER_LIST[0];
+
+        document.getElementById('rider-found-name').textContent = `${match.name} (${match.type.toUpperCase()} • ${match.area})`;
+        document.getElementById('rider-found-phone').textContent = match.phone;
+        document.getElementById('rider-call-link').href = 'tel:+91' + match.phone;
+        document.getElementById('unlocked-rider-box').hidden = false;
+        showToast('దగ్గరలోని రైడర్ నంబర్ అన్‌లాక్ అయింది!');
       });
-      document.getElementById('bike-book-btn').addEventListener('click', () => {
-        const { km, total } = calcBikeFare();
-        const msg = `Hi Prakash, I need a Bike Drop for *${km} KM*${isNight ? ' (Night/Emergency)' : ''}. Est. Fare: *₹${total}*`;
+
+      /* మీడియేటర్ (Prakash) ద్వారా వాట్సాప్ బుకింగ్ */
+      document.getElementById('mediator-book-btn').addEventListener('click', () => {
+        const loc = document.getElementById('cust-location').value.trim() || 'Boddavara / S.Kota';
+        const mob = document.getElementById('cust-mobile').value.trim() || 'Not given';
+        const { km, total, comm } = updateTransportFare();
+        const msg = `Hi Prakash (Mediator), *${vehicleType.toUpperCase()} Ride*\nPickup: ${loc}\nCustomer Ph: ${mob}\nDistance: ${km} KM\nEst. Fare: ₹${total} (Mediator Fee: ₹${comm})`;
         window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
       });
+
+      /* కొత్త రైడర్ రిజిస్ట్రేషన్ (LocalStorage లో సేవ్ అవుతుంది) */
+      const riderModal = document.getElementById('rider-reg-modal');
+      document.getElementById('open-rider-reg-btn').addEventListener('click', () => riderModal.showModal());
+      document.getElementById('close-rider-reg').addEventListener('click', () => riderModal.close());
+      document.getElementById('rider-reg-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reg-rider-name').value.trim();
+        const type = document.getElementById('reg-rider-type').value;
+        const area = document.getElementById('reg-rider-area').value.trim();
+        const phone = document.getElementById('reg-rider-phone').value.trim();
+        RIDER_LIST.unshift({ name, type, area, phone });
+        localStorage.setItem('msh_riders', JSON.stringify(RIDER_LIST));
+        riderModal.close();
+        e.target.reset();
+        showToast(`${name} (${type.toUpperCase()}) సేవ్ అయ్యారు!`);
+      });
+
       document.querySelectorAll('.express-order-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, 30-Min Express Order: ' + btn.dataset.item)}`, '_blank');
+          const { km } = updateTransportFare();
+          const msg = `Hi Prakash, Express Delivery Order: *${btn.dataset.item}* (${km} KM range)`;
+          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
         });
       });
 
-      /* 5. SECRET LOVE & CURIOSITY WHISPER WALL (WITH LOCALSTORAGE) */
-      function bindUnlock(card) {
-        const btn = card.querySelector('.whisper-unlock-btn');
-        const input = card.querySelector('.whisper-pin-input');
-        const body = card.querySelector('.whisper-body');
-        const row = card.querySelector('.whisper-unlock-row');
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-          if (input.value === card.dataset.pin) {
-            body.textContent = card.dataset.secret;
-            body.classList.remove('blur-sm', 'select-none', 'text-light-on-surface-muted');
-            body.classList.add('text-rose-pink', 'font-semibold');
-            row.remove();
-            showToast('💖 Secret Whisper Unlocked!');
-          } else {
-            showToast('❌ తప్పు PIN కోడ్! మళ్ళీ ప్రయత్నించండి');
-          }
+      /* ======================================================================
+         6. OLX BUY & SELL (LocalStorage లో సేవ్ అయ్యేలా)
+         ====================================================================== */
+      function bindOlxBtns() {
+        document.querySelectorAll('.olx-buy-btn').forEach(btn => {
+          btn.onclick = () => {
+            const msg = `Hi Prakash (Mediator), I want to buy: *${btn.dataset.item}* (Deal Commission: ${btn.dataset.comm})`;
+            window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+          };
         });
       }
-      document.querySelectorAll('.whisper-card').forEach(bindUnlock);
+
+      function renderSavedOlx() {
+        const savedOlx = JSON.parse(localStorage.getItem('msh_olx')) || [];
+        const grid = document.getElementById('olx-grid');
+        savedOlx.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'filterable-item h-full rounded-xl bg-light-surface-container/70 border border-light-outline p-2.5 flex flex-col justify-between gap-1.5';
+          card.dataset.areaTag = item.area;
+          card.dataset.search = item.title.toLowerCase();
+          card.innerHTML = `<div><span class="inline-block px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[10px] font-bold">3% Deal Fee</span><h3 class="text-xs font-bold text-light-on-surface mt-1">${item.title}</h3><p class="font-mono text-xs text-royal-emerald tabular-nums">₹${item.price} • ${item.area}</p></div><button type="button" class="olx-buy-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="${item.title} (₹${item.price})" data-comm="3%">Buy via Mediator</button>`;
+          grid.prepend(card);
+        });
+        bindOlxBtns();
+      }
+      renderSavedOlx();
+
+      const olxModal = document.getElementById('olx-post-modal');
+      document.getElementById('open-olx-post-btn').addEventListener('click', () => olxModal.showModal());
+      document.getElementById('close-olx-post').addEventListener('click', () => olxModal.close());
+      document.getElementById('olx-post-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('olx-item-title').value.trim();
+        const price = document.getElementById('olx-item-price').value.trim();
+        const area = document.getElementById('olx-item-area').value.trim();
+
+        const savedOlx = JSON.parse(localStorage.getItem('msh_olx')) || [];
+        savedOlx.push({ title, price, area });
+        localStorage.setItem('msh_olx', JSON.stringify(savedOlx));
+
+        const card = document.createElement('article');
+        card.className = 'filterable-item h-full rounded-xl bg-light-surface-container/70 border border-light-outline p-2.5 flex flex-col justify-between gap-1.5';
+        card.dataset.areaTag = area;
+        card.dataset.search = title.toLowerCase();
+        card.innerHTML = `<div><span class="inline-block px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-[10px] font-bold">3% Deal Fee</span><h3 class="text-xs font-bold text-light-on-surface mt-1">${title}</h3><p class="font-mono text-xs text-royal-emerald tabular-nums">₹${price} • ${area}</p></div><button type="button" class="olx-buy-btn w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-[11px] font-bold" data-item="${title} (₹${price})" data-comm="3%">Buy via Mediator</button>`;
+        document.getElementById('olx-grid').prepend(card);
+        bindOlxBtns();
+        olxModal.close();
+        e.target.reset();
+        showToast('మీ వస్తువు OLX లో శాశ్వతంగా యాడ్ అయింది!');
+      });
+
+      document.getElementById('shop-promote-btn').addEventListener('click', () => {
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, I want to promote my Shop/Farm Produce on Mana Seva Hub (Free / ₹99 Featured).')}`, '_blank');
+      });
+
+      /* ======================================================================
+         7. 100% SECRET LOVE WHISPER WALL (LocalStorage లో సేవ్ అయ్యేలా)
+         ====================================================================== */
+      const DEFAULT_WHISPERS = [
+        { loc: 'Boddavara', time: '2m ago', pin: '1430', text: 'ప్రతిరోజూ ఉదయం 7:30 బొడ్డవార బస్సులో నువ్వు నవ్వుతూ కనిపిస్తే ఆ రోజంతా నాకు పండగే! — నీ సైలెంట్ అభిమాని' },
+        { loc: 'Thatipudi Dam', time: '18m ago', pin: '', text: '“నువ్వు నవ్వితే తాటిపూడి జలాశయం కంటే అందంగా ఉంటుంది — Happy Day!”' }
+      ];
+
+      function renderWhispers() {
+        const saved = JSON.parse(localStorage.getItem('msh_whispers')) || DEFAULT_WHISPERS;
+        const feed = document.getElementById('whisper-feed');
+        feed.innerHTML = '';
+        saved.forEach(w => {
+          const art = document.createElement('article');
+          art.className = 'whisper-card rounded-xl bg-light-surface-container-low text-light-on-surface p-3 flex flex-col gap-1.5';
+          if (w.pin && w.pin.length >= 1) {
+            art.dataset.pin = w.pin;
+            art.dataset.secret = w.text;
+            art.innerHTML = `<div class="flex items-center justify-between"><span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1"><span class="material-symbols-outlined text-xs">lock</span>100% Secret • ${w.loc}</span><span class="text-[10px] text-light-on-surface-muted">${w.time}</span></div><p class="whisper-body text-xs text-light-on-surface-muted blur-sm select-none">ఈ మెసేజ్ సీక్రెట్ PIN కోడ్తో లాక్ చేయబడింది...</p><div class="whisper-unlock-row flex items-center gap-1.5 pt-1"><input type="password" maxlength="6" placeholder="PIN (try 1430)" class="whisper-pin-input w-28 rounded-full border border-rose-pink/30 px-2.5 py-1 font-mono text-xs" /><button type="button" class="whisper-unlock-btn px-3 py-1 rounded-full bg-rose-pink text-on-rose-pink text-[11px] font-bold">Unlock</button></div>`;
+            const btn = art.querySelector('.whisper-unlock-btn');
+            const input = art.querySelector('.whisper-pin-input');
+            const body = art.querySelector('.whisper-body');
+            const row = art.querySelector('.whisper-unlock-row');
+            btn.addEventListener('click', () => {
+              if (input.value === art.dataset.pin) {
+                body.textContent = art.dataset.secret;
+                body.classList.remove('blur-sm', 'select-none', 'text-light-on-surface-muted');
+                body.classList.add('text-rose-pink', 'font-semibold');
+                row.remove();
+                showToast('100% Secret Whisper Unlocked!');
+              } else {
+                showToast('తప్పు PIN కోడ్! మళ్ళీ ప్రయత్నించండి');
+              }
+            });
+          } else {
+            art.innerHTML = `<div class="flex items-center justify-between"><span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1"><span class="material-symbols-outlined text-xs">lock_open</span>Public Clue • ${w.loc}</span><span class="text-[10px] text-light-on-surface-muted">${w.time}</span></div><p class="text-xs text-light-on-surface">${w.text}</p>`;
+          }
+          feed.appendChild(art);
+        });
+      }
+      renderWhispers();
 
       document.getElementById('whisper-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const text = document.getElementById('whisper-text').value.trim();
         const loc = document.getElementById('whisper-location').value.trim() || 'S.Kota';
         const pin = document.getElementById('whisper-pin').value.trim();
-        if (!text) return showToast('దయచేసి మీ మెసేజ్ రాయండి!');
-        const feed = document.getElementById('whisper-feed');
-        const art = document.createElement('article');
-        art.className = 'whisper-card rounded-xl bg-white text-light-on-surface p-3 flex flex-col gap-1';
-        if (pin.length === 4) {
-          art.dataset.pin = pin;
-          art.dataset.secret = text;
-          art.innerHTML = `<div class="flex items-center justify-between"><span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span>Locked Confession • ${loc}</span><span class="text-[10px] text-light-on-surface-muted">Just now</span></div><p class="whisper-body text-xs text-light-on-surface-muted blur-sm select-none">ఈ మెసేజ్ 4-అంకెల సీక్రెట్ కోడ్‌తో లాక్ చేయబడింది...</p><div class="whisper-unlock-row flex items-center gap-1.5 pt-1"><input type="password" maxlength="4" inputmode="numeric" placeholder="Enter PIN" class="whisper-pin-input w-28 rounded-full border border-rose-pink/40 px-2.5 py-1 font-mono text-xs" /><button type="button" class="whisper-unlock-btn px-3 py-1 rounded-full bg-rose-pink text-white font-bold text-[11px]">Unlock with Code</button></div>`;
-          bindUnlock(art);
-        } else {
-          art.innerHTML = `<div class="flex items-center justify-between"><span class="text-[11px] font-bold text-rose-pink inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock_open</span>Public Whisper • ${loc}</span><span class="text-[10px] text-light-on-surface-muted">Just now</span></div><p class="text-xs text-light-on-surface">${text}</p>`;
-        }
-        feed.prepend(art);
+        if (!text) return showToast('దయచేసి మీ సీక్రెట్ మెసేజ్ రాయండి!');
+
+        const saved = JSON.parse(localStorage.getItem('msh_whispers')) || DEFAULT_WHISPERS;
+        saved.unshift({ loc, time: 'Just now', pin, text });
+        localStorage.setItem('msh_whispers', JSON.stringify(saved));
+        renderWhispers();
+
+        const clueTicker = document.getElementById('secret-clue-ticker');
+        clueTicker.querySelectorAll('div').forEach(d => {
+          const span = document.createElement('span');
+          span.textContent = `NEW CLUE (${loc}): సీక్రెట్ మెసేజ్ పోస్ట్ అయింది! • `;
+          d.prepend(span);
+        });
         e.target.reset();
-        showToast('💌 మీ సీక్రెట్ మెసేజ్ పోస్ట్ అయింది!');
+        showToast('100% Secret Whisper పోస్ట్ అయింది!');
       });
 
-      /* 6. LIVE TELUGU NEWS (TRIPLE BACKUP) */
-      async function loadLiveNews() {
-        const box = document.getElementById('live-news-list');
-        const rss = encodeURIComponent('https://news.google.com/rss?hl=te&gl=IN&ceid=IN:te');
-        try {
-          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rss}`);
-          const data = await res.json();
-          if (data.items && data.items.length) {
-            box.innerHTML = data.items.slice(0, 6).map(n => `<div class="pb-1.5 border-b border-light-outline/60"><a href="${n.link}" target="_blank" class="font-medium text-light-on-surface hover:text-royal-emerald">${n.title}</a></div>`).join('');
-            return;
-          }
-          throw new Error();
-        } catch (e) {
-          box.innerHTML = `
-            <div class="pb-1.5 border-b border-light-outline/60"><p>🔴 విశాఖపట్నం - అరకు ఘాట్ రోడ్డులో పర్యాటకుల సందడి; వీకెండ్ ప్రత్యేక బస్సులు సిద్ధం.</p></div>
-            <div class="pb-1.5 border-b border-light-outline/60"><p>🔴 విజయనగరం జిల్లా ఎస్.కోట, తాటిపూడి ప్రాంతాల్లో కూరగాయల ధరలు స్థిరంగా ఉన్నాయి.</p></div>
-            <div><p>🔴 ఆంధ్రప్రదేశ్‌లో కొత్త ఉద్యోగ నోటిఫికేషన్లు & తాజా రాష్ట్ర వార్తలు.</p></div>`;
-        }
-      }
-      document.getElementById('refresh-news-btn').addEventListener('click', loadLiveNews);
-      loadLiveNews();
+      /* ======================================================================
+         8. లోకల్ జాబ్స్ & ఎడ్యుకేషన్ రిజల్ట్స్ + క్యాలిక్యులేటర్లు + GK క్విజ్
+         ====================================================================== */
+      document.querySelectorAll('.job-apply-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, I want to apply for job: ' + btn.dataset.job)}`, '_blank');
+        });
+      });
+      document.getElementById('post-job-btn').addEventListener('click', () => {
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, I want to post a Local Job ad (₹49 Priority).')}`, '_blank');
+      });
 
-      /* 7. VILLAGE CALCULATORS & MULTI-QUESTION GK QUIZ */
+      const examUrls = {
+        rrb: 'https://www.rrbapply.gov.in/',
+        iti: 'https://iti.ap.gov.in/',
+        inter: 'https://bieap.apcfss.in/',
+        degree: 'https://www.andhrauniversity.edu.in/',
+        ssc10: 'https://www.bse.ap.gov.in/'
+      };
+      document.getElementById('check-result-btn').addEventListener('click', () => {
+        const board = document.getElementById('exam-board').value;
+        const ht = document.getElementById('exam-ht').value.trim();
+        document.getElementById('exam-result-text').textContent = ht ? `Hall Ticket ${ht} సిద్ధంగా ఉంది — పోర్టల్ ఓపెన్ చేయండి.` : 'అధికారిక రిజల్ట్స్ పోర్టల్ సిద్ధంగా ఉంది.';
+        document.getElementById('exam-portal-link').href = examUrls[board];
+        document.getElementById('exam-result-box').hidden = false;
+      });
+
       let activeCalc = 'vaddi';
       const in1 = document.getElementById('calc-in-1'), in2 = document.getElementById('calc-in-2'), in3 = document.getElementById('calc-in-3');
       const lbl1 = document.getElementById('calc-lbl-1'), lbl2 = document.getElementById('calc-lbl-2'), lbl3 = document.getElementById('calc-lbl-3');
       const calcOut = document.getElementById('calc-output');
-
       function computeCalc() {
         const a = Number(in1.value) || 0, b = Number(in2.value) || 0, c = Number(in3.value) || 0;
         if (activeCalc === 'vaddi') {
@@ -962,19 +1254,19 @@
           calcOut.textContent = `${(a / 100).toFixed(2)} Acres • ${Math.round(a * 48.4).toLocaleString('en-IN')} Sq.Yds`;
         } else if (activeCalc === 'gst') {
           const gst = Math.round(a * (b / 100));
-          calcOut.textContent = `GST: ₹${gst.toLocaleString('en-IN')} • మొత్తం బిల్లు: ₹${(a + gst).toLocaleString('en-IN')}`;
+          calcOut.textContent = `GST: ₹${gst.toLocaleString('en-IN')} • మొత్తం: ₹${(a + gst).toLocaleString('en-IN')}`;
         } else if (activeCalc === 'emi') {
           const r = (b / 12) / 100;
           const emi = r === 0 ? (c ? a / c : 0) : (a * r * Math.pow(1 + r, c)) / (Math.pow(1 + r, c) - 1);
           calcOut.textContent = `నెలవారీ EMI: ₹${Math.round(emi).toLocaleString('en-IN')}`;
         } else if (activeCalc === 'age') {
-          calcOut.textContent = `${Math.max(0, 2026 - a)} సంవత్సరాలు (2026 నాటికి)`;
+          calcOut.textContent = `${Math.max(0, 2026 - a)} సంవత్సరాలు`;
         }
       }
       document.querySelectorAll('.calc-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-          document.querySelectorAll('.calc-tab').forEach(t => { t.classList.remove('bg-royal-emerald', 'text-white'); t.classList.add('text-light-on-surface-muted'); });
-          tab.classList.add('bg-royal-emerald', 'text-white'); tab.classList.remove('text-light-on-surface-muted');
+          document.querySelectorAll('.calc-tab').forEach(t => { t.setAttribute('aria-selected', 'false'); t.classList.remove('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold'); t.classList.add('text-light-on-surface-muted'); });
+          tab.setAttribute('aria-selected', 'true'); tab.classList.add('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold'); tab.classList.remove('text-light-on-surface-muted');
           activeCalc = tab.dataset.calc;
           if (activeCalc === 'vaddi') { lbl1.textContent = 'Amount (₹)'; lbl2.textContent = 'Rate (₹/100)'; lbl3.textContent = 'Months'; in1.value = 50000; in2.value = 2; in3.value = 12; }
           if (activeCalc === 'land') { lbl1.textContent = 'Cents'; lbl2.textContent = 'Rate/Cent'; lbl3.textContent = 'Unit'; in1.value = 50; in2.value = 1; in3.value = 1; }
@@ -989,11 +1281,10 @@
         window.open(`https://wa.me/?text=${encodeURIComponent('*Mana Seva Hub లెక్క:* ' + calcOut.textContent)}`, '_blank');
       });
 
-      /* Multi-Question GK Quiz */
       const gkList = [
         { q: "1. విజయనగరం జిల్లాలోని తాటిపూడి రిజర్వాయర్ ఏ నదిపై నిర్మించబడింది?", opts: ["A. గోస్తనీ నది", "B. నాగావళి నది", "C. వంశధార నది", "D. శారదా నది"], ans: 0 },
-        { q: "2. ఆంధ్రప్రదేశ్‌లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?", opts: ["A. హార్సిలీ హిల్స్", "B. లంబసింగి", "C. పాపి కొండలు", "D. అరకు"], ans: 1 },
-        { q: "3. భారత రాజ్యాంగ పితామహుడు ఎవరు?", opts: ["A. మహాత్మా గాంధీ", "B. జవహర్‌లాల్ నెహ్రూ", "C. డా. బి.ఆర్. అంబేద్కర్", "D. సర్దార్ పటేల్"], ans: 2 }
+        { q: "2. ఆంధ్రప్రదేశ్లో 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?", opts: ["A. హార్సిలీ హిల్స్", "B. లంబసింగి", "C. పాపి కొండలు", "D. అరకు"], ans: 1 },
+        { q: "3. ఓం నియమం (Ohm's Law) ప్రకారం వోల్టేజ్ (V) సూత్రం ఏమిటి?", opts: ["A. V = I / R", "B. V = I × R", "C. V = R / I", "D. V = I + R"], ans: 1 }
       ];
       let qIdx = 0;
       function bindQuizOpts() {
@@ -1001,7 +1292,7 @@
           opt.addEventListener('click', () => {
             const ok = opt.dataset.correct === 'true';
             opt.classList.add(ok ? 'bg-emerald-tint' : 'bg-rose-tint');
-            document.getElementById('quiz-feedback').textContent = ok ? '✅ సరైన సమాధానం!' : '❌ తప్పు సమాధానం! మళ్ళీ ప్రయత్నించండి.';
+            document.getElementById('quiz-feedback').textContent = ok ? 'సరైన సమాధానం!' : 'తప్పు సమాధానం! మళ్ళీ ప్రయత్నించండి.';
           });
         });
       }
@@ -1011,119 +1302,71 @@
         const item = gkList[qIdx];
         document.getElementById('quiz-q-text').textContent = item.q;
         document.getElementById('quiz-feedback').textContent = '';
-        document.getElementById('quiz-options-grid').innerHTML = item.opts.map((o, i) => `<button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-white border border-light-outline text-xs text-left font-semibold" data-correct="${i === item.ans}">${o}</button>`).join('');
+        document.getElementById('quiz-options-grid').innerHTML = item.opts.map((o, i) => `<button type="button" class="quiz-opt py-1.5 px-2 rounded-lg bg-light-surface-container-low border border-light-outline text-xs text-left" data-correct="${i === item.ans}">${o}</button>`).join('');
         bindQuizOpts();
       });
 
-      /* 8. AREA FILTER & GLOBAL SEARCH */
-      let currentArea = 'All';
-      const searchInput = document.getElementById('global-search');
-      function filterCatalog() {
-        const q = searchInput.value.trim().toLowerCase();
-        document.querySelectorAll('.catalog-card').forEach(card => {
-          const areaOk = currentArea === 'All' || card.dataset.areaTag === currentArea;
-          const searchOk = !q || card.dataset.search.includes(q);
-          card.hidden = !(areaOk && searchOk);
-        });
-      }
-      document.querySelectorAll('.area-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-          document.querySelectorAll('.area-pill').forEach(p => { p.classList.remove('bg-royal-emerald', 'text-white', 'shadow-sm'); p.classList.add('bg-white', 'border', 'border-light-outline'); });
-          pill.classList.add('bg-royal-emerald', 'text-white', 'shadow-sm'); pill.classList.remove('bg-white', 'border', 'border-light-outline');
-          currentArea = pill.dataset.area;
-          filterCatalog();
-        });
-      });
-      searchInput.addEventListener('input', filterCatalog);
-
-      /* 9. MULTI-TAB DETAIL MODAL (3 INNER TABS) */
-      const modal = document.getElementById('detail-modal');
-      let currentPackageTitle = "";
+      /* ======================================================================
+         9. టూరిజం & టెక్నీషియన్ డీటెయిల్స్ మోడల్
+         ====================================================================== */
       const catalogData = {
         'araku-tour': {
-          title: 'Araku Valley & Borra Caves (6 Spots)', sub: 'Pickup S.Kota & Boddavara • ₹1,499 నుండి',
-          img1: 'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. Borra Caves & Katiki Falls', 'Included'], ['2. Coffee Museum & Gardens', 'Included'], ['3. Galikonda & Chaparai', 'Included'], ['4-Seater Car / 7-Seater Ertiga', '₹1,499 / ₹2,499']],
-          rules: '• ఉదయం 06:00 గంటలకు S.Kota / Boddavara నుండి బయలుదేరుతుంది.\n• అనుభవజ్ఞులైన లోకల్ డ్రైవర్ గైడ్.\n• ఎంట్రీ టికెట్లు అదనం.'
+          title: 'Araku Valley (6 Spots)', sub: 'Pickup S.Kota & Boddavara • ₹1,499',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrAgRHHpFzjbwsRW7_F_vhiMrX3bge4JEd5Oj9f0wtvv7J2T6k7tSOXniwy2xdIV0GBqC2AMfpFgGbVwmpqiFOjw5UQftg1KhKnpRGmbiHVRmCKETnE9xXp_zk-g53A3jlu6F-klt4MWHTMNpQEgRe_qzUcKBd6D0_M0Cf86bZm4wPcjfeGgpVl78YGO8RTHo0ELcT_2r5ucuDytas73RHpacG0Ih8emf71eE8lYhHMsmDXWS8rs', 'https://lh3.googleusercontent.com/aida/ALJJyrAAQWKVNcLeH6A-U9FwgEuukommSnpWXbb0821WX0JJ28-CP84BvUU6hYTiyrMrUciujm2lzCviao8QUrvHpnrUfFpRmVqnY51jp2UYqUqJOXQQc0giDzr31_sTAaN53xnNPEdxAaI2xthMwOkNw2bjFB51QOBEz13E2OTU4AR_BclM75we_ItEQHj3ATMXgPCOqm54gP9qhgt3GWqyKpfe_z3TFO5ptYEDRK3iTGXaJBBFodq6LXMw'],
+          rates: [['4-Seater Sedan', '₹1,499'], ['7-Seater Ertiga', '₹2,499']],
+          rules: 'ఉదయం 06:00 AM పికప్. బొర్రా గుహలు, కాఫీ మ్యూజియం, చాపరాయి అన్నీ కవర్ అవుతాయి.'
         },
         'lambasingi-tour': {
-          title: 'Lambasingi & Tajangi Mist (6 Spots)', sub: 'Early Morning Special • ₹1,599 నుండి',
-          img1: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. Lambasingi Sunrise Point', 'Included'], ['2. Tajangi Reservoir & Falls', 'Included'], ['3. Strawberry Farms & Gardens', 'Included'], ['Full Day Package', '₹1,599']],
-          rules: '• తెల్లవారుజామున 03:30 గంటలకు బయలుదేరుతుంది.\n• చలికాలం స్వెటర్లు తప్పనిసరి.'
+          title: 'Lambasingi Mist Tour', sub: 'Early Morning Special • ₹1,599',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrCNoqK2WVz8Gx37MUXLlt-7GE_0q-cUFKqb2_2a9s0wwjEGS-asHi2iw4ScB19q_9Z89AepQ1nTOlA4cNAhMlfgsQMgIxl60QkJygS5PNyBtuaVK9r5Fn6gTd9x4QAioGUZ-jqYO3tyu_febI-7XZrJsh8-idq5JzEV3CCeCNwhL1PTZMpLw32zlktnZv3FRPnqqSwQBzOcG1i6O3Q79hA4ugidg9LdVwy43NR5AAonjZtLWae5L88f'],
+          rates: [['Full Day Package', '₹1,599']],
+          rules: 'తెల్లవారుజామున 03:30 AM బయలుదేరుతుంది.'
         },
         'vizag-tour': {
-          title: 'Vizag Coastline & City Tour (6 Spots)', sub: 'Full-Day Cab • ₹999 నుండి',
-          img1: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. RK Beach & Kailasagiri', 'Included'], ['2. Rushikonda & Yarada Beach', 'Included'], ['3. Simhachalam & Thotlakonda', 'Included'], ['Full Day Cab', '₹999']],
-          rules: '• ఫ్యామిలీ & ఫ్రెండ్స్ గ్రూప్‌లకు అనువైన వన్-డే ప్యాకేజీ.'
+          title: 'Vizag Coastline Tour', sub: 'Full-Day Cab • ₹999',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrCv1jLEj2g2lJNzmojABGoPoXWInCAURj5P2OfDBjNQwpo9ukKUP7BMvZ6p5r7D-AtmZ-H88IImgkGy-bd3lUvbGYIJ0Sw__60ET_8Zoi38tW0MhWgdUPcfcvy719nZV266F7EIzhFFZEB5oJTlOkpntengA_k4KrUrX-vF8KyNSACa6N_YQL1gmPX4GhRB3eIuKjSdXbmpQff83SCHZCSZxsOVKN_LM-Kdli9lFM9tv4MyZQ'],
+          rates: [['Full Day City Cab', '₹999']],
+          rules: 'RK Beach, Kailasagiri, Rushikonda, Simhachalam.'
         },
         'vanjangi-tour': {
-          title: 'Vanjangi Clouds & Paderu (6 Spots)', sub: 'Cloud Viewpoint • ₹1,399 నుండి',
-          img1: 'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. Vanjangi Hills Sunrise', 'Included'], ['2. Modakondamma Temple', 'Included'], ['3. Matsyagundam & Coffee Estates', 'Included'], ['Full Package', '₹1,399']],
-          rules: '• ఉదయం 04:00 గంటలకు బయలుదేరుతుంది.'
+          title: 'Vanjangi Sea of Clouds', sub: 'Sunrise Special • ₹1,399',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrAAQWKVNcLeH6A-U9FwgEuukommSnpWXbb0821WX0JJ28-CP84BvUU6hYTiyrMrUciujm2lzCviao8QUrvHpnrUfFpRmVqnY51jp2UYqUqJOXQQc0giDzr31_sTAaN53xnNPEdxAaI2xthMwOkNw2bjFB51QOBEz13E2OTU4AR_BclM75we_ItEQHj3ATMXgPCOqm54gP9qhgt3GWqyKpfe_z3TFO5ptYEDRK3iTGXaJBBFodq6LXMw'],
+          rates: [['Full Package', '₹1,399']],
+          rules: 'ఉదయం 04:00 AM బయలుదేరుతుంది.'
         },
         'thatipudi-tour': {
-          title: 'Thatipudi Dam & Kasipatnam Tyda (6 Spots)', sub: 'Local Picnic Tour • ₹1,199 నుండి',
-          img1: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. Thatipudi Reservoir', 'Included'], ['2. Tyda Jungle Bells & Damuku', 'Included'], ['3. Bamboo Chicken Food Point', 'Included'], ['Full Package', '₹1,199']],
-          rules: '• బొడ్డవార / ఎస్.కోట నుండి కేవలం 20 నిమిషాల ప్రయాణం.'
-        },
-        'vzm-tour': {
-          title: 'Vizianagaram Royal Fort & Temples', sub: 'Heritage Tour • ₹899 నుండి',
-          img1: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=400&q=80',
-          rates: [['1. Vizianagaram Fort & Clock Tower', 'Included'], ['2. Ramanarayanam & Pydithalli Temple', 'Included'], ['3. Ramatheertham & Bobbili Fort', 'Included'], ['Full Package', '₹899']],
-          rules: '• ఆధ్యాత్మిక & చారిత్రక ప్రదేశాల సందర్శన.'
-        },
-        'books-bundle': {
-          title: 'Old Books Buy & Sell (RRB / SSC / Degree)', sub: '50% తక్కువ ధరకే పుస్తకాలు',
-          img1: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=400&q=80',
-          rates: [['RRB NTPC / Group-D Books', '₹150'], ['SSC CHSL / Arithmetic Guides', '₹180'], ['B.Com / Inter All Subjects', '₹200'], ['Sell Your Old Books', 'Cash Paid']],
-          rules: '• మీ పాత పుస్తకాల ఫోటో WhatsApp లో పంపితే మంచి ధరకు కొనుగోలు చేస్తాము.'
-        },
-        'local-jobs': {
-          title: 'Local Jobs & Daily Duties', sub: 'S.Kota • Kiltampalem • VZM • Vizag',
-          img1: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=400&q=80',
-          rates: [['Catering & Loading Daily Duty', '₹600/Day'], ['Site Security Guard (12h Shift)', '₹14,500/Mo'], ['Billing / Tally / Shop Sales', '₹13,000/Mo'], ['Auto / Car Driver', '₹15,000/Mo']],
-          rules: '• ఆధార్ కార్డు జిరాక్స్ తప్పనిసరి.\n• డైలీ డ్యూటీ వేతనం సాయంత్రమే చెల్లించబడును.'
+          title: 'Thatipudi & Tyda Picnic', sub: 'Local Tour • ₹1,199',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrDTCRoS3sLgRtokCTmkoo7CKOcoqzAz36LG8cEpGg9sw62G8vr-hJSvLXkSpSDzT2kSdMHNvqsVlvYsQM-7iWoCoaT5ivI3qqaonjD2AGIlfhHQ7yEXBE654WPeu4hzKHRvX50QHgQOrP6591rPXixv__LfOoAtLjtjkP66tJSLuV2d-azTYPakNaRytTFQjIw_tPIe6MWRX4IhGze4OjbIdb1a-beO8vBpH6V6POiCe5G20dWlCQ'],
+          rates: [['Local Day Tour', '₹1,199']],
+          rules: 'బొడ్డవార / S.Kota నుండి 20 నిమిషాల ప్రయాణం.'
         },
         'electrician-seva': {
-          title: '24/7 Village Technicians & Services', sub: 'Mechanic • Electrician • Plumber • Tanker',
-          img1: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=400&q=80',
-          img2: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&q=80',
-          rates: [['Bike Puncture & Roadside Help', '₹80 నుండి'], ['Electrician & Fan/Inverter Fix', '₹100 నుండి'], ['Plumber & Water Motor Repair', '₹100 నుండి'], ['Water Tanker (2000L - 5000L)', '₹500 నుండి']],
-          rules: '• కనీస విజిట్ ఛార్జీ ₹100 మాత్రమే. స్పేర్ పార్ట్స్ అదనం.'
+          title: '24/7 ITI Electrician & Technicians', sub: 'House Wiring • Motor • Bike Puncture • ₹100+',
+          photos: ['https://lh3.googleusercontent.com/aida/ALJJyrAyWPiINFf3b6-aIM7Yag7PoMZcnaw3kRZnSXKAMKs0l5DCajzIh3ZXfQzkGWohnjyw52L7Q7rhxhoOQYmEksfma_IexY62kOhWL9Hpy7b8sItUl3YaqUAc0HIj3srl_lHPFNBfS95JTy_us5Jv449Zx0JDH2c67Cwx44NOl9x5UoyRIcs8T9iFLEA-2L8Ckxi0GHcnmC5H8R4GZ4NqegtQ4bqjC5HBu-v9gySpAjBoPVU2WqZCEYtX0uc'],
+          rates: [['House Electrical Visit', '₹100+'], ['Bike Puncture / Roadside Help', '₹80+']],
+          rules: 'బొడ్డవార, కిల్తంపాలెం, S.Kota పరిసరాల్లో 30 నిమిషాల్లో టెక్నీషియన్ వస్తారు.'
         }
       };
 
+      const modal = document.getElementById('detail-modal');
+      let currentPackageTitle = '';
       document.querySelectorAll('.open-detail-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const item = catalogData[btn.dataset.itemId] || catalogData['araku-tour'];
           currentPackageTitle = item.title;
           document.getElementById('modal-title').textContent = item.title;
           document.getElementById('modal-subtitle').textContent = item.sub;
-          document.getElementById('modal-img-1').src = item.img1;
-          document.getElementById('modal-img-2').src = item.img2;
+          document.getElementById('modal-gallery-strip').innerHTML = item.photos.map(src => `<img src="${src}" alt="${item.title}" class="w-40 h-28 shrink-0 object-cover rounded-lg border border-light-outline">`).join('');
           document.getElementById('modal-rates-list').innerHTML = item.rates.map(r => `<div class="flex justify-between p-2 rounded-lg bg-light-surface-container"><span>${r[0]}</span><span class="text-royal-emerald font-bold">${r[1]}</span></div>`).join('');
-          document.getElementById('modal-rules-box').innerText = item.rules;
+          document.getElementById('modal-rules-box').textContent = item.rules;
           modal.showModal();
         });
       });
-
       document.getElementById('close-detail-modal').addEventListener('click', () => modal.close());
       document.querySelectorAll('.modal-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-          document.querySelectorAll('.modal-tab').forEach(t => { t.classList.remove('bg-royal-emerald', 'text-white'); t.classList.add('text-light-on-surface-muted'); });
-          tab.classList.add('bg-royal-emerald', 'text-white'); tab.classList.remove('text-light-on-surface-muted');
+          document.querySelectorAll('.modal-tab').forEach(t => { t.setAttribute('aria-selected', 'false'); t.classList.remove('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold'); t.classList.add('text-light-on-surface-muted'); });
+          tab.setAttribute('aria-selected', 'true'); tab.classList.add('bg-royal-emerald', 'text-on-royal-emerald', 'font-bold'); tab.classList.remove('text-light-on-surface-muted');
           document.querySelectorAll('.modal-panel').forEach(p => { p.hidden = true; });
           document.getElementById('modal-panel-' + tab.dataset.modalTab).hidden = false;
         });
@@ -1131,10 +1374,69 @@
       document.getElementById('modal-book-submit').addEventListener('click', () => {
         const name = document.getElementById('modal-book-name').value.trim() || 'Customer';
         const place = document.getElementById('modal-book-place').value.trim() || 'S.Kota';
-        const msg = `Hi Prakash, I want to book: *${currentPackageTitle}*\nName: ${name}\nVillage/Place: ${place}`;
         modal.close();
-        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Booking: ${currentPackageTitle}\nName: ${name}\nPlace: ${place}`)}`, '_blank');
       });
+
+      /* ======================================================================
+         10. అన్ని విభాగాలకు ఏరియా ఫిల్టర్ & గ్లోబల్ సెర్చ్
+         ====================================================================== */
+      let currentArea = 'All';
+      const searchInput = document.getElementById('global-search');
+      function filterAllItems() {
+        const q = searchInput.value.trim().toLowerCase();
+        document.querySelectorAll('.filterable-item').forEach(card => {
+          const areaTag = (card.dataset.areaTag || '').toLowerCase();
+          const searchTag = (card.dataset.search || '') + ' ' + card.textContent.toLowerCase();
+          const areaOk = currentArea === 'All' || areaTag.includes(currentArea.toLowerCase());
+          const searchOk = !q || searchTag.includes(q);
+          card.hidden = !(areaOk && searchOk);
+        });
+      }
+      document.querySelectorAll('.area-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.area-pill').forEach(p => {
+            p.setAttribute('aria-pressed', 'false');
+            p.classList.remove('bg-royal-emerald', 'text-on-royal-emerald', 'shadow-sm');
+            p.classList.add('bg-light-surface-container-low', 'border', 'border-light-outline', 'text-light-on-surface');
+          });
+          pill.setAttribute('aria-pressed', 'true');
+          pill.classList.add('bg-royal-emerald', 'text-on-royal-emerald', 'shadow-sm');
+          pill.classList.remove('bg-light-surface-container-low', 'border', 'border-light-outline', 'text-light-on-surface');
+          currentArea = pill.dataset.area;
+          filterAllItems();
+          showToast(currentArea === 'All' ? 'అన్ని ఏరియాలు చూపిస్తున్నాము' : `${currentArea} సేవలు ఫిల్టర్ అయ్యాయి`);
+        });
+      });
+      searchInput.addEventListener('input', filterAllItems);
+
+      /* పెళ్ళి సంబంధాలు & లైవ్ తెలుగు వార్తలు */
+      document.querySelectorAll('.marriage-connect-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash (Mediator), I want verified family details for: ' + btn.dataset.profile)}`, '_blank');
+        });
+      });
+      document.getElementById('add-marriage-btn').addEventListener('click', () => {
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, I want to submit a genuine Marriage Profile (Private/Mediator Verified).')}`, '_blank');
+      });
+
+      async function loadLiveNews() {
+        const box = document.getElementById('live-news-list');
+        const rss = encodeURIComponent('https://news.google.com/rss?hl=te&gl=IN&ceid=IN:te');
+        try {
+          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rss}`);
+          const data = await res.json();
+          if (data.items && data.items.length) {
+            box.innerHTML = data.items.slice(0, 5).map(n => `<div class="pb-1 border-b border-light-outline/60"><a href="${n.link}" target="_blank" rel="noopener noreferrer" class="hover:text-royal-emerald">${n.title}</a></div>`).join('');
+            return;
+          }
+          throw new Error();
+        } catch (e) {
+          box.innerHTML = `<div class="pb-1 border-b border-light-outline/60">అరకు ఘాట్ రోడ్డులో పర్యాటకుల సందడి; వీకెండ్ ప్రత్యేక బస్సులు.</div><div>ఎస్.కోట, బొడ్డవార మార్కెట్లో తాజా కూరగాయల ధరలు స్థిరంగా ఉన్నాయి.</div>`;
+        }
+      }
+      document.getElementById('refresh-news-btn').addEventListener('click', loadLiveNews);
+      loadLiveNews();
     })();
   </script>
 </body>
