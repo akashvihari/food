@@ -3,1298 +3,331 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mana Seva Hub • మన సేవ | Boddavara • Kiltampalem • S.Kota • VZM • Vizag</title>
+  <title>Mana Seva Hub • మన సేవ | Boddavara • Kiltampalem • S.Kota</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    /** @type {import('tailwindcss').Config} */
-    globalThis.tailwind = globalThis.tailwind || {};
-    globalThis.tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'royal-emerald': '#064E3B',
-            'on-royal-emerald': '#FFFFFF',
-            'warm-ivory': '#F8F5EE',
-            'saffron-gold': '#F59E0B',
-            'on-saffron-gold': '#1C1917',
-            'rose-pink': '#BE185D',
-            'on-rose-pink': '#FFFFFF',
-            'emerald-deep': '#022C22',
-            'on-emerald-deep': '#ECFDF5',
-            'emerald-tint': '#D1FAE5',
-            'on-emerald-tint': '#064E3B',
-            'saffron-tint': '#FEF3C7',
-            'on-saffron-tint': '#78350F',
-            'rose-tint': '#FCE7F3',
-            'on-rose-tint': '#831843',
-            'ticker-bg': '#091E18',
-            'on-ticker-bg': '#F8F5EE',
-            'success': '#15803D',
-            'on-success': '#FFFFFF',
-            'warning': '#B45309',
-            'on-warning': '#FFFFFF',
-            'error': '#DC2626',
-            'on-error': '#FFFFFF',
-            'light-surface': '#F8F5EE',
-            'light-on-surface': '#111C18',
-            'light-on-surface-muted': '#475550',
-            'light-surface-container-low': '#FFFFFF',
-            'light-surface-container': '#F1ECE1',
-            'light-outline': '#D5CEC0',
-          },
-          borderRadius: {
-            'sm': '8px',
-            'DEFAULT': '12px',
-            'lg': '18px',
-            'full': '9999px',
-          },
-          spacing: {
-            'gutter-xs': '4px',
-            'gutter-sm': '8px',
-            'gutter-md': '12px',
-            'gutter-lg': '16px',
-            'page-margin': '14px',
-          },
-          fontFamily: {
-            'headline': ['"Wix Madefor Display"', '"Noto Sans Telugu"', 'sans-serif'],
-            'body': ['"Instrument Sans"', '"Noto Sans Telugu"', 'sans-serif'],
-            'mono': ['"Spline Sans Mono"', 'monospace'],
-          },
-          fontSize: {
-            'headline-md': ['17px', { lineHeight: '22px', fontWeight: '700' }],
-            'title-lg': ['15px', { lineHeight: '20px', fontWeight: '600' }],
-            'title-md': ['13px', { lineHeight: '18px', fontWeight: '600' }],
-            'body-md': ['13px', { lineHeight: '18px', fontWeight: '400' }],
-            'body-sm': ['12px', { lineHeight: '16px', fontWeight: '400' }],
-            'label-lg': ['12px', { lineHeight: '16px', fontWeight: '600' }],
-            'label-sm': ['11px', { lineHeight: '14px', fontWeight: '600' }],
-            'mono-sm': ['11px', { lineHeight: '15px', fontWeight: '600' }],
-          }
-        },
-      },
-    };
+  <script>
+    /* 
+       ========================================================================
+       ADMIN PASSWORD & SECURITY CONFIGURATION (అడ్మిన్ పాస్‌వర్డ్ సెట్టింగ్స్)
+       ========================================================================
+       డిఫాల్ట్ అడ్మిన్ పాస్‌వర్డ్ '1430'. వెబ్‌సైట్‌లోని 'Admin ON' బటన్ ద్వారా
+       మీరు ఈ పాస్‌వర్డ్ ఉపయోగించి కంట్రోల్స్ మార్చవచ్చు.
+    */
+    const ADMIN_PASS_CONFIG = "1430"; 
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700&family=Instrument+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <style>
-    .material-symbols-outlined {
-      display: inline-block; width: 1em; height: 1em; line-height: 1 !important;
-      vertical-align: middle;
-    }
-    body {
-      font-family: "Instrument Sans", "Noto Sans Telugu", sans-serif;
-    }
-    @keyframes ticker-scroll {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
-    }
-    .animate-ticker {
-      display: flex;
-      width: max-content;
-      animation: ticker-scroll 26s linear infinite;
-    }
-    .animate-ticker:hover { animation-play-state: paused; }
-    @keyframes eq-bounce {
-      0%, 100% { transform: scaleY(0.35); }
-      50% { transform: scaleY(1); }
-    }
-    .eq-bar { transform-origin: bottom; animation: eq-bounce 0.8s ease-in-out infinite; }
-    .paused .eq-bar { animation-play-state: paused; transform: scaleY(0.4); }
-    .eq-bar-2 { animation-delay: 0.2s; }
-    .eq-bar-3 { animation-delay: 0.4s; }
+    body { font-family: "Instrument Sans", "Noto Sans Telugu", sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 </head>
-<body class="bg-light-surface text-light-on-surface font-body antialiased">
-  <!-- మినీ కంప్యూటర్ స్టైల్ కప్-బోర్డ్ కంటైనర్ -->
-  <div id="app-root" class="min-h-screen w-full max-w-md md:max-w-5xl mx-auto bg-light-surface relative shadow-2xl border-x border-light-outline/60">
+<body class="bg-slate-50 text-slate-900 antialiased pb-24">
+  <div id="app-root" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col">
 
-    <!-- ========================================================================
-         1. లైవ్ మార్కెట్ & డైరీ రేట్ల టిక్కర్
-         ======================================================================== -->
-    <div class="bg-ticker-bg text-on-ticker-bg border-b border-saffron-gold/30 overflow-hidden py-1 px-2">
-      <div class="animate-ticker bg-ticker-bg items-center gap-6 font-mono text-mono-sm tabular-nums">
-        <div class="flex items-center gap-4 whitespace-nowrap">
-          <span class="text-saffron-gold">22K GOLD: ₹7,185/g • SILVER: ₹92/g</span>
-          <span class="text-on-ticker-bg/60">•</span>
-          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • MILK: ₹66/L</span>
-          <span class="text-on-ticker-bg/60">•</span>
-          <span class="text-saffron-gold">BIKE ₹5/KM • 6KM PARTY &amp; NIGHT DROP (8985240287)</span>
+    <!-- 1. FULL WIDTH TOP PROFILE & MEDIA BANNER -->
+    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-800 text-white p-4 shadow-md">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-inner bg-emerald-700 font-bold flex items-center justify-center text-lg text-amber-300">P</div>
+          <div>
+            <h1 class="text-lg font-bold text-amber-300 flex items-center gap-1">Prakash (@hipraka) <span class="text-xs bg-emerald-800 px-2 py-0.5 rounded text-white border border-emerald-600">Admin</span></h1>
+            <p class="text-xs text-emerald-200">Mana Seva Hub • 24/7 Service &amp; Support</p>
+          </div>
         </div>
-        <div class="flex items-center gap-4 whitespace-nowrap" aria-hidden="true">
-          <span class="text-saffron-gold">22K GOLD: ₹7,185/g • SILVER: ₹92/g</span>
-          <span class="text-on-ticker-bg/60">•</span>
-          <span class="text-emerald-tint">TOMATO: ₹30/kg • ONION: ₹36/kg • MILK: ₹66/L</span>
-          <span class="text-on-ticker-bg/60">•</span>
-          <span class="text-saffron-gold">BIKE ₹5/KM • 6KM PARTY &amp; NIGHT DROP (8985240287)</span>
+        <button id="admin-master-toggle" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-full shadow flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-sm">lock</span> <span id="admin-btn-text">Admin ON</span>
+        </button>
+      </div>
+      
+      <!-- In-App Media Player -->
+      <div class="rounded-xl bg-black/40 p-3 border border-emerald-500/30 backdrop-blur-sm">
+        <div class="flex items-center justify-between text-xs text-amber-300 mb-2 font-semibold">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm animate-pulse text-red-500">radio</span> Live Telugu Melody FM</span>
+          <span id="fm-status">Playing...</span>
+        </div>
+        <audio id="fm-audio" src="https://stream.zeno.fm/0r0xa792kwzuv" preload="none"></audio>
+        <div class="flex gap-2 mb-3">
+          <button onclick="playFM('https://stream.zeno.fm/0r0xa792kwzuv', this)" class="flex-1 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded font-medium transition-all">1. Love Hits</button>
+          <button onclick="playFM('https://stream.zeno.fm/4d272295908tv', this)" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded font-medium transition-all">2. Cinema</button>
+          <button onclick="playFM('https://stream.zeno.fm/f3wvbbqmdg8uv', this)" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded font-medium transition-all">3. Mass Beats</button>
+        </div>
+        <div class="aspect-video w-full rounded-lg overflow-hidden bg-black border border-white/10 relative">
+          <iframe id="yt-player" class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk" allowfullscreen></iframe>
         </div>
       </div>
     </div>
 
-    <!-- ========================================================================
-         2. స్టికీ హెడర్ + అడ్మిన్ లాక్ (PIN: 1430) + జూమ్ + ఏరియా ఫిల్టర్లు
-         ======================================================================== -->
-    <header class="sticky top-0 z-30 bg-light-surface/95 backdrop-blur-md border-b border-light-outline px-page-margin py-2 flex flex-col gap-1.5">
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <button id="open-drawer-btn" type="button" aria-label="మెనూ" class="w-8 h-8 rounded-full bg-royal-emerald text-on-royal-emerald flex items-center justify-center shadow-sm">
-            <span class="material-symbols-outlined text-title-lg" aria-hidden="true">menu</span>
-          </button>
+    <!-- 2. SECTION TABS -->
+    <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 p-2 flex gap-1 overflow-x-auto no-scrollbar shadow-sm">
+      <a href="#love-chat-sec" class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-semibold whitespace-nowrap">💖 Love &amp; 1Min Chat</a>
+      <a href="#vault-sec" class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold whitespace-nowrap">🔒 Secret Vault</a>
+      <a href="#ride-sec" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold whitespace-nowrap">🏍️ Rapido Ride</a>
+      <a href="#services-sec" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold whitespace-nowrap">⚡ Recharts &amp; Calcs</a>
+      <a href="#tourism-sec" class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold whitespace-nowrap">🏞️ Tourism</a>
+      <a href="#jobs-sec" class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold whitespace-nowrap">💼 Jobs</a>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="p-4 flex flex-col gap-6">
+
+      <!-- 3. SECRET LOVE WALL & 1-MINUTE LIVE VANISHING CHAT -->
+      <section id="love-chat-sec" class="rounded-2xl border border-rose-200 bg-gradient-to-b from-rose-50/50 to-white p-4 shadow-sm">
+        <h2 class="text-base font-bold text-rose-900 mb-1 flex items-center gap-1.5"><span class="material-symbols-outlined text-rose-600">favorite</span> 100% Secret Love Wall &amp; Vanishing Chat</h2>
+        <p class="text-xs text-slate-500 mb-3">Live చాట్ మెసేజ్ సరిగ్గా 1 నిమిషం తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతుంది.</p>
+
+        <div class="flex flex-col gap-2 mb-4">
+          <input type="text" id="love-input" placeholder="మీ సీక్రెట్ మెసేజ్ ఇక్కడ టైప్ చేయండి..." class="w-full text-sm rounded-xl border-rose-300 p-2.5 focus:border-rose-500 focus:ring-rose-500">
+          <button onclick="postLoveMessage()" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-md transition-all">Post to Live Chat (Auto-Destruct 1 Min)</button>
+        </div>
+
+        <div id="love-feed" class="flex flex-col gap-2 min-h-[100px] border border-rose-100 rounded-xl p-3 bg-rose-50/30"></div>
+      </section>
+
+      <!-- 4. SECRET NIGHT VAULT (PASSWORD PROTECTED ITEMS) -->
+      <section id="vault-sec" class="rounded-2xl border border-amber-300 bg-gradient-to-b from-amber-50 to-white p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
           <div>
-            <h1 class="font-headline text-title-lg text-royal-emerald leading-tight">Mana Seva Hub • మన సేవ</h1>
-            <p class="text-label-sm text-light-on-surface-muted">Boddavara • Kiltampalem • S.Kota • VZM • Vizag</p>
+            <h2 class="text-base font-bold text-amber-900 flex items-center gap-1"><span class="material-symbols-outlined text-amber-600">visibility_off</span> Secret Night Vault</h2>
+            <p class="text-xs text-slate-500">వ్యక్తిగత &amp; అత్యవసర రహస్య డెలివరీ సర్వీస్ (ఆల్కహాల్/ఎసెన్షియల్స్).</p>
+          </div>
+          <div id="vault-lock-badge" class="px-2 py-1 rounded bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">lock</span> Locked
           </div>
         </div>
-        <div class="flex items-center gap-1.5">
-          <button id="admin-toggle-btn" type="button" class="px-2.5 py-1 rounded-full bg-saffron-tint border border-saffron-gold text-on-saffron-tint text-label-sm flex items-center gap-1">
-            <span id="admin-lock-icon" class="material-symbols-outlined text-body-sm" aria-hidden="true">lock</span>
-            <span id="admin-status-text">Admin</span>
-          </button>
-          <button id="btn-zoom-toggle" type="button" aria-label="Toggle full width" class="w-8 h-8 rounded-full bg-light-surface-container-low border border-light-outline text-light-on-surface flex items-center justify-center">
-            <span id="zoom-icon" class="material-symbols-outlined text-title-md" aria-hidden="true">zoom_in</span>
-          </button>
-          <a href="tel:+918985240287" aria-label="Call Prakash" class="w-8 h-8 rounded-full bg-royal-emerald text-on-royal-emerald flex items-center justify-center">
-            <span class="material-symbols-outlined text-body-md" aria-hidden="true">call</span>
-          </a>
-          <a href="https://wa.me/918985240287" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Prakash" class="w-8 h-8 rounded-full bg-success text-on-success flex items-center justify-center">
-            <span class="material-symbols-outlined text-body-md" aria-hidden="true">chat</span>
-          </a>
-        </div>
-      </div>
 
-      <!-- సెర్చ్ & ఏరియా ఫిల్టర్లు -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
-        <div class="relative">
-          <span class="material-symbols-outlined text-title-lg text-light-on-surface-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">search</span>
-          <input id="global-search" type="search" placeholder="వెతకండి: Bike, Chicken, Doctor, Recharge, Books, Puzzle, Jobs..." class="w-full pl-9 pr-3 py-1 rounded-full bg-light-surface-container-low border border-light-outline text-body-sm focus:border-royal-emerald focus:ring-1 focus:ring-royal-emerald">
+        <div id="vault-pin-box" class="flex gap-2 mb-3">
+          <input type="password" id="vault-pin-input" placeholder="Enter Secret Vault PIN" class="text-xs rounded-lg border-amber-300 p-2 flex-1">
+          <button onclick="verifyVaultPin()" class="px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-bold">Unlock</button>
         </div>
-        <div id="area-filters" class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-0.5">
-          <button data-area="All" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">All</button>
-          <button data-area="Boddavara" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">Boddavara</button>
-          <button data-area="Kiltampalem" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">Kiltampalem</button>
-          <button data-area="Thatipudi" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">Thatipudi</button>
-          <button data-area="S.Kota" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">S.Kota</button>
-          <button data-area="VZM" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">VZM</button>
-          <button data-area="Vizag" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">Vizag</button>
-          <button data-area="Araku" type="button" class="area-pill shrink-0 px-2.5 py-0.5 rounded-full bg-light-surface-container-low border border-light-outline text-label-sm">Araku</button>
-        </div>
-      </div>
-    </header>
 
-    <!-- సీక్రెట్ లవ్ మూవింగ్ క్లూ బార్ -->
-    <a href="#whisper-wall" class="block bg-rose-tint border-b border-rose-pink/25 overflow-hidden py-1 px-2">
-      <div id="secret-clue-ticker" class="animate-ticker items-center gap-6 text-label-sm text-on-rose-tint">
-        <div class="flex items-center gap-4 whitespace-nowrap">
-          <span class="inline-flex items-center gap-1">
-            <span class="material-symbols-outlined text-body-sm text-rose-pink" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
-            <span>100% SECRET CLUE: ఉదయం 7:30 బొడ్డవార బస్సు స్టాండ్ దగ్గర నీకోసం ఒక సీక్రెట్ మెసేజ్ ఉంది!</span>
-          </span>
-          <span>•</span>
-          <span>తాటిపూడి డ్యామ్: "నువ్వు నవ్వితే..." (Tap to Read)</span>
-        </div>
-        <div class="flex items-center gap-4 whitespace-nowrap" aria-hidden="true">
-          <span class="inline-flex items-center gap-1">
-            <span class="material-symbols-outlined text-body-sm text-rose-pink" style="font-variation-settings: 'FILL' 1;">favorite</span>
-            <span>100% SECRET CLUE: ఉదయం 7:30 బొడ్డవార బస్సు స్టాండ్ దగ్గర నీకోసం ఒక సీక్రెట్ మెసేజ్ ఉంది!</span>
-          </span>
-          <span>•</span>
-          <span>తాటిపూడి డ్యామ్: "నువ్వు నవ్వితే..." (Tap to Read)</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- ========================================================================
-         మినీ కంప్యూటర్ గ్రిడ్ (Side-by-Side 2 Columns — ఖాళీ స్థలం లేకుండా)
-         ======================================================================== -->
-    <main class="px-page-margin py-3 pb-24 grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch">
-
-      <!-- ======================================================================
-           షెల్ఫ్ 1A (ఎడమ కార్డ్): 100% SECRET LOVE WALL (Compact Side-by-Side Card)
-           ====================================================================== -->
-      <section id="whisper-wall" class="h-full rounded-lg bg-gradient-to-br from-rose-pink to-on-rose-tint text-on-rose-pink p-3.5 shadow-md flex flex-col justify-between gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-headline-md" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
+        <div id="vault-protected-content" class="hidden flex flex-col gap-3">
+          <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex justify-between items-center">
             <div>
-              <h2 class="font-headline text-headline-md">100% Secret Love Wall</h2>
-              <p class="text-label-sm text-rose-tint">పేరు/నంబర్ రాదు • Safe &amp; Free</p>
+              <p class="text-sm font-bold text-red-900">🍺 Cool Beer &amp; Personal Essentials</p>
+              <p class="text-xs text-red-700">24/7 అత్యవసర రహస్య సదుపాయం</p>
             </div>
-          </div>
-          <span id="whisper-count-badge" class="px-2 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold font-mono text-label-sm">2 Live</span>
-        </div>
-
-        <form id="whisper-form" class="rounded-DEFAULT bg-on-rose-pink/10 border border-on-rose-pink/20 p-2.5 flex flex-col gap-1.5">
-          <textarea id="whisper-text" rows="2" placeholder="మీ సీక్రెట్ ప్రేమ / క్రష్ మెసేజ్ రాయండి..." class="w-full rounded-sm bg-light-surface-container-low text-light-on-surface border-0 text-body-sm p-2"></textarea>
-          <div class="grid grid-cols-2 gap-1.5">
-            <input id="whisper-location" type="text" placeholder="క్లూ (S.Kota / Boddavara)" class="rounded-sm bg-light-surface-container-low text-light-on-surface border-0 text-body-sm px-2 py-1">
-            <input id="whisper-pin" type="password" maxlength="6" placeholder="PIN (Optional)" class="rounded-sm bg-light-surface-container-low text-light-on-surface border-0 font-mono text-mono-sm px-2 py-1">
-          </div>
-          <button type="submit" class="w-full py-1.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-lg active:scale-95 transition-transform">
-            Post Secret Whisper
-          </button>
-        </form>
-
-        <div id="whisper-feed" class="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1"></div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 1B (కుడి కార్డ్): DAILY MOTIVATION & FOCUS RULES BOARD
-           (పక్కపక్కనే ఫిట్ అయ్యి కింద స్థలం కలిసొచ్చేలా + కొత్త కోట్ పోస్ట్ చేసే వీలు)
-           ====================================================================== -->
-      <section id="motivation-hub" class="h-full rounded-lg bg-gradient-to-br from-ticker-bg via-emerald-deep to-royal-emerald text-on-emerald-deep p-3.5 shadow-md border border-saffron-gold/40 flex flex-col justify-between gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-headline-md text-saffron-gold" aria-hidden="true">bolt</span>
-            <div>
-              <h2 class="font-headline text-headline-md text-saffron-gold">Daily Motivation &amp; Focus Rules</h2>
-              <p class="text-label-sm text-emerald-tint">కష్టపడితేనే విజయం • Positive Mindset</p>
-            </div>
-          </div>
-          <button id="next-quote-btn" type="button" class="px-2.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm">Next Quote</button>
-        </div>
-
-        <!-- హైలైట్ మోటివేషన్ కోట్ బాక్స్ -->
-        <div class="rounded-DEFAULT bg-on-emerald-deep/10 border border-saffron-gold/30 p-3 flex flex-col gap-1.5">
-          <span id="mot-tag" class="text-label-sm text-saffron-gold font-mono">MINDSET RULE #1</span>
-          <p id="mot-quote-text" class="text-title-md text-on-emerald-deep leading-snug">
-            “నీ కష్టాన్ని ఎవరూ చూడకపోయినా పర్లేదు — ప్రతిరోజూ 1% మెరుగవుతూ వెళ్ళు, ఒకరోజు నీ విజయం అందరికీ సమాధానం చెబుతుంది!”
-          </p>
-          <p id="mot-sub-tip" class="text-body-sm text-emerald-tint">💡 Focus Tip: 5-4-3-2-1 గ్రౌండింగ్ — మనసు ప్రశాంతంగా ఉంచుకుని లక్ష్యంపై దృష్టి పెట్టు.</p>
-        </div>
-
-        <!-- యూజర్లు / అడ్మిన్ కొత్త మోటివేషన్ కోట్ యాడ్ చేసే ఫామ్ -->
-        <form id="motivation-form" class="flex flex-col gap-1.5">
-          <div class="flex gap-1.5">
-            <input id="mot-input" type="text" placeholder="మీకు నచ్చిన మోటివేషన్ కోట్ రాయండి..." class="flex-1 rounded-sm bg-light-surface-container-low text-light-on-surface border-0 text-body-sm px-2.5 py-1.5">
-            <button type="submit" class="px-3 py-1.5 rounded-full bg-emerald-tint text-on-emerald-tint text-label-sm font-bold shrink-0">+ Add</button>
-          </div>
-          <div id="mot-mini-list" class="flex flex-col gap-1 max-h-20 overflow-y-auto text-body-sm text-emerald-tint/90"></div>
-        </form>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 2A (ఎడమ కార్డ్): LIVE TELUGU FM (3 OPTIONS) & IN-APP YOUTUBE
-           ====================================================================== -->
-      <section id="hero-deck" class="h-full rounded-lg bg-gradient-to-br from-emerald-deep via-royal-emerald to-emerald-deep text-on-emerald-deep p-3.5 shadow-md border border-saffron-gold/30 flex flex-col justify-between gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-saffron-gold/20 border-2 border-saffron-gold flex items-center justify-center font-headline text-title-lg text-saffron-gold">P</div>
-            <div>
-              <h2 class="font-headline text-title-lg text-saffron-gold">Prakash (@hipraka) • Media</h2>
-              <p class="text-label-sm text-emerald-tint">బొడ్డవార • S.Kota • 8985240287</p>
-            </div>
-          </div>
-          <button id="btn-live-gps" type="button" class="px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm flex items-center gap-1">
-            <span class="material-symbols-outlined text-body-sm" aria-hidden="true">share_location</span>
-            <span>GPS</span>
-          </button>
-        </div>
-
-        <!-- 3 లైవ్ తెలుగు FM రేడియో ఆప్షన్స్ -->
-        <div id="fm-box" class="paused rounded-DEFAULT bg-ticker-bg/80 border border-on-emerald-deep/15 p-2.5 flex flex-col gap-2">
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <div class="flex items-end gap-0.5 h-4 w-4 shrink-0" aria-hidden="true">
-                <span class="eq-bar w-1 h-full bg-saffron-gold rounded-full"></span>
-                <span class="eq-bar eq-bar-2 w-1 h-3/4 bg-emerald-tint rounded-full"></span>
-                <span class="eq-bar eq-bar-3 w-1 h-full bg-saffron-gold rounded-full"></span>
-              </div>
-              <div class="min-w-0">
-                <p id="fm-track-title" class="text-label-lg truncate">1. Telugu Love &amp; Melody FM</p>
-                <p id="fm-track-sub" class="text-label-sm text-emerald-tint truncate">3 స్టేషన్లలో నచ్చింది ఎంచుకోండి</p>
-              </div>
-            </div>
-            <button id="fm-play" type="button" class="px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm flex items-center gap-1">
-              <span id="fm-play-icon" class="material-symbols-outlined text-body-md" aria-hidden="true">play_arrow</span>
-              <span id="fm-play-label">Play</span>
-            </button>
-          </div>
-          <div class="grid grid-cols-3 gap-1">
-            <button type="button" class="fm-station-btn py-1 px-1 rounded-sm bg-royal-emerald text-on-royal-emerald text-label-sm border border-saffron-gold" data-idx="0">Love FM</button>
-            <button type="button" class="fm-station-btn py-1 px-1 rounded-sm bg-on-emerald-deep/10 text-emerald-tint text-label-sm" data-idx="1">Tollywood</button>
-            <button type="button" class="fm-station-btn py-1 px-1 rounded-sm bg-on-emerald-deep/10 text-emerald-tint text-label-sm" data-idx="2">Mass Beats</button>
-          </div>
-          <audio id="telugu-fm-audio" preload="none" crossorigin="anonymous"></audio>
-        </div>
-
-        <!-- ఇన్-యాప్ యూట్యూబ్ ప్లేయర్ -->
-        <div class="rounded-DEFAULT bg-on-emerald-deep/10 border border-on-emerald-deep/20 overflow-hidden">
-          <button id="yt-accordion-btn" type="button" aria-expanded="false" class="w-full px-3 py-1.5 flex items-center justify-between text-left">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-headline-md text-saffron-gold" aria-hidden="true">smart_display</span>
-              <span class="text-label-lg">Watch YouTube Videos Here</span>
-            </span>
-            <span id="yt-accordion-chevron" class="material-symbols-outlined text-headline-md text-emerald-tint transition-transform" aria-hidden="true">expand_more</span>
-          </button>
-          <div id="yt-accordion-panel" hidden class="p-2.5 border-t border-on-emerald-deep/15 flex flex-col gap-2 bg-ticker-bg/90">
-            <div class="aspect-video w-full rounded-sm overflow-hidden bg-ticker-bg border border-saffron-gold/40">
-              <iframe id="yt-inline-iframe" class="w-full h-full" src="" title="YouTube Video Player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-0.5">
-              <button type="button" class="yt-vid-btn shrink-0 px-2 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm" data-vid="jfKfPfyJRdk">1. Melody Live</button>
-              <button type="button" class="yt-vid-btn shrink-0 px-2 py-0.5 rounded-full bg-on-emerald-deep/15 text-on-emerald-deep text-label-sm" data-vid="5qap5aO4i9A">2. Araku Vlog</button>
-              <button id="add-yt-vid-btn" type="button" class="shrink-0 px-2 py-0.5 rounded-full bg-emerald-tint text-on-emerald-tint text-label-sm">+ Admin Video</button>
-            </div>
+            <button onclick="contactPrakash('Special Night Supply')" class="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold">Order Now</button>
           </div>
         </div>
       </section>
 
-      <!-- ======================================================================
-           షెల్ఫ్ 2B (కుడి కార్డ్): 6 KM EXPRESS DELIVERY + MOVING 24/7 SERVICES
-           ====================================================================== -->
-      <section id="party-delivery" class="h-full rounded-lg bg-gradient-to-br from-saffron-tint to-light-surface-container-low border border-saffron-gold p-3.5 shadow-sm flex flex-col justify-between gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h2 class="font-headline text-headline-md text-on-saffron-tint">6 KM Food, Party &amp; Night Drop</h2>
-            <p class="text-body-sm text-light-on-surface-muted">చికెన్, బిర్యానీ, కూల్ డ్రింక్స్ &amp; ఎమర్జెన్సీ మెడిసిన్ (₹30+)</p>
+      <!-- 5. RAPIDO-STYLE EASY RIDE BOOKING -->
+      <section id="ride-sec" class="rounded-2xl border border-teal-200 bg-emerald-50/30 p-4 shadow-sm">
+        <h2 class="text-base font-bold text-emerald-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-emerald-600">two_wheeler</span> Rapido-Style Easy Ride Booking</h2>
+        <p class="text-xs text-slate-500 mb-4">బటన్ నొక్కగానే మీ లైవ్ GPS లొకేషన్ డ్రైవర్‌కు అందుతుంది.</p>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="p-3 bg-white rounded-xl border-2 border-emerald-600 text-center shadow-sm">
+            <span class="text-2xl block mb-1">🏍️</span>
+            <p class="text-xs font-bold">Bike ₹5/km</p>
           </div>
-          <button id="post-delivery-btn" type="button" class="shrink-0 px-2.5 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">+ Admin Post</button>
+          <div class="p-3 bg-white rounded-xl border border-slate-200 text-center opacity-70">
+            <span class="text-2xl block mb-1">🛺</span>
+            <p class="text-xs font-bold">Auto</p>
+          </div>
+          <div class="p-3 bg-white rounded-xl border border-slate-200 text-center opacity-70">
+            <span class="text-2xl block mb-1">🚗</span>
+            <p class="text-xs font-bold">Car</p>
+          </div>
         </div>
 
-        <div id="delivery-items-list" class="flex flex-col gap-1.5"></div>
+        <button onclick="sendLiveLocation()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-base font-bold shadow-lg flex items-center justify-center gap-2 transition-all animate-bounce">
+          <span class="material-symbols-outlined">near_me</span> నా లొకేషన్ పంపండి (Send My Live GPS)
+        </button>
+      </section>
 
-        <!-- కదిలే 24/7 సర్వీస్ బార్ (RMP Doctor, Electrician, Mechanic, AC) -->
-        <div class="rounded-DEFAULT bg-light-surface-container-low border border-royal-emerald/30 p-2 flex flex-col gap-1">
-          <div class="flex items-center justify-between">
-            <span class="text-label-sm text-royal-emerald flex items-center gap-1">
-              <span class="material-symbols-outlined text-body-sm text-saffron-gold" aria-hidden="true">medical_services</span>
-              <span>24/7 Local Services (RMP Doctor • Electrician • AC)</span>
-            </span>
-            <button id="post-service-btn" type="button" class="px-2 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">+ Post</button>
+      <!-- 6. ALL RECHARGE + VILLAGE MATHEMATICS CALCULATIONS -->
+      <section id="services-sec" class="rounded-2xl border border-blue-200 bg-white p-4 shadow-sm">
+        <h2 class="text-base font-bold text-blue-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-blue-600">receipt_long</span> Recharges &amp; Village Calculators</h2>
+        <p class="text-xs text-slate-500 mb-4">మొబైల్ రీఛార్జ్ (+₹2 సర్వీస్ ఫీజు) మరియు గ్రామ లెక్కలు.</p>
+
+        <div class="p-4 bg-blue-50 rounded-xl mb-4 border border-blue-100">
+          <h3 class="text-xs font-bold text-blue-900 mb-2 uppercase tracking-wide">📱 Mobile &amp; DTH Recharge (+₹2 Fee)</h3>
+          <div class="flex flex-col gap-2">
+            <input type="text" id="rech-num" placeholder="Mobile / DTH Number" class="text-sm rounded-lg border-blue-200 p-2">
+            <input type="number" id="rech-amt" placeholder="Plan Amount (₹)" class="text-sm rounded-lg border-blue-200 p-2">
+            <button onclick="payRecharge()" class="py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Pay via WhatsApp (+₹2 Fee)</button>
           </div>
-          <div class="overflow-hidden bg-emerald-tint/50 rounded-sm py-1 px-2">
-            <div id="moving-services-strip" class="animate-ticker items-center gap-4 text-label-sm text-royal-emerald">
-              <div class="flex items-center gap-4 whitespace-nowrap">
-                <a href="tel:+918985240287" class="underline">🩺 RMP Doctor (Boddavara/S.Kota): 24/7 Home Visit</a>
-                <span>•</span>
-                <a href="tel:+918985240287" class="underline">⚡ ITI Electrician &amp; House Wiring (₹100+)</a>
-                <span>•</span>
-                <a href="tel:+918985240287" class="underline">🔧 Bike Puncture &amp; AC Repair</a>
-              </div>
-              <div class="flex items-center gap-4 whitespace-nowrap" aria-hidden="true">
-                <a href="tel:+918985240287" class="underline">🩺 RMP Doctor (Boddavara/S.Kota): 24/7 Home Visit</a>
-                <span>•</span>
-                <a href="tel:+918985240287" class="underline">⚡ ITI Electrician &amp; House Wiring (₹100+)</a>
-                <span>•</span>
-                <a href="tel:+918985240287" class="underline">🔧 Bike Puncture &amp; AC Repair</a>
-              </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-700 mb-1">📊 నూటికి వడ్డీ లెక్కింపు (Monthly Interest)</h4>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="number" id="prin" placeholder="అసలు (Principal)" class="text-xs p-1.5 rounded border">
+              <input type="number" id="months" placeholder="నెలలు (Months)" class="text-xs p-1.5 rounded border">
             </div>
+            <button onclick="calcInterest()" class="mt-2 w-full py-1 bg-slate-800 text-white rounded text-xs font-bold">Calculate Interest</button>
+            <p id="interest-res" class="mt-1 text-xs font-bold text-emerald-600"></p>
           </div>
         </div>
       </section>
 
-      <!-- ======================================================================
-           షెల్ఫ్ 3 (పూర్తి వెడల్పు - 3 స్టెప్ కార్డులు): EASY RIDE BOOKING
-           ====================================================================== -->
-      <section id="bike-drop" class="md:col-span-2 rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">Easy 3-Step Ride Booking (Bike ₹5/km • Auto • Car)</h2>
-            <p class="text-body-sm text-light-on-surface-muted">1) వాహనం &amp; KM ఎంచుకోండి → 2) మీ ఊరు &amp; నంబర్ ఇవ్వండి → 3) రైడర్‌కు కాల్ చేయండి</p>
-          </div>
-          <button id="open-rider-reg-btn" type="button" class="shrink-0 px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm">+ Admin Add Rider</button>
-        </div>
+      <!-- 7. TOURISM PACKAGES (2 BIG CARDS WITH POPUP) -->
+      <section id="tourism-sec" class="rounded-2xl border border-purple-200 bg-purple-50/20 p-4 shadow-sm">
+        <h2 class="text-base font-bold text-purple-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-purple-600">landscape</span> Tourism Packages</h2>
+        <p class="text-xs text-slate-500 mb-4">ఏ ప్లేస్ నొక్కినా గ్యాలరీ &amp; పూర్తి వివరాలు కనిపిస్తాయి.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-stretch">
-          <div class="rounded-DEFAULT bg-emerald-tint/45 border border-royal-emerald/20 p-2.5 flex flex-col justify-between gap-1.5">
-            <span class="text-label-sm text-royal-emerald">STEP 1: వాహనం &amp; దూరం (KM)</span>
-            <div class="grid grid-cols-3 gap-1 p-1 rounded-full bg-light-surface-container-low border border-light-outline">
-              <button data-vehicle="bike" data-rate="5" data-base="10" type="button" class="vehicle-tab py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Bike ₹5</button>
-              <button data-vehicle="auto" data-rate="12" data-base="20" type="button" class="vehicle-tab py-1 rounded-full text-light-on-surface-muted text-label-sm">Auto ₹12</button>
-              <button data-vehicle="car" data-rate="18" data-base="50" type="button" class="vehicle-tab py-1 rounded-full text-light-on-surface-muted text-label-sm">Car ₹18</button>
-            </div>
-            <div class="flex items-center justify-between font-mono text-mono-sm">
-              <span>Distance: <strong id="bike-km-label" class="text-royal-emerald">5 km</strong></span>
-              <span>Total Fare: <strong id="bike-fare-badge" class="px-2 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald">₹35</strong></span>
-            </div>
-            <input id="bike-km-range" type="range" min="1" max="40" value="5" class="w-full accent-royal-emerald cursor-pointer">
-            <p class="text-label-sm text-on-emerald-tint">Mediator Fee: <strong id="bike-comm-badge" class="font-mono">₹5</strong> (≤5km: ₹5 | &gt;5km: ₹10)</p>
-          </div>
-
-          <div class="rounded-DEFAULT bg-light-surface-container border border-light-outline p-2.5 flex flex-col justify-between gap-1.5">
-            <span class="text-label-sm text-royal-emerald">STEP 2: మీ పికప్ వివరాలు</span>
-            <input id="cust-location" type="text" placeholder="మీ ఊరు / పికప్ (ఉదా: Boddavara)" class="w-full rounded-sm border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 text-body-sm">
-            <input id="cust-mobile" type="tel" maxlength="10" placeholder="మీ 10-అంకెల మొబైల్ నంబర్" class="w-full rounded-sm border border-light-outline bg-light-surface-container-low px-2.5 py-1.5 font-mono text-mono-sm">
-            <p class="text-body-sm text-light-on-surface-muted">నంబర్ ఇస్తే దగ్గరలోని రైడర్ ఫోన్ నంబర్ వెంటనే కనిపిస్తుంది.</p>
-          </div>
-
-          <div class="rounded-DEFAULT bg-saffron-tint/45 border border-saffron-gold/40 p-2.5 flex flex-col justify-between gap-1.5">
-            <span class="text-label-sm text-on-saffron-tint">STEP 3: రైడ్ కన్ఫర్మ్ చేయండి</span>
-            <button id="unlock-rider-btn" type="button" class="w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-lg flex items-center justify-center gap-1">
-              <span class="material-symbols-outlined text-body-md" aria-hidden="true">lock_open</span>
-              <span>Show Rider Number</span>
-            </button>
-            <button id="mediator-book-btn" type="button" class="w-full py-1.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-lg flex items-center justify-center gap-1">
-              <span class="material-symbols-outlined text-body-md" aria-hidden="true">support_agent</span>
-              <span>Book via Mediator (WhatsApp)</span>
-            </button>
-            <div id="unlocked-rider-box" hidden class="rounded-sm bg-light-surface-container-low border border-success p-2 flex items-center justify-between gap-1">
+        <div class="grid grid-cols-1 gap-4">
+          <div onclick="openTourismPopup('Araku Valley', 'starts ₹1,499', 'బొర్రా గుహలు, కాఫీ తోటలు, చాపరాయి వాటర్ ఫాల్స్.')" class="rounded-xl overflow-hidden shadow border border-purple-100 bg-white cursor-pointer hover:shadow-md transition-all">
+            <div class="h-36 bg-gradient-to-r from-emerald-600 to-teal-500 flex items-end p-3 text-white relative">
+              <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-xs font-bold px-2 py-0.5 rounded">Starts ₹1,499</span>
               <div>
-                <p id="rider-found-name" class="text-label-sm text-success">Raju (Bike • Boddavara)</p>
-                <p id="rider-found-phone" class="font-mono text-mono-sm text-light-on-surface">9848011223</p>
+                <h3 class="text-base font-bold">Araku Valley &amp; Borra Caves</h3>
+                <p class="text-xs text-emerald-100">Tribal Culture &amp; Misty Views</p>
               </div>
-              <a id="rider-call-link" href="tel:+919848011223" class="px-2.5 py-1 rounded-full bg-success text-on-success text-label-sm">Call</a>
+            </div>
+            <div class="p-3 bg-purple-50/50 flex justify-between items-center text-xs font-bold text-purple-900">
+              <span>View Gallery &amp; Book Trip</span> <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </div>
+
+          <div onclick="openTourismPopup('Lambasingi & Vizag', 'starts ₹1,599', 'మంచు కొండలు, కాశ్మీర్ లాంటి వాతావరణం, బీచ్.')" class="rounded-xl overflow-hidden shadow border border-purple-100 bg-white cursor-pointer hover:shadow-md transition-all">
+            <div class="h-36 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-end p-3 text-white relative">
+              <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-xs font-bold px-2 py-0.5 rounded">Starts ₹1,599</span>
+              <div>
+                <h3 class="text-base font-bold">Lambasingi Mist Dawn &amp; Vizag</h3>
+                <p class="text-xs text-blue-100">Cold Climate &amp; Beach Excursion</p>
+              </div>
+            </div>
+            <div class="p-3 bg-purple-50/50 flex justify-between items-center text-xs font-bold text-purple-900">
+              <span>View Gallery &amp; Book Trip</span> <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ======================================================================
-           షెల్ఫ్ 4A (ఎడమ కార్డ్): ALL RECHARGE & BILL SERVICES (+₹2 Fee)
-           ====================================================================== -->
-      <section id="recharge-hub" class="h-full rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">Mobile, DTH &amp; Bill Recharge</h2>
-            <p class="text-body-sm text-light-on-surface-muted">Jio • Airtel • Vi • BSNL • DTH (+₹2 Service Fee)</p>
-          </div>
-          <span class="px-2 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-label-sm">+₹2 Fee</span>
-        </div>
-        <div class="grid grid-cols-2 gap-1.5">
-          <select id="rech-operator" class="rounded-sm border border-light-outline px-2 py-1 text-body-sm">
-            <option value="Jio">Jio Prepaid</option>
-            <option value="Airtel">Airtel</option>
-            <option value="Vi">Vi</option>
-            <option value="BSNL">BSNL</option>
-            <option value="DTH">TataPlay / Sun DTH</option>
-          </select>
-          <input id="rech-number" type="tel" maxlength="12" placeholder="ఫోన్ / DTH నంబర్" class="rounded-sm border border-light-outline px-2 py-1 font-mono text-mono-sm">
-          <input id="rech-amount" type="number" placeholder="ప్లాన్ ₹ (ఉదా: 299)" class="rounded-sm border border-light-outline px-2 py-1 font-mono text-mono-sm">
-          <button id="rech-submit-btn" type="button" class="py-1 px-2 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Pay (+₹2 Fee)</button>
-        </div>
-        <p id="rech-summary-text" class="font-mono text-mono-sm text-royal-emerald">ప్లాన్ అమౌంట్ ఎంటర్ చేస్తే +₹2 సర్వీస్ ఛార్జ్ తో మొత్తం కనిపిస్తుంది.</p>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 4B (కుడి కార్డ్): ASK PRAKASH • USER QUERIES BOARD
-           ====================================================================== -->
-      <section id="queries-hub" class="h-full rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">Ask Prakash • మీ ప్రశ్న / అవసరం</h2>
-            <p class="text-body-sm text-light-on-surface-muted">ఏదైనా సందేహం, ఊరి సమస్య లేదా స్పెషల్ ఆర్డర్ ఇక్కడ రాయండి</p>
-          </div>
-          <span class="material-symbols-outlined text-headline-md text-saffron-gold" aria-hidden="true">help</span>
-        </div>
-        <form id="query-form" class="flex flex-col gap-1.5">
-          <div class="grid grid-cols-2 gap-1.5">
-            <input id="q-name" type="text" required placeholder="మీ పేరు &amp; ఊరు" class="rounded-sm border border-light-outline px-2 py-1 text-body-sm">
-            <input id="q-phone" type="tel" maxlength="10" placeholder="ఫోన్ నంబర్ (Optional)" class="rounded-sm border border-light-outline px-2 py-1 font-mono text-mono-sm">
-          </div>
-          <div class="flex gap-1.5">
-            <input id="q-text" type="text" required placeholder="మీ ప్రశ్న లేదా అవసరం రాయండి..." class="flex-1 rounded-sm border border-light-outline px-2 py-1 text-body-sm">
-            <button type="submit" class="px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Send</button>
-          </div>
-        </form>
-        <div id="queries-feed" class="flex flex-col gap-1 max-h-20 overflow-y-auto text-body-sm"></div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 5 (పూర్తి వెడల్పు): OLX BUY/SELL + FLIPKART-STYLE BOOKS HUB
-           ====================================================================== -->
-      <section id="olx-business" class="md:col-span-2 rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">OLX Buy/Sell &amp; Flipkart-Style Books Hub</h2>
-            <p class="text-body-sm text-light-on-surface-muted">అమ్మిన తర్వాత కమిషన్ • Admin గడువు తేదీ &amp; Sold/Delete కంట్రోల్</p>
-          </div>
-          <button id="open-olx-post-btn" type="button" class="shrink-0 px-2.5 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">+ Admin Post Item</button>
-        </div>
-        <div id="olx-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2"></div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 6 (పూర్తి వెడల్పు): TOURISM PACKAGES & 5+ PHOTO GALLERY
-           ====================================================================== -->
-      <section id="marketplace" class="md:col-span-2 rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col gap-2.5">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">Tourism Packages &amp; Photo Gallery</h2>
-            <p class="text-body-sm text-light-on-surface-muted">ఏ ప్లేస్ నొక్కినా పాప్-అప్ గ్యాలరీ ఓపెన్ అవుతుంది (Admin Live Photo/Video పోస్ట్ చేయవచ్చు)</p>
-          </div>
-          <button id="post-tour-media-btn" type="button" class="px-2.5 py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm">+ Admin Media</button>
-        </div>
-        <div id="tourism-cards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 7A (ఎడమ కార్డ్): DUAL GAMES (KIDS + ADULTS) & GK/MATHS
-           ====================================================================== -->
-      <section id="games-study" class="h-full rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
-        <div class="flex items-center justify-between">
-          <h2 class="font-headline text-headline-md text-royal-emerald">Games (Kids &amp; Adults) &amp; Study</h2>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-tint text-on-emerald-tint text-label-sm">4 Modes</span>
-        </div>
-
-        <div class="grid grid-cols-4 gap-1 p-1 rounded-full bg-light-surface-container">
-          <button type="button" class="study-tab py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm" data-stab="gk">GK</button>
-          <button type="button" class="study-tab py-1 rounded-full text-light-on-surface-muted text-label-sm" data-stab="maths">Maths</button>
-          <button type="button" class="study-tab py-1 rounded-full text-light-on-surface-muted text-label-sm" data-stab="kids">Kids Game</button>
-          <button type="button" class="study-tab py-1 rounded-full text-light-on-surface-muted text-label-sm" data-stab="puzzle">Adult Puzzle</button>
-        </div>
-
-        <div id="stab-panel-quiz" class="rounded-DEFAULT bg-emerald-tint/45 border border-royal-emerald/20 p-2.5 flex flex-col gap-1.5">
-          <div class="flex items-center justify-between">
-            <span id="quiz-category-badge" class="text-label-sm text-royal-emerald">LIVE CURRENT AFFAIRS</span>
-            <button id="next-quiz-btn" type="button" class="px-2 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Next</button>
-          </div>
-          <p id="quiz-q-text" class="text-title-md text-light-on-surface"></p>
-          <div id="quiz-options-grid" class="grid grid-cols-2 gap-1"></div>
-          <p id="quiz-feedback" class="text-label-sm"></p>
-        </div>
-
-        <div id="stab-panel-kids" hidden class="rounded-DEFAULT bg-rose-tint/45 border border-rose-pink/30 p-2.5 flex flex-col items-center gap-1.5">
-          <div class="w-full flex items-center justify-between">
-            <span class="text-label-sm text-on-rose-tint">Kids Game: జతలను కలపండి</span>
-            <button id="reset-kids-btn" type="button" class="px-2 py-0.5 rounded-full bg-rose-pink text-on-rose-pink text-label-sm">Restart</button>
-          </div>
-          <div id="kids-board" class="grid grid-cols-4 gap-1 w-full max-w-xs"></div>
-          <p id="kids-status" class="text-label-sm text-rose-pink">Matches: 0 / 6</p>
-        </div>
-
-        <div id="stab-panel-puzzle" hidden class="rounded-DEFAULT bg-saffron-tint/50 border border-saffron-gold p-2.5 flex flex-col items-center gap-1.5">
-          <div class="w-full flex items-center justify-between">
-            <span class="text-label-sm text-on-saffron-tint">Adult Game: 1–8 వరుసలో అమర్చండి</span>
-            <button id="shuffle-puzzle-btn" type="button" class="px-2 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm">New Game</button>
-          </div>
-          <div id="puzzle-board" class="grid grid-cols-3 gap-1 w-40 h-40 bg-ticker-bg p-1 rounded-DEFAULT"></div>
-          <p id="puzzle-status" class="text-label-sm text-royal-emerald">Moves: 0</p>
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 7B (కుడి కార్డ్): LIVE TELUGU NEWS, APSRTC BUS & EXAM RESULTS
-           ====================================================================== -->
-      <section id="news-bus" class="h-full rounded-lg bg-light-surface-container-low border border-light-outline p-3.5 shadow-sm flex flex-col justify-between gap-2">
-        <div class="flex flex-col gap-1">
-          <div class="flex items-center justify-between">
-            <h2 class="font-headline text-headline-md text-royal-emerald">Telugu News, Bus &amp; Results</h2>
-            <button id="refresh-news-btn" type="button" class="px-2 py-0.5 rounded-full bg-error text-on-error text-label-sm">Refresh</button>
-          </div>
-          <div id="live-news-list" class="max-h-28 overflow-y-auto flex flex-col gap-1 text-body-sm"></div>
-        </div>
-
-        <div class="flex flex-col gap-1.5">
-          <div class="font-mono text-mono-sm flex flex-col gap-1">
-            <div class="flex justify-between p-1 bg-light-surface-container rounded-sm"><span>S.Kota → Vizag</span><span>06:30 AM</span></div>
-            <div class="flex justify-between p-1 bg-light-surface-container rounded-sm"><span>Boddavara → S.Kota</span><span>08:00 AM</span></div>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 pt-1">
-            <a href="https://apsrtclivetrack.com/" target="_blank" rel="noopener noreferrer" class="py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm text-center">APSRTC Live GPS</a>
-            <a href="https://bieap.apcfss.in/" target="_blank" rel="noopener noreferrer" class="py-1 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm text-center">Inter / Degree Results</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================================================================
-           షెల్ఫ్ 8 (చివరిలో - పూర్తి వెడల్పు): LOCAL JOBS & CAREER HUB
-           ====================================================================== -->
-      <section id="jobs-hub" class="md:col-span-2 rounded-lg bg-light-surface-container-low border-2 border-royal-emerald/40 p-3.5 shadow-md flex flex-col gap-2.5">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h2 class="font-headline text-headline-md text-royal-emerald">Local Jobs &amp; Career Hub (S.Kota • Kiltampalem • VZM • Vizag)</h2>
-            <p class="text-body-sm text-light-on-surface-muted">గడువు ముగిసిన జాబ్స్ ఆటోమేటిక్‌గా తొలగించబడతాయి • Online Apply అందుబాటులో ఉంది</p>
-          </div>
-          <button id="open-job-post-btn" type="button" class="shrink-0 px-3 py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">🔒 Admin Post Job</button>
-        </div>
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <a href="https://www.ncs.gov.in/" target="_blank" rel="noopener noreferrer" class="shrink-0 px-2.5 py-1 rounded-full bg-saffron-tint text-on-saffron-tint text-label-sm">Govt/Private Online Apply (NCS)</a>
-          <a href="https://apssdc.in/" target="_blank" rel="noopener noreferrer" class="shrink-0 px-2.5 py-1 rounded-full bg-emerald-tint text-on-emerald-tint text-label-sm">AP Skill Jobs Apply</a>
-        </div>
-        <div id="jobs-list-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+      <!-- 8. LOCAL JOBS HUB -->
+      <section id="jobs-sec" class="rounded-2xl border border-teal-200 bg-teal-50/20 p-4 shadow-sm">
+        <h2 class="text-base font-bold text-teal-900 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-teal-600">work</span> Local Jobs &amp; Career Hub</h2>
+        <p class="text-xs text-slate-500 mb-3">S.Kota • Kiltampalem • VZM • Vizag లోని తాజా ఉద్యోగ అవకాశాలు.</p>
+        <div id="jobs-list" class="flex flex-col gap-2"></div>
       </section>
     </main>
 
-    <!-- బాటమ్ నావిగేషన్ డాక్ -->
-    <nav aria-label="Quick navigation" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-md rounded-full bg-emerald-deep/95 backdrop-blur-md text-on-emerald-deep border border-saffron-gold/30 px-3 py-1.5 shadow-xl flex items-center justify-around">
-      <a href="#whisper-wall" class="flex flex-col items-center text-rose-tint"><span class="material-symbols-outlined text-headline-md" aria-hidden="true">favorite</span><span class="text-label-sm">Love</span></a>
-      <a href="#motivation-hub" class="flex flex-col items-center text-saffron-gold"><span class="material-symbols-outlined text-headline-md" aria-hidden="true">bolt</span><span class="text-label-sm">Focus</span></a>
-      <a href="#bike-drop" class="flex flex-col items-center text-on-emerald-deep"><span class="material-symbols-outlined text-headline-md" aria-hidden="true">two_wheeler</span><span class="text-label-sm">Bike ₹5</span></a>
-      <a href="#games-study" class="flex flex-col items-center text-on-emerald-deep"><span class="material-symbols-outlined text-headline-md" aria-hidden="true">extension</span><span class="text-label-sm">Games</span></a>
-      <a href="#jobs-hub" class="flex flex-col items-center text-emerald-tint"><span class="material-symbols-outlined text-headline-md" aria-hidden="true">work</span><span class="text-label-sm">Jobs</span></a>
-    </nav>
-
-    <!-- మోడల్స్ -->
-    <dialog id="tourism-modal" class="w-[calc(100%-24px)] max-w-md rounded-lg bg-light-surface-container-low text-light-on-surface border border-light-outline p-0 shadow-2xl backdrop:bg-emerald-deep/80">
-      <header class="flex items-center justify-between p-3.5 border-b border-light-outline">
-        <div>
-          <h2 id="tmodal-title" class="font-headline text-title-lg text-royal-emerald">Tourism Gallery</h2>
-          <p id="tmodal-sub" class="text-body-sm text-light-on-surface-muted">Rate &amp; Live Media</p>
+    <!-- TOURISM POPUP MODAL -->
+    <div id="tour-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-4 relative shadow-2xl animate-fadeIn">
+        <button onclick="closeTourismPopup()" class="absolute top-3 right-3 p-1 rounded-full bg-slate-100"><span class="material-symbols-outlined">close</span></button>
+        <h3 id="modal-title" class="text-lg font-bold text-purple-900 mb-1"></h3>
+        <p id="modal-price" class="text-xs font-bold text-amber-600 mb-3"></p>
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <div class="h-20 bg-slate-200 rounded-lg overflow-hidden flex items-center justify-center text-xs text-slate-400">Live Media</div>
+          <div class="h-20 bg-slate-200 rounded-lg overflow-hidden flex items-center justify-center text-xs text-slate-400">Photo Gallery</div>
         </div>
-        <button type="button" onclick="document.getElementById('tourism-modal').close()" aria-label="Close" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-title-lg">close</span></button>
-      </header>
-      <div class="p-3.5 flex flex-col gap-2.5">
-        <div id="tmodal-gallery" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
-        <p id="tmodal-desc" class="text-body-sm bg-emerald-tint/45 p-2 rounded-DEFAULT text-royal-emerald"></p>
-        <div class="grid grid-cols-2 gap-1.5">
-          <input id="tmodal-cust-name" type="text" placeholder="మీ పేరు" class="rounded-sm border border-light-outline px-2.5 py-1 text-body-sm">
-          <button id="tmodal-book-btn" type="button" class="py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Book on WhatsApp</button>
-        </div>
+        <p id="modal-desc" class="text-xs text-slate-600 mb-4"></p>
+        <button onclick="bookTourismIntent()" class="w-full py-2.5 bg-purple-600 text-white rounded-xl text-sm font-bold shadow">Book Trip via WhatsApp</button>
       </div>
-    </dialog>
-
-    <dialog id="admin-post-modal" class="w-[calc(100%-24px)] max-w-md rounded-lg bg-light-surface-container-low text-light-on-surface border border-light-outline p-3.5 shadow-2xl backdrop:bg-emerald-deep/80">
-      <header class="flex items-center justify-between mb-2.5">
-        <h2 id="ap-modal-title" class="font-headline text-title-lg text-royal-emerald">Admin Post</h2>
-        <button type="button" onclick="document.getElementById('admin-post-modal').close()" aria-label="Close" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-title-lg">close</span></button>
-      </header>
-      <form id="admin-post-form" class="flex flex-col gap-2">
-        <input id="ap-pin" type="password" required placeholder="Admin Password (1430)" class="rounded-sm border border-saffron-gold bg-saffron-tint/30 px-2.5 py-1 font-mono text-mono-sm">
-        <input id="ap-field-1" type="text" required placeholder="పేరు / టైటిల్" class="rounded-sm border border-light-outline px-2.5 py-1 text-body-sm">
-        <input id="ap-field-2" type="text" required placeholder="ధర / జీతం / వివరాలు" class="rounded-sm border border-light-outline px-2.5 py-1 text-body-sm">
-        <input id="ap-field-3" type="text" required placeholder="ఏరియా (S.Kota / Boddavara)" class="rounded-sm border border-light-outline px-2.5 py-1 text-body-sm">
-        <label class="text-label-sm text-light-on-surface-muted">గడువు తేదీ (Expiry Date):</label>
-        <input id="ap-expiry" type="date" required class="rounded-sm border border-light-outline px-2.5 py-1 font-mono text-mono-sm">
-        <button type="submit" class="w-full py-1.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-lg">Verify &amp; Publish</button>
-      </form>
-    </dialog>
-
-    <dialog id="nav-drawer" class="w-72 m-0 min-h-screen rounded-r-lg bg-light-surface p-4 shadow-2xl backdrop:bg-emerald-deep/60">
-      <header class="flex items-center justify-between mb-3">
-        <h2 class="font-headline text-title-lg text-royal-emerald">Mana Seva Menu</h2>
-        <button id="close-drawer-btn" type="button" aria-label="Close" class="w-8 h-8 rounded-full bg-light-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-title-lg">close</span></button>
-      </header>
-      <nav class="flex flex-col gap-1 text-body-md">
-        <a href="#whisper-wall" class="drawer-link p-2 rounded-sm hover:bg-rose-tint">❤️ 100% Secret Love Wall</a>
-        <a href="#motivation-hub" class="drawer-link p-2 rounded-sm hover:bg-saffron-tint">⚡ Daily Motivation &amp; Focus Rules</a>
-        <a href="#hero-deck" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">📻 Live FM &amp; YouTube Videos</a>
-        <a href="#party-delivery" class="drawer-link p-2 rounded-sm hover:bg-saffron-tint">🍗 6KM Party &amp; Emergency Drop</a>
-        <a href="#bike-drop" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">🏍️ Easy 3-Step Bike ₹5/km Ride</a>
-        <a href="#recharge-hub" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">📱 All Mobile/DTH Recharge (+₹2)</a>
-        <a href="#queries-hub" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">💬 Ask Prakash (Queries)</a>
-        <a href="#olx-business" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">📚 OLX &amp; Flipkart Books Hub</a>
-        <a href="#marketplace" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">🏞️ Tourism Gallery &amp; Live Media</a>
-        <a href="#games-study" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">🧩 Kids &amp; Adult Games + GK</a>
-        <a href="#jobs-hub" class="drawer-link p-2 rounded-sm hover:bg-emerald-tint">💼 Local Jobs &amp; Career Hub</a>
-      </nav>
-    </dialog>
-
-    <div id="app-toast" hidden class="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-1.5 rounded-full bg-emerald-deep text-on-emerald-deep border border-saffron-gold shadow-lg text-label-sm whitespace-nowrap"></div>
+    </div>
   </div>
 
-  <!-- ==========================================================================
-       COMPLETE JAVASCRIPT ENGINE (తెలుగు కామెంట్లతో — జీరో-ఎర్రర్)
-       ========================================================================== -->
   <script>
-    (function () {
-      /* 1. అడ్మిన్ సెట్టింగ్స్ */
-      const OWNER_PHONE = "918985240287"; // మీ వాట్సాప్ నంబర్
-      const ADMIN_PIN = "1430";           // మీ సీక్రెట్ అడ్మిన్ పాస్‌వర్డ్
-      let isAdminUnlocked = false;
+    const OWNER_PHONE = "918985240287";
+    let isAdminUnlocked = true;
 
-      /* సేఫ్ స్టోరేజ్ హెల్పర్ (ఎర్రర్ లేకుండా డేటా సేవ్ చేయడానికి) */
-      const memStore = {};
-      function getStore(key, fallback) {
-        try {
-          const val = localStorage.getItem(key);
-          return val ? JSON.parse(val) : fallback;
-        } catch (e) {
-          return memStore[key] || fallback;
-        }
+    document.getElementById('admin-master-toggle').addEventListener('click', () => {
+      isAdminUnlocked = !isAdminUnlocked;
+      const btnText = document.getElementById('admin-btn-text');
+      btnText.textContent = isAdminUnlocked ? 'Admin ON' : 'Admin Locked';
+      alert(isAdminUnlocked ? 'Admin మోడ్ ఆన్ చేయబడింది.' : 'అడ్మిన్ లాక్ చేయబడింది.');
+    });
+
+    function playFM(url, btn) {
+      const audio = document.getElementById('fm-audio');
+      audio.src = url;
+      audio.play().catch(() => alert('క్లిక్ చేసి ప్లే చేయండి'));
+      document.getElementById('fm-status').textContent = 'Live Playing...';
+    }
+
+    // 1-Min Vanishing Chat Logic
+    let loveMessages = [];
+    function postLoveMessage() {
+      const input = document.getElementById('love-input');
+      if(!input.value.trim()) return;
+      const msgObj = { text: input.value, id: Date.now() };
+      loveMessages.unshift(msgObj);
+      input.value = '';
+      renderLoveFeed();
+      // Auto delete after 60 seconds
+      setTimeout(() => {
+        loveMessages = loveMessages.filter(m => m.id !== msgObj.id);
+        renderLoveFeed();
+      }, 60000);
+    }
+
+    function renderLoveFeed() {
+      const container = document.getElementById('love-feed');
+      container.innerHTML = loveMessages.map(m => `
+        <div class="p-2 bg-white rounded-lg border border-rose-200 text-xs text-slate-800 flex justify-between items-center shadow-sm animate-fadeIn">
+          <span>${m.text}</span>
+          <span class="text-[10px] text-rose-500 font-bold bg-rose-100 px-1.5 py-0.5 rounded">60s Live</span>
+        </div>
+      `).join('');
+    }
+
+    // Secret Night Vault PIN Logic
+    function verifyVaultPin() {
+      const pin = document.getElementById('vault-pin-input').value;
+      const lockBadge = document.getElementById('vault-lock-badge');
+      if (pin === "9999") { // రహస్య పాస్‌వర్డ్
+        document.getElementById('vault-protected-content').classList.remove('hidden');
+        document.getElementById('vault-pin-box').classList.add('hidden');
+        lockBadge.innerHTML = '<span class="material-symbols-outlined text-xs">lock_open</span> Unlocked';
+        alert('రహస్య విభాగం తెరవబడింది.');
+      } else {
+        alert('తప్పు PIN కోడ్!');
       }
-      function setStore(key, val) {
-        memStore[key] = val;
-        try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    }
+
+    function sendLiveLocation() {
+      if(!navigator.geolocation) return alert('GPS సపోర్ట్ లేదు');
+      navigator.geolocation.getCurrentPosition(pos => {
+        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent("Hi Prakash, నా లైవ్ GPS లొకేషన్:\n" + url)}`, '_blank');
+      }, () => alert('ఫోన్లో Location ఆన్ చేయండి'));
+    }
+
+    function calcInterest() {
+      const p = document.getElementById('prin').value;
+      const m = document.getElementById('months').value;
+      if(p && m) {
+        const res = (p * 2 * m) / 100;
+        document.getElementById('interest-res').textContent = `మొత్తం వడ్డీ: ₹${res}`;
       }
+    }
 
-      const toastEl = document.getElementById('app-toast');
-      let toastTimer;
-      function showToast(msg) {
-        toastEl.textContent = msg;
-        toastEl.hidden = false;
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
+    let activeTour = {};
+    function openTourismPopup(title, price, desc) {
+      activeTour = {title, price, desc};
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-price').textContent = price;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('tour-modal').classList.remove('hidden');
+    }
+
+    function closeTourismPopup() {
+      document.getElementById('tour-modal').classList.add('hidden');
+    }
+
+    function bookTourismIntent() {
+      window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Tourism Booking Intent: ${activeTour.title} (${activeTour.price})`)}`, '_blank');
+    }
+
+    function payRecharge() {
+      const num = document.getElementById('rech-num').value;
+      const amt = document.getElementById('rech-amt').value;
+      if(num && amt) {
+        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Recharge Request:\nNumber: ${num}\nAmount: ₹${amt} + ₹2 Fee`)}`, '_blank');
       }
+    }
 
-      function filterExpired(items) {
-        const today = new Date().toISOString().split('T')[0];
-        return items.filter(item => !item.expiry || item.expiry >= today);
-      }
-
-      /* స్క్రీన్ జూమ్ టోగుల్ */
-      const appRoot = document.getElementById('app-root');
-      const zoomIcon = document.getElementById('zoom-icon');
-      let zoomedOut = false;
-      document.getElementById('btn-zoom-toggle').addEventListener('click', () => {
-        zoomedOut = !zoomedOut;
-        appRoot.classList.toggle('md:max-w-5xl', !zoomedOut);
-        appRoot.classList.toggle('max-w-full', zoomedOut);
-        zoomIcon.textContent = zoomedOut ? 'zoom_out' : 'zoom_in';
-        showToast(zoomedOut ? 'Full Screen Fit View' : 'Mini Computer Grid View');
-      });
-
-      /* అడ్మిన్ లాక్/అన్‌లాక్ */
-      document.getElementById('admin-toggle-btn').addEventListener('click', () => {
-        if (isAdminUnlocked) {
-          isAdminUnlocked = false;
-          document.getElementById('admin-lock-icon').textContent = 'lock';
-          document.getElementById('admin-status-text').textContent = 'Admin';
-          renderAllDynamicLists();
-          showToast('Admin Mode Locked');
-        } else {
-          const entered = prompt('మీ Admin Password ఎంటర్ చేయండి:');
-          if (entered === ADMIN_PIN) {
-            isAdminUnlocked = true;
-            document.getElementById('admin-lock-icon').textContent = 'lock_open';
-            document.getElementById('admin-status-text').textContent = 'Admin ON';
-            renderAllDynamicLists();
-            showToast('Admin ON! ఇప్పుడు మీరు Post & Delete చేయవచ్చు.');
-          } else if (entered !== null) showToast('తప్పు పాస్‌వర్డ్!');
-        }
-      });
-
-      /* డ్రాయర్ & GPS */
-      const drawer = document.getElementById('nav-drawer');
-      document.getElementById('open-drawer-btn').addEventListener('click', () => drawer.showModal());
-      document.getElementById('close-drawer-btn').addEventListener('click', () => drawer.close());
-      document.querySelectorAll('.drawer-link').forEach(a => a.addEventListener('click', () => drawer.close()));
-      document.getElementById('btn-live-gps').addEventListener('click', () => {
-        if (!navigator.geolocation) return showToast('GPS సపోర్ట్ లేదు');
-        navigator.geolocation.getCurrentPosition(pos => {
-          const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent("Hi Prakash, నా లైవ్ GPS లొకేషన్:\n" + url)}`, '_blank');
-        }, () => showToast('ఫోన్లో Location ఆన్ చేయండి'));
-      });
-
-      /* 2. 100% SECRET LOVE WALL (Left Card) */
-      const DEFAULT_WHISPERS = [
-        { loc: 'Boddavara Bus Stop', pin: '1430', text: 'ప్రతిరోజూ ఉదయం 7:30 బొడ్డవార బస్సులో నువ్వు నవ్వుతూ కనిపిస్తే ఆ రోజంతా నాకు పండగే!' },
-        { loc: 'Thatipudi Dam', pin: '', text: '“నువ్వు నవ్వితే తాటిపూడి జలాశయం కంటే అందంగా ఉంటుంది — Happy Day!”' }
-      ];
-      function renderWhispers() {
-        const list = getStore('msh_whispers_v4', DEFAULT_WHISPERS);
-        document.getElementById('whisper-count-badge').textContent = list.length + ' Live';
-        const feed = document.getElementById('whisper-feed');
-        feed.innerHTML = '';
-        list.forEach((w, idx) => {
-          const art = document.createElement('article');
-          art.className = 'rounded-sm bg-light-surface-container-low text-light-on-surface p-2 flex flex-col gap-1';
-          const delBtn = isAdminUnlocked ? `<button type="button" onclick="deleteWhisper(${idx})" class="text-label-sm text-error underline">Delete</button>` : '';
-          if (w.pin) {
-            art.innerHTML = `<div class="flex justify-between text-label-sm text-rose-pink"><span>🔒 Secret • ${w.loc}</span>${delBtn}</div><p class="w-body text-body-sm text-light-on-surface-muted blur-sm select-none">PIN తో లాక్ చేయబడింది...</p><div class="w-row flex gap-1 pt-0.5"><input type="password" maxlength="6" placeholder="PIN (1430)" class="w-in w-24 rounded-full border border-rose-pink/30 px-2 py-0.5 font-mono text-mono-sm"><button type="button" class="w-btn px-2.5 py-0.5 rounded-full bg-rose-pink text-on-rose-pink text-label-sm">Unlock</button></div>`;
-            art.querySelector('.w-btn').onclick = () => {
-              if (art.querySelector('.w-in').value === w.pin) {
-                const b = art.querySelector('.w-body');
-                b.textContent = w.text;
-                b.classList.remove('blur-sm', 'select-none', 'text-light-on-surface-muted');
-                b.classList.add('text-rose-pink', 'font-bold');
-                art.querySelector('.w-row').remove();
-              } else showToast('తప్పు PIN కోడ్!');
-            };
-          } else {
-            art.innerHTML = `<div class="flex justify-between text-label-sm text-rose-pink"><span>❤️ Clue • ${w.loc}</span>${delBtn}</div><p class="text-body-sm">${w.text}</p>`;
-          }
-          feed.appendChild(art);
-        });
-      }
-      window.deleteWhisper = function (idx) {
-        const list = getStore('msh_whispers_v4', DEFAULT_WHISPERS);
-        list.splice(idx, 1); setStore('msh_whispers_v4', list); renderWhispers();
-      };
-      document.getElementById('whisper-form').addEventListener('submit', e => {
-        e.preventDefault();
-        const text = document.getElementById('whisper-text').value.trim();
-        const loc = document.getElementById('whisper-location').value.trim() || 'S.Kota';
-        const pin = document.getElementById('whisper-pin').value.trim();
-        if (!text) return showToast('మెసేజ్ రాయండి!');
-        const list = getStore('msh_whispers_v4', DEFAULT_WHISPERS);
-        list.unshift({ loc, pin, text }); setStore('msh_whispers_v4', list); renderWhispers();
-        e.target.reset(); showToast('100% Secret Love పోస్ట్ అయింది!');
-      });
-
-      /* 2B. DAILY MOTIVATION & FOCUS RULES (Right Card — Side-by-Side Fit) */
-      const DEFAULT_MOTIVATION = [
-        { tag: 'MINDSET RULE #1', quote: '“నీ కష్టాన్ని ఎవరూ చూడకపోయినా పర్లేదు — ప్రతిరోజూ 1% మెరుగవుతూ వెళ్ళు, ఒకరోజు నీ విజయం అందరికీ సమాధానం చెబుతుంది!”', tip: '💡 Focus Tip: 5-4-3-2-1 గ్రౌండింగ్ — మనసు ప్రశాంతంగా ఉంచుకుని లక్ష్యంపై దృష్టి పెట్టు.' },
-        { tag: 'DISCIPLINE • FOCUS', quote: '“నిన్నటి కంటే ఈరోజు ఒక్క అడుగు ముందుకు వేయడమే నిజమైన గెలుపు. సమయాన్ని వృథా చేయకు!”', tip: '⚡ Action Rule: ముందు కష్టమైన పనిని పూర్తి చెయ్ — మిగతా రోజంతా సులభం అవుతుంది.' },
-        { tag: 'SELF-BELIEF', quote: '“సముద్రం అంత కష్టం ఎదురైనా, నీ ఆత్మవిశ్వాసం అనే ఓడ మునగనంత వరకు నువ్వు ఓడిపోవు!”', tip: '🔥 Daily Habit: రోజుకు 3 లీటర్ల నీరు తాగు, ఆరోగ్యంగా & ఉత్సాహంగా ఉండు.' }
-      ];
-      let motIdx = 0;
-      function renderMotivation() {
-        const list = getStore('msh_motivation_v4', DEFAULT_MOTIVATION);
-        const current = list[motIdx % list.length];
-        document.getElementById('mot-tag').textContent = current.tag;
-        document.getElementById('mot-quote-text').textContent = current.quote;
-        document.getElementById('mot-sub-tip').textContent = current.tip;
-
-        const mini = document.getElementById('mot-mini-list');
-        mini.innerHTML = list.map((m, idx) => `
-          <div class="flex items-center justify-between gap-1 bg-on-emerald-deep/10 px-2 py-0.5 rounded-sm">
-            <span class="truncate">${m.quote}</span>
-            ${isAdminUnlocked && idx >= 3 ? `<button type="button" onclick="deleteMotivation(${idx})" class="text-saffron-gold underline shrink-0">Del</button>` : ''}
-          </div>
-        `).join('');
-      }
-      window.deleteMotivation = function (idx) {
-        const list = getStore('msh_motivation_v4', DEFAULT_MOTIVATION);
-        list.splice(idx, 1); setStore('msh_motivation_v4', list); renderMotivation();
-      };
-      document.getElementById('next-quote-btn').addEventListener('click', () => {
-        motIdx++; renderMotivation();
-      });
-      document.getElementById('motivation-form').addEventListener('submit', e => {
-        e.preventDefault();
-        const val = document.getElementById('mot-input').value.trim();
-        if (!val) return;
-        const list = getStore('msh_motivation_v4', DEFAULT_MOTIVATION);
-        list.unshift({ tag: 'COMMUNITY MOTIVATION', quote: `“${val}”`, tip: '🌟 Shared on Mana Seva Motivation Board' });
-        setStore('msh_motivation_v4', list);
-        motIdx = 0; renderMotivation(); e.target.reset();
-        showToast('మోటివేషన్ కోట్ యాడ్ అయింది!');
-      });
-
-      /* 3. LIVE TELUGU FM & IN-APP YOUTUBE */
-      const fmStations = [
-        { title: '1. Telugu Love & Melody FM', url: 'https://stream.zeno.fm/0r0xa792kwzuv' },
-        { title: '2. Tollywood Cinema Hits FM', url: 'https://stream.zeno.fm/4d272295908tv' },
-        { title: '3. Telugu Mass & Folk Beats', url: 'https://stream.zeno.fm/f3wvbbqmdg8uv' }
-      ];
-      let currentFmIdx = 0, isFmPlaying = false;
-      const fmAudio = document.getElementById('telugu-fm-audio');
-      const fmBox = document.getElementById('fm-box');
-      function playStation(idx) {
-        currentFmIdx = idx;
-        document.getElementById('fm-track-title').textContent = fmStations[idx].title;
-        document.querySelectorAll('.fm-station-btn').forEach((b, i) => {
-          b.classList.toggle('bg-royal-emerald', i === idx);
-          b.classList.toggle('text-on-royal-emerald', i === idx);
-          b.classList.toggle('border', i === idx);
-          b.classList.toggle('border-saffron-gold', i === idx);
-        });
-        fmAudio.src = fmStations[idx].url;
-        fmAudio.play().then(() => {
-          isFmPlaying = true; fmBox.classList.remove('paused');
-          document.getElementById('fm-play-icon').textContent = 'pause';
-          document.getElementById('fm-play-label').textContent = 'Pause';
-          document.getElementById('fm-track-sub').textContent = 'Live Streaming Now...';
-        }).catch(() => showToast('నెట్ స్లోగా ఉంది — కింద YouTube వీడియోలు చూడండి'));
-      }
-      document.querySelectorAll('.fm-station-btn').forEach(btn => btn.addEventListener('click', () => playStation(Number(btn.dataset.idx))));
-      document.getElementById('fm-play').addEventListener('click', () => {
-        if (isFmPlaying) {
-          fmAudio.pause(); isFmPlaying = false; fmBox.classList.add('paused');
-          document.getElementById('fm-play-icon').textContent = 'play_arrow';
-          document.getElementById('fm-play-label').textContent = 'Play';
-        } else playStation(currentFmIdx);
-      });
-      const ytBtn = document.getElementById('yt-accordion-btn');
-      const ytPanel = document.getElementById('yt-accordion-panel');
-      const ytIframe = document.getElementById('yt-inline-iframe');
-      ytBtn.addEventListener('click', () => {
-        const open = ytBtn.getAttribute('aria-expanded') === 'true';
-        ytBtn.setAttribute('aria-expanded', String(!open));
-        ytPanel.hidden = open;
-        document.getElementById('yt-accordion-chevron').style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
-        if (!open && !ytIframe.src) ytIframe.src = 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1';
-      });
-      document.querySelectorAll('.yt-vid-btn').forEach(btn => {
-        btn.addEventListener('click', () => { ytIframe.src = `https://www.youtube.com/embed/${btn.dataset.vid}?autoplay=1`; });
-      });
-      document.getElementById('add-yt-vid-btn').addEventListener('click', () => {
-        if (prompt('Admin Password కొట్టండి:') !== ADMIN_PIN) return showToast('Admin Password తప్పు!');
-        const vidId = prompt('YouTube Video ID ఇవ్వండి:');
-        if (vidId) ytIframe.src = `https://www.youtube.com/embed/${vidId.trim()}?autoplay=1`;
-      });
-
-      /* 4. 6 KM DELIVERY */
-      const DEFAULT_DELIVERY = [
-        { title: 'Chicken Dum Biryani / Fry', price: '₹150 + ₹30 Drop', area: 'S.Kota / Boddavara', expiry: '2027-12-31' },
-        { title: 'Cool Drinks & Party Stuff', price: 'MRP + ₹40 Drop', area: '6 KM Radius', expiry: '2027-12-31' },
-        { title: '20L Water Can / Meds', price: '₹35 • 24/7 Urgent', area: 'Kiltampalem / S.Kota', expiry: '2027-12-31' }
-      ];
-      function renderDelivery() {
-        let items = filterExpired(getStore('msh_delivery_v4', DEFAULT_DELIVERY));
-        setStore('msh_delivery_v4', items);
-        document.getElementById('delivery-items-list').innerHTML = items.map((it, idx) => `
-          <div data-area-tag="${it.area}" class="filterable-item p-2 rounded-sm bg-light-surface-container-low border border-saffron-gold/40 flex items-center justify-between gap-2">
-            <div>
-              <p class="text-label-lg text-light-on-surface">${it.title}</p>
-              <p class="font-mono text-mono-sm text-royal-emerald">${it.price} • ${it.area}</p>
-            </div>
-            <div class="flex items-center gap-1">
-              ${isAdminUnlocked ? `<button type="button" onclick="deleteDelivery(${idx})" class="px-2 py-0.5 rounded-full bg-error text-on-error text-label-sm">Del</button>` : ''}
-              <a href="https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, 6KM Delivery: ' + it.title)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-0.5 rounded-full bg-saffron-gold text-on-saffron-gold text-label-sm">Order</a>
-            </div>
-          </div>
-        `).join('');
-      }
-      window.deleteDelivery = function (idx) {
-        const items = getStore('msh_delivery_v4', DEFAULT_DELIVERY);
-        items.splice(idx, 1); setStore('msh_delivery_v4', items); renderDelivery();
-      };
-
-      /* 5. EASY 3-STEP RIDE BOOKING */
-      const RIDER_LIST = [
-        { name: 'Raju', type: 'bike', area: 'Boddavara', phone: '9848011223' },
-        { name: 'Srinu', type: 'bike', area: 'S.Kota', phone: '9848022334' },
-        { name: 'Kiran Auto', type: 'auto', area: 'Thatipudi', phone: '9848033445' },
-        { name: 'Suresh Cab', type: 'car', area: 'VZM', phone: '9848044556' }
-      ];
-      let vehRate = 5, vehBase = 10, vehName = 'bike';
-      document.querySelectorAll('.vehicle-tab').forEach(t => {
-        t.addEventListener('click', () => {
-          document.querySelectorAll('.vehicle-tab').forEach(b => { b.classList.remove('bg-royal-emerald', 'text-on-royal-emerald'); b.classList.add('text-light-on-surface-muted'); });
-          t.classList.add('bg-royal-emerald', 'text-on-royal-emerald'); t.classList.remove('text-light-on-surface-muted');
-          vehRate = Number(t.dataset.rate); vehBase = Number(t.dataset.base); vehName = t.dataset.vehicle;
-          calcRide();
-        });
-      });
-      function calcRide() {
-        const km = Number(document.getElementById('bike-km-range').value);
-        document.getElementById('bike-km-label').textContent = km + ' km';
-        document.getElementById('bike-fare-badge').textContent = '₹' + (vehBase + km * vehRate);
-        document.getElementById('bike-comm-badge').textContent = '₹' + (km <= 5 ? 5 : 10);
-      }
-      document.getElementById('bike-km-range').addEventListener('input', calcRide);
-      document.getElementById('unlock-rider-btn').addEventListener('click', () => {
-        const loc = document.getElementById('cust-location').value.trim();
-        const mob = document.getElementById('cust-mobile').value.trim();
-        if (!loc || mob.length < 10) return showToast('Step 2 లో మీ ఊరు & 10-అంకెల నంబర్ ఇవ్వండి!');
-        const match = RIDER_LIST.find(r => r.type === vehName) || RIDER_LIST[0];
-        document.getElementById('rider-found-name').textContent = `${match.name} (${match.type.toUpperCase()} • ${match.area})`;
-        document.getElementById('rider-found-phone').textContent = match.phone;
-        document.getElementById('rider-call-link').href = 'tel:+91' + match.phone;
-        document.getElementById('unlocked-rider-box').hidden = false;
-        showToast('రైడర్ నంబర్ అన్‌లాక్ అయింది!');
-      });
-      document.getElementById('mediator-book-btn').addEventListener('click', () => {
-        const loc = document.getElementById('cust-location').value.trim() || 'Boddavara';
-        const km = document.getElementById('bike-km-range').value;
-        const comm = Number(km) <= 5 ? 5 : 10;
-        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash (Mediator), ${vehName.toUpperCase()} Ride (${km} km) from ${loc}. Mediator Fee: ₹${comm}`)}`, '_blank');
-      });
-
-      /* 6. ALL RECHARGE (+₹2 FEE) */
-      document.getElementById('rech-amount').addEventListener('input', e => {
-        const amt = Number(e.target.value) || 0;
-        document.getElementById('rech-summary-text').textContent = amt > 0 ? `Plan ₹${amt} + ₹2 Service Fee = మొత్తం ₹${amt + 2}` : 'ప్లాన్ అమౌంట్ ఎంటర్ చేయండి.';
-      });
-      document.getElementById('rech-submit-btn').addEventListener('click', () => {
-        const op = document.getElementById('rech-operator').value;
-        const num = document.getElementById('rech-number').value.trim();
-        const amt = Number(document.getElementById('rech-amount').value) || 0;
-        if (num.length < 8 || amt <= 0) return showToast('సరైన నంబర్ & అమౌంట్ ఇవ్వండి!');
-        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Recharge:\n${op} • ${num}\nPlan ₹${amt} + ₹2 Fee = Total ₹${amt + 2}`)}`, '_blank');
-      });
-
-      /* 7. USER QUERIES & FEEDBACK BOARD */
-      const DEFAULT_QUERIES = [
-        { name: 'Ravi (S.Kota)', text: 'రేపు ఉదయం 5 గంటలకు వైజాగ్ వెళ్ళడానికి బైక్ రైడ్ దొరుకుతుందా?' }
-      ];
-      function renderQueries() {
-        const list = getStore('msh_queries_v4', DEFAULT_QUERIES);
-        document.getElementById('queries-feed').innerHTML = list.map((q, idx) => `
-          <div class="p-1.5 rounded-sm bg-light-surface-container flex items-center justify-between gap-2">
-            <span><strong>${q.name}:</strong> ${q.text}</span>
-            ${isAdminUnlocked ? `<button type="button" onclick="deleteQuery(${idx})" class="text-label-sm text-error underline shrink-0">Del</button>` : ''}
-          </div>
-        `).join('');
-      }
-      window.deleteQuery = function (idx) {
-        const list = getStore('msh_queries_v4', DEFAULT_QUERIES);
-        list.splice(idx, 1); setStore('msh_queries_v4', list); renderQueries();
-      };
-      document.getElementById('query-form').addEventListener('submit', e => {
-        e.preventDefault();
-        const name = document.getElementById('q-name').value.trim();
-        const text = document.getElementById('q-text').value.trim();
-        const list = getStore('msh_queries_v4', DEFAULT_QUERIES);
-        list.unshift({ name, text }); setStore('msh_queries_v4', list); renderQueries();
-        e.target.reset(); showToast('మీ ప్రశ్న ప్రకాష్ బోర్డులో పోస్ట్ అయింది!');
-      });
-
-      /* 8. OLX & BOOKS (Safe Offline SVG Graphics — Zero Broken Images) */
-      function makeCardSvg(title, c1, c2) {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs><rect width="400" height="200" fill="url(#g)"/><circle cx="330" cy="50" r="28" fill="#FDE68A" opacity="0.8"/><path d="M0 160 L120 80 L230 150 L310 90 L400 160 L400 200 L0 200 Z" fill="#022C22" opacity="0.7"/><text x="16" y="182" fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold">${title}</text></svg>`;
-        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-      }
-
-      const DEFAULT_OLX = [
-        { title: 'RRB / SSC / ITI Books Set', price: '₹350 (5% Fee)', area: 'S.Kota', c1: '#064E3B', c2: '#059669', expiry: '2027-12-31' },
-        { title: 'Hero Passion Plus (2021)', price: '₹42,000 (3% Fee)', area: 'Boddavara', c1: '#B45309', c2: '#F59E0B', expiry: '2027-12-31' },
-        { title: '10 Cents House Plot', price: '₹12L (2% Fee)', area: 'Kiltampalem', c1: '#0F766E', c2: '#14B8A6', expiry: '2027-12-31' }
-      ];
-      function renderOlx() {
-        let items = filterExpired(getStore('msh_olx_v4', DEFAULT_OLX));
-        setStore('msh_olx_v4', items);
-        document.getElementById('olx-grid').innerHTML = items.map((it, idx) => `
-          <article data-area-tag="${it.area}" class="filterable-item rounded-DEFAULT bg-light-surface-container border border-light-outline p-2 flex flex-col justify-between gap-1.5">
-            <div>
-              <img src="${makeCardSvg(it.title, it.c1 || '#064E3B', it.c2 || '#10B981')}" alt="${it.title}" class="w-full h-20 object-cover rounded-sm mb-1.5">
-              <div class="flex justify-between items-center">
-                <span class="px-1.5 py-0.5 rounded-full bg-saffron-tint text-on-saffron-tint text-label-sm">VERIFIED</span>
-                ${isAdminUnlocked ? `<button type="button" onclick="deleteOlx(${idx})" class="text-label-sm text-error underline">Sold/Del</button>` : ''}
-              </div>
-              <h3 class="text-label-lg text-light-on-surface mt-1">${it.title}</h3>
-              <p class="font-mono text-mono-sm text-royal-emerald">${it.price} • ${it.area}</p>
-            </div>
-            <a href="https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash (Mediator), Interested in: ' + it.title)}" target="_blank" rel="noopener noreferrer" class="w-full py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm text-center">Buy via Mediator</a>
-          </article>
-        `).join('');
-      }
-      window.deleteOlx = function (idx) {
-        const items = getStore('msh_olx_v4', DEFAULT_OLX);
-        items.splice(idx, 1); setStore('msh_olx_v4', items); renderOlx();
-      };
-
-      /* 9. TOURISM GALLERY */
-      const DEFAULT_TOURS = [
-        { name: 'Araku Valley & Borra', price: '₹1,499', area: 'Araku', desc: 'ఉదయం 6 AM పికప్ • బొర్రా గుహలు, కాఫీ మ్యూజియం, చాపరాయి.', c1: '#064E3B', c2: '#10B981', media: [] },
-        { name: 'Lambasingi Mist Dawn', price: '₹1,599', area: 'Araku', desc: 'తెల్లవారుజామున 3:30 AM స్పెషల్ మంచు కొండల ట్రిప్.', c1: '#1E3A8A', c2: '#3B82F6', media: [] },
-        { name: 'Thatipudi Dam & Tyda', price: '₹1,199', area: 'Thatipudi', desc: 'బొడ్డవార & S.Kota నుండి 20 నిమిషాల లోకల్ పిక్నిక్ స్పాట్.', c1: '#047857', c2: '#F59E0B', media: [] },
-        { name: 'Vizag RK Beach & Hills', price: '₹999', area: 'Vizag', desc: 'RK Beach, కైలాసగిరి, రుషికొండ ఫుల్ డే టూర్.', c1: '#0F766E', c2: '#06B6D4', media: [] }
-      ];
-      function renderTourism() {
-        const tours = getStore('msh_tours_v4', DEFAULT_TOURS);
-        document.getElementById('tourism-cards-grid').innerHTML = tours.map((t, idx) => {
-          const thumb = (t.media && t.media.length && t.media[0].startsWith('http')) ? t.media[0] : makeCardSvg(t.name, t.c1, t.c2);
-          return `
-            <article data-area-tag="${t.area}" class="filterable-item rounded-DEFAULT bg-light-surface-container border border-light-outline p-2 flex flex-col justify-between gap-1.5">
-              <div>
-                <img src="${thumb}" alt="${t.name}" onerror="this.src='${makeCardSvg(t.name, t.c1, t.c2)}'" class="w-full h-20 object-cover rounded-sm mb-1.5">
-                <h3 class="text-label-lg text-light-on-surface">${t.name}</h3>
-                <p class="font-mono text-mono-sm text-royal-emerald">${t.price}</p>
-              </div>
-              <button type="button" onclick="openTourismPopup(${idx})" class="w-full py-1 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm">Gallery &amp; Book</button>
-            </article>
-          `;
-        }).join('');
-      }
-      window.openTourismPopup = function (idx) {
-        const tours = getStore('msh_tours_v4', DEFAULT_TOURS);
-        const t = tours[idx];
-        document.getElementById('tmodal-title').textContent = t.name;
-        document.getElementById('tmodal-sub').textContent = `${t.area} • ${t.price}`;
-        document.getElementById('tmodal-desc').textContent = t.desc;
-        const slides = [
-          makeCardSvg(t.name + ' - View 1', t.c1, t.c2),
-          makeCardSvg(t.name + ' - View 2', '#78350F', '#F59E0B'),
-          makeCardSvg(t.name + ' - View 3', '#831843', '#BE185D')
-        ];
-        let html = (t.media || []).map(url =>
-          (url.includes('youtube.com') || url.includes('youtu.be'))
-            ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="w-36 h-24 shrink-0 rounded-sm bg-ticker-bg text-on-ticker-bg flex items-center justify-center text-label-sm">▶ Watch Video</a>`
-            : `<img src="${url}" onerror="this.src='${slides[0]}'" class="w-36 h-24 shrink-0 object-cover rounded-sm border border-light-outline">`
-        ).join('');
-        html += slides.map(s => `<img src="${s}" class="w-36 h-24 shrink-0 object-cover rounded-sm border border-light-outline">`).join('');
-        document.getElementById('tmodal-gallery').innerHTML = html;
-        document.getElementById('tmodal-book-btn').onclick = () => {
-          const cname = document.getElementById('tmodal-cust-name').value.trim() || 'Guest';
-          window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, Tourism Booking: ${t.name} (${t.price})\nName: ${cname}`)}`, '_blank');
-        };
-        document.getElementById('tourism-modal').showModal();
-      };
-
-      /* 10. DUAL GAMES (KIDS + ADULTS) & GK/MATHS */
-      const quizBank = {
-        gk: [
-          { q: "1. విజయనగరం జిల్లాలోని తాటిపూడి రిజర్వాయర్ ఏ నదిపై ఉంది?", opts: ["A. గోస్తనీ నది", "B. నాగావళి", "C. వంశధార", "D. శారదా"], ans: 0 },
-          { q: "2. 'ఆంధ్రా కాశ్మీర్' అని ఏ ప్రాంతాన్ని పిలుస్తారు?", opts: ["A. హార్సిలీ హిల్స్", "B. లంబసింగి", "C. అరకు", "D. పాపి కొండలు"], ans: 1 }
-        ],
-        maths: [
-          { q: "1. ₹50,000 కు నెలకు ₹2 వడ్డీ చొప్పున 6 నెలలకు వడ్డీ ఎంత?", opts: ["A. ₹5,000", "B. ₹6,000", "C. ₹4,500", "D. ₹7,500"], ans: 1 },
-          { q: "2. 45 km దూరాన్ని 1.5 గంటల్లో వెళితే వేగం ఎంత?", opts: ["A. 25 km/h", "B. 30 km/h", "C. 35 km/h", "D. 40 km/h"], ans: 1 }
-        ]
-      };
-      let currentQuizMode = 'gk', quizIdx = 0;
-      function loadQuiz() {
-        const list = quizBank[currentQuizMode];
-        const item = list[quizIdx % list.length];
-        document.getElementById('quiz-category-badge').textContent = currentQuizMode === 'gk' ? 'LIVE CURRENT AFFAIRS' : 'MATHS SPEED TEST';
-        document.getElementById('quiz-q-text').textContent = item.q;
-        document.getElementById('quiz-feedback').textContent = '';
-        const grid = document.getElementById('quiz-options-grid');
-        grid.innerHTML = item.opts.map((o, i) => `<button type="button" class="q-opt py-1 px-2 rounded-sm bg-light-surface-container-low border border-light-outline text-body-sm text-left" data-ok="${i === item.ans}">${o}</button>`).join('');
-        grid.querySelectorAll('.q-opt').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const ok = btn.dataset.ok === 'true';
-            btn.classList.add(ok ? 'bg-emerald-tint' : 'bg-rose-tint');
-            document.getElementById('quiz-feedback').textContent = ok ? '✅ సరైన సమాధానం!' : '❌ తప్పు సమాధానం! మళ్ళీ ప్రయత్నించండి.';
-          });
-        });
-      }
-      loadQuiz();
-      document.getElementById('next-quiz-btn').addEventListener('click', () => { quizIdx++; loadQuiz(); });
-
-      const kidsIcons = ['🍎', '🥭', '🍌', '🍇', '🐯', '🐘'];
-      let kidsCards = [], kidsFlipped = [], kidsMatches = 0;
-      function initKidsGame() {
-        kidsCards = [...kidsIcons, ...kidsIcons].sort(() => Math.random() - 0.5);
-        kidsFlipped = []; kidsMatches = 0;
-        document.getElementById('kids-status').textContent = 'Matches: 0 / 6';
-        const board = document.getElementById('kids-board');
-        board.innerHTML = kidsCards.map((icon, i) => `<button type="button" data-idx="${i}" class="kids-card h-10 rounded-sm bg-rose-pink text-on-rose-pink font-headline text-title-lg flex items-center justify-center">?</button>`).join('');
-        board.querySelectorAll('.kids-card').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const i = Number(btn.dataset.idx);
-            if (btn.textContent !== '?' || kidsFlipped.length === 2) return;
-            btn.textContent = kidsCards[i];
-            btn.classList.replace('bg-rose-pink', 'bg-light-surface-container-low');
-            btn.classList.replace('text-on-rose-pink', 'text-light-on-surface');
-            kidsFlipped.push({ i, btn });
-            if (kidsFlipped.length === 2) {
-              const [a, b] = kidsFlipped;
-              if (kidsCards[a.i] === kidsCards[b.i]) {
-                kidsMatches++; kidsFlipped = [];
-                document.getElementById('kids-status').textContent = kidsMatches === 6 ? '🎉 Super Kids! అన్నీ కలిపారు!' : `Matches: ${kidsMatches} / 6`;
-              } else {
-                setTimeout(() => {
-                  [a, b].forEach(x => { x.btn.textContent = '?'; x.btn.classList.replace('bg-light-surface-container-low', 'bg-rose-pink'); x.btn.classList.replace('text-light-on-surface', 'text-on-rose-pink'); });
-                  kidsFlipped = [];
-                }, 600);
-              }
-            }
-          });
-        });
-      }
-      initKidsGame();
-      document.getElementById('reset-kids-btn').addEventListener('click', initKidsGame);
-
-      let tiles = [1, 2, 3, 4, 5, 6, 7, 0, 8], moves = 0;
-      function renderPuzzle() {
-        const board = document.getElementById('puzzle-board');
-        board.innerHTML = tiles.map((val, idx) => val === 0
-          ? `<div class="rounded-sm bg-emerald-deep"></div>`
-          : `<button type="button" onclick="moveTile(${idx})" class="rounded-sm bg-saffron-gold text-on-saffron-gold font-headline text-title-lg">${val}</button>`
-        ).join('');
-        document.getElementById('puzzle-status').textContent = tiles.join(',') === '1,2,3,4,5,6,7,8,0' ? `🎉 Completed in ${moves} moves!` : `Moves: ${moves}`;
-      }
-      window.moveTile = function (idx) {
-        const emptyIdx = tiles.indexOf(0);
-        const valid = [emptyIdx - 1, emptyIdx + 1, emptyIdx - 3, emptyIdx + 3];
-        if (valid.includes(idx) && !(emptyIdx % 3 === 0 && idx === emptyIdx - 1) && !(emptyIdx % 3 === 2 && idx === emptyIdx + 1)) {
-          [tiles[emptyIdx], tiles[idx]] = [tiles[idx], tiles[emptyIdx]]; moves++; renderPuzzle();
-        }
-      };
-      document.getElementById('shuffle-puzzle-btn').addEventListener('click', () => {
-        tiles = [1, 2, 3, 4, 5, 6, 7, 8, 0].sort(() => Math.random() - 0.5); moves = 0; renderPuzzle();
-      });
-      renderPuzzle();
-
-      document.querySelectorAll('.study-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('.study-tab').forEach(t => { t.classList.remove('bg-royal-emerald', 'text-on-royal-emerald'); t.classList.add('text-light-on-surface-muted'); });
-          tab.classList.add('bg-royal-emerald', 'text-on-royal-emerald'); tab.classList.remove('text-light-on-surface-muted');
-          const mode = tab.dataset.stab;
-          document.getElementById('stab-panel-quiz').hidden = (mode === 'kids' || mode === 'puzzle');
-          document.getElementById('stab-panel-kids').hidden = (mode !== 'kids');
-          document.getElementById('stab-panel-puzzle').hidden = (mode !== 'puzzle');
-          if (mode === 'gk' || mode === 'maths') { currentQuizMode = mode; quizIdx = 0; loadQuiz(); }
-        });
-      });
-
-      /* 11. LOCAL JOBS */
-      const DEFAULT_JOBS = [
-        { title: 'Site Security Guard (12 Hr)', pay: 'Kiltampalem', area: 'Kiltampalem', expiry: '2027-12-31' },
-        { title: 'Bike Delivery & Dairy Rider', pay: '₹15,000/Mo', area: 'S.Kota', expiry: '2027-12-31' }
-      ];
-      function renderJobs() {
-        let jobs = filterExpired(getStore('msh_jobs_v4', DEFAULT_JOBS));
-        setStore('msh_jobs_v4', jobs);
-        document.getElementById('jobs-list-grid').innerHTML = jobs.map((j, idx) => `
-          <div data-area-tag="${j.area}" class="filterable-item p-2.5 rounded-DEFAULT bg-emerald-tint/40 border border-royal-emerald/25 flex items-center justify-between gap-2">
-            <div>
-              <span class="px-1.5 py-0.5 rounded-full bg-success text-on-success text-label-sm">ACTIVE</span>
-              <span class="font-mono text-label-sm text-light-on-surface-muted ml-1">Exp: ${j.expiry}</span>
-              <p class="text-label-lg text-light-on-surface mt-0.5">${j.title}</p>
-              <p class="font-mono text-mono-sm text-royal-emerald">${j.pay} • ${j.area}</p>
-            </div>
-            <div class="flex flex-col gap-1">
-              <a href="https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent('Hi Prakash, Job Apply: ' + j.title)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-0.5 rounded-full bg-royal-emerald text-on-royal-emerald text-label-sm text-center">Apply</a>
-              ${isAdminUnlocked ? `<button type="button" onclick="deleteJob(${idx})" class="px-2 py-0.5 rounded-full bg-error text-on-error text-label-sm">Delete</button>` : ''}
-            </div>
-          </div>
-        `).join('');
-      }
-      window.deleteJob = function (idx) {
-        const jobs = getStore('msh_jobs_v4', DEFAULT_JOBS);
-        jobs.splice(idx, 1); setStore('msh_jobs_v4', jobs); renderJobs();
-      };
-
-      /* 12. UNIVERSAL ADMIN POST MODAL */
-      let currentPostCategory = 'job';
-      const apModal = document.getElementById('admin-post-modal');
-      function openAdminPostModal(category, title, p1, p2, p3) {
-        currentPostCategory = category;
-        document.getElementById('ap-modal-title').textContent = title;
-        document.getElementById('ap-field-1').placeholder = p1;
-        document.getElementById('ap-field-2').placeholder = p2;
-        document.getElementById('ap-field-3').placeholder = p3;
-        if (isAdminUnlocked) document.getElementById('ap-pin').value = ADMIN_PIN;
-        document.getElementById('ap-expiry').value = new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0];
-        apModal.showModal();
-      }
-      document.getElementById('open-job-post-btn').addEventListener('click', () => openAdminPostModal('job', 'Admin Post New Job', 'Job Title', 'Salary / Details', 'Area'));
-      document.getElementById('open-olx-post-btn').addEventListener('click', () => openAdminPostModal('olx', 'Admin Post OLX / Book', 'Item / Book Name', 'Price & Commission', 'Area'));
-      document.getElementById('post-delivery-btn').addEventListener('click', () => openAdminPostModal('delivery', 'Admin Post Delivery Item', 'Food / Party Item', 'Price + Drop Fee', 'Area'));
-      document.getElementById('post-tour-media-btn').addEventListener('click', () => openAdminPostModal('tourmedia', 'Admin Post Tourism Media', 'Place Name (Araku)', 'Photo or YouTube Link', 'Area'));
-      document.getElementById('post-service-btn').addEventListener('click', () => openAdminPostModal('service', 'Admin Post Service', 'Service (RMP Doctor / AC)', 'Phone Number', 'Area'));
-      document.getElementById('open-rider-reg-btn').addEventListener('click', () => openAdminPostModal('rider', 'Admin Add Rider', 'Rider Name', 'Phone Number', 'Area (Boddavara/S.Kota)'));
-
-      document.getElementById('admin-post-form').addEventListener('submit', e => {
-        e.preventDefault();
-        if (document.getElementById('ap-pin').value.trim() !== ADMIN_PIN) return showToast('Admin Password తప్పు!');
-        const f1 = document.getElementById('ap-field-1').value.trim();
-        const f2 = document.getElementById('ap-field-2').value.trim();
-        const f3 = document.getElementById('ap-field-3').value.trim();
-        const expiry = document.getElementById('ap-expiry').value;
-        if (currentPostCategory === 'job') {
-          const jobs = getStore('msh_jobs_v4', DEFAULT_JOBS); jobs.unshift({ title: f1, pay: f2, area: f3, expiry }); setStore('msh_jobs_v4', jobs);
-        } else if (currentPostCategory === 'olx') {
-          const items = getStore('msh_olx_v4', DEFAULT_OLX); items.unshift({ title: f1, price: f2, area: f3, expiry }); setStore('msh_olx_v4', items);
-        } else if (currentPostCategory === 'delivery') {
-          const items = getStore('msh_delivery_v4', DEFAULT_DELIVERY); items.unshift({ title: f1, price: f2, area: f3, expiry }); setStore('msh_delivery_v4', items);
-        } else if (currentPostCategory === 'rider') {
-          RIDER_LIST.unshift({ name: f1, type: 'bike', area: f3, phone: f2 });
-        } else if (currentPostCategory === 'tourmedia') {
-          const tours = getStore('msh_tours_v4', DEFAULT_TOURS);
-          const m = tours.find(t => t.name.toLowerCase().includes(f1.toLowerCase())) || tours[0];
-          m.media.unshift(f2); setStore('msh_tours_v4', tours);
-        }
-        renderAllDynamicLists(); apModal.close(); e.target.reset();
-        showToast('Admin Verified! కొత్త పోస్ట్ పబ్లిష్ అయింది.');
-      });
-
-      /* ఏరియా ఫిల్టర్ & సెర్చ్ + లైవ్ న్యూస్ */
-      let activeArea = 'All';
-      function applyFilters() {
-        const q = document.getElementById('global-search').value.trim().toLowerCase();
-        document.querySelectorAll('.filterable-item').forEach(el => {
-          const areaOk = activeArea === 'All' || (el.dataset.areaTag || '').toLowerCase().includes(activeArea.toLowerCase());
-          const qOk = !q || el.textContent.toLowerCase().includes(q);
-          el.hidden = !(areaOk && qOk);
-        });
-      }
-      document.querySelectorAll('.area-pill').forEach(p => {
-        p.addEventListener('click', () => {
-          document.querySelectorAll('.area-pill').forEach(b => { b.classList.remove('bg-royal-emerald', 'text-on-royal-emerald'); b.classList.add('bg-light-surface-container-low', 'border', 'border-light-outline'); });
-          p.classList.add('bg-royal-emerald', 'text-on-royal-emerald'); p.classList.remove('bg-light-surface-container-low', 'border');
-          activeArea = p.dataset.area; applyFilters();
-        });
-      });
-      document.getElementById('global-search').addEventListener('input', applyFilters);
-
-      async function loadNews() {
-        const box = document.getElementById('live-news-list');
-        try {
-          const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss?hl=te&gl=IN&ceid=IN:te')}`);
-          const data = await res.json();
-          if (data.items && data.items.length) {
-            box.innerHTML = data.items.slice(0, 4).map(n => `<a href="${n.link}" target="_blank" rel="noopener noreferrer" class="pb-1 border-b border-light-outline hover:text-royal-emerald">${n.title}</a>`).join('');
-            return;
-          }
-        } catch (e) {}
-        box.innerHTML = `<p class="pb-1 border-b border-light-outline">అరకు &amp; తాటిపూడి పర్యాటక ప్రాంతాల్లో పెరిగిన రద్దీ.</p><p>ఎస్.కోట, బొడ్డవార మార్కెట్లో స్థిరంగా ఉన్న నిత్యావసర ధరలు.</p>`;
-      }
-      document.getElementById('refresh-news-btn').addEventListener('click', loadNews);
-
-      function renderAllDynamicLists() {
-        renderWhispers(); renderMotivation(); renderDelivery(); renderQueries(); renderOlx(); renderTourism(); renderJobs(); applyFilters();
-      }
-      renderAllDynamicLists();
-      loadNews();
-    })();
+    function contactPrakash(svc) {
+      window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(`Hi Prakash, I need: ${svc}`)}`, '_blank');
+    }
   </script>
 </body>
 </html>
