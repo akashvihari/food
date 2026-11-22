@@ -1,9 +1,9 @@
-<!-- Leaflet Free Interactive Map CSS & JS (Already unte skip cheyochu) -->
+<!-- Leaflet Free Interactive Map CSS & JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  .msh-food-hub {
+  .msh-food-pro {
     --primary: #0f4c3a;
     --accent: #f59e0b;
     --accent-dark: #d97706;
@@ -21,10 +21,10 @@
     box-shadow: 0 8px 28px rgba(0,0,0,0.08);
     color: #1e293b;
   }
-  .msh-food-hub * { box-sizing: border-box; }
+  .msh-food-pro * { box-sizing: border-box; }
 
   /* Header */
-  .msh-fh-header {
+  .msh-fp-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,10 +34,21 @@
     padding-bottom: 14px;
     margin-bottom: 16px;
   }
-  .msh-fh-title { font-size: 1.32rem; font-weight: 900; color: #7c2d12; margin: 0; }
-  .msh-fh-sub { font-size: 0.88rem; color: #475569; margin: 4px 0 0; font-weight: 600; }
+  .msh-fp-title { font-size: 1.32rem; font-weight: 900; color: #7c2d12; margin: 0; }
+  .msh-fp-sub { font-size: 0.88rem; color: #475569; margin: 4px 0 0; font-weight: 600; }
 
-  .msh-fh-lock-btn {
+  .msh-fp-live-badge {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .msh-fp-lock-btn {
     background: #111827;
     color: #fff;
     border: none;
@@ -47,10 +58,10 @@
     font-weight: 800;
     cursor: pointer;
   }
-  .msh-fh-lock-btn.unlocked { background: var(--green); }
+  .msh-fp-lock-btn.unlocked { background: var(--green); }
 
   /* Admin Bar & Selective Panels */
-  .msh-fh-admin-bar {
+  .msh-fp-admin-bar {
     display: none;
     background: #1e293b;
     color: #fff;
@@ -58,8 +69,8 @@
     border-radius: 12px;
     margin-bottom: 14px;
   }
-  .msh-fh-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-  .msh-fh-tab {
+  .msh-fp-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .msh-fp-tab {
     background: #334155;
     color: #fff;
     border: 1px solid #475569;
@@ -69,9 +80,9 @@
     font-weight: 700;
     cursor: pointer;
   }
-  .msh-fh-tab.active { background: #facc15; color: #000; border-color: #facc15; }
+  .msh-fp-tab.active { background: #facc15; color: #000; border-color: #facc15; }
 
-  .msh-fh-panel {
+  .msh-fp-panel {
     display: none;
     background: #f1f5f9;
     border: 1px solid #cbd5e1;
@@ -79,59 +90,72 @@
     padding: 14px;
     margin-bottom: 16px;
   }
-  .msh-fh-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  .msh-fp-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
 
-  /* Unified 2-Column Main Grid (No Empty Space!) */
-  .msh-fh-grid {
+  /* Unified 2-Column Main Grid */
+  .msh-fp-grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: 1.05fr 1fr;
     gap: 18px;
+    align-items: start;
   }
   @media (max-width: 820px) {
-    .msh-fh-grid { grid-template-columns: 1fr; }
+    .msh-fp-grid { grid-template-columns: 1fr; }
   }
 
-  .msh-fh-card {
+  .msh-fp-card-left {
     background: #fffbeb;
     border: 1.5px solid #fde68a;
     border-radius: 16px;
     padding: 16px;
   }
-  .msh-fh-card-right {
-    background: #f0fdf4;
-    border: 1.5px solid #86efac;
+  .msh-fp-card-right {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
     border-radius: 16px;
     padding: 16px;
   }
-  .msh-fh-h3 {
+  .msh-fp-h3 {
     font-size: 1.12rem;
     font-weight: 900;
     color: var(--primary);
-    margin: 0 0 12px;
-  }
-
-  /* Menu Items List */
-  .msh-menu-item {
-    background: #ffffff;
-    border: 1.5px solid #fed7aa;
-    border-radius: 12px;
-    padding: 11px 14px;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   }
-  .msh-item-name { font-size: 1.02rem; font-weight: 800; color: #0f172a; display: block; }
-  .msh-item-meta { font-size: 0.84rem; color: #475569; font-weight: 600; margin-top: 2px; display: block; }
+
+  /* FIXED 7-ITEM SCROLLABLE MENU CONTAINER (Prevents page height expansion!) */
+  .msh-fp-menu-scroll {
+    max-height: 475px; /* Fits exactly ~7 items, then scrolls smoothly inside */
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .msh-fp-menu-scroll::-webkit-scrollbar { width: 6px; }
+  .msh-fp-menu-scroll::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 99px; }
+  .msh-fp-menu-scroll::-webkit-scrollbar-track { background: #fef3c7; border-radius: 99px; }
+
+  .msh-menu-item {
+    background: #ffffff;
+    border: 1.5px solid #fed7aa;
+    border-radius: 11px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  }
+  .msh-item-name { font-size: 0.98rem; font-weight: 800; color: #0f172a; display: block; }
+  .msh-item-meta { font-size: 0.82rem; color: #475569; font-weight: 600; margin-top: 2px; display: block; }
   .msh-order-btn {
     background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: 9px;
-    padding: 9px 16px;
-    font-size: 0.92rem;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
     font-weight: 800;
     cursor: pointer;
     white-space: nowrap;
@@ -139,8 +163,8 @@
   .msh-order-btn:hover { background: var(--accent-dark); }
 
   /* Inputs & Buttons */
-  .msh-fh-row { display: flex; gap: 8px; margin-bottom: 10px; }
-  .msh-fh-input, .msh-fh-select, .msh-fh-textarea {
+  .msh-fp-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .msh-fp-input, .msh-fp-select, .msh-fp-textarea {
     width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
@@ -150,30 +174,29 @@
     margin-bottom: 10px;
     font-weight: 600;
   }
-  .msh-fh-btn-sm {
+  .msh-fp-btn-sm {
     background: var(--primary);
     color: #fff;
     border: none;
     border-radius: 10px;
     padding: 0 14px;
     font-weight: 800;
-    font-size: 0.86rem;
+    font-size: 0.85rem;
     white-space: nowrap;
     cursor: pointer;
     height: 42px;
   }
 
-  /* Delivery Fee Strip */
   .msh-deliv-strip {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
+    background: #f0fdf4;
     padding: 10px 14px;
     border-radius: 10px;
     border: 2px solid #16a34a;
     margin-bottom: 10px;
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     font-weight: 800;
   }
   .msh-fee-badge {
@@ -185,34 +208,54 @@
     font-weight: 900;
   }
 
-  /* Private Notice Box */
-  .msh-priv-banner {
-    background: #ffffff;
-    border: 1.5px solid #16a34a;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    font-size: 0.88rem;
-    color: #14532d;
-    line-height: 1.45;
-  }
-
-  /* Hero Order Submit Button */
-  .msh-fh-hero-btn {
+  .msh-fp-hero-btn {
     width: 100%;
-    padding: 14px 16px;
+    padding: 13px 16px;
     background: linear-gradient(135deg, #16a34a, #0f4c3a);
     color: #ffffff;
     border: none;
     border-radius: 12px;
-    font-size: 1.08rem;
+    font-size: 1.05rem;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(22, 163, 74, 0.3);
+    box-shadow: 0 5px 15px rgba(22, 163, 74, 0.25);
+  }
+
+  /* LIVE QUESTIONS & ANSWERS BOX (Syncs live across all mobiles) */
+  .msh-live-qa-box {
+    margin-top: 16px;
+    background: #eff6ff;
+    border: 1.5px solid #93c5fd;
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .msh-qa-scroll {
+    max-height: 230px;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding-right: 4px;
+  }
+  .msh-qa-item {
+    background: #ffffff;
+    border-left: 5px solid #2563eb;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    font-size: 0.94rem;
+    font-weight: 600;
+  }
+  .msh-qa-reply {
+    background: #f0fdf4;
+    color: #15803d;
+    padding: 5px 8px;
+    border-radius: 6px;
+    margin-top: 5px;
+    font-size: 0.88rem;
+    font-weight: 700;
   }
 
   /* Map Modal */
-  .msh-fh-modal {
+  .msh-fp-modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -222,90 +265,95 @@
     justify-content: center;
     padding: 12px;
   }
-  .msh-fh-modal-inner {
+  .msh-fp-modal-inner {
     background: #fff;
     border-radius: 14px;
     padding: 14px;
     width: 100%;
     max-width: 500px;
   }
-  #mshFhMap { height: 280px; width: 100%; border-radius: 10px; margin: 8px 0; border: 1px solid #cbd5e1; }
+  #mshFpMap { height: 280px; width: 100%; border-radius: 10px; margin: 8px 0; border: 1px solid #cbd5e1; }
 </style>
 
-<div class="msh-food-hub" id="mshFoodSection">
+<div class="msh-food-pro" id="mshFoodProModule">
   <!-- Header -->
-  <div class="msh-fh-header">
+  <div class="msh-fp-header">
     <div>
-      <h2 class="msh-fh-title">🛵 20 KM Food, Veg, Kirana & Parcel Delivery (100% Private Orders)</h2>
-      <p class="msh-fh-sub">Daily కూరగాయలు, బిర్యానీ, వాటర్ క్యాన్, కిరాణా & అడ్వాన్స్ పార్సెల్ డెలివరీ (Boddavara • Kiltampalem • S.Kota • Tatipudi)</p>
+      <h2 class="msh-fp-title">🛵 20 KM Food, Veg, Kirana & Parcel Delivery</h2>
+      <p class="msh-fp-sub">
+        Daily కూరగాయలు, బిర్యానీ, వాటర్ క్యాన్ & పార్సెల్ డెలివరీ • 
+        <span class="msh-fp-live-badge" id="mshSyncBadge">🟢 Live Sync Active</span>
+      </p>
     </div>
-    <button type="button" class="msh-fh-lock-btn" id="mshFhAdminBtn">🔒 Admin Lock</button>
+    <button type="button" class="msh-fp-lock-btn" id="mshFpAdminBtn">🔒 Admin Lock</button>
   </div>
 
-  <!-- Admin Selective Bar (Opens ONLY when PIN 1234 is entered) -->
-  <div class="msh-fh-admin-bar" id="mshFhAdminBar">
-    <div style="font-size:0.88rem; color:#facc15; font-weight:800;">🔓 Food & Parcel Admin Menu (మీకు ఏది కావాలో దానిపై నొక్కండి):</div>
-    <div class="msh-fh-tabs">
-      <button type="button" class="msh-fh-tab" id="mshFhTabMenu">➕ Add / Edit Menu Items</button>
-      <button type="button" class="msh-fh-tab" id="mshFhTabOrders">📋 View Private Orders Log</button>
+  <!-- Admin Selective Bar -->
+  <div class="msh-fp-admin-bar" id="mshFpAdminBar">
+    <div style="font-size:0.88rem; color:#facc15; font-weight:800;">🔓 Admin Menu (కొత్త ఐటమ్ యాడ్ చేస్తే అన్ని మొబైల్స్‌లో వెంటనే కనిపిస్తుంది):</div>
+    <div class="msh-fp-tabs">
+      <button type="button" class="msh-fp-tab" id="mshFpTabMenu">➕ Add / Delete Menu Items</button>
+      <button type="button" class="msh-fp-tab" id="mshFpTabOrders">📋 View Private Orders (రహస్యం)</button>
     </div>
   </div>
 
-  <!-- Admin Panel 1: Add / Edit Food & Parcel Menu Items -->
-  <div class="msh-fh-panel" id="mshFhPanelMenu">
-    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">➕ కొత్త ఐటమ్ / రేటు యాడ్ చేయండి</h4>
-    <div class="msh-fh-form-grid">
-      <select id="mshFhNewIcon" class="msh-fh-select">
+  <!-- Admin Panel 1: Add Food/Veg Item -->
+  <div class="msh-fp-panel" id="mshFpPanelMenu">
+    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">➕ కొత్త ఫుడ్ / కూరగాయల ఐటమ్ యాడ్ చేయండి</h4>
+    <div class="msh-fp-form-grid">
+      <select id="mshFpNewIcon" class="msh-fp-select">
         <option value="🥬">🥬 Vegetables / Greens</option>
         <option value="🍗">🍗 Biryani / Chicken / Food</option>
         <option value="💧">💧 Water Can / Cool Drinks</option>
         <option value="📦">📦 Rice Bag / Kirana / Parcel</option>
+        <option value="🥛">🥛 Milk / Curd / Paneer</option>
         <option value="💊">💊 Medicines / Emergency</option>
       </select>
-      <input type="text" id="mshFhNewName" class="msh-fh-input" placeholder="ఐటమ్ పేరు (ఉదా: Chicken Dum Biryani)">
-      <input type="text" id="mshFhNewPrice" class="msh-fh-input" placeholder="ధర వివరాలు (ఉదా: ₹150 + Drop)">
-      <input type="text" id="mshFhNewArea" class="msh-fh-input" placeholder="ఏరియా (ఉదా: S.Kota / Boddavara)">
+      <input type="text" id="mshFpNewName" class="msh-fp-input" placeholder="ఐటమ్ పేరు (ఉదా: Fresh Tomato 1kg)">
+      <input type="text" id="mshFpNewPrice" class="msh-fp-input" placeholder="ధర (ఉదా: ₹30 + Drop)">
+      <input type="text" id="mshFpNewArea" class="msh-fp-input" placeholder="ఏరియా (ఉదా: Boddavara / S.Kota)">
     </div>
     <div style="display:flex; gap:8px;">
-      <button type="button" class="msh-fh-btn-sm" style="background:#16a34a;" id="mshFhSaveItemBtn">💾 Save Item</button>
-      <button type="button" class="msh-fh-btn-sm" style="background:#64748b;" id="mshFhCloseMenuPanel">Close</button>
+      <button type="button" class="msh-fp-btn-sm" style="background:#16a34a;" id="mshFpSaveItemBtn">🚀 Save & Live Update All Mobiles</button>
+      <button type="button" class="msh-fp-btn-sm" style="background:#64748b;" id="mshFpCloseMenuPanel">Close</button>
     </div>
   </div>
 
-  <!-- Admin Panel 2: Private Orders Log (Only Admin can see!) -->
-  <div class="msh-fh-panel" id="mshFhPanelOrders">
+  <!-- Admin Panel 2: Private Orders Log -->
+  <div class="msh-fp-panel" id="mshFpPanelOrders">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h4 style="margin:0; color:#0f4c3a; font-size:1.02rem;">🔒 Private Customer Orders & Queries (అడ్మిన్‌కు మాత్రమే)</h4>
-      <button type="button" class="msh-fh-btn-sm" style="background:#64748b; height:32px;" id="mshFhCloseOrderPanel">Close</button>
+      <h4 style="margin:0; color:#0f4c3a; font-size:1.02rem;">🔒 Private Orders (అడ్మిన్‌కు మాత్రమే కనిపిస్తాయి)</h4>
+      <button type="button" class="msh-fp-btn-sm" style="background:#64748b; height:32px;" id="mshFpCloseOrderPanel">Close</button>
     </div>
-    <div id="mshFhOrdersLogList" style="font-size:0.88rem;"></div>
+    <div id="mshFpOrdersLogList" style="font-size:0.88rem;"></div>
   </div>
 
   <!-- MAIN 2-COLUMN UNIFIED GRID -->
-  <div class="msh-fh-grid">
+  <div class="msh-fp-grid">
     
-    <!-- LEFT COLUMN: Ready Menu Items (Food, Veg, Water Can, Parcel) -->
-    <div class="msh-fh-card">
-      <h3 class="msh-fh-h3" style="color:#7c2d12;">1. రెడీ ఐటమ్స్ ఆర్డర్ చేయండి (Quick Menu)</h3>
-      <p style="font-size:0.86rem; color:#78350f; margin:0 0 10px; font-weight:600;">
-        ముందుగా కుడి వైపు (Right Side) మీ <b>Live GPS</b> లేదా <b>ఊరు</b> ఎంచుకుని, ఇక్కడ <b>Order</b> నొక్కండి:
+    <!-- LEFT COLUMN: 7-ITEM SCROLLABLE MENU (Never expands page height!) -->
+    <div class="msh-fp-card-left">
+      <div class="msh-fp-h3" style="color:#7c2d12;">
+        <span>1. రెడీ ఐటమ్స్ (Quick Menu)</span>
+        <span style="font-size:0.78rem; background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:6px;" id="mshItemCountBadge">7 Items</span>
+      </div>
+      <p style="font-size:0.84rem; color:#78350f; margin:0 0 10px; font-weight:600;">
+        * 7 ఐటమ్స్ తర్వాత లోపలే స్క్రోల్ అవుతుంది. మీ ఊరు ఎంచుకుని <b>Order</b> నొక్కండి:
       </p>
-      <div id="mshFhMenuContainer"></div>
+      <div class="msh-fp-menu-scroll" id="mshFpMenuContainer"></div>
     </div>
 
-    <!-- RIGHT COLUMN: Live Location, Map Search & Private Custom Parcel / Query -->
-    <div class="msh-fh-card-right">
-      <h3 class="msh-fh-h3">2. మీ Live Location & కస్టమ్ పార్సెల్ / క్వెరీ</h3>
+    <!-- RIGHT COLUMN: LIVE LOCATION, PRIVATE PARCEL ORDER & LIVE QUESTIONS -->
+    <div class="msh-fp-card-right">
+      <h3 class="msh-fp-h3">2. Live Location & ప్రైవేట్ ఆర్డర్</h3>
 
-      <!-- Live GPS Row -->
-      <div class="msh-fh-row">
-        <input type="text" id="mshFhGpsInput" class="msh-fh-input" style="margin:0;" placeholder="మీ ఇంటి Live GPS కోసం నొక్కండి ➔" readonly>
-        <button type="button" class="msh-fh-btn-sm" id="mshFhGpsBtn">📍 Live GPS</button>
+      <div class="msh-fp-row">
+        <input type="text" id="mshFpGpsInput" class="msh-fp-input" style="margin:0;" placeholder="మీ ఇంటి Live GPS కోసం నొక్కండి ➔" readonly>
+        <button type="button" class="msh-fp-btn-sm" id="mshFpGpsBtn">📍 Live GPS</button>
       </div>
 
-      <!-- Destination Village Dropdown + Map Search -->
-      <div class="msh-fh-row">
-        <select id="mshFhVillageSel" class="msh-fh-select" style="margin:0;">
+      <div class="msh-fp-row">
+        <select id="mshFpVillageSel" class="msh-fp-select" style="margin:0;">
           <option value="">-- మీ ఊరు ఎంచుకోండి (Delivery Area) --</option>
           <option value="18.0815,83.1285">Boddavara (బొడ్డవార) - 0 km</option>
           <option value="18.0890,83.1210">Ithannapalem (ఇతన్నపాలెం) - 2 km</option>
@@ -317,52 +365,53 @@
           <option value="18.0335,83.1485">L.Kota (ఎల్.కోట) - 12 km</option>
           <option value="17.8930,83.1840">Kothavalasa (కొత్తవలస) - 18 km</option>
         </select>
-        <button type="button" class="msh-fh-btn-sm" style="background:#0284c7;" id="mshFhOpenMapBtn">🗺️ Map Search</button>
+        <button type="button" class="msh-fp-btn-sm" style="background:#0284c7;" id="mshFpOpenMapBtn">🗺️ Map Search</button>
       </div>
 
-      <!-- Auto Delivery Charge Strip -->
       <div class="msh-deliv-strip">
-        <span>డెలివరీ దూరం: <strong id="mshFhKmDisplay">Local (0–6 km)</strong></span>
-        <span>డెలివరీ ఛార్జ్: <span class="msh-fee-badge" id="mshFhFeeDisplay">₹25</span></span>
+        <span>డెలివరీ దూరం: <strong id="mshFpKmDisplay">Local (0–6 km)</strong></span>
+        <span>డెలివరీ ఛార్జ్: <span class="msh-fee-badge" id="mshFpFeeDisplay">₹25</span></span>
       </div>
 
-      <!-- Custom Parcel / Grocery / Any Query Input -->
-      <label style="font-size:0.92rem; font-weight:800; color:#0f4c3a; display:block; margin-bottom:4px;">
-        📦 మీకు కావాల్సిన వస్తువులు / పార్సెల్ / క్వెరీ రాయండి:
-      </label>
-      <textarea id="mshFhCustomQuery" class="msh-fh-textarea" rows="3" placeholder="ఉదా: 25kg బియ్యం బస్తా, 1kg టమాటా, పాల ప్యాకెట్, లేదా S.Kota నుండి పార్సెల్ తీసుకురావాలి..."></textarea>
+      <textarea id="mshFpCustomQuery" class="msh-fp-textarea" rows="2" placeholder="కస్టమ్ ఆర్డర్ రాయండి (ఉదా: 25kg బియ్యం, 1kg టమాటా, పార్సెల్...)"></textarea>
+      <input type="text" id="mshFpPhoneInput" class="msh-fp-input" placeholder="మీ ఫోన్ నంబర్ (100% రహస్యంగా ఉంటుంది)">
 
-      <input type="text" id="mshFhPhoneInput" class="msh-fh-input" placeholder="మీ ఫోన్ నంబర్ (కాల్ చేయడానికి - Optional)">
-
-      <!-- 100% Private Assurance Box -->
-      <div class="msh-priv-banner">
-        <strong>🔒 100% Private Order & Query (గోప్యత హామీ):</strong><br>
-        మీ ఆర్డర్, లొకేషన్ మరియు ఫోన్ నంబర్ వెబ్‌సైట్‌లో <b>ఎవరికీ కనిపించవు</b>. కేవలం అడ్మిన్ (ప్రకాష్) వాట్సాప్‌కు మాత్రమే రహస్యంగా వస్తాయి.
-      </div>
-
-      <button type="button" class="msh-fh-hero-btn" id="mshFhSubmitOrderBtn">
-        🔒 SEND PRIVATE ORDER / QUERY (ఆర్డర్ పంపండి)
+      <button type="button" class="msh-fp-hero-btn" id="mshFpSubmitOrderBtn">
+        🔒 SEND PRIVATE ORDER (అడ్మిన్‌కు మాత్రమే వెళ్తుంది)
       </button>
+
+      <!-- LIVE PUBLIC QUESTIONS & ANSWERS SECTION (Updates instantly on all mobiles!) -->
+      <div class="msh-live-qa-box">
+        <div style="font-size:1.02rem; font-weight:900; color:#1e3a8a;">
+          💬 Live Questions (సందేహాలు అడగండి - అందరికీ వెంటనే కనిపిస్తాయి)
+        </div>
+        <div class="msh-fp-row" style="margin-top:8px; margin-bottom:4px;">
+          <input type="text" id="mshFpLiveQInput" class="msh-fp-input" style="margin:0;" placeholder="ప్రశ్న రాయండి (ఉదా: ఈరోజు చికెన్ బిర్యానీ ఉందా?)...">
+          <button type="button" class="msh-fp-btn-sm" style="background:#2563eb;" id="mshFpPostQBtn">Ask Live</button>
+        </div>
+        <div class="msh-qa-scroll" id="mshFpLiveQList"></div>
+      </div>
+
     </div>
 
   </div>
 </div>
 
-<!-- Map Search Modal -->
-<div class="msh-fh-modal" id="mshFhMapModal">
-  <div class="msh-fh-modal-inner">
+<!-- Map Modal -->
+<div class="msh-fp-modal" id="mshFpMapModal">
+  <div class="msh-fp-modal-inner">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
       <strong style="color:#0f4c3a;">🗺️ Map లో మీ ఇంటి లొకేషన్ సెర్చ్ చేయండి లేదా Tap చేయండి</strong>
-      <button type="button" id="mshFhCloseMapBtn" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; cursor:pointer; font-weight:700;">✕</button>
+      <button type="button" id="mshFpCloseMapBtn" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; cursor:pointer; font-weight:700;">✕</button>
     </div>
-    <div class="msh-fh-row" style="margin-bottom:4px;">
-      <input type="text" id="mshFhMapSearchInp" class="msh-fh-input" style="margin:0;" placeholder="ఊరి పేరు (ఉదా: S.Kota, Tatipudi, Kiltampalem)...">
-      <button type="button" class="msh-fh-btn-sm" style="background:#0284c7;" id="mshFhMapSearchBtn">🔍 Search</button>
+    <div class="msh-fp-row" style="margin-bottom:4px;">
+      <input type="text" id="mshFpMapSearchInp" class="msh-fp-input" style="margin:0;" placeholder="ఊరి పేరు (ఉదా: S.Kota, Tatipudi, Kiltampalem)...">
+      <button type="button" class="msh-fp-btn-sm" style="background:#0284c7;" id="mshFpMapSearchBtn">🔍 Search</button>
     </div>
-    <div id="mshFhMap"></div>
+    <div id="mshFpMap"></div>
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-      <span id="mshFhMapStatus" style="font-size:0.82rem; font-weight:700; color:#0f4c3a;">ఊరు సెర్చ్ చేయండి లేదా మ్యాప్‌లో Tap చేయండి</span>
-      <button type="button" class="msh-fh-btn-sm" style="background:#16a34a;" id="mshFhConfirmMapBtn">✅ Confirm</button>
+      <span id="mshFpMapStatus" style="font-size:0.82rem; font-weight:700; color:#0f4c3a;">ఊరు సెర్చ్ చేయండి లేదా మ్యాప్‌లో Tap చేయండి</span>
+      <button type="button" class="msh-fp-btn-sm" style="background:#16a34a;" id="mshFpConfirmMapBtn">✅ Confirm</button>
     </div>
   </div>
 </div>
@@ -371,8 +420,13 @@
 (function() {
   const ADMIN_WA = "918985240287";
   const ADMIN_PIN = "1234";
-  // Boddavara / S.Kota Hub Coordinates for delivery distance calculation
   const HUB_LAT = 18.0950, HUB_LNG = 83.1350;
+
+  // =========================================================================
+  // REAL-TIME SYNC CONFIG: Mee Firebase Realtime Database URL ikkada pettandi!
+  // (Example: "https://manasevahub-default-rtdb.firebaseio.com")
+  // =========================================================================
+  const FIREBASE_DB_URL = ""; 
 
   let userLat = null, userLng = null;
   let dropLat = null, dropLng = null, dropPlaceName = "";
@@ -380,16 +434,202 @@
   let isAdminOpen = false;
   let fhMap = null, fhMarker = null;
 
+  // 7 Default Items (So scrolling works cleanly right after 7 items!)
   const defaultMenu = [
-    { icon: "🥬", name: "Daily Fresh Vegetables & Greens", price: "Market Rate + Delivery", area: "Boddavara / S.Kota" },
-    { icon: "🍗", name: "Chicken Dum Biryani / Fry Pack", price: "₹150 + Delivery", area: "S.Kota / Kiltampalem" },
-    { icon: "💧", name: "20L Water Can & Cool Drinks", price: "₹35 + Urgent Drop", area: "Local 20 KM Radius" },
-    { icon: "📦", name: "25kg Rice Bag / Monthly Kirana", price: "Shop Bill + Delivery", area: "Home Door Delivery" }
+    { id: "m1", icon: "🥬", name: "Daily Fresh Vegetables & Greens", price: "Market Rate + Drop", area: "Boddavara / S.Kota" },
+    { id: "m2", icon: "🍗", name: "Chicken Dum Biryani / Fry Pack", price: "₹150 + Drop", area: "S.Kota / Kiltampalem" },
+    { id: "m3", icon: "💧", name: "20L Water Can (24/7 Urgent)", price: "₹35 + Drop", area: "Local 20 KM Radius" },
+    { id: "m4", icon: "📦", name: "25kg Rice Bag / Monthly Kirana", price: "Shop Bill + Drop", area: "Door Delivery" },
+    { id: "m5", icon: "🥛", name: "Fresh Milk, Curd & Paneer Pack", price: "MRP + ₹20 Drop", area: "Morning / Evening" },
+    { id: "m6", icon: "🥤", name: "Cool Drinks & Party Snacks", price: "MRP + ₹30 Drop", area: "S.Kota / Boddavara" },
+    { id: "m7", icon: "💊", name: "Emergency Medicines / Hospital Drop", price: "Medical Bill + Drop", area: "Urgent 20 KM" }
   ];
 
-  let menuItems = JSON.parse(localStorage.getItem("msh_food_menu_v1")) || defaultMenu;
-  let privateOrders = JSON.parse(localStorage.getItem("msh_food_orders_v1")) || [];
+  let menuItems = JSON.parse(localStorage.getItem("msh_fp_menu_v2")) || defaultMenu;
+  let liveQuestions = JSON.parse(localStorage.getItem("msh_fp_questions_v2")) || [
+    { id: "q1", text: "ఈరోజు తాజా కూరగాయలు మరియు 20L వాటర్ క్యాన్ డెలివరీ ఉందా?", reply: "అవును, ఉదయం 6 నుండి రాత్రి 9 వరకు డెలివరీ అందుబాటులో ఉంది.", time: "Today" }
+  ];
+  let privateOrders = JSON.parse(localStorage.getItem("msh_fp_orders_v2")) || [];
 
+  // =========================================================================
+  // CLOUD SYNC ENGINE (Syncs instantly across all mobiles when Firebase URL is set)
+  // =========================================================================
+  async function syncFromCloud() {
+    if (!FIREBASE_DB_URL) {
+      document.getElementById("mshSyncBadge").innerHTML = "🟡 Local Mode (Add Firebase URL for Multi-Phone Sync)";
+      return;
+    }
+    try {
+      const cleanUrl = FIREBASE_DB_URL.replace(/\/$/, "");
+      const res = await fetch(`${cleanUrl}/manaseva_food.json`);
+      const data = await res.json();
+      if (data) {
+        if (data.menuItems) {
+          menuItems = Object.values(data.menuItems);
+          localStorage.setItem("msh_fp_menu_v2", JSON.stringify(menuItems));
+          renderMenu();
+        }
+        if (data.liveQuestions) {
+          liveQuestions = Object.values(data.liveQuestions).reverse();
+          localStorage.setItem("msh_fp_questions_v2", JSON.stringify(liveQuestions));
+          renderLiveQuestions();
+        }
+        if (data.privateOrders) {
+          privateOrders = Object.values(data.privateOrders).reverse();
+          localStorage.setItem("msh_fp_orders_v2", JSON.stringify(privateOrders));
+          if (isAdminOpen) renderPrivateOrdersLog();
+        }
+      }
+      document.getElementById("mshSyncBadge").innerHTML = "🟢 Live Multi-Phone Sync ON";
+    } catch (e) {
+      document.getElementById("mshSyncBadge").innerHTML = "🟠 Reconnecting Live Sync...";
+    }
+  }
+
+  async function pushMenuToCloud() {
+    localStorage.setItem("msh_fp_menu_v2", JSON.stringify(menuItems));
+    renderMenu();
+    if (!FIREBASE_DB_URL) return;
+    const cleanUrl = FIREBASE_DB_URL.replace(/\/$/, "");
+    await fetch(`${cleanUrl}/manaseva_food/menuItems.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(menuItems)
+    });
+  }
+
+  async function pushQuestionsToCloud() {
+    localStorage.setItem("msh_fp_questions_v2", JSON.stringify(liveQuestions));
+    renderLiveQuestions();
+    if (!FIREBASE_DB_URL) return;
+    const cleanUrl = FIREBASE_DB_URL.replace(/\/$/, "");
+    await fetch(`${cleanUrl}/manaseva_food/liveQuestions.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([...liveQuestions].reverse())
+    });
+  }
+
+  async function pushPrivateOrderToCloud() {
+    localStorage.setItem("msh_fp_orders_v2", JSON.stringify(privateOrders));
+    if (!FIREBASE_DB_URL) return;
+    const cleanUrl = FIREBASE_DB_URL.replace(/\/$/, "");
+    await fetch(`${cleanUrl}/manaseva_food/privateOrders.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([...privateOrders].reverse())
+    });
+  }
+
+  // Auto-refresh every 4 seconds so other mobiles see new items & live questions immediately!
+  if (FIREBASE_DB_URL) {
+    syncFromCloud();
+    setInterval(syncFromCloud, 4000);
+  } else {
+    syncFromCloud();
+  }
+
+  // =========================================================================
+  // RENDER MENU (Fixed 7-Item Scroll Container)
+  // =========================================================================
+  function renderMenu() {
+    const container = document.getElementById("mshFpMenuContainer");
+    const countBadge = document.getElementById("mshItemCountBadge");
+    if (!container) return;
+
+    countBadge.innerText = `${menuItems.length} Items ${menuItems.length > 7 ? "(Scroll ↓)" : ""}`;
+    container.innerHTML = "";
+
+    menuItems.forEach((item, idx) => {
+      const delBtn = isAdminOpen
+        ? `<button type="button" onclick="window.mshFpDeleteItem(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:6px 8px; font-weight:800; cursor:pointer; margin-left:6px;">🗑️</button>`
+        : "";
+
+      container.innerHTML += `
+        <div class="msh-menu-item">
+          <div>
+            <span class="msh-item-name">${item.icon} ${item.name}</span>
+            <span class="msh-item-meta">${item.price} • ${item.area}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <button type="button" class="msh-order-btn" onclick="window.mshFpQuickOrder(${idx})">Order</button>
+            ${delBtn}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  window.mshFpDeleteItem = function(idx) {
+    menuItems.splice(idx, 1);
+    pushMenuToCloud();
+  };
+
+  window.mshFpQuickOrder = function(idx) {
+    const item = menuItems[idx];
+    const customNote = document.getElementById("mshFpCustomQuery").value.trim();
+    const custPhone = document.getElementById("mshFpPhoneInput").value.trim();
+    sendPrivateOrder(`${item.icon} ${item.name} (${item.price})`, customNote, custPhone);
+  };
+
+  // =========================================================================
+  // LIVE QUESTIONS & ANSWERS (Visible & Updates Immediately on All Mobiles)
+  // =========================================================================
+  function renderLiveQuestions() {
+    const box = document.getElementById("mshFpLiveQList");
+    if (!box) return;
+    if (liveQuestions.length === 0) {
+      box.innerHTML = `<div style="font-size:0.86rem; color:#475569;">ఇంకా ప్రశ్నలు లేవు. పైన మీ సందేహం అడగండి!</div>`;
+      return;
+    }
+
+    box.innerHTML = liveQuestions.map((q, idx) => `
+      <div class="msh-qa-item">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
+          <span>❓ ${q.text} <small style="color:#64748b;">(${q.time})</small></span>
+          ${isAdminOpen ? `
+            <div style="display:flex; gap:4px;">
+              <button type="button" onclick="window.mshFpReplyQ(${idx})" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Reply</button>
+              <button type="button" onclick="window.mshFpDelQ(${idx})" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Del</button>
+            </div>` : ""}
+        </div>
+        ${q.reply ? `<div class="msh-qa-reply">✅ Admin Reply: ${q.reply}</div>` : ""}
+      </div>
+    `).join("");
+  }
+
+  window.mshFpReplyQ = function(idx) {
+    const ans = prompt("ఈ ప్రశ్నకు మీ సమాధానం (Reply) రాయండి:", liveQuestions[idx].reply || "");
+    if (ans !== null) {
+      liveQuestions[idx].reply = ans.trim();
+      pushQuestionsToCloud();
+    }
+  };
+
+  window.mshFpDelQ = function(idx) {
+    liveQuestions.splice(idx, 1);
+    pushQuestionsToCloud();
+  };
+
+  document.getElementById("mshFpPostQBtn").addEventListener("click", function() {
+    const inp = document.getElementById("mshFpLiveQInput");
+    const txt = inp.value.trim();
+    if (!txt) { alert("దయచేసి మీ ప్రశ్న రాయండి."); return; }
+
+    liveQuestions.unshift({
+      id: "q_" + Date.now(),
+      text: txt,
+      reply: "",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+    if (liveQuestions.length > 20) liveQuestions.pop();
+    inp.value = "";
+    pushQuestionsToCloud();
+  });
+
+  // =========================================================================
+  // PRIVATE ORDER & DELIVERY CALCULATION
+  // =========================================================================
   function calcDeliveryFee(kmVal) {
     delivKm = kmVal;
     if (kmVal <= 6) delivFee = 25;
@@ -397,8 +637,8 @@
     else if (kmVal <= 20) delivFee = 70;
     else delivFee = 100;
 
-    document.getElementById("mshFhKmDisplay").innerText = kmVal + " km";
-    document.getElementById("mshFhFeeDisplay").innerText = "₹" + delivFee;
+    document.getElementById("mshFpKmDisplay").innerText = kmVal + " km";
+    document.getElementById("mshFpFeeDisplay").innerText = "₹" + delivFee;
   }
 
   function getDistanceFromHub(lat, lng) {
@@ -410,53 +650,11 @@
     return Math.max(1, Math.round(straight * 1.25 * 10) / 10);
   }
 
-  // Render Menu Items
-  function renderMenu() {
-    const container = document.getElementById("mshFhMenuContainer");
-    if (!container) return;
-    container.innerHTML = "";
-
-    menuItems.forEach((item, idx) => {
-      const delBtn = isAdminOpen
-        ? `<button type="button" onclick="window.mshFhDeleteMenu(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:6px 8px; font-weight:800; cursor:pointer; margin-left:6px;">🗑️</button>`
-        : "";
-
-      container.innerHTML += `
-        <div class="msh-menu-item">
-          <div>
-            <span class="msh-item-name">${item.icon} ${item.name}</span>
-            <span class="msh-item-meta">${item.price} • ${item.area}</span>
-          </div>
-          <div style="display:flex; align-items:center;">
-            <button type="button" class="msh-order-btn" onclick="window.mshFhQuickOrder(${idx})">Order</button>
-            ${delBtn}
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  // Quick Order from Menu (100% Private to Admin WhatsApp)
-  window.mshFhQuickOrder = function(idx) {
-    const item = menuItems[idx];
-    const customNote = document.getElementById("mshFhCustomQuery").value.trim();
-    const custPhone = document.getElementById("mshFhPhoneInput").value.trim();
-    sendPrivateOrderToAdmin(`${item.icon} ${item.name} (${item.price})`, customNote, custPhone);
-  };
-
-  window.mshFhDeleteMenu = function(idx) {
-    menuItems.splice(idx, 1);
-    localStorage.setItem("msh_food_menu_v1", JSON.stringify(menuItems));
-    renderMenu();
-  };
-
-  // Send Private Order / Query to Admin WhatsApp + Save in Admin Private Log
-  function sendPrivateOrderToAdmin(itemTitle, extraNote, phone) {
+  function sendPrivateOrder(itemTitle, extraNote, phone) {
     const gpsLink = userLat ? `https://maps.google.com/?q=${userLat},${userLng}` : (dropLat ? `https://maps.google.com/?q=${dropLat},${dropLng}` : "GPS Not Attached");
     const locLabel = dropPlaceName || (userLat ? "Live GPS Attached" : "Not Selected");
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Save privately in localStorage (Visible ONLY when Admin PIN 1234 is unlocked)
     privateOrders.unshift({
       item: itemTitle,
       note: extraNote,
@@ -466,37 +664,36 @@
       phone: phone || "WhatsApp Sender",
       time: timeStr
     });
-    if (privateOrders.length > 25) privateOrders.pop();
-    localStorage.setItem("msh_food_orders_v1", JSON.stringify(privateOrders));
+    if (privateOrders.length > 30) privateOrders.pop();
+    pushPrivateOrderToCloud();
 
     let msg = `🔒 *PRIVATE FOOD / PARCEL ORDER (Mana Seva Hub)*\n`;
     msg += `----------------------------------\n`;
-    msg += `🛒 *Order / Query:* ${itemTitle}\n`;
+    msg += `🛒 *Order:* ${itemTitle}\n`;
     if (extraNote) msg += `📝 *Details:* ${extraNote}\n`;
     msg += `📍 *Location:* ${locLabel}\n`;
     msg += `🗺️ *GPS Link:* ${gpsLink}\n`;
-    msg += `🚚 *Est. Delivery Charge:* ₹${delivFee} (${delivKm} km)\n`;
-    if (phone) msg += `📞 *Customer Phone:* ${phone}\n`;
+    msg += `🚚 *Delivery Charge:* ₹${delivFee} (${delivKm} km)\n`;
+    if (phone) msg += `📞 *Phone:* ${phone}\n`;
     msg += `----------------------------------\n`;
     msg += `దయచేసి ఆర్డర్ కన్ఫర్మ్ చేయండి.`;
 
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Custom Parcel / Query Submit Button
-  document.getElementById("mshFhSubmitOrderBtn").addEventListener("click", function() {
-    const queryText = document.getElementById("mshFhCustomQuery").value.trim();
-    const custPhone = document.getElementById("mshFhPhoneInput").value.trim();
+  document.getElementById("mshFpSubmitOrderBtn").addEventListener("click", function() {
+    const queryText = document.getElementById("mshFpCustomQuery").value.trim();
+    const custPhone = document.getElementById("mshFpPhoneInput").value.trim();
     if (!queryText) {
-      alert("దయచేసి మీకు కావాల్సిన వస్తువులు, పార్సెల్ లేదా ప్రశ్న (Query) రాయండి.");
+      alert("దయచేసి మీకు కావాల్సిన వస్తువులు లేదా పార్సెల్ వివరాలు రాయండి.");
       return;
     }
-    sendPrivateOrderToAdmin("📦 Custom Parcel / Query Order", queryText, custPhone);
+    sendPrivateOrder("📦 Custom Parcel / Kirana Order", queryText, custPhone);
   });
 
-  // Live GPS Button
-  document.getElementById("mshFhGpsBtn").addEventListener("click", function() {
-    const inp = document.getElementById("mshFhGpsInput");
+  // GPS & Map Search
+  document.getElementById("mshFpGpsBtn").addEventListener("click", function() {
+    const inp = document.getElementById("mshFpGpsInput");
     inp.value = "GPS తీసుకుంటున్నాము...";
     if (!navigator.geolocation) { alert("GPS సపోర్ట్ లేదు"); return; }
 
@@ -505,138 +702,134 @@
       userLng = pos.coords.longitude;
       inp.value = `Live GPS Ready ✅ (${userLat.toFixed(4)}, ${userLng.toFixed(4)})`;
       this.style.background = "#16a34a";
-      const d = getDistanceFromHub(userLat, userLng);
-      calcDeliveryFee(d);
+      calcDeliveryFee(getDistanceFromHub(userLat, userLng));
     }, () => {
       inp.value = "Location On చేసి మళ్లీ నొక్కండి";
       alert("దయచేసి ఫోన్‌లో Location (GPS) ఆన్ చేయండి.");
     }, { enableHighAccuracy: true });
   });
 
-  // Village Dropdown Change
-  document.getElementById("mshFhVillageSel").addEventListener("change", function() {
+  document.getElementById("mshFpVillageSel").addEventListener("change", function() {
     if (!this.value) return;
     const [lat, lng] = this.value.split(",").map(Number);
     dropLat = lat; dropLng = lng;
     dropPlaceName = this.options[this.selectedIndex].text;
-    const d = getDistanceFromHub(lat, lng);
-    calcDeliveryFee(d);
+    calcDeliveryFee(getDistanceFromHub(lat, lng));
   });
 
-  // Map Modal & Search
-  function setFhPin(lat, lng, label) {
+  function setFpPin(lat, lng, label) {
     dropLat = lat; dropLng = lng; dropPlaceName = label;
     if (fhMarker) fhMarker.setLatLng([lat, lng]);
     else fhMarker = L.marker([lat, lng]).addTo(fhMap);
     fhMap.setView([lat, lng], 14);
-    document.getElementById("mshFhMapStatus").innerText = `✅ ${label}`;
+    document.getElementById("mshFpMapStatus").innerText = `✅ ${label}`;
   }
 
-  document.getElementById("mshFhOpenMapBtn").addEventListener("click", function() {
-    document.getElementById("mshFhMapModal").style.display = "flex";
+  document.getElementById("mshFpOpenMapBtn").addEventListener("click", function() {
+    document.getElementById("mshFpMapModal").style.display = "flex";
     setTimeout(() => {
       if (!fhMap && typeof L !== "undefined") {
-        fhMap = L.map("mshFhMap").setView([userLat || HUB_LAT, userLng || HUB_LNG], 12);
+        fhMap = L.map("mshFpMap").setView([userLat || HUB_LAT, userLng || HUB_LNG], 12);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(fhMap);
-        fhMap.on("click", e => setFhPin(e.latlng.lat, e.latlng.lng, `Map Pin (${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)})`));
+        fhMap.on("click", e => setFpPin(e.latlng.lat, e.latlng.lng, `Map Pin (${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)})`));
       } else if (fhMap) fhMap.invalidateSize();
     }, 200);
   });
 
-  async function searchFhMap() {
-    const q = document.getElementById("mshFhMapSearchInp").value.trim();
+  async function searchFpMap() {
+    const q = document.getElementById("mshFpMapSearchInp").value.trim();
     if (!q) return;
-    const st = document.getElementById("mshFhMapStatus");
+    const st = document.getElementById("mshFpMapStatus");
     st.innerText = "🔍 వెతుకుతున్నాము...";
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q + ", Andhra Pradesh, India")}`);
       const data = await res.json();
-      if (data && data.length > 0) setFhPin(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name.split(",").slice(0, 2).join(","));
+      if (data && data.length > 0) setFpPin(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name.split(",").slice(0, 2).join(","));
       else st.innerText = "❌ దొరకలేదు—మ్యాప్‌లో Tap చేయండి";
     } catch { st.innerText = "⚠️ నెట్‌వర్క్ సమస్య—మ్యాప్‌లో Tap చేయండి"; }
   }
 
-  document.getElementById("mshFhMapSearchBtn").addEventListener("click", searchFhMap);
-  document.getElementById("mshFhCloseMapBtn").addEventListener("click", () => document.getElementById("mshFhMapModal").style.display = "none");
-  document.getElementById("mshFhConfirmMapBtn").addEventListener("click", () => {
+  document.getElementById("mshFpMapSearchBtn").addEventListener("click", searchFpMap);
+  document.getElementById("mshFpCloseMapBtn").addEventListener("click", () => document.getElementById("mshFpMapModal").style.display = "none");
+  document.getElementById("mshFpConfirmMapBtn").addEventListener("click", () => {
     if (dropLat === null) { alert("ఊరు సెర్చ్ చేయండి లేదా మ్యాప్‌లో Tap చేయండి."); return; }
-    document.getElementById("mshFhMapModal").style.display = "none";
-    document.getElementById("mshFhGpsInput").value = `Map Selected: ${dropPlaceName}`;
+    document.getElementById("mshFpMapModal").style.display = "none";
+    document.getElementById("mshFpGpsInput").value = `Map Selected: ${dropPlaceName}`;
     calcDeliveryFee(getDistanceFromHub(dropLat, dropLng));
   });
 
-  // Admin Lock Toggle (PIN: 1234)
-  document.getElementById("mshFhAdminBtn").addEventListener("click", function() {
-    const bar = document.getElementById("mshFhAdminBar");
+  // =========================================================================
+  // ADMIN CONTROLS (PIN: 1234)
+  // =========================================================================
+  document.getElementById("mshFpAdminBtn").addEventListener("click", function() {
+    const bar = document.getElementById("mshFpAdminBar");
     if (isAdminOpen) {
       isAdminOpen = false;
       this.innerText = "🔒 Admin Lock";
       this.classList.remove("unlocked");
       bar.style.display = "none";
-      document.getElementById("mshFhPanelMenu").style.display = "none";
-      document.getElementById("mshFhPanelOrders").style.display = "none";
+      document.getElementById("mshFpPanelMenu").style.display = "none";
+      document.getElementById("mshFpPanelOrders").style.display = "none";
       renderMenu();
+      renderLiveQuestions();
       return;
     }
-    const pin = prompt("Food & Parcel Admin PIN ఎంటర్ చేయండి (1234):");
+    const pin = prompt("Admin PIN ఎంటర్ చేయండి (1234):");
     if (pin === ADMIN_PIN) {
       isAdminOpen = true;
       this.innerText = "🔓 Admin Unlocked";
       this.classList.add("unlocked");
       bar.style.display = "block";
       renderMenu();
+      renderLiveQuestions();
     } else if (pin !== null) {
       alert("తప్పు PIN!");
     }
   });
 
-  // Admin Selective Tabs
-  document.getElementById("mshFhTabMenu").addEventListener("click", function() {
-    const p = document.getElementById("mshFhPanelMenu");
+  document.getElementById("mshFpTabMenu").addEventListener("click", function() {
+    const p = document.getElementById("mshFpPanelMenu");
     const open = p.style.display === "block";
-    document.getElementById("mshFhPanelOrders").style.display = "none";
-    document.getElementById("mshFhTabOrders").classList.remove("active");
+    document.getElementById("mshFpPanelOrders").style.display = "none";
+    document.getElementById("mshFpTabOrders").classList.remove("active");
     p.style.display = open ? "none" : "block";
     this.classList.toggle("active", !open);
   });
 
-  document.getElementById("mshFhTabOrders").addEventListener("click", function() {
-    const p = document.getElementById("mshFhPanelOrders");
+  document.getElementById("mshFpTabOrders").addEventListener("click", function() {
+    const p = document.getElementById("mshFpPanelOrders");
     const open = p.style.display === "block";
-    document.getElementById("mshFhPanelMenu").style.display = "none";
-    document.getElementById("mshFhTabMenu").classList.remove("active");
+    document.getElementById("mshFpPanelMenu").style.display = "none";
+    document.getElementById("mshFpTabMenu").classList.remove("active");
     p.style.display = open ? "none" : "block";
     this.classList.toggle("active", !open);
     renderPrivateOrdersLog();
   });
 
-  document.getElementById("mshFhCloseMenuPanel").addEventListener("click", () => {
-    document.getElementById("mshFhPanelMenu").style.display = "none";
-    document.getElementById("mshFhTabMenu").classList.remove("active");
+  document.getElementById("mshFpCloseMenuPanel").addEventListener("click", () => {
+    document.getElementById("mshFpPanelMenu").style.display = "none";
+    document.getElementById("mshFpTabMenu").classList.remove("active");
   });
-  document.getElementById("mshFhCloseOrderPanel").addEventListener("click", () => {
-    document.getElementById("mshFhPanelOrders").style.display = "none";
-    document.getElementById("mshFhTabOrders").classList.remove("active");
+  document.getElementById("mshFpCloseOrderPanel").addEventListener("click", () => {
+    document.getElementById("mshFpPanelOrders").style.display = "none";
+    document.getElementById("mshFpTabOrders").classList.remove("active");
   });
 
-  // Save New Menu Item
-  document.getElementById("mshFhSaveItemBtn").addEventListener("click", function() {
-    const icon = document.getElementById("mshFhNewIcon").value;
-    const name = document.getElementById("mshFhNewName").value.trim();
-    const price = document.getElementById("mshFhNewPrice").value.trim() || "Market Rate + Drop";
-    const area = document.getElementById("mshFhNewArea").value.trim() || "Boddavara / S.Kota";
+  document.getElementById("mshFpSaveItemBtn").addEventListener("click", function() {
+    const icon = document.getElementById("mshFpNewIcon").value;
+    const name = document.getElementById("mshFpNewName").value.trim();
+    const price = document.getElementById("mshFpNewPrice").value.trim() || "Market Rate + Drop";
+    const area = document.getElementById("mshFpNewArea").value.trim() || "Boddavara / S.Kota";
     if (!name) { alert("ఐటమ్ పేరు రాయండి."); return; }
 
-    menuItems.unshift({ icon, name, price, area });
-    localStorage.setItem("msh_food_menu_v1", JSON.stringify(menuItems));
-    document.getElementById("mshFhNewName").value = "";
-    renderMenu();
-    alert("కొత్త ఐటమ్ యాడ్ అయింది ✅");
+    menuItems.unshift({ id: "m_" + Date.now(), icon, name, price, area });
+    document.getElementById("mshFpNewName").value = "";
+    pushMenuToCloud();
+    alert("✅ కొత్త ఐటమ్ సేవ్ అయింది! అన్ని మొబైల్స్‌లో వెంటనే అప్‌డేట్ అవుతుంది.");
   });
 
-  // Render Private Orders Log (Only Admin can see!)
   function renderPrivateOrdersLog() {
-    const box = document.getElementById("mshFhOrdersLogList");
+    const box = document.getElementById("mshFpOrdersLogList");
     if (privateOrders.length === 0) {
       box.innerHTML = `<div style="color:#64748b;">ఇంకా ప్రైవేట్ ఆర్డర్లు లేవు.</div>`;
       return;
@@ -648,18 +841,19 @@
           <span>📍 ${o.loc} | 📞 ${o.phone} | 🕒 ${o.time}</span>
           ${o.note ? `<div style="color:#0f4c3a;">📝 ${o.note}</div>` : ""}
         </div>
-        <button type="button" onclick="window.mshFhDelOrder(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:800;">Delete</button>
+        <button type="button" onclick="window.mshFpDelOrder(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:4px 8px; cursor:pointer; font-weight:800;">Delete</button>
       </div>
     `).join("");
   }
 
-  window.mshFhDelOrder = function(idx) {
+  window.mshFpDelOrder = function(idx) {
     privateOrders.splice(idx, 1);
-    localStorage.setItem("msh_food_orders_v1", JSON.stringify(privateOrders));
+    pushPrivateOrderToCloud();
     renderPrivateOrdersLog();
   };
 
   // Init
   renderMenu();
+  renderLiveQuestions();
 })();
 </script>
