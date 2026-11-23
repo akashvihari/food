@@ -4,15 +4,16 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  .msh-swiggy {
+  .msh-swiggy-pro {
     --swiggy-orange: #fc8019;
     --swiggy-dark: #171a29;
     --primary-green: #0f4c3a;
     --bright-green: #16a34a;
+    --farm-gold: #b45309;
     --danger: #dc2626;
-    --border: #e2e8f0;
+    --border: #cbd5e1;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    max-width: 1160px;
+    max-width: 1180px;
     margin: 16px auto;
     background: #ffffff;
     border: 2px solid #cbd5e1;
@@ -21,9 +22,33 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     color: #1e293b;
   }
-  .msh-swiggy * { box-sizing: border-box; }
+  .msh-swiggy-pro * { box-sizing: border-box; }
 
-  /* Header & 7-Server Live Bar */
+  /* MOVING DISCLAIMER TICKER (Top Warning) */
+  .msh-ticker-wrap {
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .msh-ticker-move {
+    display: inline-block;
+    padding-left: 100%;
+    animation: mshTickerAnim 24s linear infinite;
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #991b1b;
+  }
+  .msh-ticker-wrap:hover .msh-ticker-move { animation-play-state: paused; }
+  @keyframes mshTickerAnim {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* Header */
   .msh-sw-header {
     display: flex;
     justify-content: space-between;
@@ -34,9 +59,9 @@
     padding-bottom: 12px;
     margin-bottom: 12px;
   }
-  .msh-sw-title { font-size: 1.35rem; font-weight: 900; color: var(--swiggy-dark); margin: 0; }
+  .msh-sw-title { font-size: 1.38rem; font-weight: 900; color: var(--swiggy-dark); margin: 0; }
   .msh-sw-title span { color: var(--swiggy-orange); }
-  .msh-sw-sub { font-size: 0.86rem; color: #475569; margin: 3px 0 0; font-weight: 600; }
+  .msh-sw-sub { font-size: 0.88rem; color: #475569; margin: 4px 0 0; font-weight: 600; }
 
   .msh-sw-lock-btn {
     background: var(--swiggy-dark);
@@ -74,7 +99,7 @@
     border: 1px solid #334155;
   }
 
-  /* Admin Selective Bar & Panels */
+  /* Admin Bar & Selective Panels */
   .msh-sw-admin-bar {
     display: none;
     background: #1e293b;
@@ -89,8 +114,8 @@
     color: #fff;
     border: 1px solid #475569;
     border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 0.85rem;
+    padding: 8px 13px;
+    font-size: 0.84rem;
     font-weight: 700;
     cursor: pointer;
   }
@@ -104,20 +129,20 @@
     padding: 14px;
     margin-bottom: 16px;
   }
-  .msh-sw-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  .msh-sw-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 8px; }
 
-  /* Main 2-Column Swiggy Layout */
+  /* Main 2-Column Versatile Grid */
   .msh-sw-grid {
     display: grid;
     grid-template-columns: 1.15fr 1fr;
     gap: 18px;
     align-items: start;
   }
-  @media (max-width: 840px) {
+  @media (max-width: 860px) {
     .msh-sw-grid { grid-template-columns: 1fr; }
   }
 
-  /* Left: Swiggy Menu Card */
+  /* Left: Menu & Own Farm/Stock Corner */
   .msh-sw-menu-box {
     background: #fff7ed;
     border: 1.5px solid #fed7aa;
@@ -135,22 +160,20 @@
     background: #fff;
     border: 1.5px solid #fdba74;
     color: #9a3412;
-    padding: 5px 12px;
+    padding: 6px 12px;
     border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 800;
     cursor: pointer;
     white-space: nowrap;
   }
-  .msh-cat-pill.active {
-    background: var(--swiggy-orange);
-    color: #fff;
-    border-color: var(--swiggy-orange);
-  }
+  .msh-cat-pill.active { background: var(--swiggy-orange); color: #fff; border-color: var(--swiggy-orange); }
+  .msh-cat-pill.own-pill { border-color: #16a34a; color: #15803d; }
+  .msh-cat-pill.own-pill.active { background: #16a34a; color: #fff; }
 
-  /* Fixed 7-Item Scroll Container */
+  /* Scrollable Menu List */
   .msh-sw-scroll-list {
-    max-height: 490px; /* Exactly 7 items visible, scrolls smoothly after 7 */
+    max-height: 520px;
     overflow-y: auto;
     padding-right: 4px;
   }
@@ -162,27 +185,42 @@
     border: 1.5px solid #fed7aa;
     border-radius: 12px;
     padding: 10px 12px;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   }
-  .msh-sw-item-title { font-size: 1rem; font-weight: 800; color: #0f172a; display: block; }
-  .msh-sw-item-sub { font-size: 0.82rem; color: #475569; font-weight: 600; margin-top: 2px; display: block; }
+  /* Special Styling for Admin's Own Farm / Local Business Stock */
+  .msh-sw-item.own-stock {
+    background: #f0fdf4;
+    border: 2px solid #22c55e;
+  }
+  .msh-own-tag {
+    background: #15803d;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 3px;
+  }
+
+  .msh-sw-item-title { font-size: 1.02rem; font-weight: 800; color: #0f172a; display: block; }
+  .msh-sw-item-sub { font-size: 0.84rem; color: #475569; font-weight: 600; margin-top: 2px; display: block; }
   .msh-sw-price-badge {
     display: inline-block;
     background: #ffedd5;
     color: #c2410c;
     font-weight: 800;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: 5px;
-    font-size: 0.82rem;
-    margin-top: 3px;
+    font-size: 0.84rem;
+    margin-top: 4px;
   }
 
-  /* Swiggy-Style ADD / - 1 + Counter Button */
   .msh-add-btn {
     background: #ffffff;
     color: var(--bright-green);
@@ -192,7 +230,6 @@
     font-size: 0.9rem;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
   .msh-qty-box {
     display: inline-flex;
@@ -213,7 +250,7 @@
     cursor: pointer;
   }
 
-  /* Right: Checkout, Live GPS & Live Q&A */
+  /* Right Column: Hotel Selector, User Location, Disclaimer & Checkout */
   .msh-sw-right-box {
     background: #f8fafc;
     border: 1.5px solid #cbd5e1;
@@ -246,14 +283,34 @@
     height: 42px;
   }
 
-  /* Live Cart Summary Box */
+  /* Active Delivery Riders Strip (Controlled by Admin) */
+  .msh-active-riders-strip {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    font-size: 0.84rem;
+  }
+  .msh-rider-chip {
+    display: inline-block;
+    background: #dcfce7;
+    color: #15803d;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+    margin: 3px 4px 0 0;
+    font-size: 0.78rem;
+  }
+
+  /* Cart Summary */
   .msh-cart-summary {
     background: #f0fdf4;
     border: 2px solid #16a34a;
     border-radius: 12px;
     padding: 10px 12px;
     margin-bottom: 10px;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
   .msh-cart-total-row {
     display: flex;
@@ -265,6 +322,19 @@
     border-top: 1px dashed #86efac;
     padding-top: 6px;
     margin-top: 6px;
+  }
+
+  /* Clear Static Delivery Time Disclaimer Box */
+  .msh-time-disclaimer {
+    background: #fffbeb;
+    border: 1.5px solid #f59e0b;
+    border-radius: 10px;
+    padding: 9px 11px;
+    margin-bottom: 10px;
+    font-size: 0.84rem;
+    color: #78350f;
+    line-height: 1.45;
+    font-weight: 600;
   }
 
   .msh-sw-order-hero {
@@ -280,7 +350,7 @@
     box-shadow: 0 5px 15px rgba(252, 128, 25, 0.35);
   }
 
-  /* Live Questions Box (Real-time across all mobiles) */
+  /* Live Questions Box */
   .msh-sw-qa-box {
     margin-top: 16px;
     background: #eff6ff;
@@ -289,7 +359,7 @@
     padding: 12px;
   }
   .msh-sw-qa-scroll {
-    max-height: 220px;
+    max-height: 210px;
     overflow-y: auto;
     margin-top: 8px;
     padding-right: 4px;
@@ -334,19 +404,27 @@
   #mshSwMap { height: 280px; width: 100%; border-radius: 10px; margin: 8px 0; border: 1px solid #cbd5e1; }
 </style>
 
-<div class="msh-swiggy" id="mshSwiggyApp">
+<div class="msh-swiggy-pro" id="mshSwiggyProApp">
+  
+  <!-- MOVING TIME DISCLAIMER TICKER -->
+  <div class="msh-ticker-wrap">
+    <div class="msh-ticker-move">
+      ⚠️ ముఖ్య గమనిక: ఇది లోకల్ గ్రామీణ డెలివరీ సేవ. Swiggy లాగా 10 నిమిషాల్లో రాదు — ఆర్డర్ చేసిన తర్వాత 30 నుండి 45 నిమిషాలు (అరగంట పైన) పట్టవచ్చు. ముఖ్యమైన అవసరాలకు ముందే ఆర్డర్ చేసుకోండి; ఆలస్యమైందని వాదనకు / గొడవకు అవకాశం లేదు.
+    </div>
+  </div>
+
   <!-- Header -->
   <div class="msh-sw-header">
     <div>
-      <h2 class="msh-sw-title">🛵 Mana Seva <span>Swiggy-Style</span> Food, Veg & Parcel Delivery</h2>
-      <p class="msh-sw-sub">Boddavara • Kiltampalem • S.Kota • Dharmavaram • Tatipudi • Kothavalasa (20 KM Live Delivery)</p>
+      <h2 class="msh-sw-title">🛵 Mana Seva <span>Local Food, Hotels & Farm Stock</span></h2>
+      <p class="msh-sw-sub">Guntur Mess • Rajula Bhojanam • S.Kota Hotels • Own Farm Stock (Banana, Milk, Veg) • 20 KM Delivery</p>
     </div>
     <button type="button" class="msh-sw-lock-btn" id="mshSwAdminBtn">🔒 Admin Lock</button>
   </div>
 
   <!-- 7-Server Instant Sync Status Bar -->
   <div class="msh-sw-srv-strip">
-    <strong style="color:#facc15;">⚡ 7-Server Real-Time Cloud Sync (Instant Mobile Updates):</strong>
+    <strong style="color:#facc15;">⚡ 7-Server Live Sync (All Mobiles Instant Update):</strong>
     <div class="msh-sw-srv-tags">
       <span class="msh-sw-srv-pill">🟢 S1:Manhattan</span>
       <span class="msh-sw-srv-pill">🟢 S2:PeerOoo</span>
@@ -358,71 +436,110 @@
     </div>
   </div>
 
-  <!-- Admin Selective Bar -->
+  <!-- ADMIN SELECTIVE BAR (Opens ONLY when PIN 1234 is entered) -->
   <div class="msh-sw-admin-bar" id="mshSwAdminBar">
-    <div style="font-size:0.88rem; color:#facc15; font-weight:800;">🔓 Swiggy Admin Panel (ఇక్కడ మార్చిన వెంటనే అన్ని మొబైల్స్‌లో 0.5s లో అప్‌డేట్ అవుతుంది):</div>
+    <div style="font-size:0.88rem; color:#facc15; font-weight:800;">🔓 Admin Master Control (మీకు ఏది కావాలో దానిపై నొక్కండి):</div>
     <div class="msh-sw-tabs">
-      <button type="button" class="msh-sw-tab" id="mshSwTabAdd">➕ Add / Edit Food & Veg Items</button>
-      <button type="button" class="msh-sw-tab" id="mshSwTabOrders">📋 View Private Orders Log</button>
+      <button type="button" class="msh-sw-tab" id="mshSwTabAdd">➕ Add Food / Own Farm Stock (Banana/Veg)</button>
+      <button type="button" class="msh-sw-tab" id="mshSwTabHotels">🏨 Add Hotel / Shop Name</button>
+      <button type="button" class="msh-sw-tab" id="mshSwTabRiders">🛵 Control Active Delivery Riders</button>
+      <button type="button" class="msh-sw-tab" id="mshSwTabOrders">📋 View Private Orders</button>
     </div>
   </div>
 
-  <!-- Admin Panel 1: Add Food / Veg Item -->
+  <!-- Admin Panel 1: Add Food / Own Farm Stock -->
   <div class="msh-sw-panel" id="mshSwPanelAdd">
-    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">➕ కొత్త ఐటమ్ యాడ్ చేయండి (All Mobiles Instant Sync)</h4>
+    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">➕ కొత్త ఫుడ్ లేదా మీ సొంత స్టాక్ (Banana Gela / Farm Stock) యాడ్ చేయండి</h4>
     <div class="msh-sw-form-grid">
       <select id="mshSwCatInp" class="msh-sw-select">
-        <option value="veg">🥬 Vegetables / Greens</option>
-        <option value="food">🍗 Biryani / Chicken / Food</option>
-        <option value="drinks">💧 Water Can / Milk / Drinks</option>
+        <option value="own">🌾 My Own Farm / Home Stock (Banana Gela, Milk, etc.)</option>
+        <option value="food">🍗 Hotel Food / Biryani / Meals</option>
+        <option value="veg">🥬 Fresh Vegetables / Greens</option>
+        <option value="drinks">💧 Water Can / Cool Drinks</option>
         <option value="parcel">📦 Kirana / Rice / Parcel</option>
       </select>
-      <input type="text" id="mshSwNameInp" class="msh-sw-input" placeholder="ఐటమ్ పేరు (ఉదా: Chicken Dum Biryani)">
-      <input type="number" id="mshSwPriceInp" class="msh-sw-input" placeholder="ధర ₹ (ఉదా: 150)">
-      <input type="text" id="mshSwDescInp" class="msh-sw-input" placeholder="వివరాలు (ఉదా: 1 Plate + Raita • S.Kota)">
+      <input type="text" id="mshSwNameInp" class="msh-sw-input" placeholder="ఐటమ్ పేరు (ఉదా: Banana Full Gela / Guntur Mess Meals)">
+      <input type="number" id="mshSwPriceInp" class="msh-sw-input" placeholder="ధర ₹ (ఉదా: 250)">
+      <input type="text" id="mshSwDescInp" class="msh-sw-input" placeholder="వివరాలు (ఉదా: Fresh Organic Farm • Boddavara)">
     </div>
     <div style="display:flex; gap:8px;">
-      <button type="button" class="msh-sw-btn-sm" style="background:#16a34a;" id="mshSwSaveItemBtn">🚀 Save & Sync to All Mobiles</button>
-      <button type="button" class="msh-sw-btn-sm" style="background:#64748b;" id="mshSwCloseAdd">Close</button>
+      <button type="button" class="msh-sw-btn-sm" style="background:#16a34a;" id="mshSwSaveItemBtn">🚀 Save & Sync All Mobiles</button>
+      <button type="button" class="msh-sw-btn-sm" style="background:#64748b;" onclick="document.getElementById('mshSwPanelAdd').style.display='none'">Close</button>
     </div>
   </div>
 
-  <!-- Admin Panel 2: Private Orders Log -->
+  <!-- Admin Panel 2: Add Hotel / Restaurant Name -->
+  <div class="msh-sw-panel" id="mshSwPanelHotels">
+    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">🏨 కొత్త హోటల్ / షాప్ పేరు యాడ్ చేయండి</h4>
+    <div class="msh-sw-form-grid">
+      <input type="text" id="mshNewHotelName" class="msh-sw-input" placeholder="హోటల్ పేరు (ఉదా: Guntur Mess - Boddavara)">
+      <button type="button" class="msh-sw-btn-sm" style="background:#16a34a;" id="mshAddHotelBtn">➕ Add Hotel to List</button>
+      <button type="button" class="msh-sw-btn-sm" style="background:#64748b;" onclick="document.getElementById('mshSwPanelHotels').style.display='none'">Close</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel 3: Control Active Delivery Riders -->
+  <div class="msh-sw-panel" id="mshSwPanelRiders">
+    <h4 style="margin:0 0 10px; color:#0f4c3a; font-size:1.02rem;">🛵 Active Delivery Riders Control (మీ కంట్రోల్)</h4>
+    <div id="mshAdminRidersControlBox"></div>
+    <button type="button" class="msh-sw-btn-sm" style="background:#64748b; margin-top:8px;" onclick="document.getElementById('mshSwPanelRiders').style.display='none'">Close</button>
+  </div>
+
+  <!-- Admin Panel 4: Private Orders Log -->
   <div class="msh-sw-panel" id="mshSwPanelOrders">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h4 style="margin:0; color:#0f4c3a; font-size:1.02rem;">🔒 Private Customer Orders (అడ్మిన్‌కు మాత్రమే కనిపిస్తాయి)</h4>
-      <button type="button" class="msh-sw-btn-sm" style="background:#64748b; height:32px;" id="mshSwCloseOrders">Close</button>
+      <h4 style="margin:0; color:#0f4c3a; font-size:1.02rem;">🔒 Private Customer Orders (అడ్మిన్‌కు మాత్రమే)</h4>
+      <button type="button" class="msh-sw-btn-sm" style="background:#64748b; height:32px;" onclick="document.getElementById('mshSwPanelOrders').style.display='none'">Close</button>
     </div>
     <div id="mshSwOrdersBox" style="font-size:0.88rem;"></div>
   </div>
 
-  <!-- MAIN 2-COLUMN SWIGGY INTERFACE -->
+  <!-- MAIN 2-COLUMN SWIGGY + OWN BUSINESS GRID -->
   <div class="msh-sw-grid">
     
-    <!-- LEFT: SWIGGY MENU (Category Filter + 7-Item Scroll) -->
+    <!-- LEFT: MENU + OWN FARM STOCK (Banana Gela, Local Specials) -->
     <div class="msh-sw-menu-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h3 class="msh-sw-h3" style="color:#9a3412; margin:0;">1. ఐటమ్స్ ఎంచుకోండి (Swiggy Menu)</h3>
-        <span id="mshSwCountTag" style="font-size:0.78rem; background:#ffedd5; color:#9a3412; padding:3px 8px; border-radius:6px; font-weight:800;">7 Items</span>
+        <h3 class="msh-sw-h3" style="color:#9a3412; margin:0;">1. ఐటమ్స్ & నా సొంత స్టాక్ (Menu & Own Stock)</h3>
+        <span id="mshSwCountTag" style="font-size:0.78rem; background:#ffedd5; color:#9a3412; padding:3px 8px; border-radius:6px; font-weight:800;">8 Items</span>
       </div>
 
-      <!-- Category Filter Pills -->
+      <!-- Category Filter Pills (Including Own Farm/Business Stock!) -->
       <div class="msh-sw-cat-row" id="mshSwCatBar">
         <button type="button" class="msh-cat-pill active" data-cat="all">All Items</button>
+        <button type="button" class="msh-cat-pill own-pill" data-cat="own">🌾 My Own Stock (Banana/Farm)</button>
+        <button type="button" class="msh-cat-pill" data-cat="food">🍗 Hotel Food & Meals</button>
         <button type="button" class="msh-cat-pill" data-cat="veg">🥬 Vegetables</button>
-        <button type="button" class="msh-cat-pill" data-cat="food">🍗 Biryani & Food</button>
         <button type="button" class="msh-cat-pill" data-cat="drinks">💧 Water & Milk</button>
         <button type="button" class="msh-cat-pill" data-cat="parcel">📦 Kirana & Parcel</button>
       </div>
 
-      <!-- Fixed 7-Item Scrollable Menu -->
+      <!-- Scrollable List -->
       <div class="msh-sw-scroll-list" id="mshSwMenuList"></div>
     </div>
 
-    <!-- RIGHT: LIVE GPS, CART CHECKOUT & LIVE QUESTIONS -->
+    <!-- RIGHT: HOTEL/SHOP SELECTOR, USER LOCATION, DISCLAIMER & CHECKOUT -->
     <div class="msh-sw-right-box">
-      <h3 class="msh-sw-h3">2. డెలివరీ లొకేషన్ & ప్రైవేట్ ఆర్డర్</h3>
+      <h3 class="msh-sw-h3">2. ఏ హోటల్ నుండి & ఎక్కడికి తేవాలో ఎంచుకోండి</h3>
 
+      <!-- HOTEL / SHOP SELECTOR (Guntur Mess, Rajula Bhojanam, etc.) -->
+      <label style="font-size:0.86rem; font-weight:800; color:#7c2d12; display:block; margin-bottom:4px;">
+        🏨 ఏ హోటల్ / షాప్ నుండి తీసుకురావాలి? (Taste & Shop Choice):
+      </label>
+      <select id="mshSwHotelSel" class="msh-sw-select">
+        <option value="Any Best Local Shop">✅ ఏదైనా మంచి లోకల్ హోటల్ / షాప్</option>
+        <option value="Guntur Mess (Boddavara)">🍛 Guntur Mess (బొడ్డవార)</option>
+        <option value="Rajula Bhojanam (Boddavara / S.Kota)">🍗 Rajula Bhojanam (రాజుల భోజనం)</option>
+        <option value="S.Kota Biryani & Tiffin Center">🍲 S.Kota Biryani & Tiffin Center</option>
+        <option value="My Own Farm / Home Stock (Prakash)">🌾 My Own Stock (ప్రకాష్ సొంత స్టాక్ / అరటి గెల)</option>
+        <option value="custom_hotel">✍️ వేరే హోటల్ / షాప్ పేరు కింద రాస్తాను...</option>
+      </select>
+      <input type="text" id="mshSwCustomHotelInp" class="msh-sw-input" placeholder="హోటల్ లేదా షాప్ పేరు & లొకేషన్ రాయండి..." style="display:none;">
+
+      <!-- USER LOCATION (GPS + Village + Map + Exact Landmark) -->
+      <label style="font-size:0.86rem; font-weight:800; color:#0f4c3a; display:block; margin-bottom:4px;">
+        📍 మీ లొకేషన్ (ఎక్కడికి డెలివరీ చేయాలి?):
+      </label>
       <div class="msh-sw-row">
         <input type="text" id="mshSwGpsInp" class="msh-sw-input" style="margin:0;" placeholder="మీ ఇంటి Live GPS కోసం నొక్కండి ➔" readonly>
         <button type="button" class="msh-sw-btn-sm" id="mshSwGpsBtn">📍 Live GPS</button>
@@ -444,7 +561,15 @@
         <button type="button" class="msh-sw-btn-sm" style="background:#0284c7;" id="mshSwMapBtn">🗺️ Map Search</button>
       </div>
 
-      <!-- Swiggy Live Cart & Total Bill Box -->
+      <input type="text" id="mshSwLandmarkInp" class="msh-sw-input" placeholder="మీ ఇంటి దగ్గర గుర్తు (ఉదా: రామాలయం వీధి / స్కూల్ పక్కన)">
+
+      <!-- Active Delivery Riders Status (Controlled by Admin) -->
+      <div class="msh-active-riders-strip">
+        <strong style="color:#0f4c3a;">🛵 ప్రస్తుతం డ్యూటీలో ఉన్న డెలివరీ రైడర్లు:</strong>
+        <div id="mshSwActiveRidersView"></div>
+      </div>
+
+      <!-- Live Cart Summary -->
       <div class="msh-cart-summary">
         <div id="mshSwCartItemsText" style="font-weight:700; color:#1e293b;">
           🛒 కార్ట్ ఖాళీగా ఉంది (ఎడమవైపు <b>+ ADD</b> నొక్కండి లేదా కింద కస్టమ్ ఆర్డర్ రాయండి)
@@ -455,20 +580,25 @@
         </div>
       </div>
 
-      <textarea id="mshSwCustomNote" class="msh-sw-textarea" rows="2" placeholder="లిస్ట్‌లో లేని వస్తువులు / పార్సెల్ వివరాలు రాయండి (ఉదా: 2kg టమాటా, 25kg బియ్యం)..."></textarea>
+      <textarea id="mshSwCustomNote" class="msh-sw-textarea" rows="2" placeholder="లిస్ట్‌లో లేని ఫుడ్ / కూరగాయలు / పార్సెల్ వివరాలు రాయండి..."></textarea>
       <input type="tel" id="mshSwPhoneInp" class="msh-sw-input" placeholder="మీ ఫోన్ నంబర్ (100% రహస్యంగా ఉంటుంది)">
+
+      <!-- CLEAR DELIVERY TIME DISCLAIMER BOX -->
+      <div class="msh-time-disclaimer">
+        ⏳ <b>డెలివరీ సమయ నిబంధన (Disclaimer):</b> ఇది లోకల్ గ్రామీణ డెలివరీ సేవ. Swiggy లాగా 10 నిమిషాల్లో రాదు—ఆర్డర్ చేసిన తర్వాత <b>30 నుండి 45 నిమిషాలు (అరగంట పైన)</b> పట్టవచ్చు. ముఖ్యమైన అవసరాలకు ముందే ఆర్డర్ చేయండి; సమయానికి రాలేదని గొడవ/వాదనకు అవకాశం లేదు.
+      </div>
 
       <button type="button" class="msh-sw-order-hero" id="mshSwPlaceOrderBtn">
         🔒 PLACE PRIVATE ORDER (అడ్మిన్‌కు మాత్రమే వెళ్తుంది)
       </button>
 
-      <!-- LIVE QUESTIONS & ANSWERS (Updates across all mobiles in <0.5s!) -->
+      <!-- LIVE QUESTIONS & ANSWERS -->
       <div class="msh-sw-qa-box">
         <div style="font-size:1rem; font-weight:900; color:#1e3a8a;">
           💬 Live Questions (సందేహాలు అడగండి - అన్ని మొబైల్స్‌లో వెంటనే కనిపిస్తాయి)
         </div>
         <div class="msh-sw-row" style="margin-top:8px; margin-bottom:4px;">
-          <input type="text" id="mshSwQInp" class="msh-sw-input" style="margin:0;" placeholder="ప్రశ్న రాయండి (ఉదా: ఈరోజు బిర్యానీ / కూరగాయలు ఉన్నాయా?)...">
+          <input type="text" id="mshSwQInp" class="msh-sw-input" style="margin:0;" placeholder="ప్రశ్న రాయండి (ఉదా: ఈరోజు Guntur Mess భోజనం / అరటి గెల ఉందా?)...">
           <button type="button" class="msh-sw-btn-sm" style="background:#2563eb;" id="mshSwAskBtn">Ask Live</button>
         </div>
         <div class="msh-sw-qa-scroll" id="mshSwQList"></div>
@@ -482,11 +612,11 @@
 <div class="msh-sw-modal" id="mshSwMapModal">
   <div class="msh-sw-modal-inner">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <strong style="color:#0f4c3a;">🗺️ Map లో మీ ఇంటి లొకేషన్ సెర్చ్ చేయండి లేదా Tap చేయండి</strong>
+      <strong style="color:#0f4c3a;">🗺️ Map లో లొకేషన్ సెర్చ్ చేయండి లేదా Tap చేయండి</strong>
       <button type="button" id="mshSwCloseMap" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; cursor:pointer; font-weight:700;">✕</button>
     </div>
     <div class="msh-sw-row" style="margin-bottom:4px;">
-      <input type="text" id="mshSwMapSearchInp" class="msh-sw-input" style="margin:0;" placeholder="ఊరి పేరు (ఉదా: S.Kota, Tatipudi, Kiltampalem)...">
+      <input type="text" id="mshSwMapSearchInp" class="msh-sw-input" style="margin:0;" placeholder="ఊరు లేదా హోటల్ పేరు (ఉదా: Boddavara, S.Kota)...">
       <button type="button" class="msh-sw-btn-sm" style="background:#0284c7;" id="mshSwMapSearchBtn">🔍 Search</button>
     </div>
     <div id="mshSwMap"></div>
@@ -503,9 +633,7 @@
   const ADMIN_PIN = "1234";
   const HUB_LAT = 18.0950, HUB_LNG = 83.1350;
 
-  // =========================================================================
-  // 7-SERVER REAL-TIME MULTI-BACKUP ARCHITECTURE (Zero Setup - Ultra Fast!)
-  // =========================================================================
+  // 7-Server Multi-Backup Real-Time Engine
   const PEER_SERVERS = [
     "https://gun-manhattan.herokuapp.com/gun",
     "https://relay.peer.ooo/gun",
@@ -517,126 +645,121 @@
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEER_SERVERS, localStorage: true }) : null;
   const NTFY_STREAM = "https://ntfy.sh";
 
-  const TOPIC_MENU = "manasevahub_swiggy_menu_v2026";
-  const TOPIC_QA   = "manasevahub_swiggy_qa_v2026";
+  const TOPIC_MENU   = "manasevahub_pro_menu_v2026";
+  const TOPIC_QA     = "manasevahub_pro_qa_v2026";
+  const TOPIC_RIDERS = "manasevahub_pro_riders_v2026";
 
-  const catIcons = { veg: "🥬", food: "🍗", drinks: "💧", parcel: "📦" };
+  const catIcons = { own: "🌾", veg: "🥬", food: "🍗", drinks: "💧", parcel: "📦" };
 
-  // 7 Default Swiggy Items
+  // Default Items including Own Farm Stock (Banana Full Gela) & Local Mess Specials
   const defaultItems = [
-    { id: "sw1", cat: "veg", name: "Daily Fresh Vegetables Pack (1kg Mix)", price: 60, desc: "Tomato, Onion, Potato, Mirchi • Fresh Market", active: true },
-    { id: "sw2", cat: "food", name: "Chicken Dum Biryani (Full Plate)", price: 150, desc: "Hot Biryani + Gravy + Raita • S.Kota / Boddavara", active: true },
-    { id: "sw3", cat: "drinks", name: "20L Mineral Water Can (24/7)", price: 35, desc: "Urgent Doorstep Delivery • 20 KM Radius", active: true },
-    { id: "sw4", cat: "parcel", name: "25kg Fine Rice Bag / Kirana Box", price: 1250, desc: "Direct Shop Price + Home Drop", active: true },
-    { id: "sw5", cat: "drinks", name: "Fresh Milk (1L) & Curd Pack", price: 66, desc: "Morning & Evening Slot • Local Farm Fresh", active: true },
-    { id: "sw6", cat: "food", name: "Chicken Fry / Kabab Family Pack", price: 180, desc: "Evening Special • Hot & Spicy", active: true },
-    { id: "sw7", cat: "parcel", name: "Custom Parcel / Medicine Pickup", price: 30, desc: "S.Kota / Kothavalasa to Home Drop", active: true }
+    { id: "sw_own1", cat: "own", name: "Fresh Banana Full Gela (అరటి గెల - Farm Direct)", price: 280, desc: "Direct From Prakash Farm • Boddavara • Fresh & Natural", active: true },
+    { id: "sw1", cat: "food", name: "Guntur Mess Full Meals / Curry Pack", price: 110, desc: "From Guntur Mess (Boddavara) • Hot Lunch/Dinner", active: true },
+    { id: "sw2", cat: "food", name: "Rajula Bhojanam Special Chicken Biryani", price: 160, desc: "From Rajula Bhojanam • Authentic Taste", active: true },
+    { id: "sw3", cat: "veg", name: "Daily Fresh Vegetables Pack (1kg Mix)", price: 60, desc: "Tomato, Onion, Potato, Mirchi • Morning Fresh", active: true },
+    { id: "sw4", cat: "drinks", name: "20L Mineral Water Can (24/7)", price: 35, desc: "Doorstep Delivery • 20 KM Radius", active: true },
+    { id: "sw5", cat: "own", name: "Pure Farm Milk (1L) & Homemade Curd", price: 66, desc: "Direct From Local Farm • Morning/Evening", active: true },
+    { id: "sw6", cat: "parcel", name: "25kg Fine Rice Bag / Monthly Kirana", price: 1250, desc: "Shop Bill + Doorstep Delivery", active: true },
+    { id: "sw7", cat: "parcel", name: "Custom Hotel / Medical Parcel Pickup", price: 30, desc: "Any Shop in S.Kota / Boddavara to Home", active: true }
   ];
 
   let menuMap = {};
   defaultItems.forEach(it => menuMap[it.id] = it);
-
-  // Load cached items if any
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_sw_menu_cache") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_pro_menu_cache") || "null");
   if (cachedMenu) menuMap = { ...menuMap, ...cachedMenu };
 
-  let qaMap = JSON.parse(localStorage.getItem("msh_sw_qa_cache") || "{}");
+  let qaMap = JSON.parse(localStorage.getItem("msh_pro_qa_cache") || "{}");
   if (Object.keys(qaMap).length === 0) {
     qaMap["q_init"] = {
       id: "q_init",
-      text: "ఈరోజు తాజా కూరగాయలు, చికెన్ బిర్యానీ మరియు వాటర్ క్యాన్ డెలివరీ ఉందా?",
-      reply: "అవును! ఉదయం 6 నుండి రాత్రి 9:30 వరకు డెలివరీ అందుబాటులో ఉంది.",
+      text: "ఈరోజు Guntur Mess భోజనం మరియు తాజా అరటి గెల (Banana Gela) అందుబాటులో ఉన్నాయా?",
+      reply: "అవును! ఆర్డర్ చేసిన 30–45 నిమిషాల్లో డెలివరీ చేస్తాము.",
       ts: Date.now() - 60000
     };
   }
 
-  let privateOrders = JSON.parse(localStorage.getItem("msh_sw_priv_orders") || "[]");
-  let cart = {}; // itemId -> qty
+  // Delivery Riders (Admin Controlled)
+  let delivRiders = JSON.parse(localStorage.getItem("msh_pro_deliv_riders") || "null") || [
+    { name: "Prakash", area: "Boddavara", phone: "8985240287", active: true },
+    { name: "Rajesh", area: "S.Kota", phone: "9000000001", active: true },
+    { name: "Sridhar", area: "Kiltampalem", phone: "9000000002", active: true },
+    { name: "Swami", area: "Thatipudi", phone: "9000000003", active: false }
+  ];
+
+  let customHotels = JSON.parse(localStorage.getItem("msh_pro_hotels") || "[]");
+  let privateOrders = JSON.parse(localStorage.getItem("msh_pro_priv_orders") || "[]");
+  let cart = {};
   let activeCategory = "all";
   let isAdminOpen = false;
   let uLat = null, uLng = null, dLat = null, dLng = null, placeLabel = "";
   let delivKm = 4, delivCharge = 25;
   let swMap = null, swMarker = null;
 
-  // =========================================================================
-  // REAL-TIME LISTENERS ACROSS ALL 7 SERVERS (Updates in <0.5s!)
-  // =========================================================================
+  // Real-time Listeners across all 7 Servers
   if (gun) {
     gun.get(TOPIC_MENU).map().on((data, id) => {
       if (data && data.name) {
-        if (data.deleted) {
-          delete menuMap[id];
-          delete cart[id];
-        } else {
-          menuMap[id] = {
-            id,
-            cat: data.cat || "food",
-            name: data.name,
-            price: Number(data.price) || 0,
-            desc: data.desc || "",
-            active: true
-          };
-        }
-        localStorage.setItem("msh_sw_menu_cache", JSON.stringify(menuMap));
-        renderMenu();
-        updateCartUI();
+        if (data.deleted) { delete menuMap[id]; delete cart[id]; }
+        else menuMap[id] = { id, cat: data.cat || "food", name: data.name, price: Number(data.price) || 0, desc: data.desc || "", active: true };
+        localStorage.setItem("msh_pro_menu_cache", JSON.stringify(menuMap));
+        renderMenu(); updateCartUI();
       }
     });
 
     gun.get(TOPIC_QA).map().on((data, id) => {
       if (data && data.text) {
-        if (data.deleted) {
-          delete qaMap[id];
-        } else {
-          qaMap[id] = {
-            id,
-            text: data.text,
-            reply: data.reply || "",
-            ts: data.ts || Date.now()
-          };
-        }
-        localStorage.setItem("msh_sw_qa_cache", JSON.stringify(qaMap));
+        if (data.deleted) delete qaMap[id];
+        else qaMap[id] = { id, text: data.text, reply: data.reply || "", ts: data.ts || Date.now() };
+        localStorage.setItem("msh_pro_qa_cache", JSON.stringify(qaMap));
         renderQA();
+      }
+    });
+
+    gun.get(TOPIC_RIDERS).get("list").on((data) => {
+      if (data && data.json) {
+        try {
+          delivRiders = JSON.parse(data.json);
+          localStorage.setItem("msh_pro_deliv_riders", JSON.stringify(delivRiders));
+          renderActiveRiders();
+          if (isAdminOpen) renderAdminRidersControl();
+        } catch (e) {}
       }
     });
   }
 
-  // Server 7: ntfy.sh SSE Instant Backup Stream
-  function connectNtfyBackup(topic, handler) {
+  // Server 7 ntfy.sh Backup Stream
+  function connectNtfy(topic, handler) {
     try {
       const es = new EventSource(`${NTFY_STREAM}/${topic}/sse?since=30m`);
       es.onmessage = (ev) => {
         try {
-          const wrap = JSON.parse(ev.data);
-          if (wrap && wrap.message) handler(JSON.parse(wrap.message));
+          const w = JSON.parse(ev.data);
+          if (w && w.message) handler(JSON.parse(w.message));
         } catch (e) {}
       };
     } catch (e) {}
   }
 
-  connectNtfyBackup(TOPIC_MENU, (msg) => {
+  connectNtfy(TOPIC_MENU, (msg) => {
     if (msg.deleted) { delete menuMap[msg.id]; delete cart[msg.id]; }
     else menuMap[msg.id] = msg;
-    localStorage.setItem("msh_sw_menu_cache", JSON.stringify(menuMap));
-    renderMenu();
-    updateCartUI();
+    localStorage.setItem("msh_pro_menu_cache", JSON.stringify(menuMap));
+    renderMenu(); updateCartUI();
   });
 
-  connectNtfyBackup(TOPIC_QA, (msg) => {
+  connectNtfy(TOPIC_QA, (msg) => {
     if (msg.deleted) delete qaMap[msg.id];
     else qaMap[msg.id] = msg;
-    localStorage.setItem("msh_sw_qa_cache", JSON.stringify(qaMap));
+    localStorage.setItem("msh_pro_qa_cache", JSON.stringify(qaMap));
     renderQA();
   });
 
-  function broadcastToAll7Servers(topic, id, payload) {
+  function broadcast7(topic, id, payload) {
     if (gun) gun.get(topic).get(id).put(payload);
     fetch(`${NTFY_STREAM}/${topic}`, { method: "POST", body: JSON.stringify(payload) }).catch(() => {});
   }
 
-  // =========================================================================
-  // RENDER SWIGGY MENU (Category Filter + 7-Item Scroll + Cart Counters)
-  // =========================================================================
+  // Render Menu (With special styling for My Own Farm / Business Stock)
   function renderMenu() {
     const listEl = document.getElementById("mshSwMenuList");
     const countTag = document.getElementById("mshSwCountTag");
@@ -651,22 +774,24 @@
     filtered.forEach(item => {
       const qty = cart[item.id] || 0;
       const icon = catIcons[item.cat] || "🍽️";
+      const isOwn = item.cat === "own";
 
       const actionBtn = qty === 0
-        ? `<button type="button" class="msh-add-btn" onclick="window.mshSwChangeQty('${item.id}', 1)">+ ADD</button>`
+        ? `<button type="button" class="msh-add-btn" onclick="window.mshProQty('${item.id}', 1)">+ ADD</button>`
         : `<div class="msh-qty-box">
-             <button type="button" class="msh-qty-btn" onclick="window.mshSwChangeQty('${item.id}', -1)">−</button>
+             <button type="button" class="msh-qty-btn" onclick="window.mshProQty('${item.id}', -1)">−</button>
              <span style="padding:0 6px;">${qty}</span>
-             <button type="button" class="msh-qty-btn" onclick="window.mshSwChangeQty('${item.id}', 1)">+</button>
+             <button type="button" class="msh-qty-btn" onclick="window.mshProQty('${item.id}', 1)">+</button>
            </div>`;
 
       const delBtn = isAdminOpen
-        ? `<button type="button" onclick="window.mshSwDeleteMenu('${item.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:6px 8px; font-weight:800; cursor:pointer; margin-left:6px;">🗑️</button>`
+        ? `<button type="button" onclick="window.mshProDelMenu('${item.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:6px 8px; font-weight:800; cursor:pointer; margin-left:6px;">🗑️</button>`
         : "";
 
       listEl.innerHTML += `
-        <div class="msh-sw-item">
+        <div class="msh-sw-item ${isOwn ? "own-stock" : ""}">
           <div>
+            ${isOwn ? `<span class="msh-own-tag">🌾 DIRECT OWN STOCK / FARM FRESH</span>` : ""}
             <span class="msh-sw-item-title">${icon} ${escapeHtml(item.name)}</span>
             <span class="msh-sw-item-sub">${escapeHtml(item.desc)}</span>
             <span class="msh-sw-price-badge">₹${item.price}</span>
@@ -680,25 +805,21 @@
     });
   }
 
-  window.mshSwChangeQty = function(id, delta) {
+  window.mshProQty = function(id, delta) {
     const next = (cart[id] || 0) + delta;
     if (next <= 0) delete cart[id];
     else cart[id] = next;
-    renderMenu();
-    updateCartUI();
+    renderMenu(); updateCartUI();
   };
 
-  window.mshSwDeleteMenu = function(id) {
+  window.mshProDelMenu = function(id) {
     const payload = { id, name: "deleted", deleted: true };
-    delete menuMap[id];
-    delete cart[id];
-    localStorage.setItem("msh_sw_menu_cache", JSON.stringify(menuMap));
-    renderMenu();
-    updateCartUI();
-    broadcastToAll7Servers(TOPIC_MENU, id, payload);
+    delete menuMap[id]; delete cart[id];
+    localStorage.setItem("msh_pro_menu_cache", JSON.stringify(menuMap));
+    renderMenu(); updateCartUI();
+    broadcast7(TOPIC_MENU, id, payload);
   };
 
-  // Category Tabs
   document.querySelectorAll("#mshSwCatBar .msh-cat-pill").forEach(btn => {
     btn.addEventListener("click", function() {
       document.querySelectorAll("#mshSwCatBar .msh-cat-pill").forEach(b => b.classList.remove("active"));
@@ -708,7 +829,57 @@
     });
   });
 
-  // Update Swiggy Cart & Total Bill
+  // Custom Hotel Selector Logic
+  const hotelSel = document.getElementById("mshSwHotelSel");
+  function loadSavedHotels() {
+    customHotels.forEach(h => {
+      if (![...hotelSel.options].some(o => o.value === h)) {
+        const opt = document.createElement("option");
+        opt.value = h;
+        opt.text = "🏨 " + h;
+        hotelSel.insertBefore(opt, hotelSel.lastElementChild);
+      }
+    });
+  }
+  loadSavedHotels();
+
+  hotelSel.addEventListener("change", function() {
+    document.getElementById("mshSwCustomHotelInp").style.display = (this.value === "custom_hotel") ? "block" : "none";
+  });
+
+  // Active Delivery Riders Display & Admin Control
+  function renderActiveRiders() {
+    const box = document.getElementById("mshSwActiveRidersView");
+    const activeList = delivRiders.filter(r => r.active);
+    if (activeList.length === 0) {
+      box.innerHTML = `<span style="color:#dc2626; font-weight:700;">ప్రస్తుతం రైడర్లు ఆఫ్‌లైన్‌లో ఉన్నారు (Admin కి మెసేజ్ చేయండి).</span>`;
+      return;
+    }
+    box.innerHTML = activeList.map(r => `<span class="msh-rider-chip">🟢 ${escapeHtml(r.name)} (${escapeHtml(r.area)})</span>`).join("");
+  }
+
+  function renderAdminRidersControl() {
+    const box = document.getElementById("mshAdminRidersControlBox");
+    box.innerHTML = delivRiders.map((r, i) => `
+      <div style="background:#fff; padding:8px 10px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+        <div>
+          <strong>${escapeHtml(r.name)}</strong> (${escapeHtml(r.area)}) • 📞 ${escapeHtml(r.phone)}
+        </div>
+        <button type="button" onclick="window.mshToggleDelivRider(${i})" style="background:${r.active ? '#16a34a' : '#dc2626'}; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-weight:800; cursor:pointer;">
+          ${r.active ? "🟢 Active (Click to OFF)" : "🔴 OFF (Click to ON)"}
+        </button>
+      </div>
+    `).join("");
+  }
+
+  window.mshToggleDelivRider = function(idx) {
+    delivRiders[idx].active = !delivRiders[idx].active;
+    localStorage.setItem("msh_pro_deliv_riders", JSON.stringify(delivRiders));
+    renderActiveRiders();
+    renderAdminRidersControl();
+    if (gun) gun.get(TOPIC_RIDERS).get("list").put({ json: JSON.stringify(delivRiders) });
+  };
+
   function updateCartUI() {
     const summaryEl = document.getElementById("mshSwCartItemsText");
     const delivEl = document.getElementById("mshSwDelivText");
@@ -734,31 +905,20 @@
     totalEl.innerText = `₹${itemsTotal + delivCharge}`;
   }
 
-  // =========================================================================
-  // LIVE QUESTIONS & ANSWERS (Instant Sync Across All Mobiles)
-  // =========================================================================
+  // Live Q&A
   function renderQA() {
     const listEl = document.getElementById("mshSwQList");
     if (!listEl) return;
-
-    const list = Object.values(qaMap)
-      .filter(q => q && !q.deleted && q.text)
-      .sort((a, b) => b.ts - a.ts);
-
-    if (list.length === 0) {
-      listEl.innerHTML = `<div style="font-size:0.86rem; color:#475569;">ఇంకా ప్రశ్నలు లేవు. పైన మీ సందేహం అడగండి!</div>`;
-      return;
-    }
+    const list = Object.values(qaMap).filter(q => q && !q.deleted && q.text).sort((a, b) => b.ts - a.ts);
+    if (list.length === 0) { listEl.innerHTML = `<div style="font-size:0.86rem; color:#475569;">ఇంకా ప్రశ్నలు లేవు.</div>`; return; }
 
     listEl.innerHTML = list.map(q => {
       const timeStr = new Date(q.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const adminCtrls = isAdminOpen
         ? `<div style="display:flex; gap:4px;">
-             <button type="button" onclick="window.mshSwReplyQ('${q.id}')" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Reply</button>
-             <button type="button" onclick="window.mshSwDelQ('${q.id}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Del</button>
-           </div>`
-        : "";
-
+             <button type="button" onclick="window.mshProReplyQ('${q.id}')" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Reply</button>
+             <button type="button" onclick="window.mshProDelQ('${q.id}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:3px 7px; font-size:0.75rem; font-weight:800; cursor:pointer;">Del</button>
+           </div>` : "";
       return `
         <div class="msh-sw-qa-card">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
@@ -766,55 +926,41 @@
             ${adminCtrls}
           </div>
           ${q.reply ? `<div class="msh-sw-qa-ans">✅ Admin Reply: ${escapeHtml(q.reply)}</div>` : ""}
-        </div>
-      `;
+        </div>`;
     }).join("");
   }
 
-  window.mshSwReplyQ = function(id) {
-    const current = qaMap[id];
-    if (!current) return;
-    const ans = prompt("ఈ ప్రశ్నకు మీ సమాధానం (Reply) రాయండి:", current.reply || "");
+  window.mshProReplyQ = function(id) {
+    const cur = qaMap[id];
+    if (!cur) return;
+    const ans = prompt("సమాధానం (Reply) రాయండి:", cur.reply || "");
     if (ans !== null) {
-      const updated = { ...current, reply: ans.trim(), ts: current.ts };
-      qaMap[id] = updated;
-      localStorage.setItem("msh_sw_qa_cache", JSON.stringify(qaMap));
-      renderQA();
-      broadcastToAll7Servers(TOPIC_QA, id, updated);
+      const upd = { ...cur, reply: ans.trim() };
+      qaMap[id] = upd; localStorage.setItem("msh_pro_qa_cache", JSON.stringify(qaMap));
+      renderQA(); broadcast7(TOPIC_QA, id, upd);
     }
   };
 
-  window.mshSwDelQ = function(id) {
-    const payload = { id, text: "deleted", deleted: true };
-    delete qaMap[id];
-    localStorage.setItem("msh_sw_qa_cache", JSON.stringify(qaMap));
-    renderQA();
-    broadcastToAll7Servers(TOPIC_QA, id, payload);
+  window.mshProDelQ = function(id) {
+    delete qaMap[id]; localStorage.setItem("msh_pro_qa_cache", JSON.stringify(qaMap));
+    renderQA(); broadcast7(TOPIC_QA, id, { id, text: "deleted", deleted: true });
   };
 
   document.getElementById("mshSwAskBtn").addEventListener("click", function() {
     const inp = document.getElementById("mshSwQInp");
     const txt = inp.value.trim();
-    if (!txt) { alert("దయచేసి మీ ప్రశ్న రాయండి."); return; }
+    if (!txt) return;
     inp.value = "";
-
     const id = "qa_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
     const payload = { id, text: txt, reply: "", ts: Date.now() };
-    qaMap[id] = payload;
-    localStorage.setItem("msh_sw_qa_cache", JSON.stringify(qaMap));
-    renderQA();
-    broadcastToAll7Servers(TOPIC_QA, id, payload);
+    qaMap[id] = payload; localStorage.setItem("msh_pro_qa_cache", JSON.stringify(qaMap));
+    renderQA(); broadcast7(TOPIC_QA, id, payload);
   });
 
-  // =========================================================================
-  // GPS, MAP SEARCH & PRIVATE ORDER SUBMISSION
-  // =========================================================================
+  // GPS & Distance
   function calcFeeByKm(km) {
     delivKm = km;
-    if (km <= 6) delivCharge = 25;
-    else if (km <= 12) delivCharge = 45;
-    else if (km <= 20) delivCharge = 70;
-    else delivCharge = 100;
+    delivCharge = km <= 6 ? 25 : (km <= 12 ? 45 : (km <= 20 ? 70 : 100));
     updateCartUI();
   }
 
@@ -844,8 +990,7 @@
   document.getElementById("mshSwVillageSel").addEventListener("change", function() {
     if (!this.value) return;
     const [lat, lng] = this.value.split(",").map(Number);
-    dLat = lat; dLng = lng;
-    placeLabel = this.options[this.selectedIndex].text;
+    dLat = lat; dLng = lng; placeLabel = this.options[this.selectedIndex].text;
     calcFeeByKm(hubDistance(lat, lng));
   });
 
@@ -890,10 +1035,15 @@
     calcFeeByKm(hubDistance(dLat, dLng));
   });
 
-  // Place 100% Private Order to Admin WhatsApp
+  // PLACE PRIVATE ORDER
   document.getElementById("mshSwPlaceOrderBtn").addEventListener("click", function() {
     const customNote = document.getElementById("mshSwCustomNote").value.trim();
     const custPhone = document.getElementById("mshSwPhoneInp").value.trim();
+    const landmark = document.getElementById("mshSwLandmarkInp").value.trim();
+    let selectedHotel = hotelSel.value;
+    if (selectedHotel === "custom_hotel") {
+      selectedHotel = document.getElementById("mshSwCustomHotelInp").value.trim() || "Custom Shop";
+    }
 
     let itemLines = [];
     let itemsSum = 0;
@@ -906,15 +1056,16 @@
     });
 
     if (itemLines.length === 0 && !customNote) {
-      alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి లేదా కింద మీ ఆర్డర్ వివరాలు రాయండి.");
+      alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి లేదా మీ ఆర్డర్ వివరాలు రాయండి.");
       return;
     }
 
     const grandTotal = itemsSum + delivCharge;
     const gpsLink = uLat ? `https://maps.google.com/?q=${uLat},${uLng}` : (dLat ? `https://maps.google.com/?q=${dLat},${dLng}` : "GPS Not Attached");
-    const locName = placeLabel || (uLat ? "Live GPS Attached" : "Not Selected");
+    const locName = `${placeLabel || (uLat ? "Live GPS" : "Village Not Selected")}${landmark ? " (" + landmark + ")" : ""}`;
 
     privateOrders.unshift({
+      hotel: selectedHotel,
       items: itemLines.join(", ") || "Custom Order",
       note: customNote,
       loc: locName,
@@ -922,33 +1073,32 @@
       phone: custPhone || "WhatsApp",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
-    localStorage.setItem("msh_sw_priv_orders", JSON.stringify(privateOrders));
+    localStorage.setItem("msh_pro_priv_orders", JSON.stringify(privateOrders));
 
-    let msg = `🔒 *SWIGGY-STYLE PRIVATE ORDER (Mana Seva Hub)*\n`;
+    let msg = `🔒 *PRIVATE FOOD / FARM ORDER (Mana Seva Hub)*\n`;
     msg += `----------------------------------\n`;
+    msg += `🏨 *Pickup From (Shop/Hotel):* ${selectedHotel}\n`;
     if (itemLines.length > 0) msg += `🛒 *Items:*\n${itemLines.join("\n")}\n`;
     if (customNote) msg += `📦 *Custom Note:* ${customNote}\n`;
-    msg += `📍 *Location:* ${locName}\n`;
+    msg += `📍 *Customer Location:* ${locName}\n`;
     msg += `🗺️ *GPS Link:* ${gpsLink}\n`;
     msg += `🚚 *Delivery Fee:* ₹${delivCharge} (${delivKm} km)\n`;
     msg += `💰 *Grand Total:* ₹${grandTotal}\n`;
-    if (custPhone) msg += `📞 *Phone:* ${custPhone}\n`;
+    if (custPhone) msg += `📞 *Customer Phone:* ${custPhone}\n`;
+    msg += `⏱️ *Note:* 30–45 Mins Rural Delivery Agreed\n`;
     msg += `----------------------------------`;
 
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
   });
 
-  // =========================================================================
   // ADMIN CONTROLS (PIN: 1234)
-  // =========================================================================
   document.getElementById("mshSwAdminBtn").addEventListener("click", function() {
     const bar = document.getElementById("mshSwAdminBar");
     if (isAdminOpen) {
       isAdminOpen = false;
       this.innerText = "🔒 Admin Lock"; this.classList.remove("unlocked");
       bar.style.display = "none";
-      document.getElementById("mshSwPanelAdd").style.display = "none";
-      document.getElementById("mshSwPanelOrders").style.display = "none";
+      document.querySelectorAll(".msh-sw-panel").forEach(p => p.style.display = "none");
       renderMenu(); renderQA();
       return;
     }
@@ -961,69 +1111,70 @@
     } else if (pin !== null) alert("తప్పు PIN!");
   });
 
-  document.getElementById("mshSwTabAdd").addEventListener("click", function() {
-    const p = document.getElementById("mshSwPanelAdd");
-    const open = p.style.display === "block";
-    document.getElementById("mshSwPanelOrders").style.display = "none";
-    document.getElementById("mshSwTabOrders").classList.remove("active");
-    p.style.display = open ? "none" : "block";
-    this.classList.toggle("active", !open);
+  function toggleAdminSubPanel(panelId, btnEl) {
+    const target = document.getElementById(panelId);
+    const isOpen = target.style.display === "block";
+    document.querySelectorAll(".msh-sw-panel").forEach(p => p.style.display = "none");
+    document.querySelectorAll(".msh-sw-tab").forEach(b => b.classList.remove("active"));
+    if (!isOpen) {
+      target.style.display = "block";
+      btnEl.classList.add("active");
+    }
+  }
+
+  document.getElementById("mshSwTabAdd").addEventListener("click", function() { toggleAdminSubPanel("mshSwPanelAdd", this); });
+  document.getElementById("mshSwTabHotels").addEventListener("click", function() { toggleAdminSubPanel("mshSwPanelHotels", this); });
+  document.getElementById("mshSwTabRiders").addEventListener("click", function() { toggleAdminSubPanel("mshSwPanelRiders", this); renderAdminRidersControl(); });
+  document.getElementById("mshSwTabOrders").addEventListener("click", function() { toggleAdminSubPanel("mshSwPanelOrders", this); renderPrivateOrders(); });
+
+  document.getElementById("mshAddHotelBtn").addEventListener("click", function() {
+    const h = document.getElementById("mshNewHotelName").value.trim();
+    if (!h) return;
+    customHotels.push(h);
+    localStorage.setItem("msh_pro_hotels", JSON.stringify(customHotels));
+    loadSavedHotels();
+    document.getElementById("mshNewHotelName").value = "";
+    alert("✅ కొత్త హోటల్ పేరు యాడ్ అయింది!");
   });
 
-  document.getElementById("mshSwTabOrders").addEventListener("click", function() {
-    const p = document.getElementById("mshSwPanelOrders");
-    const open = p.style.display === "block";
-    document.getElementById("mshSwPanelAdd").style.display = "none";
-    document.getElementById("mshSwTabAdd").classList.remove("active");
-    p.style.display = open ? "none" : "block";
-    this.classList.toggle("active", !open);
-    renderPrivateOrders();
-  });
-
-  document.getElementById("mshSwCloseAdd").addEventListener("click", () => { document.getElementById("mshSwPanelAdd").style.display = "none"; document.getElementById("mshSwTabAdd").classList.remove("active"); });
-  document.getElementById("mshSwCloseOrders").addEventListener("click", () => { document.getElementById("mshSwPanelOrders").style.display = "none"; document.getElementById("mshSwTabOrders").classList.remove("active"); });
-
-  // Add New Swiggy Menu Item & Broadcast to All 7 Servers
   document.getElementById("mshSwSaveItemBtn").addEventListener("click", function() {
     const cat = document.getElementById("mshSwCatInp").value;
     const name = document.getElementById("mshSwNameInp").value.trim();
     const price = Number(document.getElementById("mshSwPriceInp").value) || 0;
     const desc = document.getElementById("mshSwDescInp").value.trim() || "Fresh & Fast Delivery";
-
     if (!name || price <= 0) { alert("ఐటమ్ పేరు మరియు ధర (₹) రాయండి."); return; }
 
     const id = "sw_" + Date.now() + "_" + Math.random().toString(36).slice(2, 5);
     const payload = { id, cat, name, price, desc, deleted: false };
-
     menuMap[id] = payload;
-    localStorage.setItem("msh_sw_menu_cache", JSON.stringify(menuMap));
+    localStorage.setItem("msh_pro_menu_cache", JSON.stringify(menuMap));
     document.getElementById("mshSwNameInp").value = "";
     document.getElementById("mshSwPriceInp").value = "";
     document.getElementById("mshSwDescInp").value = "";
-
     renderMenu();
-    broadcastToAll7Servers(TOPIC_MENU, id, payload);
-    alert("✅ కొత్త ఐటమ్ యాడ్ అయింది! 7 సర్వర్ల ద్వారా అన్ని మొబైల్స్‌లో వెంటనే అప్‌డేట్ అవుతుంది.");
+    broadcast7(TOPIC_MENU, id, payload);
+    alert("✅ కొత్త ఐటమ్ / సొంత స్టాక్ సేవ్ అయింది! అన్ని మొబైల్స్‌లో అప్‌డేట్ అవుతుంది.");
   });
 
   function renderPrivateOrders() {
     const box = document.getElementById("mshSwOrdersBox");
     if (privateOrders.length === 0) { box.innerHTML = `<div style="color:#64748b;">ఇంకా ప్రైవేట్ ఆర్డర్లు లేవు.</div>`; return; }
     box.innerHTML = privateOrders.map((o, idx) => `
-      <div style="background:#fff; border-left:4px solid #fc8019; padding:8px 10px; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="background:#fff; border-left:4px solid #fc8019; padding:8px 10px; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
         <div>
+          <span style="background:#ffedd5; color:#9a3412; padding:2px 6px; border-radius:4px; font-weight:800; font-size:0.78rem;">🏨 From: ${escapeHtml(o.hotel)}</span><br>
           <strong>${escapeHtml(o.items)}</strong> • <b>₹${o.total}</b><br>
-          <span>📍 ${escapeHtml(o.loc)} | 📞 ${escapeHtml(o.phone)} | 🕒 ${o.time}</span>
+          <span>📍 To: ${escapeHtml(o.loc)} | 📞 ${escapeHtml(o.phone)} | 🕒 ${o.time}</span>
           ${o.note ? `<div style="color:#0f4c3a;">📝 ${escapeHtml(o.note)}</div>` : ""}
         </div>
-        <button type="button" onclick="window.mshSwDelPrivOrder(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:4px 8px; font-weight:800; cursor:pointer;">Delete</button>
+        <button type="button" onclick="window.mshProDelOrder(${idx})" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:4px 8px; font-weight:800; cursor:pointer;">Delete</button>
       </div>
     `).join("");
   }
 
-  window.mshSwDelPrivOrder = function(idx) {
+  window.mshProDelOrder = function(idx) {
     privateOrders.splice(idx, 1);
-    localStorage.setItem("msh_sw_priv_orders", JSON.stringify(privateOrders));
+    localStorage.setItem("msh_pro_priv_orders", JSON.stringify(privateOrders));
     renderPrivateOrders();
   };
 
@@ -1032,6 +1183,7 @@
   }
 
   renderMenu();
+  renderActiveRiders();
   updateCartUI();
   renderQA();
 })();
