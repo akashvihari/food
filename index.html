@@ -4,7 +4,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  .msh-test-app {
+  .msh-sec-app {
     --primary: #0f4c3a;
     --yellow: #facc15;
     --green: #16a34a;
@@ -12,7 +12,7 @@
     --blue: #0284c7;
     --dark: #111827;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    max-width: 1180px;
+    max-width: 1200px;
     margin: 14px auto;
     background: #ffffff;
     border: 2px solid #cbd5e1;
@@ -21,7 +21,7 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     color: #1e293b;
   }
-  .msh-test-app * { box-sizing: border-box; }
+  .msh-sec-app * { box-sizing: border-box; }
 
   /* Disclaimer Ticker */
   .msh-ticker {
@@ -43,7 +43,7 @@
   }
   @keyframes mshSlide { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-  /* Header & 3 Role Switcher Pills */
+  /* Top Header & Role Tabs */
   .msh-top-bar {
     display: flex;
     justify-content: space-between;
@@ -54,7 +54,7 @@
     padding-bottom: 12px;
     margin-bottom: 14px;
   }
-  .msh-brand { font-size: 1.28rem; font-weight: 900; color: var(--primary); margin: 0; }
+  .msh-brand { font-size: 1.26rem; font-weight: 900; color: var(--primary); margin: 0; }
   .msh-sub { font-size: 0.84rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
 
   .msh-role-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -72,19 +72,34 @@
   .msh-role-btn.active-rider { background: var(--yellow); color: #000; border-color: #eab308; }
   .msh-role-btn.active-admin { background: var(--dark); color: #fff; border-color: var(--dark); }
 
-  /* Role Views */
-  .msh-view-section { display: none; margin-bottom: 14px; }
-  .msh-view-section.active { display: block; }
+  /* SIDE-BY-SIDE 50% LEFT + 50% RIGHT MAIN LAYOUT */
+  .msh-side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (max-width: 780px) {
+    .msh-side-by-side { grid-template-columns: 1fr; }
+  }
 
-  .msh-card {
+  .msh-panel {
     background: #f8fafc;
     border: 2px solid #cbd5e1;
     border-radius: 16px;
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-  .msh-card-yellow { background: #fffbeb; border-color: #fde68a; }
+  .msh-panel-yellow { background: #fffbeb; border-color: #fde68a; }
+  .msh-panel-blue { background: #f0f9ff; border-color: #7dd3fc; }
 
-  .msh-h3 { font-size: 1.08rem; font-weight: 900; color: var(--primary); margin: 0 0 10px; }
+  .msh-h3 { font-size: 1.06rem; font-weight: 900; color: var(--primary); margin: 0 0 10px; }
+
+  /* Role Switch Content on Left Half */
+  .msh-left-tab { display: none; }
+  .msh-left-tab.active { display: block; }
 
   .msh-veh-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
   .msh-veh-opt {
@@ -96,12 +111,6 @@
     cursor: pointer;
   }
   .msh-veh-opt.selected { background: var(--dark); color: var(--yellow); border-color: var(--dark); }
-
-  .msh-form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 8px;
-  }
 
   .msh-inp, .msh-sel {
     width: 100%;
@@ -134,7 +143,7 @@
     background: #f0fdf4;
     border: 2px solid var(--green);
     border-radius: 10px;
-    padding: 10px 14px;
+    padding: 9px 14px;
     margin-bottom: 10px;
     font-weight: 800;
   }
@@ -143,61 +152,86 @@
     color: #fff;
     padding: 3px 12px;
     border-radius: 8px;
-    font-size: 1.25rem;
+    font-size: 1.22rem;
     font-weight: 900;
   }
 
   .msh-book-btn {
     width: 100%;
-    padding: 14px;
+    padding: 13px;
     background: linear-gradient(135deg, #16a34a, #0f4c3a);
     color: #fff;
     border: none;
     border-radius: 12px;
-    font-size: 1.06rem;
+    font-size: 1.04rem;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(22, 163, 74, 0.3);
   }
 
-  /* SHARED LIVE MAP SECTION (Visible across Customer, Rider & Admin!) */
-  .msh-shared-map-box {
-    background: #f0f9ff;
-    border: 2px solid #38bdf8;
-    border-radius: 16px;
-    padding: 15px;
-    margin-top: 12px;
+  /* Generated Secret PIN Display Card */
+  .msh-pin-result {
+    display: none;
+    background: #1e3a8a;
+    color: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 10px;
+    text-align: center;
   }
-  #mshSharedLiveMap {
-    height: 330px;
+  .msh-pin-big {
+    display: inline-block;
+    background: #facc15;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    padding: 4px 16px;
+    border-radius: 8px;
+    margin: 4px 0;
+  }
+
+  /* RIGHT HALF: PIN-LOCKED MAP OVERLAY */
+  .msh-map-wrapper {
+    position: relative;
+    height: 310px;
     width: 100%;
     border-radius: 12px;
+    overflow: hidden;
     border: 2px solid #0284c7;
-    margin: 10px 0;
+    margin: 8px 0;
+  }
+  #mshStrictPrivateMap {
+    height: 100%;
+    width: 100%;
     z-index: 1;
   }
-  .msh-dist-banner {
+  /* Lock Screen Overlay (Hides map completely until valid 4-Digit PIN is entered!) */
+  .msh-map-lock-screen {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.94);
+    color: #fff;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 18px;
+  }
+
+  .msh-dist-strip {
     background: #0f172a;
     color: #facc15;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 0.86rem;
     font-weight: 800;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .msh-pin-banner {
-    display: none;
-    background: #eff6ff;
-    border: 2px solid #3b82f6;
-    border-radius: 12px;
-    padding: 10px 12px;
-    margin-top: 10px;
-    font-size: 0.9rem;
+    gap: 6px;
   }
 
   .msh-order-row {
@@ -205,65 +239,65 @@
     border: 1.5px solid #cbd5e1;
     border-left: 5px solid var(--primary);
     border-radius: 10px;
-    padding: 10px 12px;
+    padding: 9px 11px;
     margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
+    font-size: 0.84rem;
   }
 </style>
 
-<div class="msh-test-app" id="mshGroundTestApp">
+<div class="msh-sec-app" id="mshSecretPinHub">
   
   <!-- Moving Disclaimer Ticker -->
   <div class="msh-ticker">
     <div class="msh-ticker-txt">
-      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ ట్రాన్స్‌పోర్ట్ & డెలివరీ సేవ. Boddavara – Thatipudi – S.Kota రూట్‌లో సరసమైన ధరలకు బైక్ & ఆటో సేవలు. టైమ్ ఫ్లెక్సిబుల్ (30–45 నిమిషాలు పట్టవచ్చు). మీ ఫోన్ నంబర్ రైడర్‌కు కనిపించదు.
+      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ ట్రాన్స్‌పోర్ట్ & డెలివరీ సేవ. Boddavara – Thatipudi – S.Kota రూట్‌లో సరసమైన ధరలకు బైక్ & ఆటో సేవలు. టైమ్ ఫ్లెక్సిబుల్ (30–45 నిమిషాలు పట్టవచ్చు). 4-Digit Secret PIN ఉన్నవారికి మాత్రమే లైవ్ మ్యాప్ కనిపిస్తుంది.
     </div>
   </div>
 
-  <!-- Header & 3 Role Buttons -->
+  <!-- Header & 3 Role Tabs -->
   <div class="msh-top-bar">
     <div>
-      <h2 class="msh-brand">🛵 Mana Seva Hub — User • Rider • Admin Live Map Setup</h2>
+      <h2 class="msh-brand">🛵 Mana Seva Hub — Secret PIN Live Tracking</h2>
       <p class="msh-sub">Boddavara • Kiltampalem • Thatipudi • S.Kota • Dharmavaram • L.Kota • Kothavalasa (20 KM)</p>
     </div>
     <div class="msh-role-tabs">
-      <button type="button" class="msh-role-btn active-cust" id="tabBtnCust">👤 1. Customer (బుకింగ్)</button>
-      <button type="button" class="msh-role-btn" id="tabBtnRider">🛵 2. Rider (లైవ్ GPS)</button>
-      <button type="button" class="msh-role-btn" id="tabBtnAdmin">🔐 3. Admin (నా కంట్రోల్)</button>
+      <button type="button" class="msh-role-btn active-cust" id="btnRoleCust">👤 1. Customer</button>
+      <button type="button" class="msh-role-btn" id="btnRoleRider">🛵 2. Rider (GPS)</button>
+      <button type="button" class="msh-role-btn" id="btnRoleAdmin">🔐 3. Admin</button>
     </div>
   </div>
 
   <!-- =========================================================
-       TAB 1: CUSTOMER BOOKING FORM
+       PAKKA PAKKANE LAYOUT: LEFT (BOOKING/RIDER/ADMIN) | RIGHT (PIN + MAP)
        ========================================================= -->
-  <div class="msh-view-section active" id="viewCustomer">
-    <div class="msh-card msh-card-yellow">
-      <h3 class="msh-h3">1. రైడ్ / ఫుడ్ డెలివరీ బుక్ చేయండి</h3>
+  <div class="msh-side-by-side">
+    
+    <!-- LEFT 50%: CUSTOMER BOOKING / RIDER DUTY / ADMIN PANEL -->
+    <div class="msh-panel msh-panel-yellow">
+      
+      <!-- LEFT TAB 1: CUSTOMER BOOKING -->
+      <div class="msh-left-tab active" id="leftCustTab">
+        <h3 class="msh-h3">1. రైడ్ / ఫుడ్ బుకింగ్ (Secret PIN వస్తుంది)</h3>
 
-      <div class="msh-veh-row">
-        <div class="msh-veh-opt selected" data-v="Bike" data-r="5" data-m="20">
-          <strong>🏍️ Bike</strong><br><small>₹5/km</small>
+        <div class="msh-veh-row">
+          <div class="msh-veh-opt selected" data-v="Bike" data-r="5" data-m="20">
+            <strong>🏍️ Bike</strong><br><small>₹5/km</small>
+          </div>
+          <div class="msh-veh-opt" data-v="Auto" data-r="12" data-m="50">
+            <strong>🛺 Auto</strong><br><small>₹12/km</small>
+          </div>
+          <div class="msh-veh-opt" data-v="Food" data-r="5" data-m="25">
+            <strong>🍱 Food/Parcel</strong><br><small>₹25+ Drop</small>
+          </div>
         </div>
-        <div class="msh-veh-opt" data-v="Auto" data-r="12" data-m="50">
-          <strong>🛺 Auto</strong><br><small>₹12/km</small>
-        </div>
-        <div class="msh-veh-opt" data-v="Food" data-r="5" data-m="25">
-          <strong>🍱 Food/Parcel</strong><br><small>₹25+ Drop</small>
-        </div>
-      </div>
 
-      <div class="msh-form-grid">
-        <div class="msh-row" style="margin:0;">
-          <input type="text" id="custFromInp" class="msh-inp" style="margin:0;" placeholder="ఎక్కడి నుండి (Boddavara)">
+        <div class="msh-row">
+          <input type="text" id="custFromInp" class="msh-inp" style="margin:0;" placeholder="ఎక్కడి నుండి (From: Boddavara)">
           <button type="button" class="msh-btn" id="custGpsBtn">📍 Live GPS</button>
         </div>
 
-        <select id="custToSel" class="msh-sel" style="margin:0;">
-          <option value="5|25">-- వెళ్లాల్సిన ఊరు (Destination) --</option>
+        <select id="custToSel" class="msh-sel">
+          <option value="5|25">-- వెళ్లాల్సిన ఊరు ఎంచుకోండి (Destination) --</option>
           <option value="2|20">Boddavara Local (2 km)</option>
           <option value="4|25">Kiltampalem (4 km)</option>
           <option value="5|25">S.Kota / Srungavarapukota (5 km)</option>
@@ -273,106 +307,117 @@
           <option value="18|90">Kothavalasa (18 km)</option>
         </select>
 
-        <input type="text" id="custNameInp" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
-        <input type="tel" id="custPhoneInp" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (రైడర్‌కు కనిపించదు)">
+        <div class="msh-row">
+          <input type="text" id="custNameInp" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
+          <input type="tel" id="custPhoneInp" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
+        </div>
 
-        <select id="custTimeSel" class="msh-sel" style="margin:0;">
+        <select id="custTimeSel" class="msh-sel">
           <option value="urgent|0">⚡ Urgent (30–45 నిమిషాల్లో కావాలి)</option>
           <option value="flexible|10">🕒 Flexible / No Hurry (₹10 Off)</option>
         </select>
 
-        <input type="text" id="custNoteInp" class="msh-inp" style="margin:0;" placeholder="వివరాలు (ఉదా: Guntur Mess భోజనం / 2 bags)">
+        <input type="text" id="custNoteInp" class="msh-inp" placeholder="వివరాలు (ఉదా: Guntur Mess భోజనం / 2 bags)">
+
+        <div class="msh-fare-box">
+          <span>దూరం: <strong id="custKmLbl">5 km</strong></span>
+          <span>ఛార్జ్: <span class="msh-price-pill" id="custFareLbl">₹25</span></span>
+        </div>
+
+        <button type="button" class="msh-book-btn" id="custBookNowBtn">
+          🛵 BOOK NOW (సీక్రెట్ PIN పొందండి)
+        </button>
+
+        <!-- Generated Secret PIN Box (Right here after booking!) -->
+        <div class="msh-pin-result" id="custPinBox">
+          <div style="font-size:0.84rem; color:#93c5fd; font-weight:700;">✅ బుకింగ్ కన్ఫర్మ్! మీ సీక్రెట్ ట్రాకింగ్ PIN:</div>
+          <div class="msh-pin-big" id="custShowPinText">----</div>
+          <div style="font-size:0.78rem; color:#e2e8f0;">ఈ PIN ఉన్నవారికి మాత్రమే కుడివైపు (Right Side) లైవ్ మ్యాప్ ఓపెన్ అవుతుంది!</div>
+        </div>
       </div>
 
-      <div class="msh-fare-box" style="margin-top:10px;">
-        <span>దూరం: <strong id="custKmLbl">5 km</strong></span>
-        <span>అంచనా ఛార్జ్: <span class="msh-price-pill" id="custFareLbl">₹25</span></span>
-      </div>
+      <!-- LEFT TAB 2: RIDER DUTY PANEL -->
+      <div class="msh-left-tab" id="leftRiderTab">
+        <h3 class="msh-h3" style="color:#854d0e;">🛵 Rider Live GPS Duty Panel</h3>
+        <p style="font-size:0.83rem; color:#713f12; margin:0 0 10px; font-weight:600;">
+          అడ్మిన్ పంపిన <b>4-Digit PIN</b> ఎంటర్ చేసి <b>🟢 Start Live Trip</b> నొక్కండి — కుడివైపు మ్యాప్ అన్‌లాక్ అయి మీ కదలిక ఆ కస్టమర్‌కు కనిపిస్తుంది:
+        </p>
 
-      <button type="button" class="msh-book-btn" id="custBookNowBtn">
-        🛵 BOOK NOW (సీక్రెట్ PIN తో బుక్ చేయండి)
-      </button>
-
-      <div class="msh-pin-banner" id="custPinAlert">
-        ✅ <b>మీ బుకింగ్ సిద్ధమైంది!</b> మీ సీక్రెట్ ట్రాకింగ్ PIN: <strong style="font-size:1.2rem; color:#1d4ed8;" id="custGeneratedPin">----</strong>
-        <span style="display:block; font-size:0.82rem; color:#1e3a8a;">కింద ఉన్న లైవ్ మ్యాప్‌లో మీ 🏠 లొకేషన్ & 🛵 రైడర్ కదలికను చూడవచ్చు.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================
-       TAB 2: RIDER PANEL
-       ========================================================= -->
-  <div class="msh-view-section" id="viewRider">
-    <div class="msh-card msh-card-yellow">
-      <h3 class="msh-h3" style="color:#854d0e;">🛵 Rider Live Duty & Customer Map Panel</h3>
-      <p style="font-size:0.84rem; color:#713f12; margin:0 0 10px; font-weight:600;">
-        4-Digit Order PIN ఎంటర్ చేసి <b>🟢 Start Live Trip</b> నొక్కండి — కింద మ్యాప్‌లో 🏠 కస్టమర్ లొకేషన్ & 🛵 మీ లైవ్ లొకేషన్ రెండూ కనిపిస్తాయి:
-      </p>
-
-      <div class="msh-form-grid" style="margin-bottom:10px;">
-        <select id="riderSelectName" class="msh-sel" style="margin:0;">
+        <select id="riderSelectName" class="msh-sel">
           <option value="Prakash">Rider: Prakash (Boddavara)</option>
           <option value="Rajesh">Rider: Rajesh (S.Kota)</option>
           <option value="Sridhar">Rider: Sridhar (Kiltampalem)</option>
           <option value="Swami">Rider: Swami (Thatipudi)</option>
         </select>
-        <input type="text" id="riderOrderPinInp" class="msh-inp" style="margin:0;" maxlength="4" placeholder="Customer 4-Digit PIN (ఉదా: 6507)">
-        <button type="button" class="msh-btn" style="background:#16a34a;" id="riderStartLiveBtn">🟢 Start Live Trip (GPS ON)</button>
-        <button type="button" class="msh-btn" style="background:#dc2626;" id="riderStopLiveBtn">🔴 Complete / Stop Trip</button>
+
+        <input type="text" id="riderOrderPinInp" class="msh-inp" maxlength="4" placeholder="Customer 4-Digit PIN ఎంటర్ చేయండి">
+
+        <div class="msh-row">
+          <button type="button" class="msh-btn" style="flex:1; background:#16a34a;" id="riderStartLiveBtn">🟢 Start Live Trip</button>
+          <button type="button" class="msh-btn" style="flex:1; background:#dc2626;" id="riderStopLiveBtn">🔴 Stop Trip</button>
+        </div>
+
+        <div id="riderLiveFeedback" style="font-size:0.86rem; font-weight:800; color:#15803d; margin:8px 0;"></div>
+        <div id="riderAssignedCard" style="display:none; background:#fff; border:1.5px solid #16a34a; border-radius:10px; padding:10px; font-size:0.86rem;"></div>
       </div>
 
-      <div id="riderLiveFeedback" style="font-size:0.88rem; font-weight:800; color:#15803d; margin-bottom:8px;"></div>
-      <div id="riderAssignedCard" style="display:none; background:#fff; border:1.5px solid #16a34a; border-radius:10px; padding:10px;"></div>
-    </div>
-  </div>
-
-  <!-- =========================================================
-       TAB 3: ADMIN MASTER PANEL (PIN 1234)
-       ========================================================= -->
-  <div class="msh-view-section" id="viewAdmin">
-    <div class="msh-card">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-        <h3 class="msh-h3" style="margin:0;">🔐 Admin Master Control (అన్ని ఆర్డర్లు & పూర్తి నంబర్లు)</h3>
-        <button type="button" class="msh-btn" style="background:#dc2626; height:34px;" id="adminLockNowBtn">🔒 Lock Admin</button>
+      <!-- LEFT TAB 3: ADMIN MASTER PANEL (PIN 1234) -->
+      <div class="msh-left-tab" id="leftAdminTab">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 class="msh-h3" style="margin:0;">🔐 Admin Control (అన్ని PINs & నంబర్లు)</h3>
+          <button type="button" class="msh-btn" style="background:#dc2626; height:32px; font-size:0.78rem;" id="adminLockNowBtn">🔒 Lock</button>
+        </div>
+        <div id="adminOrdersList" style="max-height:420px; overflow-y:auto;"></div>
       </div>
-      <div id="adminOrdersList"></div>
-    </div>
-  </div>
 
-  <!-- =========================================================
-       SHARED LIVE MAP SECTION (Always visible below all 3 tabs!)
-       Shows: 🏠 Customer Pin + 🛵 Moving Rider Pin + Distance!
-       ========================================================= -->
-  <div class="msh-shared-map-box">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+    </div>
+
+    <!-- RIGHT 50%: SECRET PIN INPUT + STRICTLY LOCKED LIVE MAP (Pakka Pakkane!) -->
+    <div class="msh-panel msh-panel-blue">
       <div>
-        <strong style="font-size:1.05rem; color:#0369a1;">🗺️ Live Tracking Map (🏠 Customer + 🛵 Moving Rider)</strong>
-        <div style="font-size:0.8rem; color:#334155;">కస్టమర్ & రైడర్ ఇద్దరి లొకేషన్లు ఒకే మ్యాప్‌లో కనిపిస్తాయి (PIN ఉన్నవారికి మాత్రమే)</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+          <h3 class="msh-h3" style="color:#0369a1; margin:0;">2. Secret PIN Live Tracking Map</h3>
+          <button type="button" id="lockMapAgainBtn" style="display:none; background:#dc2626; color:#fff; border:none; border-radius:6px; padding:4px 9px; font-size:0.76rem; font-weight:800; cursor:pointer;">🔒 Lock Map</button>
+        </div>
+
+        <!-- PIN Input Bar Right Next to Map -->
+        <div class="msh-row">
+          <input type="text" id="trackPinInp" class="msh-inp" style="margin:0; font-size:1rem; letter-spacing:2px; font-weight:800;" maxlength="4" placeholder="🔑 4-Digit PIN ఎంటర్ చేయండి">
+          <button type="button" class="msh-btn" style="background:#0284c7;" id="trackPinBtn">🔓 Unlock Map</button>
+        </div>
+
+        <!-- Status & Distance Bar -->
+        <div class="msh-dist-strip">
+          <span id="trackLiveStatus">🔒 PIN ఎంటర్ చేస్తేనే మ్యాప్ కనిపిస్తుంది</span>
+          <span id="trackDistanceBadge" style="background:#334155; color:#fff; padding:2px 9px; border-radius:99px; font-size:0.78rem;">Locked</span>
+        </div>
+
+        <!-- MAP WITH STRICT LOCK OVERLAY -->
+        <div class="msh-map-wrapper">
+          <div id="mshStrictPrivateMap"></div>
+          
+          <!-- Lock Overlay: Blocks map completely on other phones until valid PIN is entered! -->
+          <div class="msh-map-lock-screen" id="mshMapLockOverlay">
+            <div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
+            <strong style="font-size:1.05rem; color:#facc15; margin-bottom:4px;">ఈ లైవ్ మ్యాప్ లాక్ చేయబడింది (Private)</strong>
+            <p style="font-size:0.84rem; color:#cbd5e1; margin:0; max-width:290px; line-height:1.4;">
+              అందరికీ కనిపించకుండా కేవలం బుకింగ్ చేసుకున్న కస్టమర్ & రైడర్ <b>4-Digit Secret PIN</b> ఎంటర్ చేస్తేనే ఇక్కడ లైవ్ బైక్ ట్రాకింగ్ ఓపెన్ అవుతుంది.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="msh-row" style="margin:0;">
-        <input type="text" id="trackPinInp" class="msh-inp" style="margin:0; width:150px;" maxlength="4" placeholder="4-Digit PIN">
-        <button type="button" class="msh-btn" style="background:#0284c7;" id="trackPinBtn">🔍 View on Map</button>
+
+      <!-- Private Order Chat (Only active when PIN is unlocked) -->
+      <div style="margin-top:6px;">
+        <div class="msh-row" style="margin-bottom:4px;">
+          <input type="text" id="privChatInp" class="msh-inp" style="margin:0;" placeholder="ఈ PIN ఆర్డర్‌లో మెసేజ్ పంపండి (నంబర్ షేర్ కాదు)...">
+          <button type="button" class="msh-btn" style="background:#16a34a;" id="privChatSendBtn">Send</button>
+        </div>
+        <div id="privChatFeed" style="font-size:0.82rem; color:#0f172a; max-height:65px; overflow-y:auto; background:#fff; padding:6px 8px; border-radius:8px; border:1px solid #cbd5e1;"></div>
       </div>
     </div>
 
-    <!-- Live Distance & Approach Status Bar -->
-    <div class="msh-dist-banner">
-      <span id="trackLiveStatus">🔒 మీ 4-Digit PIN ఎంటర్ చేసి "View on Map" నొక్కండి</span>
-      <span id="trackDistanceBadge" style="background:#16a34a; color:#fff; padding:3px 10px; border-radius:99px; font-size:0.84rem;">Distance: --</span>
-    </div>
-
-    <!-- THE MAP -->
-    <div id="mshSharedLiveMap"></div>
-
-    <!-- Number-Free Order Chat -->
-    <div class="msh-row" style="margin:0;">
-      <input type="text" id="privChatInp" class="msh-inp" style="margin:0;" placeholder="ఈ PIN ఆర్డర్‌లో మెసేజ్ పంపండి (ఉదా: నేను మెయిన్ రోడ్ దగ్గర ఉన్నాను)...">
-      <button type="button" class="msh-btn" style="background:#16a34a;" id="privChatSendBtn">Send Message</button>
-    </div>
-    <div id="privChatFeed" style="font-size:0.84rem; color:#0f172a; margin-top:6px; max-height:80px; overflow-y:auto;"></div>
   </div>
-
 </div>
 
 <script>
@@ -388,8 +433,8 @@
     "https://gun-eu.herokuapp.com/gun"
   ];
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS, localStorage: true }) : null;
-  const TOPIC_ORDERS = "manasevahub_shared_orders_v2026";
-  const TOPIC_TRACK  = "manasevahub_shared_track_v2026";
+  const TOPIC_ORDERS = "manasevahub_strict_orders_v2026";
+  const TOPIC_TRACK  = "manasevahub_strict_track_v2026";
 
   function maskPhone(p) {
     const c = String(p || "").replace(/\D/g, "");
@@ -406,69 +451,70 @@
 
   let selVeh = "Bike", selRate = 5, selMin = 20;
   let custLat = null, custLng = null;
-  let allOrders = JSON.parse(localStorage.getItem("msh_shared_orders") || "{}");
-  let activeTrackingPin = "";
+  let allOrders = JSON.parse(localStorage.getItem("msh_strict_orders") || "{}");
+  let unlockedPin = "";
   let riderWatchId = null;
   let adminUnlocked = false;
   let liveBikeMarker = null, custPinMarker = null;
 
-  // Initialize Shared Map (Visible under all 3 tabs!)
-  const map = L.map("mshSharedLiveMap").setView([18.0950, 83.1350], 12);
+  const map = L.map("mshStrictPrivateMap").setView([18.0950, 83.1350], 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(map);
 
-  function switchRoleTab(role) {
-    document.querySelectorAll(".msh-view-section").forEach(v => v.classList.remove("active"));
-    document.getElementById("tabBtnCust").className = "msh-role-btn";
-    document.getElementById("tabBtnRider").className = "msh-role-btn";
-    document.getElementById("tabBtnAdmin").className = "msh-role-btn";
+  // Switch Left Role Tabs
+  function switchLeftRole(role) {
+    document.querySelectorAll(".msh-left-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById("btnRoleCust").className = "msh-role-btn";
+    document.getElementById("btnRoleRider").className = "msh-role-btn";
+    document.getElementById("btnRoleAdmin").className = "msh-role-btn";
 
     if (role === "cust") {
-      document.getElementById("viewCustomer").classList.add("active");
-      document.getElementById("tabBtnCust").classList.add("active-cust");
+      document.getElementById("leftCustTab").classList.add("active");
+      document.getElementById("btnRoleCust").classList.add("active-cust");
     } else if (role === "rider") {
-      document.getElementById("viewRider").classList.add("active");
-      document.getElementById("tabBtnRider").classList.add("active-rider");
+      document.getElementById("leftRiderTab").classList.add("active");
+      document.getElementById("btnRoleRider").classList.add("active-rider");
     } else if (role === "admin") {
       if (!adminUnlocked) {
-        const pin = prompt("Admin PIN ఎంటర్ చేయండి (1234):");
-        if (pin !== ADMIN_PIN) { alert("తప్పు PIN!"); switchRoleTab("cust"); return; }
+        if (prompt("Admin PIN ఎంటర్ చేయండి (1234):") !== ADMIN_PIN) {
+          alert("తప్పు PIN!"); switchLeftRole("cust"); return;
+        }
         adminUnlocked = true;
       }
-      document.getElementById("viewAdmin").classList.add("active");
-      document.getElementById("tabBtnAdmin").classList.add("active-admin");
+      document.getElementById("leftAdminTab").classList.add("active");
+      document.getElementById("btnRoleAdmin").classList.add("active-admin");
       renderAdminOrders();
     }
-    setTimeout(() => map.invalidateSize(), 150);
   }
 
-  document.getElementById("tabBtnCust").addEventListener("click", () => switchRoleTab("cust"));
-  document.getElementById("tabBtnRider").addEventListener("click", () => switchRoleTab("rider"));
-  document.getElementById("tabBtnAdmin").addEventListener("click", () => switchRoleTab("admin"));
-  document.getElementById("adminLockNowBtn").addEventListener("click", () => { adminUnlocked = false; switchRoleTab("cust"); });
+  document.getElementById("btnRoleCust").addEventListener("click", () => switchLeftRole("cust"));
+  document.getElementById("btnRoleRider").addEventListener("click", () => switchLeftRole("rider"));
+  document.getElementById("btnRoleAdmin").addEventListener("click", () => switchLeftRole("admin"));
+  document.getElementById("adminLockNowBtn").addEventListener("click", () => { adminUnlocked = false; switchLeftRole("cust"); });
 
   // Real-time Sync
   if (gun) {
     gun.get(TOPIC_ORDERS).map().on((data, pin) => {
       if (data && data.pin) {
         allOrders[pin] = data;
-        localStorage.setItem("msh_shared_orders", JSON.stringify(allOrders));
+        localStorage.setItem("msh_strict_orders", JSON.stringify(allOrders));
         if (adminUnlocked) renderAdminOrders();
-        if (activeTrackingPin === pin) loadPinOnSharedMap(pin);
+        if (unlockedPin === pin) renderUnlockedMapData(pin);
       }
     });
 
     gun.get(TOPIC_TRACK).map().on((tData, pin) => {
-      if (tData && pin === activeTrackingPin) {
-        updateMovingRiderPin(tData, pin);
+      if (tData && pin === unlockedPin) {
+        updateMovingBike(tData, pin);
       }
     });
   }
 
-  function calcCustomerFare() {
+  // Customer Fare Calculator
+  function calcFare() {
     const [kmVal, flatVal] = document.getElementById("custToSel").value.split("|").map(Number);
-    const [, timeDisc] = document.getElementById("custTimeSel").value.split("|").map(Number);
+    const [, disc] = document.getElementById("custTimeSel").value.split("|").map(Number);
     let fare = selVeh === "Food" ? flatVal : Math.max(selMin, Math.round(kmVal * selRate));
-    fare = Math.max(20, fare - (timeDisc || 0));
+    fare = Math.max(20, fare - (disc || 0));
     document.getElementById("custKmLbl").innerText = kmVal + " km";
     document.getElementById("custFareLbl").innerText = "₹" + fare;
   }
@@ -478,11 +524,11 @@
       document.querySelectorAll(".msh-veh-opt").forEach(x => x.classList.remove("selected"));
       this.classList.add("selected");
       selVeh = this.dataset.v; selRate = Number(this.dataset.r); selMin = Number(this.dataset.m);
-      calcCustomerFare();
+      calcFare();
     });
   });
-  document.getElementById("custToSel").addEventListener("change", calcCustomerFare);
-  document.getElementById("custTimeSel").addEventListener("change", calcCustomerFare);
+  document.getElementById("custToSel").addEventListener("change", calcFare);
+  document.getElementById("custTimeSel").addEventListener("change", calcFare);
 
   document.getElementById("custGpsBtn").addEventListener("click", function() {
     if (!navigator.geolocation) return;
@@ -490,22 +536,10 @@
     navigator.geolocation.getCurrentPosition(p => {
       custLat = p.coords.latitude; custLng = p.coords.longitude;
       this.innerText = "✅ GPS Ready"; this.style.background = "#16a34a";
-      showCustomerPinOnMap(custLat, custLng, "Customer Location");
     }, () => { this.innerText = "📍 Live GPS"; alert("Location On చేయండి."); });
   });
 
-  function showCustomerPinOnMap(lat, lng, label) {
-    const homeHtml = `<div style="background:#0284c7; color:#fff; border:2px solid #fff; border-radius:99px; padding:3px 9px; font-weight:900; font-size:12px; box-shadow:0 2px 8px rgba(0,0,0,0.4);">🏠 ${label}</div>`;
-    const homeIcon = L.divIcon({ html: homeHtml, className: "", iconSize: [110, 26], iconAnchor: [55, 13] });
-    if (custPinMarker) {
-      custPinMarker.setLatLng([lat, lng]);
-      custPinMarker.setIcon(homeIcon);
-    } else {
-      custPinMarker = L.marker([lat, lng], { icon: homeIcon }).addTo(map);
-    }
-    map.setView([lat, lng], 14);
-  }
-
+  // BOOK NOW -> Generates 4-Digit PIN & Unlocks Map ONLY for this user
   document.getElementById("custBookNowBtn").addEventListener("click", () => {
     const fromTxt = document.getElementById("custFromInp").value.trim() || "Boddavara";
     const toTxt = document.getElementById("custToSel").options[document.getElementById("custToSel").selectedIndex].text;
@@ -532,42 +566,80 @@
     };
 
     allOrders[secretPin] = orderObj;
-    localStorage.setItem("msh_shared_orders", JSON.stringify(allOrders));
+    localStorage.setItem("msh_strict_orders", JSON.stringify(allOrders));
     if (gun) gun.get(TOPIC_ORDERS).get(secretPin).put(orderObj);
 
-    document.getElementById("custPinAlert").style.display = "block";
-    document.getElementById("custGeneratedPin").innerText = secretPin;
-    document.getElementById("trackPinInp").value = secretPin;
-    document.getElementById("riderOrderPinInp").value = secretPin;
-    activeTrackingPin = secretPin;
-    loadPinOnSharedMap(secretPin);
+    // Display PIN on Left & Unlock Map on Right automatically for this customer
+    document.getElementById("custPinBox").style.display = "block";
+    document.getElementById("custShowPinText").innerText = secretPin;
+    unlockMapWithPin(secretPin);
 
     const gpsLink = custLat ? `https://maps.google.com/?q=${custLat},${custLng}` : "GPS Not Attached";
     const waMsg = `🛵 *NEW BOOKING (PIN: ${secretPin})*\n🚘 Type: ${selVeh}\n👤 Customer: ${cName} (${cPhone || "WhatsApp"})\n🔐 Masked: ${maskPhone(cPhone)}\n📍 ${fromTxt} ➔ ${toTxt}\n💰 Fare: ${fare}\n📝 Note: ${note || "-"}\n🗺️ GPS: ${gpsLink}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
   });
 
-  // Load Both Customer Pin & Rider Pin on Shared Map
-  function loadPinOnSharedMap(pin) {
-    const ord = allOrders[pin];
+  // =========================================================================
+  // STRICT PIN UNLOCK FOR MAP (Only valid PIN removes the Lock Overlay!)
+  // =========================================================================
+  function unlockMapWithPin(pin) {
+    const cleanPin = String(pin || "").trim();
+    const ord = allOrders[cleanPin];
     if (!ord) {
-      document.getElementById("trackLiveStatus").innerHTML = `❌ ఈ PIN (${pin}) తో బుకింగ్ దొరకలేదు.`;
+      alert(`❌ PIN "${cleanPin}" తప్పు లేదా ఈ PIN తో బుకింగ్ లేదు! సరైన 4-Digit PIN ఎంటర్ చేయండి.`);
       return;
     }
-    showCustomerPinOnMap(ord.lat, ord.lng, `${ord.custName} (${ord.from})`);
-    document.getElementById("trackLiveStatus").innerHTML = `✅ <b>PIN #${pin}:</b> ${ord.from} ➔ ${ord.to} (${ord.fare})`;
-    document.getElementById("privChatFeed").innerHTML = ord.chat || "";
+
+    unlockedPin = cleanPin;
+    document.getElementById("trackPinInp").value = cleanPin;
+    document.getElementById("mshMapLockOverlay").style.display = "none";
+    document.getElementById("lockMapAgainBtn").style.display = "inline-block";
+    setTimeout(() => map.invalidateSize(), 120);
+    renderUnlockedMapData(cleanPin);
   }
 
-  function updateMovingRiderPin(tData, pin) {
+  function lockMapBack() {
+    unlockedPin = "";
+    document.getElementById("trackPinInp").value = "";
+    document.getElementById("mshMapLockOverlay").style.display = "flex";
+    document.getElementById("lockMapAgainBtn").style.display = "none";
+    document.getElementById("trackLiveStatus").innerText = "🔒 PIN ఎంటర్ చేస్తేనే మ్యాప్ కనిపిస్తుంది";
+    document.getElementById("trackDistanceBadge").innerText = "Locked";
+    document.getElementById("trackDistanceBadge").style.background = "#334155";
+    document.getElementById("privChatFeed").innerHTML = "";
+  }
+
+  function renderUnlockedMapData(pin) {
+    const ord = allOrders[pin];
+    if (!ord) return;
+
+    const homeHtml = `<div style="background:#0284c7; color:#fff; border:2px solid #fff; border-radius:99px; padding:3px 9px; font-weight:900; font-size:12px;">🏠 ${ord.custName}</div>`;
+    const homeIcon = L.divIcon({ html: homeHtml, className: "", iconSize: [100, 26], iconAnchor: [50, 13] });
+
+    if (custPinMarker) {
+      custPinMarker.setLatLng([ord.lat, ord.lng]);
+      custPinMarker.setIcon(homeIcon);
+    } else {
+      custPinMarker = L.marker([ord.lat, ord.lng], { icon: homeIcon }).addTo(map);
+    }
+    map.setView([ord.lat, ord.lng], 14);
+
+    document.getElementById("trackLiveStatus").innerHTML = `🔓 <b>PIN #${pin}:</b> ${ord.from} ➔ ${ord.to} (${ord.fare})`;
+    document.getElementById("trackDistanceBadge").innerText = "Waiting for Rider...";
+    document.getElementById("trackDistanceBadge").style.background = "#0284c7";
+    document.getElementById("privChatFeed").innerHTML = ord.chat || "<span style='color:#64748b;'>ఈ PIN రూమ్‌లో మెసేజ్ పంపవచ్చు...</span>";
+  }
+
+  function updateMovingBike(tData, pin) {
     if (!tData.active) {
-      document.getElementById("trackLiveStatus").innerHTML = `🏁 <b>రైడర్ ట్రిప్ పూర్తయింది (Completed).</b>`;
+      document.getElementById("trackLiveStatus").innerHTML = `🏁 <b>రైడర్ ట్రిప్ పూర్తయింది!</b>`;
       document.getElementById("trackDistanceBadge").innerText = "Completed ✅";
+      document.getElementById("trackDistanceBadge").style.background = "#16a34a";
       if (liveBikeMarker) { map.removeLayer(liveBikeMarker); liveBikeMarker = null; }
       return;
     }
 
-    const bikeHtml = `<div style="background:#16a34a; color:#fff; border:2px solid #fff; border-radius:99px; padding:3px 9px; font-weight:900; font-size:12px; box-shadow:0 2px 8px rgba(0,0,0,0.4);">🛵 ${tData.riderName}</div>`;
+    const bikeHtml = `<div style="background:#16a34a; color:#fff; border:2px solid #fff; border-radius:99px; padding:3px 9px; font-weight:900; font-size:12px;">🛵 ${tData.riderName}</div>`;
     const bikeIcon = L.divIcon({ html: bikeHtml, className: "", iconSize: [90, 26], iconAnchor: [45, 13] });
 
     if (liveBikeMarker) {
@@ -580,85 +652,77 @@
     const ord = allOrders[pin];
     if (ord && ord.lat) {
       const distKm = calcRoadKm(tData.lat, tData.lng, ord.lat, ord.lng);
-      const distText = distKm < 0.3 ? "🎯 కస్టమర్ ఇంటి దగ్గరకు వచ్చేశారు! (<300m)" : `📍 కస్టమర్‌కు ${distKm} km దూరంలో ఉన్నారు`;
-      document.getElementById("trackDistanceBadge").innerText = distText;
-      // Fit both Customer & Rider pins on screen!
-      const group = L.featureGroup([custPinMarker, liveBikeMarker]);
-      map.fitBounds(group.getBounds().pad(0.3));
-    } else {
-      map.setView([tData.lat, tData.lng], 14);
+      const distTxt = distKm < 0.3 ? "🎯 ఇంటి దగ్గరకు వచ్చారు!" : `📍 ${distKm} km దూరంలో`;
+      document.getElementById("trackDistanceBadge").innerText = distTxt;
+      document.getElementById("trackDistanceBadge").style.background = "#16a34a";
+      if (custPinMarker) {
+        const grp = L.featureGroup([custPinMarker, liveBikeMarker]);
+        map.fitBounds(grp.getBounds().pad(0.3));
+      }
     }
-
-    document.getElementById("trackLiveStatus").innerHTML = `🟢 <b>${tData.riderName}</b> కదులుతున్నారు (Live: ${tData.updated})`;
+    document.getElementById("trackLiveStatus").innerHTML = `🟢 <b>${tData.riderName}</b> కదులుతున్నారు (${tData.updated})`;
   }
 
   document.getElementById("trackPinBtn").addEventListener("click", () => {
-    const p = document.getElementById("trackPinInp").value.trim();
-    if (!p) return;
-    activeTrackingPin = p;
-    loadPinOnSharedMap(p);
+    unlockMapWithPin(document.getElementById("trackPinInp").value);
   });
+  document.getElementById("lockMapAgainBtn").addEventListener("click", lockMapBack);
 
   document.getElementById("privChatSendBtn").addEventListener("click", () => {
-    if (!activeTrackingPin || !allOrders[activeTrackingPin]) { alert("ముందు మీ 4-Digit PIN ఎంటర్ చేసి 'View on Map' నొక్కండి."); return; }
+    if (!unlockedPin || !allOrders[unlockedPin]) {
+      alert("ముందు 4-Digit PIN ఎంటర్ చేసి 'Unlock Map' నొక్కండి.");
+      return;
+    }
     const inp = document.getElementById("privChatInp");
     const txt = inp.value.trim();
     if (!txt) return;
     inp.value = "";
     const line = `<div>💬 <b>Note:</b> ${txt}</div>`;
-    allOrders[activeTrackingPin].chat = (allOrders[activeTrackingPin].chat || "") + line;
-    document.getElementById("privChatFeed").innerHTML = allOrders[activeTrackingPin].chat;
-    if (gun) gun.get(TOPIC_ORDERS).get(activeTrackingPin).put(allOrders[activeTrackingPin]);
+    allOrders[unlockedPin].chat = (allOrders[unlockedPin].chat || "") + line;
+    document.getElementById("privChatFeed").innerHTML = allOrders[unlockedPin].chat;
+    if (gun) gun.get(TOPIC_ORDERS).get(unlockedPin).put(allOrders[unlockedPin]);
   });
 
   // =========================================================================
-  // 2. RIDER LIVE TRIP (Also loads Customer Pin on Shared Map below!)
+  // 2. RIDER LIVE TRIP
   // =========================================================================
   document.getElementById("riderStartLiveBtn").addEventListener("click", () => {
     const rName = document.getElementById("riderSelectName").value;
     const pin = document.getElementById("riderOrderPinInp").value.trim();
-    if (!pin) { alert("దయచేసి Customer 4-Digit PIN ఎంటర్ చేయండి."); return; }
+    if (!pin) { alert("Customer 4-Digit PIN ఎంటర్ చేయండి."); return; }
 
-    activeTrackingPin = pin;
-    document.getElementById("trackPinInp").value = pin;
-    loadPinOnSharedMap(pin);
+    unlockMapWithPin(pin);
 
     const ord = allOrders[pin];
     const card = document.getElementById("riderAssignedCard");
     card.style.display = "block";
     card.innerHTML = ord
-      ? `<strong>📦 Order PIN #${pin}</strong><br>👤 Customer: ${ord.custName} (${ord.maskedPhone} - Number Hidden)<br>📍 ${ord.from} ➔ ${ord.to} | 💰 Collect: <b>${ord.fare}</b><br>📝 Note: ${ord.note || "-"}`
-      : `<strong>📡 Live Tracking Active for PIN #${pin}</strong>`;
+      ? `<strong>📦 Order PIN #${pin}</strong><br>👤 Customer: ${ord.custName} (${ord.maskedPhone} - Hidden)<br>📍 ${ord.from} ➔ ${ord.to} | 💰 <b>${ord.fare}</b><br>📝 Note: ${ord.note || "-"}`
+      : `<strong>📡 Live GPS Active for PIN #${pin}</strong>`;
 
     if (!navigator.geolocation) { alert("GPS సపోర్ట్ లేదు"); return; }
-    document.getElementById("riderLiveFeedback").innerText = "📡 మీ Live GPS ప్రారంభమైంది — కింద మ్యాప్‌లో 🏠 కస్టమర్ & 🛵 మీ లొకేషన్ చూడండి!";
+    document.getElementById("riderLiveFeedback").innerText = "📡 మీ Live GPS ప్రారంభమైంది — కుడివైపు మ్యాప్‌లో కదులుతోంది!";
 
     if (riderWatchId !== null) navigator.geolocation.clearWatch(riderWatchId);
     riderWatchId = navigator.geolocation.watchPosition(pos => {
       const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const tPayload = {
-        active: true,
-        riderName: rName,
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        updated: now
-      };
-      updateMovingRiderPin(tPayload, pin);
-      if (gun) gun.get(TOPIC_TRACK).get(pin).put(tPayload);
+      const payload = { active: true, riderName: rName, lat: pos.coords.latitude, lng: pos.coords.longitude, updated: now };
+      updateMovingBike(payload, pin);
+      if (gun) gun.get(TOPIC_TRACK).get(pin).put(payload);
     }, () => {
-      document.getElementById("riderLiveFeedback").innerHTML = `<span style="color:#dc2626;">⚠️ దయచేసి ఫోన్‌లో Location (GPS) ఆన్ చేయండి.</span>`;
+      document.getElementById("riderLiveFeedback").innerHTML = `<span style="color:#dc2626;">⚠️ ఫోన్‌లో Location (GPS) ఆన్ చేయండి.</span>`;
     }, { enableHighAccuracy: true, maximumAge: 3000 });
   });
 
   document.getElementById("riderStopLiveBtn").addEventListener("click", () => {
     const pin = document.getElementById("riderOrderPinInp").value.trim();
     if (riderWatchId !== null) { navigator.geolocation.clearWatch(riderWatchId); riderWatchId = null; }
-    document.getElementById("riderLiveFeedback").innerHTML = `<span style="color:#dc2626;">🔴 ట్రిప్ పూర్తయింది (Live GPS ఆగిపోయింది).</span>`;
+    document.getElementById("riderLiveFeedback").innerHTML = `<span style="color:#dc2626;">🔴 ట్రిప్ పూర్తయింది (GPS ఆగిపోయింది).</span>`;
     if (gun && pin) gun.get(TOPIC_TRACK).get(pin).put({ active: false });
   });
 
   // =========================================================================
-  // 3. ADMIN VIEW
+  // 3. ADMIN MASTER VIEW
   // =========================================================================
   function renderAdminOrders() {
     const box = document.getElementById("adminOrdersList");
@@ -668,29 +732,28 @@
       return;
     }
     box.innerHTML = list.map(o => {
-      const fwdMsg = `🛵 *RIDE / ORDER ASSIGNED (PIN: ${o.pin})*\n🚘 Type: ${o.veh}\n👤 Customer: ${o.custName} (${o.maskedPhone})\n📍 ${o.from} ➔ ${o.to}\n💰 Collect: ${o.fare}\n📝 Note: ${o.note || "-"}\n👉 వెబ్‌సైట్‌లో 'Rider' ట్యాబ్ ఓపెన్ చేసి PIN ${o.pin} ఎంటర్ చేసి GPS ON చేయండి.`;
+      const fwdMsg = `🛵 *ORDER ASSIGNED (PIN: ${o.pin})*\n🚘 ${o.veh} | 👤 ${o.custName} (${o.maskedPhone})\n📍 ${o.from} ➔ ${o.to} | 💰 ${o.fare}\n👉 వెబ్‌సైట్‌లో 'Rider' ట్యాబ్ ఓపెన్ చేసి PIN ${o.pin} ఎంటర్ చేసి GPS ON చేయండి.`;
       const waHref = `https://wa.me/?text=${encodeURIComponent(fwdMsg)}`;
       return `
         <div class="msh-order-row">
-          <div>
-            <span style="background:#dbeafe; color:#1e40af; padding:2px 7px; border-radius:5px; font-weight:800; font-size:0.78rem;">PIN: #${o.pin}</span>
-            <strong> ${o.veh} • ${o.from} ➔ ${o.to} (${o.fare})</strong><br>
-            <span>👤 ${o.custName} • 📞 Original Phone: <a href="tel:${o.custPhone}">${o.custPhone}</a> (Rider sees: ${o.maskedPhone})</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="background:#dbeafe; color:#1e40af; padding:2px 7px; border-radius:5px; font-weight:900;">PIN: #${o.pin}</span>
+            <strong>${o.veh} • ${o.fare}</strong>
           </div>
-          <div style="display:flex; gap:6px;">
-            <button type="button" onclick="window.mshAdminTrackPin('${o.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:8px; padding:7px 10px; font-weight:800; font-size:0.8rem; cursor:pointer;">🗺️ Map</button>
-            <a href="${waHref}" target="_blank" style="background:#16a34a; color:#fff; text-decoration:none; padding:7px 12px; border-radius:8px; font-weight:800; font-size:0.8rem;">📲 Forward</a>
+          <div>📍 ${o.from} ➔ ${o.to}</div>
+          <div>👤 ${o.custName} • 📞 <a href="tel:${o.custPhone}">${o.custPhone}</a> (Masked: ${o.maskedPhone})</div>
+          <div style="display:flex; gap:6px; margin-top:6px;">
+            <button type="button" onclick="window.mshAdmOpenPin('${o.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:5px 10px; font-weight:800; font-size:0.78rem; cursor:pointer;">🗺️ Unlock Map</button>
+            <a href="${waHref}" target="_blank" style="background:#16a34a; color:#fff; text-decoration:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:0.78rem;">📲 Forward</a>
           </div>
         </div>`;
     }).join("");
   }
 
-  window.mshAdminTrackPin = function(pin) {
-    activeTrackingPin = pin;
-    document.getElementById("trackPinInp").value = pin;
-    loadPinOnSharedMap(pin);
+  window.mshAdmOpenPin = function(pin) {
+    unlockMapWithPin(pin);
   };
 
-  calcCustomerFare();
+  calcFare();
 })();
 </script>
