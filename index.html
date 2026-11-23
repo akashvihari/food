@@ -4,7 +4,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  .msh-master-hub {
+  .msh-hub {
     --primary: #0f4c3a;
     --swiggy: #fc8019;
     --yellow: #facc15;
@@ -13,7 +13,7 @@
     --blue: #0284c7;
     --border: #cbd5e1;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    max-width: 1240px;
+    max-width: 1220px;
     margin: 12px auto;
     background: #ffffff;
     border: 2px solid #cbd5e1;
@@ -22,10 +22,10 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     color: #1e293b;
   }
-  .msh-master-hub * { box-sizing: border-box; }
+  .msh-hub * { box-sizing: border-box; }
 
   /* Moving Disclaimer Ticker */
-  .msh-ticker-wrap {
+  .msh-ticker {
     background: #fef2f2;
     border: 1.5px solid #fca5a5;
     border-radius: 10px;
@@ -34,18 +34,18 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .msh-ticker-move {
+  .msh-ticker-txt {
     display: inline-block;
     padding-left: 100%;
-    animation: mshTicker 25s linear infinite;
+    animation: mshRun 26s linear infinite;
     font-size: 0.9rem;
     font-weight: 800;
     color: #991b1b;
   }
-  @keyframes mshTicker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+  @keyframes mshRun { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
   /* Header */
-  .msh-top-head {
+  .msh-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,11 +55,10 @@
     padding-bottom: 10px;
     margin-bottom: 12px;
   }
-  .msh-main-title { font-size: 1.32rem; font-weight: 900; color: #0f4c3a; margin: 0; }
-  .msh-main-sub { font-size: 0.85rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
+  .msh-title { font-size: 1.3rem; font-weight: 900; color: #0f4c3a; margin: 0; }
+  .msh-sub { font-size: 0.85rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
 
-  .msh-head-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-  .msh-pill-btn {
+  .msh-pill {
     border: none;
     border-radius: 999px;
     padding: 8px 15px;
@@ -67,20 +66,9 @@
     font-weight: 800;
     cursor: pointer;
   }
-  .msh-reg-btn { background: #2563eb; color: #fff; }
-  .msh-lock-btn { background: #111827; color: #fff; }
-  .msh-lock-btn.unlocked { background: var(--green); }
 
-  /* CUSTOMER 1-TIME REGISTRATION BANNER / CARD */
-  .msh-cust-reg-box {
-    display: none;
-    background: #eff6ff;
-    border: 2px solid #93c5fd;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  .msh-welcome-strip {
+  /* Customer Welcome & Registration */
+  .msh-welcome {
     display: none;
     background: #f0fdf4;
     border: 1.5px solid #86efac;
@@ -93,6 +81,14 @@
     gap: 8px;
     font-size: 0.88rem;
   }
+  .msh-reg-panel {
+    display: none;
+    background: #eff6ff;
+    border: 2px solid #93c5fd;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
 
   /* Admin Bar & Panels */
   .msh-adm-bar {
@@ -103,18 +99,6 @@
     border-radius: 12px;
     margin-bottom: 12px;
   }
-  .msh-routing-switch {
-    background: #0f172a;
-    border: 1.5px solid #facc15;
-    border-radius: 10px;
-    padding: 9px 12px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
   .msh-adm-panel {
     display: none;
     background: #f1f5f9;
@@ -124,44 +108,44 @@
     margin-bottom: 12px;
   }
 
-  /* TOP SECTION: RAPIDO AUTO & BIKE QUICK RIDE BAR */
-  .msh-top-ride-banner {
+  /* Top Quick Auto & Bike Ride Bar */
+  .msh-top-ride {
     background: linear-gradient(135deg, #fefce8, #fffbeb);
     border: 2px solid #facc15;
     border-radius: 14px;
-    padding: 14px;
+    padding: 13px;
     margin-bottom: 16px;
   }
-  .msh-top-ride-grid {
+  .msh-top-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 8px;
     align-items: center;
   }
 
-  /* EXACT 50% LEFT + 50% RIGHT SPLIT LAYOUT */
-  .msh-split-50-50 {
+  /* 50% Left + 50% Right Split Layout */
+  .msh-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     align-items: stretch;
   }
-  @media (max-width: 720px) {
-    .msh-split-50-50 { grid-template-columns: 1fr; }
+  @media (max-width: 740px) {
+    .msh-split { grid-template-columns: 1fr; }
   }
 
-  .msh-half-panel {
+  .msh-panel {
     border-radius: 16px;
     padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
-  .msh-left-food { background: #fff7ed; border: 2px solid #fdba74; }
-  .msh-right-ride { background: #f8fafc; border: 2px solid #94a3b8; }
+  .msh-left { background: #fff7ed; border: 2px solid #fdba74; }
+  .msh-right { background: #f8fafc; border: 2px solid #94a3b8; }
 
   .msh-sec-h {
-    font-size: 1.08rem;
+    font-size: 1.06rem;
     font-weight: 900;
     margin: 0 0 10px;
     display: flex;
@@ -169,9 +153,9 @@
     align-items: center;
   }
 
-  /* Category Pills */
-  .msh-cat-bar { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
-  .msh-cat-btn {
+  /* Category Tabs */
+  .msh-cats { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
+  .msh-cat {
     background: #fff;
     border: 1.5px solid #fdba74;
     color: #9a3412;
@@ -182,10 +166,10 @@
     cursor: pointer;
     white-space: nowrap;
   }
-  .msh-cat-btn.active { background: var(--swiggy); color: #fff; border-color: var(--swiggy); }
+  .msh-cat.active { background: var(--swiggy); color: #fff; border-color: var(--swiggy); }
 
-  /* 3 Columns x 7 Rows Card Grid */
-  .msh-food-3col-scroll {
+  /* 3x7 Food Cards Grid */
+  .msh-grid-3x7 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
@@ -194,10 +178,10 @@
     padding-right: 4px;
     align-content: start;
   }
-  .msh-food-3col-scroll::-webkit-scrollbar { width: 6px; }
-  .msh-food-3col-scroll::-webkit-scrollbar-thumb { background: var(--swiggy); border-radius: 99px; }
+  .msh-grid-3x7::-webkit-scrollbar { width: 6px; }
+  .msh-grid-3x7::-webkit-scrollbar-thumb { background: var(--swiggy); border-radius: 99px; }
 
-  .msh-mini-card {
+  .msh-card {
     background: #ffffff;
     border: 1.5px solid #fed7aa;
     border-radius: 10px;
@@ -206,11 +190,10 @@
     flex-direction: column;
     justify-content: space-between;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
   }
-  .msh-mini-card.own-item { background: #f0fdf4; border: 2px solid #22c55e; }
-  .msh-mini-icon { font-size: 1.35rem; margin-bottom: 3px; }
-  .msh-mini-name {
+  .msh-card.own { background: #f0fdf4; border: 2px solid #22c55e; }
+  .msh-c-icon { font-size: 1.35rem; margin-bottom: 3px; }
+  .msh-c-name {
     font-size: 0.82rem;
     font-weight: 800;
     color: #0f172a;
@@ -221,8 +204,8 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .msh-mini-price { font-size: 0.88rem; font-weight: 900; color: #c2410c; margin-bottom: 6px; }
-  .msh-mini-add {
+  .msh-c-price { font-size: 0.88rem; font-weight: 900; color: #c2410c; margin-bottom: 6px; }
+  .msh-c-add {
     width: 100%;
     background: #fff;
     color: var(--green);
@@ -233,7 +216,7 @@
     font-weight: 900;
     cursor: pointer;
   }
-  .msh-mini-qty {
+  .msh-c-qty {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -244,7 +227,7 @@
     font-size: 0.82rem;
     font-weight: 900;
   }
-  .msh-mini-qty button {
+  .msh-c-qty button {
     background: transparent;
     border: none;
     color: #fff;
@@ -253,7 +236,7 @@
     padding: 2px 5px;
   }
 
-  /* Form Controls */
+  /* Inputs & Buttons */
   .msh-inp, .msh-sel, .msh-txt {
     width: 100%;
     padding: 9px 10px;
@@ -264,7 +247,7 @@
     margin-bottom: 8px;
     font-weight: 600;
   }
-  .msh-flex-row { display: flex; gap: 6px; margin-bottom: 8px; }
+  .msh-row { display: flex; gap: 6px; margin-bottom: 8px; }
   .msh-btn {
     background: var(--primary);
     color: #fff;
@@ -276,6 +259,46 @@
     cursor: pointer;
     white-space: nowrap;
     height: 38px;
+  }
+
+  /* MOV Warning Box */
+  .msh-mov-alert {
+    display: none;
+    background: #fef2f2;
+    border: 1.5px solid #ef4444;
+    color: #991b1b;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  /* Bill Breakdown Box */
+  .msh-bill-box {
+    background: #f0fdf4;
+    border: 2px solid #16a34a;
+    border-radius: 10px;
+    padding: 9px 11px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+  .msh-bill-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    color: #334155;
+    font-weight: 600;
+  }
+  .msh-bill-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.08rem;
+    font-weight: 900;
+    color: #0f4c3a;
+    border-top: 1px dashed #86efac;
+    padding-top: 5px;
+    margin-top: 5px;
   }
 
   /* Map Modal */
@@ -296,129 +319,126 @@
     width: 100%;
     max-width: 480px;
   }
-  #mshSplitMap { height: 260px; width: 100%; border-radius: 10px; margin: 8px 0; }
+  #mshMapDiv { height: 260px; width: 100%; border-radius: 10px; margin: 8px 0; }
 </style>
 
-<div class="msh-master-hub" id="mshSplitMaster">
+<div class="msh-hub" id="mshMainApp">
   
   <!-- Moving Disclaimer Ticker -->
-  <div class="msh-ticker-wrap">
-    <div class="msh-ticker-move">
-      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ సేవ. Swiggy లాగా 10 నిమిషాల్లో రాదు — ఆర్డర్ చేసిన తర్వాత 30 నుండి 45 నిమిషాలు (అరగంట పైన) పట్టవచ్చు. ముందే ఆర్డర్ చేయండి; ఆలస్యమైందని వాదనకు / గొడవకు అవకాశం లేదు.
+  <div class="msh-ticker">
+    <div class="msh-ticker-txt">
+      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ సేవ. Swiggy లాగా 10 నిమిషాల్లో రాదు — ఆర్డర్ చేసిన తర్వాత 30 నుండి 45 నిమిషాలు (అరగంట పైన) పట్టవచ్చు. 5 KM దూరం దాటితే కనీసం ₹150 ఆర్డర్ ఉండాలి. సమయానికి రాలేదని వాదనకు అవకాశం లేదు.
     </div>
   </div>
 
   <!-- Header -->
-  <div class="msh-top-head">
+  <div class="msh-head">
     <div>
-      <h2 class="msh-main-title">🛵 Mana Seva Hub — Auto/Bike Rides, Local Hotels & Farm Stock</h2>
-      <p class="msh-main-sub">Boddavara • Kiltampalem • S.Kota • Dharmavaram • Tatipudi • Kothavalasa (20 KM Live Service)</p>
+      <h2 class="msh-title">🛵 Mana Seva Hub — Auto/Bike Rides, Local Hotels & Farm Stock</h2>
+      <p class="msh-sub">Boddavara • Kiltampalem • S.Kota • Dharmavaram • Tatipudi • Kothavalasa (20 KM Live Service)</p>
     </div>
-    <div class="msh-head-btns">
-      <button type="button" class="msh-pill-btn msh-reg-btn" id="mshOpenRegBtn">👤 Customer Registration</button>
-      <button type="button" class="msh-pill-btn msh-lock-btn" id="mshSpAdminBtn">🔒 Admin Lock</button>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button type="button" class="msh-pill" style="background:#2563eb; color:#fff;" id="mshBtnRegOpen">👤 1-Time Registration</button>
+      <button type="button" class="msh-pill" style="background:#111827; color:#fff;" id="mshBtnAdmLock">🔒 Admin Lock</button>
     </div>
   </div>
 
-  <!-- REGISTERED CUSTOMER WELCOME STRIP (Auto-shows if user registered once) -->
-  <div class="msh-welcome-strip" id="mshWelcomeStrip">
+  <!-- Welcome Strip for Registered Users -->
+  <div class="msh-welcome" id="mshWelcomeBar">
     <div>
-      <strong style="color:#15803d;" id="mshWelcomeText">👋 Welcome back!</strong>
-      <span style="color:#475569; font-size:0.82rem;">(మీ వివరాలు ఆటోమేటిక్‌గా నింపబడ్డాయి)</span>
+      <strong style="color:#15803d;" id="mshWelcomeName">👋 Welcome back!</strong>
+      <span style="color:#475569; font-size:0.82rem;">(మీ అడ్రస్ & ఫోన్ ఆటోమేటిక్‌గా నింపబడ్డాయి)</span>
     </div>
-    <button type="button" id="mshEditRegBtn" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:6px; padding:4px 10px; font-weight:800; cursor:pointer; font-size:0.8rem;">✏️ Edit Profile</button>
+    <button type="button" id="mshBtnRegEdit" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:6px; padding:4px 10px; font-weight:800; cursor:pointer; font-size:0.8rem;">✏️ Edit</button>
   </div>
 
-  <!-- 1-TIME CUSTOMER REGISTRATION FORM -->
-  <div class="msh-cust-reg-box" id="mshCustRegBox">
+  <!-- 1-Time Customer Registration Panel -->
+  <div class="msh-reg-panel" id="mshRegBox">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <strong style="color:#1e3a8a; font-size:1rem;">👤 1-Time Customer Registration (ఒక్కసారి రిజిస్టర్ అయితే చాలు)</strong>
-      <button type="button" id="mshCloseRegBtn" style="border:none; background:#dbeafe; border-radius:6px; padding:3px 9px; font-weight:800; cursor:pointer;">✕</button>
+      <strong style="color:#1e3a8a; font-size:0.98rem;">👤 1-Time Customer Registration (ఒక్కసారి వివరాలు సేవ్ చేసుకోండి)</strong>
+      <button type="button" id="mshBtnRegClose" style="border:none; background:#dbeafe; border-radius:6px; padding:3px 9px; font-weight:800; cursor:pointer;">✕</button>
     </div>
-    <p style="font-size:0.82rem; color:#1e40af; margin:0 0 8px;">
-      మీ పేరు, ఫోన్ నంబర్ మరియు ఊరు సేవ్ చేసుకుంటే, ప్రతిసారి టైప్ చేయకుండా త్వరగా రైడ్ / ఫుడ్ ఆర్డర్ చేసుకోవచ్చు:
-    </p>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:8px;">
       <input type="text" id="mshRegName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
       <input type="tel" id="mshRegPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (10 అంకెలు)">
       <select id="mshRegVillage" class="msh-sel" style="margin:0;">
-        <option value="2|25">Boddavara (బొడ్డవార)</option>
-        <option value="3|25">Ithannapalem (ఇతన్నపాలెం)</option>
-        <option value="4|25">Kiltampalem (కిల్తంపాలెం)</option>
-        <option value="5|25">S.Kota (ఎస్.కోట)</option>
-        <option value="8|45">Dharmavaram (ధర్మవరం)</option>
-        <option value="11|45">Tatipudi (తాటిపూడి)</option>
-        <option value="12|45">L.Kota (ఎల్.కోట)</option>
-        <option value="18|70">Kothavalasa (కొత్తవలస)</option>
+        <option value="2|25">Boddavara (0-3 km • ₹25)</option>
+        <option value="3|25">Ithannapalem (3 km • ₹25)</option>
+        <option value="4|40">Kiltampalem (4 km • ₹40)</option>
+        <option value="5|45">S.Kota (5 km • ₹45)</option>
+        <option value="8|55">Dharmavaram (8 km • ₹55)</option>
+        <option value="11|60">Tatipudi (11 km • ₹60)</option>
+        <option value="12|60">L.Kota (12 km • ₹60)</option>
+        <option value="18|75">Kothavalasa (18 km • ₹75)</option>
       </select>
       <input type="text" id="mshRegLandmark" class="msh-inp" style="margin:0;" placeholder="ఇంటి గుర్తు (Landmark)">
-      <button type="button" class="msh-btn" style="background:#2563eb;" id="mshSaveRegBtn">✅ Save My Profile</button>
+      <button type="button" class="msh-btn" style="background:#2563eb;" id="mshBtnRegSave">✅ Save Profile</button>
     </div>
   </div>
 
   <!-- ADMIN CONTROL BAR (Opens ONLY with PIN 1234) -->
-  <div class="msh-adm-bar" id="mshSpAdmBar">
-    <!-- HYBRID ROUTING MODE SWITCH (Admin Mediator vs Auto-Direct Nearest Rider) -->
-    <div class="msh-routing-switch">
+  <div class="msh-adm-bar" id="mshAdmBar">
+    <div style="background:#0f172a; border:1.5px solid #facc15; border-radius:10px; padding:8px 12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
       <div>
-        <strong style="color:#facc15; font-size:0.9rem;" id="mshRoutingLabel">🔒 Mode: Admin Mediator (ముందు నా WhatsApp కి రావాలి — నేనే రైడర్‌కు ఫార్వర్డ్ చేస్తాను)</strong>
-        <div style="font-size:0.78rem; color:#cbd5e1;" id="mshRoutingDesc">మీరు బిజీగా ఉన్నప్పుడు లేదా రాత్రి వేళల్లో "Auto-Direct Nearest Rider" ఆన్ చేసుకోవచ్చు.</div>
+        <strong style="color:#facc15; font-size:0.88rem;" id="mshRouteLbl">🔒 Mode: Admin Mediator (ముందు నా WhatsApp కి వస్తుంది)</strong>
+        <div style="font-size:0.76rem; color:#cbd5e1;">నైట్ టైమ్ లేదా మీరు బిజీగా ఉన్నప్పుడు "Auto-Direct Nearest Rider" ఆన్ చేసుకోండి.</div>
       </div>
-      <button type="button" class="msh-btn" style="background:#facc15; color:#000;" id="mshToggleRoutingBtn">🔄 Switch Routing Mode</button>
+      <button type="button" class="msh-btn" style="background:#facc15; color:#000;" id="mshBtnRouteToggle">🔄 Switch Mode</button>
     </div>
 
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <strong style="color:#94a3b8; font-size:0.84rem;">Admin Tools:</strong>
-      <button type="button" class="msh-btn" style="background:#fc8019; height:32px;" id="mshSpTabFood">➕ Add Food / Own Stock</button>
-      <button type="button" class="msh-btn" style="background:#16a34a; height:32px;" id="mshSpTabRiders">🛵 Active Riders & Numbers</button>
-      <button type="button" class="msh-btn" style="background:#0284c7; height:32px;" id="mshSpTabOrders">📋 Private Orders</button>
-      <button type="button" class="msh-btn" style="background:#7c3aed; height:32px;" id="mshSpTabCusts">👥 Registered Customers</button>
+      <button type="button" class="msh-btn" style="background:#fc8019; height:32px;" id="mshTabAddFood">➕ Add Food / Own Stock</button>
+      <button type="button" class="msh-btn" style="background:#16a34a; height:32px;" id="mshTabRiders">🛵 Riders (ON/OFF)</button>
+      <button type="button" class="msh-btn" style="background:#0284c7; height:32px;" id="mshTabProfit">💰 Orders & Profit Calculator</button>
+      <button type="button" class="msh-btn" style="background:#7c3aed; height:32px;" id="mshTabCusts">👥 Customers</button>
     </div>
   </div>
 
   <!-- Admin Panel 1: Add Food / Own Stock -->
-  <div class="msh-adm-panel" id="mshSpPanelFood">
+  <div class="msh-adm-panel" id="mshPanelFood">
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px;">
-      <select id="mshSpCat" class="msh-sel" style="margin:0;">
+      <select id="mshNewCat" class="msh-sel" style="margin:0;">
         <option value="own">🌾 My Own Stock (Banana/Farm)</option>
         <option value="food">🍗 Hotel Food / Biryani</option>
         <option value="veg">🥬 Vegetables</option>
         <option value="drinks">💧 Water / Milk</option>
         <option value="parcel">📦 Kirana / Parcel</option>
       </select>
-      <input type="text" id="mshSpName" class="msh-inp" style="margin:0;" placeholder="ఐటమ్ పేరు (ఉదా: Banana Gela)">
-      <input type="number" id="mshSpPrice" class="msh-inp" style="margin:0;" placeholder="ధర ₹ (ఉదా: 250)">
-      <button type="button" class="msh-btn" style="background:#16a34a;" id="mshSpSaveFood">🚀 Save & Sync</button>
-      <button type="button" class="msh-btn" style="background:#64748b;" onclick="document.getElementById('mshSpPanelFood').style.display='none'">Close</button>
+      <input type="text" id="mshNewName" class="msh-inp" style="margin:0;" placeholder="ఐటమ్ పేరు (ఉదా: Banana Gela)">
+      <input type="number" id="mshNewPrice" class="msh-inp" style="margin:0;" placeholder="కస్టమర్ రేటు ₹ (ఉదా: 280)">
+      <button type="button" class="msh-btn" style="background:#16a34a;" id="mshBtnSaveFood">🚀 Save & Sync</button>
+      <button type="button" class="msh-btn" style="background:#64748b;" onclick="document.getElementById('mshPanelFood').style.display='none'">Close</button>
     </div>
   </div>
 
-  <!-- Admin Panel 2: Active Riders & Phones -->
-  <div class="msh-adm-panel" id="mshSpPanelRiders">
-    <div id="mshSpAdmRidersList"></div>
-    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshSpPanelRiders').style.display='none'">Close</button>
+  <!-- Admin Panel 2: Riders Control -->
+  <div class="msh-adm-panel" id="mshPanelRiders">
+    <div id="mshAdmRidersBox"></div>
+    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshPanelRiders').style.display='none'">Close</button>
   </div>
 
-  <!-- Admin Panel 3: Private Orders -->
-  <div class="msh-adm-panel" id="mshSpPanelOrders">
-    <div id="mshSpAdmOrdersList" style="font-size:0.85rem;"></div>
-    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshSpPanelOrders').style.display='none'">Close</button>
+  <!-- Admin Panel 3: Orders & Profit Calculator -->
+  <div class="msh-adm-panel" id="mshPanelProfit">
+    <div style="background:#dcfce7; border:1.5px solid #16a34a; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-weight:800; color:#14532d;" id="mshTotalProfitSummary">
+      💰 Total Estimated Admin Profit: ₹0
+    </div>
+    <div id="mshAdmOrdersBox" style="font-size:0.84rem;"></div>
+    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshPanelProfit').style.display='none'">Close</button>
   </div>
 
-  <!-- Admin Panel 4: Registered Customers List -->
-  <div class="msh-adm-panel" id="mshSpPanelCusts">
-    <strong style="color:#0f4c3a; display:block; margin-bottom:6px;">👥 రిజిస్టర్ అయిన కస్టమర్ల వివరాలు (Admin Only):</strong>
-    <div id="mshSpAdmCustsList" style="font-size:0.85rem;"></div>
-    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshSpPanelCusts').style.display='none'">Close</button>
+  <!-- Admin Panel 4: Registered Customers -->
+  <div class="msh-adm-panel" id="mshPanelCusts">
+    <div id="mshAdmCustsBox" style="font-size:0.84rem;"></div>
+    <button type="button" class="msh-btn" style="background:#64748b; height:32px; margin-top:6px;" onclick="document.getElementById('mshPanelCusts').style.display='none'">Close</button>
   </div>
 
-  <!-- TOP SECTION: RAPIDO AUTO & BIKE QUICK RIDE BAR -->
-  <div class="msh-top-ride-banner">
+  <!-- TOP SECTION: QUICK AUTO & BIKE RIDE BAR -->
+  <div class="msh-top-ride">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
-      <strong style="font-size:1.05rem; color:#854d0e;">🛺 Top Auto & Bike Quick Ride (బొడ్డవార 20 KM పరిధి — తక్షణ ఆటో / బైక్ బుకింగ్)</strong>
-      <span style="background:#fef08a; color:#713f12; padding:3px 10px; border-radius:99px; font-size:0.8rem; font-weight:800;">Bike ₹5/km • Auto ₹12/km • Car ₹18/km</span>
+      <strong style="font-size:1.02rem; color:#854d0e;">🛺 Quick Auto & Bike Ride (బొడ్డవార 20 KM — తక్షణ ఆటో / బైక్ బుకింగ్)</strong>
+      <span style="background:#fef08a; color:#713f12; padding:3px 10px; border-radius:99px; font-size:0.78rem; font-weight:800;">Bike ₹5/km • Auto ₹12/km • Car ₹18/km</span>
     </div>
-    <div class="msh-top-ride-grid">
+    <div class="msh-top-grid">
       <select id="mshTopVeh" class="msh-sel" style="margin:0;">
         <option value="Auto|12|50">🛺 Auto (₹12/km • Min ₹50)</option>
         <option value="Bike|5|20">🏍️ Bike (₹5/km • Min ₹20)</option>
@@ -427,33 +447,33 @@
       <input type="text" id="mshTopFrom" class="msh-inp" style="margin:0;" placeholder="ఎక్కడి నుండి (From: Boddavara)">
       <input type="text" id="mshTopTo" class="msh-inp" style="margin:0;" placeholder="ఎక్కడికి (To: S.Kota / Tatipudi)">
       <input type="number" id="mshTopKm" class="msh-inp" style="margin:0;" value="5" min="1" max="25" placeholder="KM">
-      <button type="button" class="msh-btn" style="background:#16a34a; font-size:0.92rem;" id="mshTopBookBtn">
+      <button type="button" class="msh-btn" style="background:#16a34a; font-size:0.9rem;" id="mshTopBookBtn">
         🛺 Book Ride (<span id="mshTopFare">₹60</span>)
       </button>
     </div>
   </div>
 
-  <!-- EXACT 50% LEFT (3x7 FOOD CARDS) + 50% RIGHT (CLEAR RIDE & ORDER) -->
-  <div class="msh-split-50-50">
+  <!-- 50% LEFT (3x7 FOOD CARDS) + 50% RIGHT (CLEAN CHECKOUT & RULES) -->
+  <div class="msh-split">
     
-    <!-- LEFT 50%: 3 COLUMNS x 7 ROWS FOOD & OWN FARM STOCK CARDS -->
-    <div class="msh-half-panel msh-left-food">
+    <!-- LEFT 50%: 3 COLUMNS x 7 ROWS FOOD & OWN FARM STOCK -->
+    <div class="msh-panel msh-left">
       <div>
         <div class="msh-sec-h" style="color:#9a3412;">
-          <span>🍱 1. Food & Farm Stock (3x7 Cards)</span>
-          <span id="mshSpItemCount" style="font-size:0.78rem; background:#ffedd5; padding:2px 8px; border-radius:6px;">21 Items</span>
+          <span>🍱 1. ఐటమ్స్ ఎంచుకోండి (Menu & Own Stock)</span>
+          <span id="mshItemCount" style="font-size:0.78rem; background:#ffedd5; padding:2px 8px; border-radius:6px;">21 Items</span>
         </div>
 
-        <div class="msh-cat-bar" id="mshSpCatBar">
-          <button type="button" class="msh-cat-btn active" data-cat="all">All</button>
-          <button type="button" class="msh-cat-btn" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 My Own Stock</button>
-          <button type="button" class="msh-cat-btn" data-cat="food">🍗 Hotels</button>
-          <button type="button" class="msh-cat-btn" data-cat="veg">🥬 Veg</button>
-          <button type="button" class="msh-cat-btn" data-cat="drinks">💧 Water/Milk</button>
-          <button type="button" class="msh-cat-btn" data-cat="parcel">📦 Parcel</button>
+        <div class="msh-cats" id="mshCatBar">
+          <button type="button" class="msh-cat active" data-cat="all">All</button>
+          <button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 My Own Stock</button>
+          <button type="button" class="msh-cat" data-cat="food">🍗 Hotels</button>
+          <button type="button" class="msh-cat" data-cat="veg">🥬 Veg</button>
+          <button type="button" class="msh-cat" data-cat="drinks">💧 Water/Milk</button>
+          <button type="button" class="msh-cat" data-cat="parcel">📦 Parcel</button>
         </div>
 
-        <div class="msh-food-3col-scroll" id="mshSpFoodGrid"></div>
+        <div class="msh-grid-3x7" id="mshFoodGrid"></div>
       </div>
 
       <div style="margin-top:10px; padding-top:8px; border-top:1px dashed #fdba74; font-size:0.8rem; color:#9a3412; font-weight:700; text-align:center;">
@@ -461,93 +481,103 @@
       </div>
     </div>
 
-    <!-- RIGHT 50%: FULL CLEAR RIDE & DELIVERY LOCATION + LIVE Q&A -->
-    <div class="msh-half-panel msh-right-ride">
+    <!-- RIGHT 50%: SIMPLE STEP-BY-STEP CHECKOUT + LIVE Q&A -->
+    <div class="msh-panel msh-right">
       <div>
         <div class="msh-sec-h" style="color:#0f4c3a;">
-          <span>📍 2. Ride & Delivery Location (From ➔ To)</span>
-          <span id="mshRoutingBadge" style="font-size:0.76rem; background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:6px;">🔒 Admin Verified</span>
+          <span>📍 2. డెలివరీ వివరాలు & బిల్లు (Checkout)</span>
+          <span id="mshModePill" style="font-size:0.76rem; background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:6px;">🔒 Admin Verified</span>
         </div>
 
-        <!-- FROM: Hotel / Shop / Pickup Location -->
-        <label style="font-size:0.82rem; font-weight:800; color:#7c2d12; display:block; margin-bottom:3px;">
-          🏨 ఎక్కడి నుండి తేవాలి (From Hotel / Shop / Pickup):
-        </label>
-        <select id="mshSpHotelSel" class="msh-sel">
-          <option value="Guntur Mess (Boddavara)">🍛 Guntur Mess (బొడ్డవార)</option>
-          <option value="Rajula Bhojanam (S.Kota / Boddavara)">🍗 Rajula Bhojanam (రాజుల భోజనం)</option>
-          <option value="My Own Farm Stock (Prakash - Boddavara)">🌾 My Own Farm Stock (అరటి గెల / పాలు / కూరగాయలు)</option>
-          <option value="S.Kota Main Market & Hotels">🍲 S.Kota Main Market / Biryani Center</option>
-          <option value="custom">✍️ వేరే హోటల్ / షాప్ పేరు కింద రాస్తాను...</option>
+        <!-- Step A: Hotel / Shop -->
+        <select id="mshHotelSel" class="msh-sel">
+          <option value="Guntur Mess (Boddavara)">🏨 From: Guntur Mess (బొడ్డవార)</option>
+          <option value="Rajula Bhojanam (S.Kota / Boddavara)">🏨 From: Rajula Bhojanam (రాజుల భోజనం)</option>
+          <option value="My Own Farm Stock (Prakash)">🌾 From: My Own Farm Stock (అరటి గెల / పాలు)</option>
+          <option value="S.Kota Main Market & Hotels">🏨 From: S.Kota Main Market / Biryani</option>
+          <option value="custom">✍️ వేరే హోటల్ / షాప్ పేరు రాస్తాను...</option>
         </select>
-        <input type="text" id="mshSpCustomHotel" class="msh-inp" placeholder="హోటల్ / షాప్ పేరు రాయండి..." style="display:none;">
+        <input type="text" id="mshCustomHotel" class="msh-inp" placeholder="హోటల్ / షాప్ పేరు రాయండి..." style="display:none;">
 
-        <!-- TO: Customer Live GPS + Village + Map -->
-        <label style="font-size:0.82rem; font-weight:800; color:#0f4c3a; display:block; margin-bottom:3px;">
-          🏠 ఎక్కడికి డెలివరీ చేయాలి (To Customer Location):
-        </label>
-        <div class="msh-flex-row">
-          <input type="text" id="mshSpGpsTxt" class="msh-inp" style="margin:0;" placeholder="మీ Live GPS కోసం నొక్కండి ➔" readonly>
-          <button type="button" class="msh-btn" id="mshSpGpsBtn">📍 Live GPS</button>
-        </div>
-
-        <div class="msh-flex-row">
-          <select id="mshSpVillageSel" class="msh-sel" style="margin:0;">
-            <option value="0|25">-- మీ ఊరు ఎంచుకోండి (20 KM) --</option>
-            <option value="2|25">Boddavara (బొడ్డవార) - ₹25 Drop</option>
-            <option value="3|25">Ithannapalem (ఇతన్నపాలెం) - ₹25 Drop</option>
-            <option value="4|25">Kiltampalem (కిల్తంపాలెం) - ₹25 Drop</option>
-            <option value="5|25">S.Kota (ఎస్.కోట) - ₹25 Drop</option>
-            <option value="8|45">Dharmavaram (ధర్మవరం) - ₹45 Drop</option>
-            <option value="11|45">Tatipudi (తాటిపూడి) - ₹45 Drop</option>
-            <option value="12|45">L.Kota (ఎల్.కోట) - ₹45 Drop</option>
-            <option value="18|70">Kothavalasa (కొత్తవలస) - ₹70 Drop</option>
+        <!-- Step B: Customer Location (Zone-Based Up & Down Fuel Pricing) -->
+        <div class="msh-row">
+          <select id="mshVillageSel" class="msh-sel" style="margin:0;">
+            <option value="2|25">📍 To: Boddavara (0-3 km • ₹25 Drop)</option>
+            <option value="3|25">📍 To: Ithannapalem (3 km • ₹25 Drop)</option>
+            <option value="4|40">📍 To: Kiltampalem (4 km • ₹40 Drop)</option>
+            <option value="5|45">📍 To: S.Kota (5 km • ₹45 Drop)</option>
+            <option value="8|55">📍 To: Dharmavaram (8 km • ₹55 Drop)</option>
+            <option value="11|60">📍 To: Tatipudi (11 km • ₹60 Drop)</option>
+            <option value="12|60">📍 To: L.Kota (12 km • ₹60 Drop)</option>
+            <option value="18|75">📍 To: Kothavalasa (18 km • ₹75 Drop)</option>
           </select>
-          <button type="button" class="msh-btn" style="background:#0284c7;" id="mshSpMapBtn">🗺️ Map</button>
+          <button type="button" class="msh-btn" id="mshBtnGps">📍 Live GPS</button>
+          <button type="button" class="msh-btn" style="background:#0284c7;" id="mshBtnMap">🗺️</button>
         </div>
 
-        <div class="msh-flex-row">
-          <input type="text" id="mshSpCustName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
-          <input type="tel" id="mshSpPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (100% Safe)">
+        <div class="msh-row">
+          <input type="text" id="mshCustName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
+          <input type="tel" id="mshCustPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (100% Safe)">
         </div>
-        <input type="text" id="mshSpLandmark" class="msh-inp" placeholder="ఇంటి గుర్తు (ఉదా: రామాలయం వీధి / స్కూల్ పక్కన)">
+        <input type="text" id="mshLandmark" class="msh-inp" placeholder="ఇంటి గుర్తు (ఉదా: రామాలయం వీధి / స్కూల్ పక్కన)">
 
-        <!-- Active Riders Strip -->
-        <div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:9px; padding:7px 10px; margin-bottom:8px; font-size:0.8rem;">
-          <strong>🛵 డ్యూటీలో ఉన్న రైడర్లు:</strong> <span id="mshSpActiveRiders"></span>
+        <!-- Step C: Delivery Slot (Instant vs Batching Discount) -->
+        <select id="mshSlotSel" class="msh-sel">
+          <option value="instant|0">⚡ Instant Delivery (30–45 నిమిషాల్లో డెలివరీ)</option>
+          <option value="lunch|10">🍱 Lunch Batch (12:30 PM – 2:00 PM • ₹10 Off on Delivery)</option>
+          <option value="dinner|10">🌙 Dinner Batch (7:30 PM – 9:00 PM • ₹10 Off on Delivery)</option>
+        </select>
+
+        <!-- 5 KM Minimum Order Value (MOV ₹150) Warning -->
+        <div class="msh-mov-alert" id="mshMovAlert">
+          ⚠️ 5 KM దూరం దాటిన ఊర్లకు కనీసం <b>₹150</b> విలువైన ఐటమ్స్ ఆర్డర్ చేయాలి! (ఇంకా <span id="mshMovDiff">₹150</span> యాడ్ చేయండి)
         </div>
 
-        <!-- Cart & Total Bill -->
-        <div style="background:#f0fdf4; border:2px solid #16a34a; border-radius:10px; padding:9px 11px; margin-bottom:8px; font-size:0.86rem;">
-          <div id="mshSpCartList" style="font-weight:700; color:#1e293b;">🛒 ఎడమవైపు కార్డ్స్‌లో <b>+ ADD</b> నొక్కండి లేదా కింద రాయండి</div>
-          <div style="display:flex; justify-content:space-between; font-size:1.05rem; font-weight:900; color:#0f4c3a; border-top:1px dashed #86efac; padding-top:5px; margin-top:5px;">
-            <span>డెలివరీ: <span id="mshSpDelivFee">₹25</span></span>
-            <span>మొత్తం: <span id="mshSpTotalBill" style="color:#15803d; font-size:1.2rem;">₹25</span></span>
+        <!-- Clear Bill Breakdown -->
+        <div class="msh-bill-box">
+          <div id="mshCartItems" style="font-weight:700; color:#1e293b; margin-bottom:6px;">
+            🛒 ఎడమవైపు కార్డ్స్‌లో <b>+ ADD</b> నొక్కండి లేదా కింద రాయండి
+          </div>
+          <div class="msh-bill-line">
+            <span>ఐటమ్స్ ధర (Items Total):</span>
+            <span id="mshItemsTotal">₹0</span>
+          </div>
+          <div class="msh-bill-line">
+            <span>డెలివరీ ఛార్జ్ (Up & Down Fuel):</span>
+            <span id="mshDelivFee">₹25</span>
+          </div>
+          <div class="msh-bill-line">
+            <span>ప్యాకింగ్ & సర్వీస్ ఫీజు:</span>
+            <span>₹5</span>
+          </div>
+          <div class="msh-bill-total">
+            <span>మొత్తం చెల్లించాల్సిన బిల్లు:</span>
+            <span id="mshGrandTotal" style="color:#15803d; font-size:1.25rem;">₹30</span>
           </div>
         </div>
 
-        <textarea id="mshSpNote" class="msh-txt" rows="2" placeholder="ఇతర వస్తువులు / పార్సెల్ వివరాలు రాయండి..."></textarea>
+        <textarea id="mshNote" class="msh-txt" rows="2" placeholder="ఇతర వస్తువులు / రిటర్న్ పార్సెల్ వివరాలు రాయండి..."></textarea>
 
-        <!-- Disclaimer -->
-        <div style="background:#fffbeb; border:1px solid #f59e0b; border-radius:8px; padding:7px 9px; font-size:0.78rem; color:#78350f; margin-bottom:8px; font-weight:600;">
-          ⏳ <b>గమనిక:</b> ఆర్డర్ చేసిన తర్వాత 30–45 నిమిషాలు పట్టవచ్చు. సమయానికి రాలేదని వాదనకు అవకాశం లేదు.
+        <!-- Active Riders Mini Line -->
+        <div style="font-size:0.8rem; color:#334155; margin-bottom:8px; font-weight:700;">
+          🛵 డ్యూటీలో ఉన్న రైడర్లు: <span id="mshActiveRidersLine"></span>
         </div>
 
-        <button type="button" class="msh-btn" style="width:100%; height:44px; background:linear-gradient(135deg, #fc8019, #ea580c); font-size:1rem;" id="mshSpSubmitBtn">
+        <button type="button" class="msh-btn" style="width:100%; height:44px; background:linear-gradient(135deg, #fc8019, #ea580c); font-size:1rem;" id="mshBtnSubmitOrder">
           🔒 PLACE PRIVATE ORDER (ఆర్డర్ పంపండి)
         </button>
       </div>
 
       <!-- Bottom of Right Panel: Live Q&A -->
       <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:10px; margin-top:10px;">
-        <div style="font-size:0.9rem; font-weight:900; color:#1e3a8a; margin-bottom:6px;">
-          💬 Live Questions (అన్ని మొబైల్స్‌లో వెంటనే కనిపిస్తాయి)
+        <div style="font-size:0.88rem; font-weight:900; color:#1e3a8a; margin-bottom:6px;">
+          💬 Live Questions (సందేహాలు అడగండి - అన్ని మొబైల్స్‌లో వెంటనే కనిపిస్తాయి)
         </div>
-        <div class="msh-flex-row" style="margin-bottom:6px;">
-          <input type="text" id="mshSpQInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న అడగండి (ఉదా: ఈరోజు అరటి గెల ఉందా?)...">
-          <button type="button" class="msh-btn" style="background:#2563eb;" id="mshSpAskBtn">Ask</button>
+        <div class="msh-row" style="margin-bottom:6px;">
+          <input type="text" id="mshQInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న అడగండి (ఉదా: ఈరోజు అరటి గెల / భోజనం ఉందా?)...">
+          <button type="button" class="msh-btn" style="background:#2563eb;" id="mshBtnAsk">Ask</button>
         </div>
-        <div id="mshSpQList" style="max-height:130px; overflow-y:auto; font-size:0.84rem;"></div>
+        <div id="mshQList" style="max-height:125px; overflow-y:auto; font-size:0.83rem;"></div>
       </div>
     </div>
 
@@ -555,14 +585,14 @@
 </div>
 
 <!-- Map Modal -->
-<div class="msh-modal" id="mshSpMapModal">
+<div class="msh-modal" id="mshMapModal">
   <div class="msh-modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
       <strong style="color:#0f4c3a;">🗺️ Map లో మీ లొకేషన్ ఎంచుకోండి</strong>
-      <button type="button" id="mshSpCloseMap" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; font-weight:800; cursor:pointer;">✕</button>
+      <button type="button" id="mshBtnCloseMap" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; font-weight:800; cursor:pointer;">✕</button>
     </div>
-    <div id="mshSplitMap"></div>
-    <button type="button" class="msh-btn" style="width:100%; background:#16a34a;" id="mshSpConfirmMap">✅ Confirm Location</button>
+    <div id="mshMapDiv"></div>
+    <button type="button" class="msh-btn" style="width:100%; background:#16a34a;" id="mshBtnConfirmMap">✅ Confirm Location</button>
   </div>
 </div>
 
@@ -570,8 +600,9 @@
 (function() {
   const ADMIN_WA = "918985240287";
   const ADMIN_PIN = "1234";
+  const PACKING_FEE = 5;
 
-  // 7-Server Real-Time Cloud Sync
+  // 7-Server Real-Time Sync
   const PEERS = [
     "https://gun-manhattan.herokuapp.com/gun",
     "https://relay.peer.ooo/gun",
@@ -582,9 +613,9 @@
   ];
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS, localStorage: true }) : null;
   const NTFY = "https://ntfy.sh";
-  const TOPIC_MENU  = "manasevahub_reg_menu_v2026";
-  const TOPIC_QA    = "manasevahub_reg_qa_v2026";
-  const TOPIC_CUSTS = "manasevahub_reg_custs_v2026";
+  const TOPIC_MENU  = "manasevahub_biz_menu_v2026";
+  const TOPIC_QA    = "manasevahub_biz_qa_v2026";
+  const TOPIC_CUSTS = "manasevahub_biz_custs_v2026";
 
   const catIcons = { own: "🌾", food: "🍗", veg: "🥬", drinks: "💧", parcel: "📦" };
 
@@ -602,7 +633,7 @@
     { id: "i11", cat: "veg", name: "Leafy Greens / ఆకుకూరలు", price: 25 },
     { id: "i12", cat: "drinks", name: "Fresh Curd / పెరుగు (500g)", price: 40 },
     { id: "i13", cat: "parcel", name: "25kg Fine Rice Bag", price: 1250 },
-    { id: "i14", cat: "food", name: "Idli / Dosa Morning Tiffin", price: 50 },
+    { id: "i14", cat: "food", name: "Idli / Dosa Tiffin Pack", price: 50 },
     { id: "i15", cat: "food", name: "Egg Fried Rice / Noodles", price: 90 },
     { id: "i16", cat: "veg", name: "Drumstick & Brinjal Mix", price: 45 },
     { id: "i17", cat: "drinks", name: "Cool Drinks (2L Bottle)", price: 95 },
@@ -614,167 +645,53 @@
 
   let menuMap = {};
   default21Items.forEach(x => menuMap[x.id] = x);
-  const cached = JSON.parse(localStorage.getItem("msh_reg_menu_cache") || "null");
+  const cached = JSON.parse(localStorage.getItem("msh_biz_menu_cache") || "null");
   if (cached) menuMap = { ...menuMap, ...cached };
 
-  let qaMap = JSON.parse(localStorage.getItem("msh_reg_qa_cache") || "{}");
+  let qaMap = JSON.parse(localStorage.getItem("msh_biz_qa_cache") || "{}");
   if (Object.keys(qaMap).length === 0) {
-    qaMap["q1"] = { id: "q1", text: "ఈరోజు Guntur Mess భోజనం మరియు అరటి గెల అందుబాటులో ఉన్నాయా?", reply: "అవును! ఆర్డర్ చేసిన 30-45 నిమిషాల్లో డెలివరీ చేస్తాము.", ts: Date.now() };
+    qaMap["q1"] = { id: "q1", text: "ఈరోజు Guntur Mess భోజనం మరియు అరటి గెల అందుబాటులో ఉన్నాయా?", reply: "అవును! 30-45 నిమిషాల్లో డెలివరీ చేస్తాము.", ts: Date.now() };
   }
 
-  let registeredCustsMap = JSON.parse(localStorage.getItem("msh_reg_custs_cache") || "{}");
-
-  // Riders with Area & Phone for Smart Nearest Matching
-  let riders = JSON.parse(localStorage.getItem("msh_reg_riders") || "null") || [
+  let regCusts = JSON.parse(localStorage.getItem("msh_biz_custs_cache") || "{}");
+  let riders = JSON.parse(localStorage.getItem("msh_biz_riders") || "null") || [
     { name: "Prakash", area: "Boddavara", phone: "8985240287", active: true },
     { name: "Rajesh", area: "S.Kota", phone: "9000000001", active: true },
     { name: "Sridhar", area: "Kiltampalem", phone: "9000000002", active: true },
     { name: "Swami", area: "Thatipudi", phone: "9000000003", active: false }
   ];
 
-  // Routing Mode: "mediator" (Admin approves first) OR "direct" (Auto-Direct to Nearest Rider)
-  let routingMode = localStorage.getItem("msh_routing_mode") || "mediator";
-
-  let privOrders = JSON.parse(localStorage.getItem("msh_reg_orders") || "[]");
+  let routingMode = localStorage.getItem("msh_biz_route_mode") || "mediator";
+  let ordersLog = JSON.parse(localStorage.getItem("msh_biz_orders") || "[]");
   let cart = {};
   let activeCat = "all";
   let isAdmin = false;
   let uLat = null, uLng = null, dLat = null, dLng = null;
-  let delivFee = 25, delivKm = 4;
-  let spMap = null, spMarker = null;
+  let zoneKm = 2, baseDelivFee = 25;
+  let mapObj = null, mapPin = null;
 
-  // =========================================================================
-  // 1. CUSTOMER 1-TIME REGISTRATION & AUTO-FILL
-  // =========================================================================
-  function applySavedCustomerProfile() {
-    const profile = JSON.parse(localStorage.getItem("msh_my_cust_profile") || "null");
-    if (!profile) return;
-
-    document.getElementById("mshWelcomeStrip").style.display = "flex";
-    document.getElementById("mshWelcomeText").innerText = `👋 Welcome back, ${profile.name} (${profile.villageName})!`;
-    document.getElementById("mshSpCustName").value = profile.name;
-    document.getElementById("mshSpPhone").value = profile.phone;
-    document.getElementById("mshSpLandmark").value = profile.landmark || "";
-    document.getElementById("mshTopFrom").value = profile.villageName;
-
-    // Auto-select village & delivery fee
-    const vSel = document.getElementById("mshSpVillageSel");
-    if (profile.villageVal) {
-      vSel.value = profile.villageVal;
-      const [k, f] = profile.villageVal.split("|").map(Number);
-      delivKm = k || 4; delivFee = f || 25;
-      updateCart();
-    }
-  }
-
-  document.getElementById("mshOpenRegBtn").addEventListener("click", () => {
-    const box = document.getElementById("mshCustRegBox");
-    box.style.display = box.style.display === "block" ? "none" : "block";
-  });
-  document.getElementById("mshEditRegBtn").addEventListener("click", () => {
-    const profile = JSON.parse(localStorage.getItem("msh_my_cust_profile") || "null");
-    if (profile) {
-      document.getElementById("mshRegName").value = profile.name;
-      document.getElementById("mshRegPhone").value = profile.phone;
-      document.getElementById("mshRegVillage").value = profile.villageVal;
-      document.getElementById("mshRegLandmark").value = profile.landmark;
-    }
-    document.getElementById("mshCustRegBox").style.display = "block";
-  });
-  document.getElementById("mshCloseRegBtn").addEventListener("click", () => {
-    document.getElementById("mshCustRegBox").style.display = "none";
-  });
-
-  document.getElementById("mshSaveRegBtn").addEventListener("click", () => {
-    const name = document.getElementById("mshRegName").value.trim();
-    const phone = document.getElementById("mshRegPhone").value.trim();
-    const vSel = document.getElementById("mshRegVillage");
-    const villageVal = vSel.value;
-    const villageName = vSel.options[vSel.selectedIndex].text;
-    const landmark = document.getElementById("mshRegLandmark").value.trim();
-
-    if (!name || !phone) {
-      alert("దయచేసి మీ పేరు మరియు ఫోన్ నంబర్ రాయండి.");
-      return;
-    }
-
-    const profileObj = { name, phone, villageVal, villageName, landmark, ts: Date.now() };
-    localStorage.setItem("msh_my_cust_profile", JSON.stringify(profileObj));
-
-    // Sync to Admin Registered Customers List
-    const cid = "c_" + phone.replace(/\D/g, "");
-    registeredCustsMap[cid] = profileObj;
-    localStorage.setItem("msh_reg_custs_cache", JSON.stringify(registeredCustsMap));
-    broadcast(TOPIC_CUSTS, cid, profileObj);
-
-    document.getElementById("mshCustRegBox").style.display = "none";
-    applySavedCustomerProfile();
-    alert(`✅ ధన్యవాదాలు ${name}! మీ వివరాలు సేవ్ అయ్యాయి.`);
-  });
-
-  // =========================================================================
-  // 2. HYBRID ROUTING MODE (Admin Mediator vs Auto-Direct Nearest Rider)
-  // =========================================================================
-  function updateRoutingUI() {
-    const lbl = document.getElementById("mshRoutingLabel");
-    const desc = document.getElementById("mshRoutingDesc");
-    const badge = document.getElementById("mshRoutingBadge");
-
-    if (routingMode === "mediator") {
-      lbl.innerText = "🔒 Mode: Admin Mediator (ముందు నా WhatsApp కి రావాలి — నేనే రైడర్‌కు ఫార్వర్డ్ చేస్తాను)";
-      desc.innerText = "కస్టమర్ బుక్ చేయగానే మీ WhatsApp కి దగ్గరలో ఉన్న రైడర్ పేరు + ఫార్వర్డ్ లింక్ వస్తాయి.";
-      badge.innerText = "🔒 Admin Verified";
-      badge.style.background = "#dcfce7"; badge.style.color = "#15803d";
-    } else {
-      lbl.innerText = "⚡ Mode: Auto-Direct Nearest Rider (నేరుగా దగ్గరలో ఉన్న రైడర్ WhatsApp కి వెళ్తుంది)";
-      desc.innerText = "రాత్రి వేళల్లో లేదా మీరు బిజీగా ఉన్నప్పుడు కస్టమర్ ఆర్డర్ నేరుగా దగ్గరలో ఉన్న ఆక్టివ్ రైడర్‌కు వెళ్తుంది.";
-      badge.innerText = "⚡ Auto-Direct Nearest";
-      badge.style.background = "#fef08a"; badge.style.color = "#854d0e";
-    }
-  }
-
-  document.getElementById("mshToggleRoutingBtn").addEventListener("click", () => {
-    routingMode = (routingMode === "mediator") ? "direct" : "mediator";
-    localStorage.setItem("msh_routing_mode", routingMode);
-    updateRoutingUI();
-  });
-
-  // Smart Nearest Active Rider Matcher
-  function findNearestActiveRider(villageText) {
-    const activeList = riders.filter(r => r.active);
-    if (activeList.length === 0) return { name: "Prakash (Admin)", area: "Boddavara", phone: "8985240287" };
-
-    const vLower = (villageText || "").toLowerCase();
-    // Match rider based on area name first
-    const exactMatch = activeList.find(r => vLower.includes(r.area.toLowerCase()));
-    if (exactMatch) return exactMatch;
-
-    // Fallback to first available active rider
-    return activeList[0];
-  }
-
-  // Real-Time Sync Listeners
+  // Real-time Sync
   if (gun) {
     gun.get(TOPIC_MENU).map().on((d, id) => {
       if (d && d.name) {
         if (d.deleted) { delete menuMap[id]; delete cart[id]; }
         else menuMap[id] = { id, cat: d.cat || "food", name: d.name, price: Number(d.price) || 0 };
-        localStorage.setItem("msh_reg_menu_cache", JSON.stringify(menuMap));
-        renderFoodGrid(); updateCart();
+        localStorage.setItem("msh_biz_menu_cache", JSON.stringify(menuMap));
+        renderFoodGrid(); updateBill();
       }
     });
     gun.get(TOPIC_QA).map().on((d, id) => {
       if (d && d.text) {
         if (d.deleted) delete qaMap[id];
         else qaMap[id] = { id, text: d.text, reply: d.reply || "", ts: d.ts || Date.now() };
-        localStorage.setItem("msh_reg_qa_cache", JSON.stringify(qaMap));
+        localStorage.setItem("msh_biz_qa_cache", JSON.stringify(qaMap));
         renderQA();
       }
     });
     gun.get(TOPIC_CUSTS).map().on((d, id) => {
       if (d && d.name) {
-        registeredCustsMap[id] = d;
-        localStorage.setItem("msh_reg_custs_cache", JSON.stringify(registeredCustsMap));
+        regCusts[id] = d;
+        localStorage.setItem("msh_biz_custs_cache", JSON.stringify(regCusts));
       }
     });
   }
@@ -784,15 +701,62 @@
     fetch(`${NTFY}/${topic}`, { method: "POST", body: JSON.stringify(payload) }).catch(() => {});
   }
 
-  // Top Quick Auto/Bike Ride Calculator & Hybrid Dispatch
-  function updateTopRideFare() {
+  // 1-Time Customer Registration
+  function loadCustomerProfile() {
+    const prof = JSON.parse(localStorage.getItem("msh_biz_my_prof") || "null");
+    if (!prof) return;
+    document.getElementById("mshWelcomeBar").style.display = "flex";
+    document.getElementById("mshWelcomeName").innerText = `👋 Welcome back, ${prof.name}!`;
+    document.getElementById("mshCustName").value = prof.name;
+    document.getElementById("mshCustPhone").value = prof.phone;
+    document.getElementById("mshLandmark").value = prof.landmark || "";
+    document.getElementById("mshTopFrom").value = prof.villageName.split("(")[0].replace("📍 To:", "").trim();
+    if (prof.villageVal) {
+      document.getElementById("mshVillageSel").value = prof.villageVal;
+      const [k, f] = prof.villageVal.split("|").map(Number);
+      zoneKm = k; baseDelivFee = f;
+      updateBill();
+    }
+  }
+
+  document.getElementById("mshBtnRegOpen").addEventListener("click", () => {
+    const b = document.getElementById("mshRegBox");
+    b.style.display = b.style.display === "block" ? "none" : "block";
+  });
+  document.getElementById("mshBtnRegEdit").addEventListener("click", () => {
+    document.getElementById("mshRegBox").style.display = "block";
+  });
+  document.getElementById("mshBtnRegClose").addEventListener("click", () => {
+    document.getElementById("mshRegBox").style.display = "none";
+  });
+  document.getElementById("mshBtnRegSave").addEventListener("click", () => {
+    const name = document.getElementById("mshRegName").value.trim();
+    const phone = document.getElementById("mshRegPhone").value.trim();
+    const vSel = document.getElementById("mshRegVillage");
+    const villageVal = vSel.value;
+    const villageName = vSel.options[vSel.selectedIndex].text;
+    const landmark = document.getElementById("mshRegLandmark").value.trim();
+    if (!name || !phone) { alert("పేరు మరియు ఫోన్ నంబర్ రాయండి."); return; }
+
+    const prof = { name, phone, villageVal, villageName, landmark };
+    localStorage.setItem("msh_biz_my_prof", JSON.stringify(prof));
+    const cid = "c_" + phone.replace(/\D/g, "");
+    regCusts[cid] = prof;
+    localStorage.setItem("msh_biz_custs_cache", JSON.stringify(regCusts));
+    broadcast(TOPIC_CUSTS, cid, prof);
+    document.getElementById("mshRegBox").style.display = "none";
+    loadCustomerProfile();
+    alert(`✅ ధన్యవాదాలు ${name}! మీ వివరాలు సేవ్ అయ్యాయి.`);
+  });
+
+  // Top Quick Auto/Bike Ride
+  function calcTopRide() {
     const [veh, rate, minF] = document.getElementById("mshTopVeh").value.split("|");
     const km = Math.max(1, Number(document.getElementById("mshTopKm").value) || 1);
-    const fare = Math.max(Number(minF), Math.round(km * Number(rate)));
-    document.getElementById("mshTopFare").innerText = "₹" + fare;
+    document.getElementById("mshTopFare").innerText = "₹" + Math.max(Number(minF), Math.round(km * Number(rate)));
   }
-  document.getElementById("mshTopVeh").addEventListener("change", updateTopRideFare);
-  document.getElementById("mshTopKm").addEventListener("input", updateTopRideFare);
+  document.getElementById("mshTopVeh").addEventListener("change", calcTopRide);
+  document.getElementById("mshTopKm").addEventListener("input", calcTopRide);
 
   document.getElementById("mshTopBookBtn").addEventListener("click", () => {
     const [veh] = document.getElementById("mshTopVeh").value.split("|");
@@ -800,181 +764,223 @@
     const to = document.getElementById("mshTopTo").value.trim() || "S.Kota";
     const km = document.getElementById("mshTopKm").value || "5";
     const fare = document.getElementById("mshTopFare").innerText;
-    const nearest = findNearestActiveRider(from);
+    const nearest = findNearestRider(from);
 
     if (routingMode === "direct") {
-      // Direct to Nearest Active Rider WhatsApp
-      const rPhone = nearest.phone.replace(/\D/g, "");
-      const waTarget = rPhone.length === 10 ? "91" + rPhone : rPhone;
-      const msg = `⚡ *DIRECT RIDE ASSIGNED (Mana Seva Hub)*\n🛵 Rider: ${nearest.name}\n🚘 Vehicle: ${veh}\n📍 From: ${from}\n🏁 To: ${to}\n📏 Distance: ${km} km\n💰 Est. Fare: ${fare}`;
-      window.open(`https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`, "_blank");
+      const ph = nearest.phone.replace(/\D/g, "");
+      const msg = `⚡ *DIRECT RIDE (Mana Seva Hub)*\n🛵 Rider: ${nearest.name}\n🚘 ${veh} | 📍 ${from} ➔ ${to} (${km} km)\n💰 Fare: ${fare}`;
+      window.open(`https://wa.me/${ph.length === 10 ? "91" + ph : ph}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
-      // Admin Mediator Mode (Sends to Admin with Nearest Rider info)
-      const msg = `🛺 *QUICK RIDE REQUEST (Admin Verify)*\n🚘 Vehicle: ${veh}\n📍 From: ${from}\n🏁 To: ${to}\n📏 Distance: ${km} km | 💰 Fare: ${fare}\n👉 *Suggested Nearest Rider:* ${nearest.name} (${nearest.area} - ${nearest.phone})`;
+      const msg = `🛺 *QUICK RIDE REQUEST (Admin Verify)*\n🚘 ${veh} | 📍 ${from} ➔ ${to} (${km} km) | 💰 ${fare}\n👉 Nearest Rider: ${nearest.name} (${nearest.phone})`;
       window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
     }
   });
 
-  // Render 3x7 Food Grid
+  // Render 3x7 Food Cards
   function renderFoodGrid() {
-    const grid = document.getElementById("mshSpFoodGrid");
+    const grid = document.getElementById("mshFoodGrid");
     const items = Object.values(menuMap).filter(x => x && !x.deleted);
     const list = activeCat === "all" ? items : items.filter(x => x.cat === activeCat);
-    document.getElementById("mshSpItemCount").innerText = `${list.length} Items`;
+    document.getElementById("mshItemCount").innerText = `${list.length} Items`;
 
     grid.innerHTML = list.map(it => {
       const qty = cart[it.id] || 0;
       const isOwn = it.cat === "own";
       const icon = catIcons[it.cat] || "🍽️";
       const btn = qty === 0
-        ? `<button type="button" class="msh-mini-add" onclick="window.mshRegQty('${it.id}', 1)">+ ADD</button>`
-        : `<div class="msh-mini-qty">
-             <button type="button" onclick="window.mshRegQty('${it.id}', -1)">−</button>
+        ? `<button type="button" class="msh-c-add" onclick="window.mshBizQty('${it.id}', 1)">+ ADD</button>`
+        : `<div class="msh-c-qty">
+             <button type="button" onclick="window.mshBizQty('${it.id}', -1)">−</button>
              <span>${qty}</span>
-             <button type="button" onclick="window.mshRegQty('${it.id}', 1)">+</button>
+             <button type="button" onclick="window.mshBizQty('${it.id}', 1)">+</button>
            </div>`;
-      const del = isAdmin ? `<button type="button" onclick="window.mshRegDelFood('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.7rem; margin-top:4px; cursor:pointer; font-weight:800;">Delete</button>` : "";
-
+      const del = isAdmin ? `<button type="button" onclick="window.mshBizDel('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.7rem; margin-top:4px; cursor:pointer; font-weight:800;">Delete</button>` : "";
       return `
-        <div class="msh-mini-card ${isOwn ? "own-item" : ""}">
+        <div class="msh-card ${isOwn ? "own" : ""}">
           <div>
-            <div class="msh-mini-icon">${icon}</div>
-            <div class="msh-mini-name">${esc(it.name)}</div>
+            <div class="msh-c-icon">${icon}</div>
+            <div class="msh-c-name">${esc(it.name)}</div>
           </div>
           <div>
-            <div class="msh-mini-price">₹${it.price}</div>
+            <div class="msh-c-price">₹${it.price}</div>
             ${btn}
             ${del}
           </div>
-        </div>
-      `;
+        </div>`;
     }).join("");
   }
 
-  window.mshRegQty = function(id, d) {
+  window.mshBizQty = function(id, d) {
     const n = (cart[id] || 0) + d;
     if (n <= 0) delete cart[id];
     else cart[id] = n;
-    renderFoodGrid(); updateCart();
+    renderFoodGrid(); updateBill();
   };
 
-  window.mshRegDelFood = function(id) {
+  window.mshBizDel = function(id) {
     delete menuMap[id]; delete cart[id];
-    localStorage.setItem("msh_reg_menu_cache", JSON.stringify(menuMap));
-    renderFoodGrid(); updateCart();
+    localStorage.setItem("msh_biz_menu_cache", JSON.stringify(menuMap));
+    renderFoodGrid(); updateBill();
     broadcast(TOPIC_MENU, id, { id, name: "deleted", deleted: true });
   };
 
-  document.querySelectorAll("#mshSpCatBar .msh-cat-btn").forEach(b => {
+  document.querySelectorAll("#mshCatBar .msh-cat").forEach(b => {
     b.addEventListener("click", function() {
-      document.querySelectorAll("#mshSpCatBar .msh-cat-btn").forEach(x => x.classList.remove("active"));
+      document.querySelectorAll("#mshCatBar .msh-cat").forEach(x => x.classList.remove("active"));
       this.classList.add("active");
       activeCat = this.dataset.cat;
       renderFoodGrid();
     });
   });
 
-  function updateCart() {
-    let sum = 0, arr = [];
+  // Bill & MOV (Minimum ₹150 for >5km) Calculator
+  function updateBill() {
+    let itemsSum = 0, lines = [];
     Object.entries(cart).forEach(([id, q]) => {
       const it = menuMap[id];
-      if (it) { sum += it.price * q; arr.push(`${it.name} x${q} (₹${it.price * q})`); }
+      if (it) { itemsSum += it.price * q; lines.push(`${it.name} x${q} (₹${it.price * q})`); }
     });
-    document.getElementById("mshSpCartList").innerHTML = arr.length
-      ? `🛒 <b>ఎంచుకున్నవి:</b><br>` + arr.map(a => `• ${esc(a)}`).join("<br>")
+
+    const [, batchDisc] = document.getElementById("mshSlotSel").value.split("|");
+    const finalDeliv = Math.max(15, baseDelivFee - Number(batchDisc || 0));
+
+    document.getElementById("mshCartItems").innerHTML = lines.length
+      ? `🛒 <b>ఎంచుకున్నవి:</b><br>` + lines.map(l => `• ${esc(l)}`).join("<br>")
       : `🛒 ఎడమవైపు కార్డ్స్‌లో <b>+ ADD</b> నొక్కండి లేదా కింద రాయండి`;
-    document.getElementById("mshSpDelivFee").innerText = `₹${delivFee}`;
-    document.getElementById("mshSpTotalBill").innerText = `₹${sum + delivFee}`;
+
+    document.getElementById("mshItemsTotal").innerText = `₹${itemsSum}`;
+    document.getElementById("mshDelivFee").innerText = `₹${finalDeliv}`;
+    document.getElementById("mshGrandTotal").innerText = `₹${itemsSum + finalDeliv + PACKING_FEE}`;
+
+    // Check MOV Rule (>5 KM requires minimum ₹150 items if cart items selected)
+    const movBox = document.getElementById("mshMovAlert");
+    if (zoneKm > 5 && itemsSum > 0 && itemsSum < 150) {
+      movBox.style.display = "block";
+      document.getElementById("mshMovDiff").innerText = `₹${150 - itemsSum}`;
+    } else {
+      movBox.style.display = "none";
+    }
   }
 
-  document.getElementById("mshSpHotelSel").addEventListener("change", function() {
-    document.getElementById("mshSpCustomHotel").style.display = this.value === "custom" ? "block" : "none";
+  document.getElementById("mshHotelSel").addEventListener("change", function() {
+    document.getElementById("mshCustomHotel").style.display = this.value === "custom" ? "block" : "none";
   });
 
-  document.getElementById("mshSpVillageSel").addEventListener("change", function() {
+  document.getElementById("mshVillageSel").addEventListener("change", function() {
     const [k, f] = this.value.split("|").map(Number);
-    delivKm = k || 4; delivFee = f || 25;
-    updateCart();
+    zoneKm = k; baseDelivFee = f;
+    updateBill();
   });
 
-  document.getElementById("mshSpGpsBtn").addEventListener("click", function() {
-    const inp = document.getElementById("mshSpGpsTxt");
-    inp.value = "GPS తీసుకుంటున్నాము...";
+  document.getElementById("mshSlotSel").addEventListener("change", updateBill);
+
+  document.getElementById("mshBtnGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
+    this.innerText = "⏳...";
     navigator.geolocation.getCurrentPosition(p => {
       uLat = p.coords.latitude; uLng = p.coords.longitude;
-      inp.value = `Live GPS Ready ✅ (${uLat.toFixed(4)}, ${uLng.toFixed(4)})`;
-      this.style.background = "#16a34a";
-    }, () => { inp.value = "Location On చేయండి"; });
+      this.innerText = "✅ GPS"; this.style.background = "#16a34a";
+    }, () => { this.innerText = "📍 Live GPS"; alert("Location On చేయండి."); });
   });
 
-  document.getElementById("mshSpMapBtn").addEventListener("click", () => {
-    document.getElementById("mshSpMapModal").style.display = "flex";
+  document.getElementById("mshBtnMap").addEventListener("click", () => {
+    document.getElementById("mshMapModal").style.display = "flex";
     setTimeout(() => {
-      if (!spMap && typeof L !== "undefined") {
-        spMap = L.map("mshSplitMap").setView([uLat || 18.0815, uLng || 83.1285], 12);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(spMap);
-        spMap.on("click", e => {
+      if (!mapObj && typeof L !== "undefined") {
+        mapObj = L.map("mshMapDiv").setView([uLat || 18.0815, uLng || 83.1285], 12);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mapObj);
+        mapObj.on("click", e => {
           dLat = e.latlng.lat; dLng = e.latlng.lng;
-          if (spMarker) spMarker.setLatLng(e.latlng);
-          else spMarker = L.marker(e.latlng).addTo(spMap);
+          if (mapPin) mapPin.setLatLng(e.latlng);
+          else mapPin = L.marker(e.latlng).addTo(mapObj);
         });
-      } else if (spMap) spMap.invalidateSize();
+      } else if (mapObj) mapObj.invalidateSize();
     }, 200);
   });
-  document.getElementById("mshSpCloseMap").addEventListener("click", () => document.getElementById("mshSpMapModal").style.display = "none");
-  document.getElementById("mshSpConfirmMap").addEventListener("click", () => {
-    document.getElementById("mshSpMapModal").style.display = "none";
-    if (dLat) document.getElementById("mshSpGpsTxt").value = `Map Pin ✅ (${dLat.toFixed(4)}, ${dLng.toFixed(4)})`;
+  document.getElementById("mshBtnCloseMap").addEventListener("click", () => document.getElementById("mshMapModal").style.display = "none");
+  document.getElementById("mshBtnConfirmMap").addEventListener("click", () => {
+    document.getElementById("mshMapModal").style.display = "none";
+    if (dLat) { document.getElementById("mshBtnMap").innerText = "🗺️ ✅"; }
   });
 
-  function renderRiders() {
+  function findNearestRider(vText) {
     const act = riders.filter(r => r.active);
-    document.getElementById("mshSpActiveRiders").innerHTML = act.length
-      ? act.map(r => `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:5px; font-weight:800; margin-right:4px;">🟢 ${esc(r.name)} (${esc(r.area)})</span>`).join("")
-      : `<span style="color:#dc2626; font-weight:700;">Offline</span>`;
+    if (!act.length) return { name: "Prakash", area: "Boddavara", phone: "8985240287" };
+    const low = (vText || "").toLowerCase();
+    return act.find(r => low.includes(r.area.toLowerCase())) || act[0];
   }
 
-  // SUBMIT ORDER (Supports Both Admin Mediator Mode & Auto-Direct Nearest Rider Mode)
-  document.getElementById("mshSpSubmitBtn").addEventListener("click", () => {
-    let hotel = document.getElementById("mshSpHotelSel").value;
-    if (hotel === "custom") hotel = document.getElementById("mshSpCustomHotel").value.trim() || "Custom Shop";
-    const village = document.getElementById("mshSpVillageSel").options[document.getElementById("mshSpVillageSel").selectedIndex].text;
-    const custName = document.getElementById("mshSpCustName").value.trim() || "Customer";
-    const landmark = document.getElementById("mshSpLandmark").value.trim();
-    const note = document.getElementById("mshSpNote").value.trim();
-    const phone = document.getElementById("mshSpPhone").value.trim();
+  function renderRidersLine() {
+    const act = riders.filter(r => r.active);
+    document.getElementById("mshActiveRidersLine").innerHTML = act.length
+      ? act.map(r => `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:5px; margin-right:4px;">🟢 ${esc(r.name)} (${esc(r.area)})</span>`).join("")
+      : `<span style="color:#dc2626;">Offline</span>`;
+  }
 
-    let lines = [], sum = 0;
+  // SUBMIT ORDER + CALCULATE ADMIN PROFIT
+  document.getElementById("mshBtnSubmitOrder").addEventListener("click", () => {
+    let hotel = document.getElementById("mshHotelSel").value;
+    if (hotel === "custom") hotel = document.getElementById("mshCustomHotel").value.trim() || "Custom Shop";
+    const village = document.getElementById("mshVillageSel").options[document.getElementById("mshVillageSel").selectedIndex].text;
+    const custName = document.getElementById("mshCustName").value.trim() || "Customer";
+    const phone = document.getElementById("mshCustPhone").value.trim();
+    const landmark = document.getElementById("mshLandmark").value.trim();
+    const note = document.getElementById("mshNote").value.trim();
+    const slotText = document.getElementById("mshSlotSel").options[document.getElementById("mshSlotSel").selectedIndex].text;
+
+    let lines = [], itemsSum = 0, ownItemsSum = 0;
     Object.entries(cart).forEach(([id, q]) => {
       const it = menuMap[id];
-      if (it) { sum += it.price * q; lines.push(`${it.name} x${q} (₹${it.price * q})`); }
+      if (it) {
+        const sub = it.price * q;
+        itemsSum += sub;
+        if (it.cat === "own") ownItemsSum += sub;
+        lines.push(`${it.name} x${q} (₹${sub})`);
+      }
     });
-    if (!lines.length && !note) { alert("ఐటమ్స్ ఎంచుకోండి లేదా ఆర్డర్ వివరాలు రాయండి."); return; }
 
-    const total = sum + delivFee;
+    if (!lines.length && !note) { alert("దయచేసి కనీసం ఒక ఐటమ్ ఎంచుకోండి లేదా ఆర్డర్ వివరాలు రాయండి."); return; }
+
+    // Enforce 5 KM MOV Rule
+    if (zoneKm > 5 && itemsSum > 0 && itemsSum < 150) {
+      alert(`⚠️ 5 KM దూరం దాటిన ఊర్లకు కనీసం ₹150 విలువైన ఐటమ్స్ ఆర్డర్ చేయాలి. దయచేసి ఇంకా ₹${150 - itemsSum} ఐటమ్స్ యాడ్ చేయండి.`);
+      return;
+    }
+
+    const [, batchDisc] = document.getElementById("mshSlotSel").value.split("|");
+    const finalDeliv = Math.max(15, baseDelivFee - Number(batchDisc || 0));
+    const grandTotal = itemsSum + finalDeliv + PACKING_FEE;
+
+    // Admin Profit Calculation: 15% Hotel Margin + ₹5 Packing + 20% Delivery Cut (or 100% on Own Stock)
+    const hotelMargin = Math.round((itemsSum - ownItemsSum) * 0.15);
+    const delivCut = Math.round(finalDeliv * 0.20);
+    const estProfit = hotelMargin + PACKING_FEE + delivCut + (ownItemsSum > 0 ? Math.round(ownItemsSum * 0.30) : 0);
+
+    const nearest = findNearestRider(village);
     const gps = uLat ? `https://maps.google.com/?q=${uLat},${uLng}` : (dLat ? `https://maps.google.com/?q=${dLat},${dLng}` : "Not Attached");
-    const nearest = findNearestActiveRider(village);
 
-    privOrders.unshift({ custName, phone, hotel, items: lines.join(", ") || note, village, total, rider: nearest.name, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-    localStorage.setItem("msh_reg_orders", JSON.stringify(privOrders));
+    ordersLog.unshift({
+      custName, phone, hotel, village,
+      items: lines.join(", ") || note,
+      total: grandTotal,
+      profit: estProfit,
+      rider: nearest.name,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+    localStorage.setItem("msh_biz_orders", JSON.stringify(ordersLog));
 
     if (routingMode === "direct") {
-      // Auto-Direct to Nearest Active Rider
-      const rPhone = nearest.phone.replace(/\D/g, "");
-      const waTarget = rPhone.length === 10 ? "91" + rPhone : rPhone;
-      let msg = `⚡ *DIRECT DELIVERY ORDER (Mana Seva Hub)*\n🛵 *Assigned Rider:* ${nearest.name}\n👤 *Customer:* ${custName} (${phone || "WhatsApp"})\n🏨 *From:* ${hotel}\n`;
-      if (lines.length) msg += `🛒 *Items:* ${lines.join(", ")}\n`;
-      if (note) msg += `📝 *Note:* ${note}\n`;
-      msg += `📍 *To:* ${village} ${landmark ? "(" + landmark + ")" : ""}\n🗺️ *GPS:* ${gps}\n💰 *Collect Cash:* ₹${total}`;
-      window.open(`https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`, "_blank");
+      const ph = nearest.phone.replace(/\D/g, "");
+      let msg = `⚡ *DIRECT DELIVERY ORDER*\n🛵 Rider: ${nearest.name}\n👤 ${custName} (${phone || "WhatsApp"})\n🏨 From: ${hotel}\n`;
+      if (lines.length) msg += `🛒 ${lines.join(", ")}\n`;
+      if (note) msg += `📝 ${note}\n`;
+      msg += `📍 To: ${village} ${landmark ? "(" + landmark + ")" : ""}\n🗺️ ${gps}\n💰 Collect Cash: ₹${grandTotal}`;
+      window.open(`https://wa.me/${ph.length === 10 ? "91" + ph : ph}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
-      // Admin Mediator Mode (Sends to Admin first with Nearest Rider suggestion)
       let msg = `🔒 *PRIVATE ORDER (Admin Verify)*\n👤 *Customer:* ${custName} (${phone || "WhatsApp"})\n🏨 *From:* ${hotel}\n`;
       if (lines.length) msg += `🛒 *Items:* ${lines.join(", ")}\n`;
       if (note) msg += `📝 *Note:* ${note}\n`;
-      msg += `📍 *To:* ${village} ${landmark ? "(" + landmark + ")" : ""}\n🗺️ *GPS:* ${gps}\n💰 *Total:* ₹${total} (Incl. ₹${delivFee} Drop)\n`;
-      msg += `👉 *Nearest Active Rider:* ${nearest.name} (${nearest.area} - ${nearest.phone})`;
+      msg += `📍 *To:* ${village} ${landmark ? "(" + landmark + ")" : ""}\n⏰ *Slot:* ${slotText}\n🗺️ *GPS:* ${gps}\n💰 *Total Bill:* ₹${grandTotal} (Est. Profit: ₹${estProfit})\n👉 *Nearest Rider:* ${nearest.name} (${nearest.phone})`;
       window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, "_blank");
     }
   });
@@ -982,110 +988,133 @@
   // Live Q&A
   function renderQA() {
     const list = Object.values(qaMap).filter(q => q && !q.deleted).sort((a, b) => b.ts - a.ts);
-    document.getElementById("mshSpQList").innerHTML = list.map(q => `
+    document.getElementById("mshQList").innerHTML = list.map(q => `
       <div style="background:#fff; border-left:4px solid #2563eb; padding:6px 8px; border-radius:6px; margin-bottom:5px;">
         <div style="display:flex; justify-content:space-between;">
           <span>❓ ${esc(q.text)}</span>
-          ${isAdmin ? `<button type="button" onclick="window.mshRegReplyQ('${q.id}')" style="background:#16a34a; color:#fff; border:none; border-radius:4px; padding:2px 6px; font-size:0.72rem; cursor:pointer;">Reply</button>` : ""}
+          ${isAdmin ? `<button type="button" onclick="window.mshBizReply('${q.id}')" style="background:#16a34a; color:#fff; border:none; border-radius:4px; padding:2px 6px; font-size:0.72rem; cursor:pointer;">Reply</button>` : ""}
         </div>
         ${q.reply ? `<div style="color:#15803d; font-weight:800; margin-top:3px;">✅ ${esc(q.reply)}</div>` : ""}
       </div>
     `).join("");
   }
 
-  window.mshRegReplyQ = function(id) {
+  window.mshBizReply = function(id) {
     const ans = prompt("Reply రాయండి:", qaMap[id].reply || "");
     if (ans !== null) {
       qaMap[id].reply = ans.trim();
-      localStorage.setItem("msh_reg_qa_cache", JSON.stringify(qaMap));
+      localStorage.setItem("msh_biz_qa_cache", JSON.stringify(qaMap));
       renderQA(); broadcast(TOPIC_QA, id, qaMap[id]);
     }
   };
 
-  document.getElementById("mshSpAskBtn").addEventListener("click", () => {
-    const inp = document.getElementById("mshSpQInp");
+  document.getElementById("mshBtnAsk").addEventListener("click", () => {
+    const inp = document.getElementById("mshQInp");
     const t = inp.value.trim();
     if (!t) return;
     inp.value = "";
     const id = "q_" + Date.now();
     qaMap[id] = { id, text: t, reply: "", ts: Date.now() };
-    localStorage.setItem("msh_reg_qa_cache", JSON.stringify(qaMap));
+    localStorage.setItem("msh_biz_qa_cache", JSON.stringify(qaMap));
     renderQA(); broadcast(TOPIC_QA, id, qaMap[id]);
   });
 
-  // Admin Controls (PIN 1234)
-  document.getElementById("mshSpAdminBtn").addEventListener("click", function() {
-    const bar = document.getElementById("mshSpAdmBar");
+  // Admin Controls
+  function updateRouteUI() {
+    const lbl = document.getElementById("mshRouteLbl");
+    const pill = document.getElementById("mshModePill");
+    if (routingMode === "mediator") {
+      lbl.innerText = "🔒 Mode: Admin Mediator (ముందు నా WhatsApp కి వస్తుంది)";
+      pill.innerText = "🔒 Admin Verified";
+      pill.style.background = "#dcfce7"; pill.style.color = "#15803d";
+    } else {
+      lbl.innerText = "⚡ Mode: Auto-Direct Nearest Rider (నేరుగా రైడర్‌కు వెళ్తుంది)";
+      pill.innerText = "⚡ Auto-Direct";
+      pill.style.background = "#fef08a"; pill.style.color = "#854d0e";
+    }
+  }
+
+  document.getElementById("mshBtnRouteToggle").addEventListener("click", () => {
+    routingMode = routingMode === "mediator" ? "direct" : "mediator";
+    localStorage.setItem("msh_biz_route_mode", routingMode);
+    updateRouteUI();
+  });
+
+  document.getElementById("mshBtnAdmLock").addEventListener("click", function() {
+    const bar = document.getElementById("mshAdmBar");
     if (isAdmin) {
-      isAdmin = false; this.innerText = "🔒 Admin Lock"; this.classList.remove("unlocked");
+      isAdmin = false; this.innerText = "🔒 Admin Lock"; this.style.background = "#111827";
       bar.style.display = "none";
       document.querySelectorAll(".msh-adm-panel").forEach(p => p.style.display = "none");
       renderFoodGrid(); renderQA(); return;
     }
     if (prompt("Admin PIN (1234):") === ADMIN_PIN) {
-      isAdmin = true; this.innerText = "🔓 Admin Unlocked"; this.classList.add("unlocked");
+      isAdmin = true; this.innerText = "🔓 Admin Unlocked"; this.style.background = "#16a34a";
       bar.style.display = "block"; renderFoodGrid(); renderQA();
     }
   });
 
-  document.getElementById("mshSpTabFood").addEventListener("click", () => {
-    const p = document.getElementById("mshSpPanelFood");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-  });
-  document.getElementById("mshSpTabRiders").addEventListener("click", () => {
-    const p = document.getElementById("mshSpPanelRiders");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-    document.getElementById("mshSpAdmRidersList").innerHTML = riders.map((r, i) => `
+  function toggleAdmPanel(id) {
+    const el = document.getElementById(id);
+    const open = el.style.display === "block";
+    document.querySelectorAll(".msh-adm-panel").forEach(p => p.style.display = "none");
+    if (!open) el.style.display = "block";
+  }
+
+  document.getElementById("mshTabAddFood").addEventListener("click", () => toggleAdmPanel("mshPanelFood"));
+  document.getElementById("mshTabRiders").addEventListener("click", () => {
+    toggleAdmPanel("mshPanelRiders");
+    document.getElementById("mshAdmRidersBox").innerHTML = riders.map((r, i) => `
       <div style="display:flex; justify-content:space-between; background:#fff; padding:6px 10px; border-radius:6px; margin-bottom:4px;">
-        <strong>${esc(r.name)} (${esc(r.area)}) • 📞 ${esc(r.phone)}</strong>
-        <button type="button" onclick="window.mshRegTogRider(${i})" style="background:${r.active ? '#16a34a' : '#dc2626'}; color:#fff; border:none; border-radius:5px; padding:3px 10px; font-weight:800; cursor:pointer;">${r.active ? '🟢 ON' : '🔴 OFF'}</button>
+        <strong>${esc(r.name)} (${esc(r.area)}) • ${esc(r.phone)}</strong>
+        <button type="button" onclick="window.mshBizTogRider(${i})" style="background:${r.active ? '#16a34a' : '#dc2626'}; color:#fff; border:none; border-radius:5px; padding:3px 10px; font-weight:800; cursor:pointer;">${r.active ? '🟢 ON' : '🔴 OFF'}</button>
       </div>`).join("");
   });
-  window.mshRegTogRider = function(i) {
+  window.mshBizTogRider = function(i) {
     riders[i].active = !riders[i].active;
-    localStorage.setItem("msh_reg_riders", JSON.stringify(riders));
-    renderRiders();
-    document.getElementById("mshSpTabRiders").click();
-    document.getElementById("mshSpTabRiders").click();
+    localStorage.setItem("msh_biz_riders", JSON.stringify(riders));
+    renderRidersLine();
+    toggleAdmPanel("mshPanelRiders"); toggleAdmPanel("mshPanelRiders");
   };
-  document.getElementById("mshSpTabOrders").addEventListener("click", () => {
-    const p = document.getElementById("mshSpPanelOrders");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-    document.getElementById("mshSpAdmOrdersList").innerHTML = privOrders.length
-      ? privOrders.map(o => `<div style="background:#fff; padding:6px; border-radius:6px; margin-bottom:4px;"><b>${esc(o.custName)}</b> (${esc(o.hotel)} ➔ ${esc(o.village)}) | ${esc(o.items)} | <b>₹${o.total}</b> | Rider: ${esc(o.rider)} (${o.time})</div>`).join("")
+
+  document.getElementById("mshTabProfit").addEventListener("click", () => {
+    toggleAdmPanel("mshPanelProfit");
+    const totalProfit = ordersLog.reduce((acc, o) => acc + (Number(o.profit) || 0), 0);
+    document.getElementById("mshTotalProfitSummary").innerText = `💰 Total Estimated Admin Profit (${ordersLog.length} Orders): ₹${totalProfit}`;
+    document.getElementById("mshAdmOrdersBox").innerHTML = ordersLog.length
+      ? ordersLog.map(o => `<div style="background:#fff; padding:6px 8px; border-radius:6px; margin-bottom:4px; border-left:4px solid #16a34a;"><b>${esc(o.custName)}</b> (${esc(o.hotel)} ➔ ${esc(o.village)}) • Bill: <b>₹${o.total}</b> • <span style="color:#15803d; font-weight:800;">Your Profit: ₹${o.profit}</span> (${o.time})</div>`).join("")
       : "ఇంకా ఆర్డర్లు లేవు.";
   });
-  document.getElementById("mshSpTabCusts").addEventListener("click", () => {
-    const p = document.getElementById("mshSpPanelCusts");
-    p.style.display = p.style.display === "block" ? "none" : "block";
-    const list = Object.values(registeredCustsMap);
-    document.getElementById("mshSpAdmCustsList").innerHTML = list.length
-      ? list.map(c => `<div style="background:#fff; padding:6px; border-radius:6px; margin-bottom:4px;">👤 <b>${esc(c.name)}</b> • 📞 <a href="tel:${esc(c.phone)}">${esc(c.phone)}</a> • 📍 ${esc(c.villageName)} ${c.landmark ? "(" + esc(c.landmark) + ")" : ""}</div>`).join("")
+
+  document.getElementById("mshTabCusts").addEventListener("click", () => {
+    toggleAdmPanel("mshPanelCusts");
+    const list = Object.values(regCusts);
+    document.getElementById("mshAdmCustsBox").innerHTML = list.length
+      ? list.map(c => `<div style="background:#fff; padding:6px; border-radius:6px; margin-bottom:4px;">👤 <b>${esc(c.name)}</b> • 📞 ${esc(c.phone)} • 📍 ${esc(c.villageName)}</div>`).join("")
       : "ఇంకా ఎవరూ రిజిస్టర్ అవ్వలేదు.";
   });
 
-  document.getElementById("mshSpSaveFood").addEventListener("click", () => {
-    const cat = document.getElementById("mshSpCat").value;
-    const name = document.getElementById("mshSpName").value.trim();
-    const price = Number(document.getElementById("mshSpPrice").value) || 0;
+  document.getElementById("mshBtnSaveFood").addEventListener("click", () => {
+    const cat = document.getElementById("mshNewCat").value;
+    const name = document.getElementById("mshNewName").value.trim();
+    const price = Number(document.getElementById("mshNewPrice").value) || 0;
     if (!name || price <= 0) return;
     const id = "it_" + Date.now();
-    const payload = { id, cat, name, price };
-    menuMap[id] = payload;
-    localStorage.setItem("msh_reg_menu_cache", JSON.stringify(menuMap));
-    document.getElementById("mshSpName").value = "";
-    document.getElementById("mshSpPrice").value = "";
-    renderFoodGrid(); broadcast(TOPIC_MENU, id, payload);
-    alert("✅ ఐటమ్ యాడ్ అయింది!");
+    menuMap[id] = { id, cat, name, price };
+    localStorage.setItem("msh_biz_menu_cache", JSON.stringify(menuMap));
+    document.getElementById("mshNewName").value = "";
+    document.getElementById("mshNewPrice").value = "";
+    renderFoodGrid(); broadcast(TOPIC_MENU, id, menuMap[id]);
+    alert("✅ కొత్త ఐటమ్ సేవ్ అయింది!");
   });
 
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-  applySavedCustomerProfile();
-  updateRoutingUI();
+  loadCustomerProfile();
+  updateRouteUI();
   renderFoodGrid();
-  renderRiders();
-  updateCart();
+  renderRidersLine();
+  updateBill();
   renderQA();
 })();
 </script>
