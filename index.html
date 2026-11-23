@@ -24,7 +24,6 @@
   }
   .msh-route-app * { box-sizing: border-box; }
 
-  /* Header & Role Tabs */
   .msh-top-bar {
     display: flex;
     justify-content: space-between;
@@ -53,7 +52,6 @@
   .msh-role-btn.active-rider { background: var(--yellow); color: #000; border-color: #eab308; }
   .msh-role-btn.active-admin { background: var(--dark); color: #fff; border-color: var(--dark); }
 
-  /* Side-by-Side 50% Left + 50% Right Layout */
   .msh-split-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -104,7 +102,6 @@
     height: 40px;
   }
 
-  /* Pin Picker Boxes (Pickup Hotel + Delivery House) */
   .msh-loc-card {
     background: #ffffff;
     border: 1.5px solid #cbd5e1;
@@ -131,7 +128,6 @@
     cursor: pointer;
   }
 
-  /* Generated Secret PIN Banner */
   .msh-pin-banner {
     display: none;
     background: #1e3a8a;
@@ -153,7 +149,6 @@
     margin: 3px 0;
   }
 
-  /* RIGHT HALF: STRICT PIN-LOCKED 3-POINT LIVE ROUTE MAP */
   .msh-map-container {
     position: relative;
     height: 320px;
@@ -179,7 +174,6 @@
     padding: 16px;
   }
 
-  /* Live Merging KM Strip */
   .msh-km-strip {
     background: #0f172a;
     color: #facc15;
@@ -194,7 +188,6 @@
     gap: 6px;
   }
 
-  /* Map Picker Modal */
   .msh-modal {
     display: none;
     position: fixed;
@@ -210,17 +203,16 @@
     border-radius: 14px;
     padding: 14px;
     width: 100%;
-    max-width: 480px;
+    max-width: 490px;
   }
   #mshPickerMap { height: 270px; width: 100%; border-radius: 10px; margin: 8px 0; }
 </style>
 
 <div class="msh-route-app" id="mshThreePointHub">
-  <!-- Header & 3 Role Switchers -->
   <div class="msh-top-bar">
     <div>
-      <h2 class="msh-brand">🛵 Mana Seva Hub — 1-to-1 Live Route & Merging KM Map</h2>
-      <p class="msh-sub">Hotel Pickup ➔ Moving Rider Live Line ➔ Delivery House (Boddavara • Kiltampalem • Jindal • S.Kota • Thatipudi)</p>
+      <h2 class="msh-brand">🛵 Mana Seva Hub — Exact Google Location & Live Route Map</h2>
+      <p class="msh-sub">Google Maps Coordinates / Link Paste + Local Hotels + 1-to-1 Secret PIN Tracking</p>
     </div>
     <div class="msh-role-tabs">
       <button type="button" class="msh-role-btn active-cust" id="tabCust">👤 1. Customer (Order)</button>
@@ -229,35 +221,38 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       SIDE-BY-SIDE: LEFT (ORDER / RIDER / ADMIN) | RIGHT (LIVE LINE MAP)
-       ========================================================= -->
   <div class="msh-split-grid">
     
-    <!-- LEFT 50%: ORDER CREATION / RIDER LIVE GPS / ADMIN CONTROL -->
+    <!-- LEFT 50% -->
     <div class="msh-panel msh-panel-warm">
       
-      <!-- LEFT VIEW 1: CUSTOMER ORDER (Sets Both Hotel Pin & House Pin!) -->
+      <!-- LEFT VIEW 1: CUSTOMER ORDER -->
       <div class="msh-left-view active" id="viewLeftCust">
-        <h3 class="msh-h3">1. ఫుడ్ / పార్సెల్ ఆర్డర్ (2 Locations Map లో పిన్ చేయండి)</h3>
+        <h3 class="msh-h3">1. ఫుడ్ / పార్సెల్ ఆర్డర్ (Exact Location Pin)</h3>
 
         <input type="text" id="ordItemInp" class="msh-inp" placeholder="ఏం కావాలి? (ఉదా: Chicken Dum Biryani 2 Plates)">
 
-        <!-- PIN 1: HOTEL / PICKUP LOCATION -->
+        <!-- PIN 1: HOTEL / PICKUP LOCATION (Quick Local List + Google Link/Pin) -->
         <div class="msh-loc-card" style="border-color:#fdba74;">
-          <span class="msh-loc-label" style="color:#9a3412;">🏨 1. ఎక్కడి నుండి తేవాలి (Hotel / Pickup Location):</span>
+          <span class="msh-loc-label" style="color:#9a3412;">🏨 1. ఎక్కడి నుండి తేవాలి (Hotel / Shop):</span>
+          <select id="quickHotelSel" class="msh-sel" style="margin-bottom:6px;">
+            <option value="18.0815,83.1285|Guntur Mess (Boddavara)">🍛 Guntur Mess (Boddavara)</option>
+            <option value="18.0825,83.1292|Rajula Bhojanam (Boddavara)">🍗 Rajula Bhojanam (Boddavara)</option>
+            <option value="18.1118,83.1415|S.Kota Main Hotels & Biryani">🍲 S.Kota Main Hotels / Biryani Center</option>
+            <option value="18.1050,83.1480|Kiltampalem / Jindal Site Gate">🏗️ Kiltampalem / Jindal Site Area</option>
+            <option value="custom">🗺️ Google Maps Link / Map Pin వాడుతాను...</option>
+          </select>
           <div class="msh-row" style="margin:0;">
-            <input type="text" id="pickLocTxt" class="msh-inp" style="margin:0;" placeholder="హోటల్ పేరు / లొకేషన్ ఎంచుకోండి" readonly>
-            <button type="button" class="msh-btn" style="background:#ea580c;" id="btnPickMap">🗺️ Map Pin</button>
-            <button type="button" class="msh-btn" style="background:#0f4c3a;" id="btnPickGps">📍 GPS</button>
+            <input type="text" id="pickLocTxt" class="msh-inp" style="margin:0;" value="✅ Guntur Mess (Boddavara)" readonly>
+            <button type="button" class="msh-btn" style="background:#ea580c;" id="btnPickMap">🗺️ Google Pin</button>
           </div>
         </div>
 
-        <!-- PIN 2: DELIVERY HOUSE LOCATION (Can be different from where customer is standing!) -->
+        <!-- PIN 2: DELIVERY HOUSE LOCATION -->
         <div class="msh-loc-card" style="border-color:#86efac;">
-          <span class="msh-loc-label" style="color:#15803d;">🏠 2. ఎక్కడికి డెలివరీ చేయాలి (Inti / Delivery Location):</span>
+          <span class="msh-loc-label" style="color:#15803d;">🏠 2. ఎక్కడికి డెలివరీ చేయాలి (Inti / House Location):</span>
           <div class="msh-row" style="margin:0;">
-            <input type="text" id="dropLocTxt" class="msh-inp" style="margin:0;" placeholder="ఇంటి లొకేషన్ Map లో ఎంచుకోండి" readonly>
+            <input type="text" id="dropLocTxt" class="msh-inp" style="margin:0;" placeholder="Google Map Pin లేదా My GPS నొక్కండి" readonly>
             <button type="button" class="msh-btn" style="background:#16a34a;" id="btnDropMap">🗺️ House Pin</button>
             <button type="button" class="msh-btn" style="background:#0284c7;" id="btnDropGps">📍 My GPS</button>
           </div>
@@ -269,15 +264,14 @@
         </div>
 
         <div style="background:#f0fdf4; border:1.5px solid #16a34a; border-radius:9px; padding:8px 12px; margin-bottom:8px; display:flex; justify-content:space-between; font-weight:800; font-size:0.9rem;">
-          <span>హోటల్ ➔ ఇంటి దూరం: <strong id="ordRouteKm">0 km</strong></span>
-          <span>డెలివరీ ఛార్జ్: <strong id="ordDelivFee" style="color:#15803d;">₹30</strong></span>
+          <span>హోటల్ ➔ ఇంటి దూరం: <strong id="ordRouteKm">3.5 km</strong></span>
+          <span>డెలివరీ ఛార్జ్: <strong id="ordDelivFee" style="color:#15803d;">₹45</strong></span>
         </div>
 
         <button type="button" class="msh-book-btn" id="btnCreateOrder">
           🛵 PLACE ORDER (1-to-1 Secret PIN పొందండి)
         </button>
 
-        <!-- Secret PIN Result -->
         <div class="msh-pin-banner" id="ordPinResult">
           <div style="font-size:0.82rem; color:#93c5fd; font-weight:700;">✅ మీ 1-to-1 సీక్రెట్ ట్రాకింగ్ PIN:</div>
           <div class="msh-pin-digits" id="ordShowPin">----</div>
@@ -289,7 +283,7 @@
       <div class="msh-left-view" id="viewLeftRider">
         <h3 class="msh-h3" style="color:#854d0e;">🛵 Rider / Head Live Movement Control</h3>
         <p style="font-size:0.83rem; color:#713f12; margin:0 0 10px; font-weight:600;">
-          మీరు స్వయంగా వెళ్తున్నా లేదా మీ రైడర్ వెళ్తున్నా — <b>4-Digit PIN</b> ఎంటర్ చేసి <b>🟢 Start Live Ride</b> నొక్కండి. కుడివైపు మ్యాప్‌లో <b>🏨 Hotel ➔ 🛵 Bike ➔ 🏠 House</b> లైవ్ లైన్ & KM కదులుతూ కనిపిస్తాయి:
+          <b>4-Digit PIN</b> ఎంటర్ చేసి <b>🟢 Start Live Ride</b> నొక్కండి — కుడివైపు మ్యాప్‌లో <b>🏨 Hotel ➔ 🛵 Bike ➔ 🏠 House</b> లైవ్ లైన్ & KM కదులుతూ కనిపిస్తాయి:
         </p>
 
         <select id="riderWhoSel" class="msh-sel">
@@ -329,32 +323,28 @@
           <button type="button" id="btnLockMap" style="display:none; background:#dc2626; color:#fff; border:none; border-radius:6px; padding:4px 9px; font-size:0.76rem; font-weight:800; cursor:pointer;">🔒 Lock Map</button>
         </div>
 
-        <!-- PIN Unlock Row -->
         <div class="msh-row">
           <input type="text" id="mapPinInp" class="msh-inp" style="margin:0; font-size:1rem; letter-spacing:2px; font-weight:800;" maxlength="4" placeholder="🔑 4-Digit PIN ఎంటర్ చేయండి">
           <button type="button" class="msh-btn" style="background:#0284c7;" id="btnUnlockMap">🔓 Open Live Line</button>
         </div>
 
-        <!-- Live Merging Distance Strip -->
         <div class="msh-km-strip">
           <span id="liveRouteBanner">🔒 PIN ఎంటర్ చేస్తేనే మ్యాప్ & లైన్ కనిపిస్తాయి</span>
           <span id="liveMergingKmBadge" style="background:#334155; color:#fff; padding:2px 9px; border-radius:99px; font-size:0.78rem;">Locked</span>
         </div>
 
-        <!-- THE 3-POINT ROUTE MAP WITH STRICT PRIVACY LOCK -->
         <div class="msh-map-container">
           <div id="mshThreePointMap"></div>
           <div class="msh-lock-overlay" id="mapPrivacyOverlay">
             <div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
             <strong style="font-size:1.04rem; color:#facc15; margin-bottom:4px;">1-to-1 ప్రైవేట్ లైవ్ రూట్ మ్యాప్ (Locked)</strong>
             <p style="font-size:0.83rem; color:#cbd5e1; margin:0; max-width:300px; line-height:1.45;">
-              అందరికీ కనిపించకుండా కేవలం ఆ ఆర్డర్ <b>4-Digit PIN</b> ఉన్న కస్టమర్, రైడర్ & అడ్మిన్‌కు మాత్రమే <b>🏨 Hotel ➔ 🛵 Rider ➔ 🏠 House</b> లైవ్ లైన్ & KM కనిపిస్తాయి.
+              కేవలం ఆ ఆర్డర్ <b>4-Digit PIN</b> ఉన్న కస్టమర్, రైడర్ & అడ్మిన్‌కు మాత్రమే <b>🏨 Hotel ➔ 🛵 Rider ➔ 🏠 House</b> లైవ్ లైన్ & KM కనిపిస్తాయి.
             </p>
           </div>
         </div>
       </div>
 
-      <!-- In-Room Direct Chat (Number Hidden) -->
       <div style="margin-top:6px;">
         <div class="msh-row" style="margin-bottom:4px;">
           <input type="text" id="roomMsgInp" class="msh-inp" style="margin:0;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ పంపండి (నంబర్ షేర్ కాదు)...">
@@ -367,19 +357,26 @@
   </div>
 </div>
 
-<!-- Google / OSM Location Pin Picker Modal -->
+<!-- SMART LOCATION PICKER MODAL (Supports Google Coordinates/Link Paste + Map Tap!) -->
 <div class="msh-modal" id="locPickerModal">
   <div class="msh-modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-      <strong style="color:#0f4c3a;" id="pickerModalTitle">🗺️ Map లో లొకేషన్ ఎంచుకోండి</strong>
+      <strong style="color:#0f4c3a;" id="pickerModalTitle">🗺️ Exact Location ఎంచుకోండి</strong>
       <button type="button" id="btnClosePicker" style="border:none; background:#e2e8f0; border-radius:6px; padding:4px 10px; font-weight:800; cursor:pointer;">✕</button>
     </div>
-    <div class="msh-row" style="margin-bottom:4px;">
-      <input type="text" id="pickerSearchInp" class="msh-inp" style="margin:0;" placeholder="ఊరు / హోటల్ పేరు సెర్చ్ చేయండి (ఉదా: Boddavara, S.Kota)...">
-      <button type="button" class="msh-btn" style="background:#0284c7;" id="btnPickerSearch">🔍 Search</button>
+
+    <div style="background:#eff6ff; border:1px solid #93c5fd; border-radius:8px; padding:7px 9px; margin-bottom:8px; font-size:0.78rem; color:#1e3a8a;">
+      💡 <b>Google Maps Exact Spot Tip:</b> Google Maps లో ఆ హోటల్/ఇంటి దగ్గర నొక్కి పడితే వచ్చే నంబర్లు (ఉదా: <b>18.0815, 83.1285</b>) లేదా Google Maps URL ఇక్కడ పేస్ట్ చేయండి—లేదా కింద మ్యాప్‌లో నేరుగా Tap చేయండి!
     </div>
+
+    <div class="msh-row" style="margin-bottom:4px;">
+      <input type="text" id="pickerSearchInp" class="msh-inp" style="margin:0;" placeholder="18.0815, 83.1285 లేదా Google Link లేదా ఊరు పేరు...">
+      <button type="button" class="msh-btn" style="background:#0284c7;" id="btnPickerSearch">🔍 Find</button>
+    </div>
+
     <div id="mshPickerMap"></div>
-    <button type="button" class="msh-btn" style="width:100%; background:#16a34a;" id="btnConfirmPin">✅ ఈ లొకేషన్ కన్ఫర్మ్ చేయండి</button>
+    <div id="pickerPinStatus" style="font-size:0.82rem; font-weight:800; color:#15803d; margin-bottom:6px;"></div>
+    <button type="button" class="msh-btn" style="width:100%; background:#16a34a;" id="btnConfirmPin">✅ ఈ Exact Location కన్ఫర్మ్ చేయండి</button>
   </div>
 </div>
 
@@ -396,8 +393,8 @@
     "https://gun-eu.herokuapp.com/gun"
   ];
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS, localStorage: true }) : null;
-  const TOPIC_ORDERS = "manasevahub_3pt_orders_v2026";
-  const TOPIC_TRACK  = "manasevahub_3pt_track_v2026";
+  const TOPIC_ORDERS = "manasevahub_exact_orders_v2026";
+  const TOPIC_TRACK  = "manasevahub_exact_track_v2026";
 
   function maskPhone(p) {
     const c = String(p || "").replace(/\D/g, "");
@@ -412,24 +409,31 @@
     return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 10) / 10;
   }
 
-  // Pickup (Hotel) & Drop (House) Coordinates
-  let pickLat = 18.0815, pickLng = 83.1285, pickLabel = "Boddavara Hotel / Shop";
+  // Extract Lat, Lng from raw coordinates ("18.0815, 83.1285") OR Google Maps URL (@18.0815,83.1285 or ?q=18.0815,83.1285)
+  function parseCoordinatesFromInput(text) {
+    const clean = String(text || "").trim();
+    const regex = /(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/;
+    const match = clean.match(regex);
+    if (match) {
+      return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    }
+    return null;
+  }
+
+  let pickLat = 18.0815, pickLng = 83.1285, pickLabel = "Guntur Mess (Boddavara)";
   let dropLat = 18.1050, dropLng = 83.1480, dropLabel = "Kiltampalem / House";
-  let pickerMode = "pick"; // "pick" or "drop"
+  let pickerMode = "pick";
   let tempLat = null, tempLng = null, tempName = "";
 
-  let allOrders = JSON.parse(localStorage.getItem("msh_3pt_orders") || "{}");
+  let allOrders = JSON.parse(localStorage.getItem("msh_exact_orders") || "{}");
   let unlockedPin = "";
   let riderWatchId = null;
   let isAdmin = false;
 
-  // Map Layers (3 Pins + Live Route Line)
   const routeMap = L.map("mshThreePointMap").setView([18.0950, 83.1350], 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(routeMap);
 
   let hotelMarker = null, houseMarker = null, riderMarker = null, routePolyline = null;
-
-  // Picker Modal Map
   let pickerMap = null, pickerPin = null;
 
   function updateOrderEstimate() {
@@ -439,24 +443,43 @@
     document.getElementById("ordDelivFee").innerText = "₹" + fee;
   }
 
-  // Open Location Picker Modal (For Hotel OR Delivery House)
+  // Quick Local Hotel Dropdown
+  document.getElementById("quickHotelSel").addEventListener("change", function() {
+    if (this.value === "custom") {
+      openLocPicker("pick");
+      return;
+    }
+    const [coords, name] = this.value.split("|");
+    const [lat, lng] = coords.split(",").map(Number);
+    pickLat = lat; pickLng = lng; pickLabel = name;
+    document.getElementById("pickLocTxt").value = "✅ " + name;
+    updateOrderEstimate();
+  });
+
+  function setPickerMapPin(lat, lng, label) {
+    tempLat = lat; tempLng = lng; tempName = label;
+    if (pickerPin) pickerPin.setLatLng([lat, lng]);
+    else pickerPin = L.marker([lat, lng]).addTo(pickerMap);
+    pickerMap.setView([lat, lng], 16);
+    document.getElementById("pickerPinStatus").innerText = `✅ Exact Spot Locked: ${label} (${lat.toFixed(5)}, ${lng.toFixed(5)})`;
+  }
+
   function openLocPicker(mode) {
     pickerMode = mode;
     tempLat = null; tempLng = null; tempName = "";
+    document.getElementById("pickerPinStatus").innerText = "";
+    document.getElementById("pickerSearchInp").value = "";
     document.getElementById("pickerModalTitle").innerText = mode === "pick"
-      ? "🏨 హోటల్ / షాప్ లొకేషన్ ఎంచుకోండి (Pickup)"
-      : "🏠 డెలివరీ చేయాల్సిన ఇంటి లొకేషన్ ఎంచుకోండి (House)";
+      ? "🏨 హోటల్ / షాప్ Exact Location ఎంచుకోండి"
+      : "🏠 డెలివరీ చేయాల్సిన ఇంటి Exact Location ఎంచుకోండి";
     document.getElementById("locPickerModal").style.display = "flex";
 
     setTimeout(() => {
       if (!pickerMap && typeof L !== "undefined") {
-        pickerMap = L.map("mshPickerMap").setView([18.0950, 83.1350], 12);
+        pickerMap = L.map("mshPickerMap").setView([18.0850, 83.1320], 14);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(pickerMap);
         pickerMap.on("click", e => {
-          tempLat = e.latlng.lat; tempLng = e.latlng.lng;
-          tempName = `Map Pin (${tempLat.toFixed(4)}, ${tempLng.toFixed(4)})`;
-          if (pickerPin) pickerPin.setLatLng(e.latlng);
-          else pickerPin = L.marker(e.latlng).addTo(pickerMap);
+          setPickerMapPin(e.latlng.lat, e.latlng.lng, `Custom Map Spot`);
         });
       } else if (pickerMap) {
         pickerMap.invalidateSize();
@@ -468,55 +491,60 @@
   document.getElementById("btnDropMap").addEventListener("click", () => openLocPicker("drop"));
   document.getElementById("btnClosePicker").addEventListener("click", () => document.getElementById("locPickerModal").style.display = "none");
 
+  // Smart Search: First checks if user pasted Google Coordinates/Link, then searches place name!
   document.getElementById("btnPickerSearch").addEventListener("click", async () => {
     const q = document.getElementById("pickerSearchInp").value.trim();
     if (!q) return;
+
+    // 1. Check if input has exact coordinates (from Google Maps long-press or full URL)
+    const parsed = parseCoordinatesFromInput(q);
+    if (parsed) {
+      setPickerMapPin(parsed.lat, parsed.lng, "Google Maps Exact Spot");
+      return;
+    }
+
+    // 2. If short goo.gl link pasted, guide user how to get coordinates
+    if (q.includes("goo.gl") || q.includes("maps.app")) {
+      alert("💡 షార్ట్ లింక్ (goo.gl) బదులు Google Maps లో ఆ చోట వేలితో నొక్కి పడితే (Long Press) పైన వచ్చే నంబర్లు (ఉదా: 18.0815, 83.1285) కాపీ చేసి ఇక్కడ పేస్ట్ చేయండి—100% ఖచ్చితమైన చోట పిన్ పడుతుంది!");
+      return;
+    }
+
+    // 3. Otherwise search village/area name
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q + ", Andhra Pradesh, India")}`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q + ", Vizianagaram, Andhra Pradesh, India")}`);
       const data = await res.json();
       if (data && data.length > 0) {
-        tempLat = parseFloat(data[0].lat);
-        tempLng = parseFloat(data[0].lon);
-        tempName = data[0].display_name.split(",").slice(0, 2).join(",");
-        if (pickerPin) pickerPin.setLatLng([tempLat, tempLng]);
-        else pickerPin = L.marker([tempLat, tempLng]).addTo(pickerMap);
-        pickerMap.setView([tempLat, tempLng], 14);
-      } else alert("దొరకలేదు—మ్యాప్‌లో నేరుగా Tap చేయండి.");
-    } catch { alert("నెట్‌వర్క్ సమస్య."); }
+        setPickerMapPin(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name.split(",").slice(0, 2).join(","));
+      } else {
+        alert("ఆ పేరు మ్యాప్‌లో దొరకలేదు—మ్యాప్‌ను జూమ్ చేసి నేరుగా ఆ ఇంటి/హోటల్ మీద Tap చేయండి!");
+      }
+    } catch {
+      alert("నెట్‌వర్క్ సమస్య—మ్యాప్‌లో నేరుగా Tap చేయండి.");
+    }
   });
 
   document.getElementById("btnConfirmPin").addEventListener("click", () => {
     if (tempLat === null) { alert("దయచేసి మ్యాప్‌లో పిన్ ఎంచుకోండి."); return; }
+    const fullLabel = `${tempName} (${tempLat.toFixed(4)}, ${tempLng.toFixed(4)})`;
     if (pickerMode === "pick") {
-      pickLat = tempLat; pickLng = tempLng; pickLabel = tempName;
-      document.getElementById("pickLocTxt").value = "✅ " + tempName;
+      pickLat = tempLat; pickLng = tempLng; pickLabel = fullLabel;
+      document.getElementById("pickLocTxt").value = "✅ " + fullLabel;
     } else {
-      dropLat = tempLat; dropLng = tempLng; dropLabel = tempName;
-      document.getElementById("dropLocTxt").value = "✅ " + tempName;
+      dropLat = tempLat; dropLng = tempLng; dropLabel = fullLabel;
+      document.getElementById("dropLocTxt").value = "✅ " + fullLabel;
     }
     document.getElementById("locPickerModal").style.display = "none";
     updateOrderEstimate();
-  });
-
-  // Quick Current GPS Buttons
-  document.getElementById("btnPickGps").addEventListener("click", () => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(p => {
-      pickLat = p.coords.latitude; pickLng = p.coords.longitude;
-      pickLabel = `Hotel GPS (${pickLat.toFixed(4)}, ${pickLng.toFixed(4)})`;
-      document.getElementById("pickLocTxt").value = "✅ " + pickLabel;
-      updateOrderEstimate();
-    });
   });
 
   document.getElementById("btnDropGps").addEventListener("click", () => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(p => {
       dropLat = p.coords.latitude; dropLng = p.coords.longitude;
-      dropLabel = `My House GPS (${dropLat.toFixed(4)}, ${dropLng.toFixed(4)})`;
+      dropLabel = `My Live GPS (${dropLat.toFixed(4)}, ${dropLng.toFixed(4)})`;
       document.getElementById("dropLocTxt").value = "✅ " + dropLabel;
       updateOrderEstimate();
-    });
+    }, () => alert("ఫోన్‌లో Location On చేయండి."));
   });
 
   // Switch Left Role Views
@@ -553,7 +581,7 @@
     gun.get(TOPIC_ORDERS).map().on((d, pin) => {
       if (d && d.pin) {
         allOrders[pin] = d;
-        localStorage.setItem("msh_3pt_orders", JSON.stringify(allOrders));
+        localStorage.setItem("msh_exact_orders", JSON.stringify(allOrders));
         if (isAdmin) renderAdminList();
         if (unlockedPin === pin) drawThreePointRoute(pin, null);
       }
@@ -563,7 +591,7 @@
     });
   }
 
-  // Create Order with 2 Pins + 4-Digit Secret PIN
+  // Create Order
   document.getElementById("btnCreateOrder").addEventListener("click", () => {
     const item = document.getElementById("ordItemInp").value.trim() || "Food / Parcel Delivery";
     const cName = document.getElementById("ordCustName").value.trim() || "Customer";
@@ -580,18 +608,17 @@
     };
 
     allOrders[pin] = orderObj;
-    localStorage.setItem("msh_3pt_orders", JSON.stringify(allOrders));
+    localStorage.setItem("msh_exact_orders", JSON.stringify(allOrders));
     if (gun) gun.get(TOPIC_ORDERS).get(pin).put(orderObj);
 
     document.getElementById("ordPinResult").style.display = "block";
     document.getElementById("ordShowPin").innerText = pin;
     unlockRouteMap(pin);
 
-    const waMsg = `🛵 *NEW 1-TO-1 ORDER (PIN: ${pin})*\n🍱 Item: ${item}\n👤 Customer: ${cName} (${cPhone || "WhatsApp"})\n🏨 Pickup: ${pickLabel} (https://maps.google.com/?q=${pickLat},${pickLng})\n🏠 House Drop: ${dropLabel} (https://maps.google.com/?q=${dropLat},${dropLng})\n📏 Distance: ${km} | 💰 Fee: ${fee}`;
+    const waMsg = `🛵 *NEW 1-TO-1 ORDER (PIN: ${pin})*\n🍱 Item: ${item}\n👤 Customer: ${cName} (${cPhone || "WhatsApp"})\n🏨 Pickup: ${pickLabel}\n🔗 Hotel Google Map: https://maps.google.com/?q=${pickLat},${pickLng}\n🏠 House Drop: ${dropLabel}\n🔗 House Google Map: https://maps.google.com/?q=${dropLat},${dropLng}\n📏 Distance: ${km} | 💰 Fee: ${fee}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
   });
 
-  // Unlock Right-Side Map ONLY with Valid PIN
   function unlockRouteMap(pin) {
     const p = String(pin || "").trim();
     if (!allOrders[p]) { alert(`❌ PIN "${p}" తో ఆర్డర్ లేదు!`); return; }
@@ -613,22 +640,18 @@
     document.getElementById("liveMergingKmBadge").innerText = "Locked";
   });
 
-  // Draw 3 Pins (🏨 Hotel + 🛵 Moving Rider + 🏠 House) & Live Merging Line + KM!
   function drawThreePointRoute(pin, trackData) {
     const ord = allOrders[pin];
     if (!ord) return;
 
-    // 1. Hotel Pin
     const hIcon = L.divIcon({ html: `<div style="background:#ea580c;color:#fff;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏨 Hotel</div>`, className: "", iconSize: [75, 24], iconAnchor: [37, 12] });
     if (hotelMarker) hotelMarker.setLatLng([ord.pickLat, ord.pickLng]);
     else hotelMarker = L.marker([ord.pickLat, ord.pickLng], { icon: hIcon }).addTo(routeMap);
 
-    // 2. Delivery House Pin
     const dIcon = L.divIcon({ html: `<div style="background:#0284c7;color:#fff;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏠 House</div>`, className: "", iconSize: [75, 24], iconAnchor: [37, 12] });
     if (houseMarker) houseMarker.setLatLng([ord.dropLat, ord.dropLng]);
     else houseMarker = L.marker([ord.dropLat, ord.dropLng], { icon: dIcon }).addTo(routeMap);
 
-    // 3. Moving Rider Pin + Live Merging Line
     let lineCoords = [[ord.pickLat, ord.pickLng], [ord.dropLat, ord.dropLng]];
     let boundsLayers = [hotelMarker, houseMarker];
 
@@ -637,7 +660,6 @@
       if (riderMarker) { riderMarker.setLatLng([trackData.lat, trackData.lng]); riderMarker.setIcon(rIcon); }
       else riderMarker = L.marker([trackData.lat, trackData.lng], { icon: rIcon }).addTo(routeMap);
 
-      // Live Line: Hotel -> Moving Rider -> Delivery House
       lineCoords = [[ord.pickLat, ord.pickLng], [trackData.lat, trackData.lng], [ord.dropLat, ord.dropLng]];
       boundsLayers.push(riderMarker);
 
@@ -661,7 +683,6 @@
     document.getElementById("roomMsgFeed").innerHTML = ord.chat || "<span style='color:#64748b;'>ఇక్కడ రైడర్ / కస్టమర్ మెసేజ్ చేసుకోవచ్చు...</span>";
   }
 
-  // Room Chat
   document.getElementById("btnRoomSend").addEventListener("click", () => {
     if (!unlockedPin || !allOrders[unlockedPin]) { alert("ముందు 4-Digit PIN ఎంటర్ చేయండి."); return; }
     const inp = document.getElementById("roomMsgInp");
@@ -673,7 +694,6 @@
     if (gun) gun.get(TOPIC_ORDERS).get(unlockedPin).put(allOrders[unlockedPin]);
   });
 
-  // Rider / Head Live Trip Start & Stop
   document.getElementById("btnRiderStart").addEventListener("click", () => {
     const rName = document.getElementById("riderWhoSel").value;
     const pin = document.getElementById("riderPinInp").value.trim();
@@ -708,7 +728,6 @@
     if (gun && pin) gun.get(TOPIC_TRACK).get(pin).put({ active: false });
   });
 
-  // Admin Master List
   function renderAdminList() {
     const box = document.getElementById("adminAllOrdersList");
     const list = Object.values(allOrders).reverse();
