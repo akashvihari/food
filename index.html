@@ -74,7 +74,7 @@
   .msh-title { font-size: 1.32rem; font-weight: 900; color: var(--primary); margin: 0; }
   .msh-sub { font-size: 0.84rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
 
-  /* Service Closed Overlay Banner */
+  /* Service Closed Banner */
   .msh-closed-wall {
     display: none;
     background: #fef2f2;
@@ -132,7 +132,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 9px;
-    max-height: 980px; /* Fits 7 rows clearly with smooth scroll */
+    max-height: 980px;
     overflow-y: auto;
     padding-right: 4px;
     align-content: start;
@@ -249,7 +249,7 @@
     cursor: pointer;
   }
 
-  /* MIDDLE SECTION: RIDER REGISTRATION + ADMIN MASTER + 24H AUTO-EXPIRING NOTICE BOARD */
+  /* MIDDLE SECTION: RIDER REGISTRATION + ADMIN MASTER + 24H NOTICE BOARD */
   .msh-mid-admin-sec {
     background: #f1f5f9;
     border: 2px solid #94a3b8;
@@ -309,7 +309,7 @@
   <div class="msh-header">
     <div>
       <h2 class="msh-title">🍔 Mana Seva Hub — Swiggy-Style Food & Live GPS Tracking</h2>
-      <p class="msh-sub">7×3 Visual Menu • Clear Fees & Payment Toggle • Auto-Wipe Privacy • 10-Server Reliability</p>
+      <p class="msh-sub">7×3 Visual Menu • Auto-Photo Detection • Clear Fees • Auto-Wipe Privacy • 10-Server Live</p>
     </div>
     <div id="masterStatusBadge" style="font-size:0.84rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 14px; border-radius:99px;">
       🟢 Service OPEN • 10-Server Live
@@ -363,7 +363,7 @@
             <option value="Guntur Mess (Boddavara)">🏨 Hotel: Guntur Mess (బొడ్డవార)</option>
             <option value="Rajula Bhojanam (Boddavara)">🏨 Hotel: Rajula Bhojanam (రాజుల భోజనం)</option>
             <option value="S.Kota Main Hotels / Biryani">🏨 Hotel: S.Kota Main Hotels / Biryani</option>
-            <option value="Prakash Own Farm Stock">🌾 Farm Stock: Prakash (అరటి గెల / పాలు)</option>
+            <option value="Prakash Own Farm Stock">🌾 Farm Stock: Prakash (అరటి గెల / జామకాయలు)</option>
           </select>
 
           <div class="msh-row">
@@ -411,7 +411,7 @@
           🍔 PLACE ORDER (మీ ప్రైవేట్ ట్రాకింగ్ PIN పొందండి)
         </button>
 
-        <!-- Customer Generated PIN Box (Only shown to the customer who placed the order!) -->
+        <!-- Customer Generated PIN Box -->
         <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:11px; padding:10px; margin-top:9px; text-align:center;">
           <div style="font-size:0.8rem; color:#93c5fd;">✅ మీ ఆర్డర్ కన్ఫర్మ్! మీ ప్రైవేట్ ట్రాకింగ్ PIN:</div>
           <strong style="font-size:1.5rem; color:#facc15; letter-spacing:4px;" id="custOrderPinText">----</strong>
@@ -492,7 +492,7 @@
         <button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:7px; padding:6px 12px; font-weight:800; cursor:pointer;">🔒 Lock Admin</button>
       </div>
 
-      <!-- Master Toggles: Service ON/OFF, COD ON/OFF, Online UPI ON/OFF, Backup/Restore -->
+      <!-- Master Toggles -->
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
         <button type="button" id="admTogService" class="msh-btn" style="background:#dc2626;">🔴 Stop Service (OFF)</button>
         <button type="button" id="admTogCod" class="msh-btn" style="background:#16a34a;">💵 COD: ON</button>
@@ -501,19 +501,19 @@
         <button type="button" id="admRestoreBtn" class="msh-btn" style="background:#7c3aed;">♻️ Restore Backup</button>
       </div>
 
-      <!-- Quick Add Food Item with Photo -->
+      <!-- Quick Add Food/Fruit Item with Auto-Photo Detection -->
       <div style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:10px; margin-bottom:12px;">
-        <strong style="color:#93c5fd; font-size:0.86rem; display:block; margin-bottom:6px;">➕ కొత్త ఫుడ్ ఐటమ్ & ఫోటో యాడ్ చేయండి:</strong>
+        <strong style="color:#93c5fd; font-size:0.86rem; display:block; margin-bottom:6px;">➕ కొత్త ఐటమ్ యాడ్ చేయండి (Guava / Mango / Chicken అని పేరు రాస్తే Photo ఆటోమేటిక్‌గా వస్తుంది!):</strong>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:7px;">
           <select id="admNewCat" class="msh-sel" style="margin:0; color:#000;">
-            <option value="food">🍗 Biryani / Meals</option>
             <option value="own">🌾 My Farm Stock</option>
+            <option value="food">🍗 Biryani / Meals</option>
             <option value="veg">🥬 Vegetables</option>
             <option value="drinks">💧 Water / Drinks</option>
           </select>
-          <input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు">
-          <input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹">
-          <input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (Optional)">
+          <input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు (ఉదా: Guava 1kg)">
+          <input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹ (ఉదా: 50)">
+          <input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (ఖాళీగా వదిలేయొచ్చు)">
           <button type="button" id="admBtnSaveItem" class="msh-btn" style="background:#fc8019;">Save Item</button>
         </div>
       </div>
@@ -523,7 +523,7 @@
         💰 Total Billing: ₹0 | Rider Commissions: ₹0 | Your Net Profit: ₹0
       </div>
 
-      <!-- All Rider Secret PINs (Visible ONLY in Admin!) -->
+      <!-- All Rider Secret PINs -->
       <strong style="color:#facc15; font-size:0.88rem; display:block; margin-bottom:6px;">🔑 Registered Riders & Secret Lock PINs (Admin Only):</strong>
       <div id="admRidersList" style="margin-bottom:12px;"></div>
 
@@ -554,7 +554,6 @@
       <span id="bottomLiveDistLbl" style="color:#facc15;">🔒 మీ 4-Digit Order PIN ఎంటర్ చేస్తేనే రైడర్ లైవ్ దూరం కనిపిస్తుంది</span>
       <div style="display:flex; gap:6px; align-items:center;">
         <span id="bottomStatusChip" style="background:#334155; color:#fff; padding:3px 10px; border-radius:99px; font-size:0.78rem;">Locked</span>
-        <!-- Customer Complete & Wipe Button (Only visible when PIN is unlocked!) -->
         <button type="button" id="btnCustomerCompleteWipe" style="display:none; background:#16a34a; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-weight:900; font-size:0.82rem; cursor:pointer;">
           ✅ Order Received / Complete (Wipe Data)
         </button>
@@ -573,7 +572,7 @@
       </div>
     </div>
 
-    <!-- Ephemeral Ride Chat (Auto-deleted when ride completes!) -->
+    <!-- Ephemeral Ride Chat -->
     <div class="msh-row" style="margin:0;">
       <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (డెలివరీ అయ్యాక ఆటోమేటిక్‌గా డిలీట్ అవుతుంది)...">
       <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">Send ➤</button>
@@ -591,9 +590,7 @@
   const SERVICE_FEE = 5;
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
 
-  // =========================================================================
-  // 10-SERVER ULTRA-RELIABLE MESH (8 Gun.js Relays + 2 ntfy.sh Streams)
-  // =========================================================================
+  // 10-Server Ultra-Reliable Mesh
   const PEERS_10 = [
     "https://gun-manhattan.herokuapp.com/gun",
     "https://relay.peer.ooo/gun",
@@ -607,12 +604,37 @@
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
 
-  const TOPIC_MENU   = "msh_master_v10_menu_2026";
-  const TOPIC_ORDERS = "msh_master_v10_orders_2026";
-  const TOPIC_GPS    = "msh_master_v10_gps_2026";
-  const TOPIC_RIDERS = "msh_master_v10_riders_2026";
-  const TOPIC_CONFIG = "msh_master_v10_config_2026";
-  const TOPIC_24H    = "msh_master_v10_24h_2026";
+  const TOPIC_MENU   = "msh_master_v11_menu_2026";
+  const TOPIC_ORDERS = "msh_master_v11_orders_2026";
+  const TOPIC_GPS    = "msh_master_v11_gps_2026";
+  const TOPIC_RIDERS = "msh_master_v11_riders_2026";
+  const TOPIC_CONFIG = "msh_master_v11_config_2026";
+  const TOPIC_24H    = "msh_master_v11_24h_2026";
+
+  // SMART AUTO-PHOTO MATCHER (Automatically picks exact photo from item name if URL is blank or broken!)
+  function getAutoPhotoForName(itemName, customUrl) {
+    const cleanUrl = String(customUrl || "").trim();
+    if (cleanUrl && !cleanUrl.includes("google.com/imgres") && (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://"))) {
+      return cleanUrl;
+    }
+    const n = String(itemName || "").toLowerCase();
+    if (n.includes("guava") || n.includes("జామ")) return "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75";
+    if (n.includes("mango") || n.includes("మామిడి")) return "https://images.unsplash.com/photo-1553279768-865429fa0078?w=300&q=75";
+    if (n.includes("banana") || n.includes("అరటి")) return "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75";
+    if (n.includes("lemon") || n.includes("నిమ్మ")) return "https://images.unsplash.com/photo-1590502593747-42a996133562?w=300&q=75";
+    if (n.includes("apple")) return "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&q=75";
+    if (n.includes("pomegranate") || n.includes("దానిమ్మ")) return "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&q=75";
+    if (n.includes("milk") || n.includes("పాలు")) return "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75";
+    if (n.includes("egg") || n.includes("గుడ్లు")) return "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&q=75";
+    if (n.includes("biryani") || n.includes("chicken")) return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75";
+    if (n.includes("dosa") || n.includes("idli") || n.includes("tiffin")) return "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75";
+    if (n.includes("tomato") || n.includes("టమాట")) return "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75";
+    if (n.includes("onion") || n.includes("ఉల్లి")) return "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75";
+    if (n.includes("water") || n.includes("వాటర్")) return "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=75";
+    if (n.includes("drink") || n.includes("thumbs") || n.includes("coke") || n.includes("sprite")) return "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=75";
+    if (n.includes("veg") || n.includes("కూర")) return "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75";
+    return "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75";
+  }
 
   function maskPhone(p) {
     const c = String(p || "").replace(/\D/g, "");
@@ -632,17 +654,17 @@
     return m ? { lat: parseFloat(m[1]), lng: parseFloat(m[2]) } : null;
   }
 
-  // 21 Visual Food & Own Farm Stock Items (7 Rows x 3 Columns)
+  // 21 Visual Food & Own Farm Stock Items (Including Guava!)
   const default21Menu = [
     { id: "m1", cat: "food", name: "Chicken Dum Biryani", price: 150, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" },
     { id: "m2", cat: "food", name: "Guntur Mess Full Meals", price: 110, img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75" },
     { id: "m3", cat: "food", name: "Rajula Bhojanam Special", price: 160, img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=300&q=75" },
     { id: "m4", cat: "own",  name: "Banana Full Gela (అరటి గెల)", price: 280, img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75" },
-    { id: "m5", cat: "own",  name: "Pure Farm Milk (1 Litre)", price: 66, img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75" },
-    { id: "m6", cat: "food", name: "Chicken Fry Piece Biryani", price: 170, img: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=300&q=75" },
-    { id: "m7", cat: "food", name: "Egg Fried Rice / Noodles", price: 90, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&q=75" },
-    { id: "m8", cat: "food", name: "Idli & Sambar Tiffin", price: 50, img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75" },
-    { id: "m9", cat: "food", name: "Masala Dosa & Chutney", price: 60, img: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=300&q=75" },
+    { id: "m5", cat: "own",  name: "Fresh Guava / జామకాయలు (1kg)", price: 50, img: "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75" },
+    { id: "m6", cat: "own",  name: "Pure Farm Milk (1 Litre)", price: 66, img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75" },
+    { id: "m7", cat: "food", name: "Chicken Fry Piece Biryani", price: 170, img: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=300&q=75" },
+    { id: "m8", cat: "food", name: "Egg Fried Rice / Noodles", price: 90, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&q=75" },
+    { id: "m9", cat: "food", name: "Idli & Sambar Tiffin", price: 50, img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75" },
     { id: "m10", cat: "veg", name: "Fresh Tomato (1 kg)", price: 30, img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75" },
     { id: "m11", cat: "veg", name: "Onions / ఉల్లిపాయలు (1 kg)", price: 36, img: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75" },
     { id: "m12", cat: "veg", name: "Fresh Leafy Greens Pack", price: 30, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75" },
@@ -659,25 +681,23 @@
 
   let menuDB = {};
   default21Menu.forEach(x => menuDB[x.id] = x);
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_v10_menu") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_v11_menu") || "null");
   if (cachedMenu) menuDB = { ...menuDB, ...cachedMenu };
 
-  // Configuration (Service ON/OFF, COD ON/OFF, Online UPI ON/OFF)
-  let appConfig = JSON.parse(localStorage.getItem("msh_v10_config") || "null") || {
+  let appConfig = JSON.parse(localStorage.getItem("msh_v11_config") || "null") || {
     serviceOpen: true,
     codEnabled: true,
     upiEnabled: true
   };
 
-  // Private Riders DB (PINs hidden from public; only visible in Admin!)
-  let ridersDB = JSON.parse(localStorage.getItem("msh_v10_riders") || "null") || {
+  let ridersDB = JSON.parse(localStorage.getItem("msh_v11_riders") || "null") || {
     "2211": { pin: "2211", name: "Rajesh", phone: "9000000001", village: "S.Kota", approved: true, lat: 18.1118, lng: 83.1415, earned: 0 },
     "3344": { pin: "3344", name: "Sridhar", phone: "9000000002", village: "Kiltampalem", approved: true, lat: 18.1050, lng: 83.1480, earned: 0 },
     "9999": { pin: "9999", name: "Prakash (Head)", phone: "8985240287", village: "Boddavara", approved: true, lat: 18.0815, lng: 83.1285, earned: 0 }
   };
 
-  let ordersDB = JSON.parse(localStorage.getItem("msh_v10_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v10_24h") || "{}");
+  let ordersDB = JSON.parse(localStorage.getItem("msh_v11_orders") || "{}");
+  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v11_24h") || "{}");
   let liveGpsCache = {};
   let cart = {};
   let activeCat = "all";
@@ -689,14 +709,11 @@
   let isAdminOpen = false;
   let riderGpsTimer = null;
 
-  // Initialize Bottom Live Map
   const bottomMap = L.map("mshBottomLiveMap").setView([18.0950, 83.1350], 13);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(bottomMap);
   let mCustPin = null, mRiderPin = null, mRouteLine = null;
 
-  // =========================================================================
-  // CONFIG & PAYMENT MODES SYNC (Service ON/OFF, COD ON/OFF, UPI ON/OFF)
-  // =========================================================================
+  // Config & Payment Modes
   function applyConfigUI() {
     document.getElementById("serviceClosedWall").style.display = appConfig.serviceOpen ? "none" : "block";
     const badge = document.getElementById("masterStatusBadge");
@@ -704,7 +721,6 @@
     badge.style.background = appConfig.serviceOpen ? "#dcfce7" : "#fee2e2";
     badge.style.color = appConfig.serviceOpen ? "#15803d" : "#dc2626";
 
-    // Update Payment Options Dropdown based on Admin Toggles
     const paySel = document.getElementById("cPaymentMethodSel");
     let opts = "";
     if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్ ఇస్తాను)</option>`;
@@ -712,7 +728,6 @@
     if (!opts) opts = `<option value="NONE">⚠️ పేమెంట్ ఆప్షన్స్ తాత్కాలికంగా ఆఫ్‌లో ఉన్నాయి</option>`;
     paySel.innerHTML = opts;
 
-    // Update Admin Toggle Buttons
     const bServ = document.getElementById("admTogService");
     bServ.innerText = appConfig.serviceOpen ? "🔴 Stop Service (OFF)" : "🟢 Start Service (ON)";
     bServ.style.background = appConfig.serviceOpen ? "#dc2626" : "#16a34a";
@@ -727,7 +742,7 @@
   }
 
   function saveAndSyncConfig() {
-    localStorage.setItem("msh_v10_config", JSON.stringify(appConfig));
+    localStorage.setItem("msh_v11_config", JSON.stringify(appConfig));
     applyConfigUI();
     if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
     fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}`, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
@@ -737,32 +752,25 @@
   document.getElementById("admTogCod").addEventListener("click", () => { appConfig.codEnabled = !appConfig.codEnabled; saveAndSyncConfig(); });
   document.getElementById("admTogUpi").addEventListener("click", () => { appConfig.upiEnabled = !appConfig.upiEnabled; saveAndSyncConfig(); });
 
-  // =========================================================================
-  // 10-SERVER REAL-TIME SYNC & AUTO-CLEANUP ENGINE
-  // =========================================================================
+  // Sync & Auto-Wipe Engine
   function syncOrder(pin, obj) {
     ordersDB[pin] = obj;
-    localStorage.setItem("msh_v10_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v11_orders", JSON.stringify(ordersDB));
     if (gun) gun.get(TOPIC_ORDERS).get(pin).put(obj);
     fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(obj) }).catch(() => {});
     refreshEverything();
   }
 
-  // COMPLETE & WIPE ORDER (Removes order, chat & GPS permanently when completed!)
   function completeAndWipeOrder(pin) {
     if (!ordersDB[pin]) return;
     const ord = ordersDB[pin];
-
-    // Credit Rider Commission before wiping order record
     if (ord.acceptedByPin && ridersDB[ord.acceptedByPin]) {
       ridersDB[ord.acceptedByPin].earned = (Number(ridersDB[ord.acceptedByPin].earned) || 0) + Number(ord.riderComm || 0);
       syncRiders();
     }
-
-    // Delete order & ephemeral chat permanently
     delete ordersDB[pin];
     delete liveGpsCache[pin];
-    localStorage.setItem("msh_v10_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v11_orders", JSON.stringify(ordersDB));
 
     const wipePayload = { pin, wiped: true };
     if (gun) {
@@ -777,7 +785,7 @@
   }
 
   function syncRiders() {
-    localStorage.setItem("msh_v10_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v11_riders", JSON.stringify(ridersDB));
     const p = { json: JSON.stringify(ridersDB) };
     if (gun) gun.get(TOPIC_RIDERS).get("all").put(p);
     fetch(`${NTFY_PRIMARY}/${TOPIC_RIDERS}`, { method: "POST", body: JSON.stringify(p) }).catch(() => {});
@@ -791,12 +799,11 @@
     if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
   }
 
-  // Gun.js Listeners
   if (gun) {
     gun.get(TOPIC_CONFIG).get("main").on(d => {
       if (d && typeof d.serviceOpen === "boolean") {
         appConfig = { serviceOpen: d.serviceOpen, codEnabled: !!d.codEnabled, upiEnabled: !!d.upiEnabled };
-        localStorage.setItem("msh_v10_config", JSON.stringify(appConfig));
+        localStorage.setItem("msh_v11_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
     });
@@ -804,7 +811,7 @@
       if (d && d.name) {
         if (d.deleted) { delete menuDB[id]; delete cart[id]; }
         else menuDB[id] = d;
-        localStorage.setItem("msh_v10_menu", JSON.stringify(menuDB));
+        localStorage.setItem("msh_v11_menu", JSON.stringify(menuDB));
         renderMenu7x3(); calcFees();
       }
     });
@@ -813,13 +820,13 @@
       if (d.wiped) {
         delete ordersDB[pin];
         delete liveGpsCache[pin];
-        localStorage.setItem("msh_v10_orders", JSON.stringify(ordersDB));
+        localStorage.setItem("msh_v11_orders", JSON.stringify(ordersDB));
         if (unlockedBottomPin === pin) lockBottomMapUI();
         refreshEverything();
       } else if (d.pin) {
         const isNew = !ordersDB[pin];
         ordersDB[pin] = d;
-        localStorage.setItem("msh_v10_orders", JSON.stringify(ordersDB));
+        localStorage.setItem("msh_v11_orders", JSON.stringify(ordersDB));
         if (isNew && d.status === "OPEN") {
           document.getElementById("openOrderNotifyStrip").style.display = "flex";
         }
@@ -828,7 +835,7 @@
     });
     gun.get(TOPIC_RIDERS).get("all").on(d => {
       if (d && d.json) {
-        try { ridersDB = JSON.parse(d.json); localStorage.setItem("msh_v10_riders", JSON.stringify(ridersDB)); refreshEverything(); } catch {}
+        try { ridersDB = JSON.parse(d.json); localStorage.setItem("msh_v11_riders", JSON.stringify(ridersDB)); refreshEverything(); } catch {}
       }
     });
     gun.get(TOPIC_GPS).map().on((g, pin) => {
@@ -838,13 +845,12 @@
       if (m && m.text && m.ts) {
         if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
         else delete msgs24hDB[id];
-        localStorage.setItem("msh_v10_24h", JSON.stringify(msgs24hDB));
+        localStorage.setItem("msh_v11_24h", JSON.stringify(msgs24hDB));
         render24hMsgs();
       }
     });
   }
 
-  // Backup 3-Second Polling for Mobile Reliability
   setInterval(async () => {
     try {
       const res = await fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}/json?poll=1&since=5m`);
@@ -875,9 +881,7 @@
     if (isAdminOpen) renderAdminDashboard();
   }
 
-  // =========================================================================
-  // 1. RENDER 7 ROWS x 3 COLUMNS FOOD MENU WITH PHOTOS
-  // =========================================================================
+  // Render 7x3 Menu with Smart Auto-Photo
   function renderMenu7x3() {
     const grid = document.getElementById("foodMenu7x3Grid");
     const items = Object.values(menuDB).filter(x => x && !x.deleted);
@@ -886,7 +890,7 @@
 
     grid.innerHTML = list.map(it => {
       const q = cart[it.id] || 0;
-      const fallbackImg = "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70";
+      const smartImg = getAutoPhotoForName(it.name, it.img);
       const btn = q === 0
         ? `<button type="button" class="msh-fadd" onclick="window.mshMasterQty('${it.id}', 1)">+ ADD</button>`
         : `<div class="msh-fqty"><button type="button" onclick="window.mshMasterQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshMasterQty('${it.id}', 1)">+</button></div>`;
@@ -896,7 +900,7 @@
       return `
         <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}">
           <div>
-            <img src="${it.img || fallbackImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='${fallbackImg}'">
+            <img src="${smartImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70'">
             <div class="msh-fname">${it.name}</div>
           </div>
           <div>
@@ -917,7 +921,7 @@
 
   window.mshAdmDelMenu = function(id) {
     delete menuDB[id]; delete cart[id];
-    localStorage.setItem("msh_v10_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v11_menu", JSON.stringify(menuDB));
     renderMenu7x3(); calcFees();
     if (gun) gun.get(TOPIC_MENU).get(id).put({ id, name: "del", deleted: true });
   };
@@ -931,9 +935,7 @@
     });
   });
 
-  // =========================================================================
-  // 2. TRANSPARENT FEES & CUSTOMER ORDER PLACEMENT
-  // =========================================================================
+  // Fees & Checkout
   function calcFees() {
     let sum = 0, lines = [];
     Object.entries(cart).forEach(([id, q]) => {
@@ -1033,7 +1035,6 @@
 
     syncOrder(orderPin, orderObj);
 
-    // Show PIN ONLY to the Customer who just ordered + unlock Bottom Map for them
     document.getElementById("custOrderSuccessBox").style.display = "block";
     document.getElementById("custOrderPinText").innerText = orderPin;
     unlockBottomMapWithPin(orderPin);
@@ -1042,9 +1043,7 @@
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
   });
 
-  // =========================================================================
-  // 3. PRIVATE RIDER LOCK (No Public Hints!)
-  // =========================================================================
+  // Rider Lock
   document.getElementById("btnRiderUnlock").addEventListener("click", () => {
     const rPin = document.getElementById("riderPinLoginInp").value.trim();
     const rider = ridersDB[rPin];
@@ -1143,9 +1142,7 @@
     syncOrder(orderPin, ord);
   };
 
-  // =========================================================================
-  // 4. RIDER REGISTRATION + 24H NOTICE + ADMIN MASTER (PIN 1234)
-  // =========================================================================
+  // Rider Registration + 24h Notice + Admin Master
   document.getElementById("btnRegDeviceGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
     this.innerText = "⏳...";
@@ -1170,7 +1167,6 @@
     alert(`✅ ${name} గారు, మీ రిజిస్ట్రేషన్ పూర్తయింది! Admin (Prakash) మిమ్మల్ని Approve చేసి మీ Secret Rider PIN ఇస్తారు.`);
   });
 
-  // 24-Hour Auto-Deleting Public Messages
   function render24hMsgs() {
     const now = Date.now();
     const valid = Object.values(msgs24hDB).filter(m => m && (now - m.ts < DAY_24H_MS)).sort((a, b) => b.ts - a.ts);
@@ -1187,12 +1183,11 @@
     const id = "m24_" + Date.now();
     const item = { id, text: txt, ts: Date.now() };
     msgs24hDB[id] = item;
-    localStorage.setItem("msh_v10_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v11_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
 
-  // Admin Control Panel (PIN 1234)
   document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
     if (!isAdminOpen) {
       if (prompt("Admin PIN ఎంటర్ చేయండి (1234):") !== ADMIN_PIN) { alert("తప్పు PIN!"); return; }
@@ -1213,25 +1208,25 @@
     const cat = document.getElementById("admNewCat").value;
     const name = document.getElementById("admNewItemName").value.trim();
     const price = Number(document.getElementById("admNewItemPrice").value) || 0;
-    const img = document.getElementById("admNewItemImg").value.trim();
+    const rawImg = document.getElementById("admNewItemImg").value.trim();
     if (!name || price <= 0) return;
 
+    const finalImg = getAutoPhotoForName(name, rawImg);
     const id = "m_" + Date.now();
-    menuDB[id] = { id, cat, name, price, img };
-    localStorage.setItem("msh_v10_menu", JSON.stringify(menuDB));
+    menuDB[id] = { id, cat, name, price, img: finalImg };
+    localStorage.setItem("msh_v11_menu", JSON.stringify(menuDB));
     document.getElementById("admNewItemName").value = "";
     document.getElementById("admNewItemPrice").value = "";
     document.getElementById("admNewItemImg").value = "";
     renderMenu7x3();
     if (gun) gun.get(TOPIC_MENU).get(id).put(menuDB[id]);
-    alert("✅ కొత్త ఐటమ్ యాడ్ అయింది!");
+    alert("✅ కొత్త ఐటమ్ & ఫోటో సేవ్ అయ్యాయి!");
   });
 
-  // Admin Backup & Restore
   document.getElementById("admBackupBtn").addEventListener("click", () => {
     const backup = JSON.stringify({ menuDB, ridersDB, ordersDB, appConfig });
     navigator.clipboard?.writeText(backup);
-    alert("✅ మొత్తం Backup డేటా Clipboard లోకి కాపీ అయింది! సేఫ్‌గా సేవ్ చేసుకోండి.");
+    alert("✅ మొత్తం Backup డేటా Clipboard లోకి కాపీ అయింది!");
   });
 
   document.getElementById("admRestoreBtn").addEventListener("click", () => {
@@ -1243,10 +1238,10 @@
       if (parsed.ridersDB) ridersDB = parsed.ridersDB;
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
       if (parsed.appConfig) appConfig = parsed.appConfig;
-      localStorage.setItem("msh_v10_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_v10_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_v10_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_v10_config", JSON.stringify(appConfig));
+      localStorage.setItem("msh_v11_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v11_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v11_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v11_config", JSON.stringify(appConfig));
       applyConfigUI(); renderMenu7x3(); refreshEverything();
       alert("✅ డేటా పూర్తిగా Restore అయింది!");
     } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
@@ -1259,7 +1254,6 @@
     const totProf = list.reduce((s, o) => s + (Number(o.adminProfit) || 0), 0);
     document.getElementById("admProfitBanner").innerText = `💰 Active Billing: ₹${totBill} | Rider Commissions: ₹${totComm} | Your Net Profit: ₹${totProf}`;
 
-    // Riders & Secret PINs (Visible ONLY here in Admin!)
     document.getElementById("admRidersList").innerHTML = Object.values(ridersDB).map(r => `
       <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.83rem;">
         <div>
@@ -1275,7 +1269,6 @@
       </div>
     `).join("");
 
-    // Active Orders with Admin Complete & Wipe Button
     document.getElementById("admOrdersList").innerHTML = list.length
       ? list.map(o => `
         <div style="background:#0f172a; border-left:4px solid #38bdf8; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.82rem;">
@@ -1300,9 +1293,7 @@
     }
   };
 
-  // =========================================================================
-  // 5. BOTTOM PIN-LOCKED LIVE MAP + CUSTOMER COMPLETE & WIPE BUTTON
-  // =========================================================================
+  // Bottom Map & Customer Complete
   function unlockBottomMapWithPin(pin) {
     const p = String(pin || "").trim();
     if (!ordersDB[p] || ordersDB[p].wiped) {
@@ -1313,8 +1304,6 @@
     document.getElementById("bottomPinInp").value = p;
     document.getElementById("bottomMapCurtain").style.display = "none";
     document.getElementById("btnLockBottomMap").style.display = "inline-block";
-
-    // Show "Complete & Wipe" button ONLY if NOT a Rider (i.e. Customer or Admin!)
     document.getElementById("btnCustomerCompleteWipe").style.display = loggedInRiderPin ? "none" : "inline-block";
 
     setTimeout(() => bottomMap.invalidateSize(), 120);
@@ -1335,7 +1324,6 @@
   document.getElementById("btnUnlockBottomMap").addEventListener("click", () => unlockBottomMapWithPin(document.getElementById("bottomPinInp").value));
   document.getElementById("btnLockBottomMap").addEventListener("click", lockBottomMapUI);
 
-  // Customer clicks "Order Received / Complete (Wipe Data)" -> Permanently removes order & messages!
   document.getElementById("btnCustomerCompleteWipe").addEventListener("click", () => {
     if (!unlockedBottomPin) return;
     if (confirm("మీకు ఫుడ్ డెలివరీ అందిందా? 'OK' నొక్కితే ఈ ఆర్డర్ & మెసేజ్‌లు పూర్తిగా తొలగించబడతాయి.")) {
@@ -1389,7 +1377,6 @@
     syncOrder(unlockedBottomPin, ordersDB[unlockedBottomPin]);
   });
 
-  // Initialize Everything
   applyConfigUI();
   renderMenu7x3();
   calcFees();
