@@ -1,5 +1,6 @@
-<!-- 10-Server Ultra-Reliable Real-Time Mesh & Leaflet Road-Routing Map -->
+<!-- 2050-Speed Real-Time Multi-Server Mesh, Dynamic QR Engine & OSRM Road-Routing Map -->
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -21,8 +22,45 @@
     padding: 16px;
     box-shadow: 0 12px 34px rgba(0,0,0,0.09);
     color: #1e293b;
+    position: relative;
   }
   .msh-pro-master * { box-sizing: border-box; }
+
+  /* FULL SITE EMERGENCY LOCKDOWN OVERLAY */
+  .msh-lockdown-screen {
+    display: none;
+    background: linear-gradient(145deg, #450a0a, #991b1b);
+    color: #fff;
+    border: 3px solid #facc15;
+    border-radius: 16px;
+    padding: 36px 20px;
+    text-align: center;
+    margin-bottom: 14px;
+    box-shadow: 0 20px 50px rgba(153, 27, 27, 0.45);
+  }
+
+  /* CUSTOMER DOORBELL GATE POPUP ALERT */
+  .msh-doorbell-modal {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 94%;
+    max-width: 480px;
+    background: linear-gradient(135deg, #064e3b, #15803d);
+    color: #fff;
+    border: 3px solid #facc15;
+    border-radius: 16px;
+    padding: 16px;
+    z-index: 99999;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+    animation: mshPulseDoor 1.2s infinite alternate;
+  }
+  @keyframes mshPulseDoor {
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    100% { box-shadow: 0 0 0 14px rgba(250, 204, 21, 0); }
+  }
 
   .msh-ticker {
     background: #fef2f2;
@@ -134,7 +172,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
-    height: 750px;
+    height: 760px;
     overflow-y: auto;
     padding-right: 3px;
     align-content: start;
@@ -220,7 +258,6 @@
   }
   .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 1px 4px; }
 
-  /* Multi-Extra Items Box at Bottom of Left Food Menu Card */
   .msh-left-extra-box {
     background: #ffffff;
     border: 1.5px solid #fb923c;
@@ -251,6 +288,25 @@
     cursor: pointer;
     white-space: nowrap;
     height: 39px;
+  }
+
+  /* LIVE UPI QR SCANNER CARD */
+  .msh-upi-scanner-box {
+    display: none;
+    background: #eff6ff;
+    border: 2px solid #2563eb;
+    border-radius: 11px;
+    padding: 10px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  #mshDynamicQrCanvas {
+    display: inline-block;
+    background: #fff;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1.5px solid #93c5fd;
+    margin: 5px 0;
   }
 
   .msh-numbered-list {
@@ -344,6 +400,7 @@
     flex-wrap: wrap;
     gap: 6px;
   }
+  .msh-adm-lbl { font-size: 0.72rem; color: #94a3b8; display: block; margin-bottom: 2px; font-weight: 700; }
 
   /* BOTTOM MAP SECTION */
   .msh-bottom-map-sec {
@@ -392,356 +449,449 @@
   }
 </style>
 
+<!-- CUSTOMER INSTANT DOORBELL POPUP ALERT -->
+<div class="msh-doorbell-modal" id="custDoorbellPopup">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <strong style="font-size:1.08rem; color:#facc15;">🔔 డోర్ బెల్ అలర్ట్ — రైడర్ ఇంటికి వచ్చారు!</strong>
+    <button type="button" onclick="document.getElementById('custDoorbellPopup').style.display='none'" style="background:#dc2626; color:#fff; border:none; border-radius:6px; padding:3px 9px; font-weight:900; cursor:pointer;">✕</button>
+  </div>
+  <div id="custDoorbellPopupBody" style="font-size:0.9rem; line-height:1.45; font-weight:700;"></div>
+</div>
+
 <div class="msh-pro-master" id="mshProMasterApp">
 
-  <!-- Moving Disclaimer Ticker -->
-  <div class="msh-ticker">
-    <div class="msh-ticker-txt">
-      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ ఫుడ్ & కూరగాయల డెలివరీ సేవ (Boddavara • Kiltampalem • S.Kota • Thatipudi). కస్టమర్ ఇచ్చే 4-Digit Delivery Code ద్వారా మాత్రమే రైడ్ పూర్తవుతుంది. 100% ప్రైవసీ — ఫోన్ నంబర్లు ఎవరికీ షేర్ కావు.
+  <!-- FULL SITE EMERGENCY LOCKDOWN SCREEN (When Master Kill Switch is ON) -->
+  <div class="msh-lockdown-screen" id="emergencyFullLockdownScreen">
+    <div style="font-size:3rem; margin-bottom:8px;">🚨🔒</div>
+    <h2 style="margin:0 0 8px; font-size:1.45rem; color:#facc15;">Mana Seva Hub — మొత్తం సర్వీస్ తాత్కాలికంగా నిలిపివేయబడింది</h2>
+    <p style="margin:0 auto 16px; max-width:520px; font-size:0.95rem; color:#fecaca; font-weight:700;">
+      అడ్మిన్ ద్వారా వెబ్‌సైట్ ఫుల్ లాక్‌డౌన్‌లో ఉంచబడింది (Full Lockdown Active). సర్వీస్ తిరిగి ప్రారంభమైన తర్వాత ఆర్డర్లు అందుబాటులో ఉంటాయి.
+    </p>
+    <button type="button" id="btnUnlockFromLockdown" style="background:#facc15; color:#000; border:none; border-radius:10px; padding:10px 18px; font-weight:900; cursor:pointer;">
+      👑 Admin Unlock Control Room
+    </button>
+  </div>
+
+  <!-- ALL PUBLIC CONTENT WRAPPER (Frozen & Hidden during Emergency Lockdown) -->
+  <div id="mshPublicSiteContent">
+    <!-- Moving Disclaimer Ticker -->
+    <div class="msh-ticker">
+      <div class="msh-ticker-txt" id="mshLiveTickerText">
+        ⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! అవసరమైతే Extra Item బాక్స్‌లో మందులు/ఇతర వస్తువులు రాసి తెప్పించుకోవచ్చు (Doctor Prescription తప్పనిసరి). 100% ప్రైవసీ.
+      </div>
     </div>
-  </div>
 
-  <!-- Open Notification Alert -->
-  <div class="msh-notify-bar" id="openOrderNotifyStrip">
-    <span id="openOrderNotifyText">🔔 కొత్త ఆర్డర్ వచ్చింది! రైడర్లు మీ Secret PIN తో లాక్ ఓపెన్ చేసి ఆర్డర్ తీసుకోండి.</span>
-    <span style="background:#facc15; color:#000; padding:3px 10px; border-radius:99px; font-size:0.78rem;">కొత్త ఆర్డర్</span>
-  </div>
-
-  <!-- Header -->
-  <div class="msh-header">
-    <div>
-      <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-      <p class="msh-sub">Smart Road Routing • Multi-Extra Items • Instant Complete & Wipe • Shop Partner Portal</p>
+    <!-- Open Notification Alert -->
+    <div class="msh-notify-bar" id="openOrderNotifyStrip">
+      <span id="openOrderNotifyText">🔔 కొత్త ఆర్డర్ వచ్చింది! రైడర్లు మీ Secret PIN తో లాక్ ఓపెన్ చేసి ఆర్డర్ తీసుకోండి.</span>
+      <span style="background:#facc15; color:#000; padding:3px 10px; border-radius:99px; font-size:0.78rem;">కొత్త ఆర్డర్</span>
     </div>
-    <div id="masterStatusBadge" style="font-size:0.84rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 14px; border-radius:99px;">
-      🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)
-    </div>
-  </div>
 
-  <!-- Service Closed Wall -->
-  <div class="msh-closed-wall" id="serviceClosedWall">
-    🔴 ప్రస్తుతం ఫుడ్ డెలివరీ సర్వీస్ తాత్కాలికంగా ఆపివేయబడింది (Service OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
-  </div>
-
-  <!-- =========================================================
-       TOP 50% LEFT + 50% RIGHT SPLIT (STRUCTURE UNTOUCHED)
-       ========================================================= -->
-  <div class="msh-main-split">
-    
-    <!-- LEFT 50% CARD: 7x3 Food Menu + Multi-Extra Items Box -->
-    <div class="msh-panel msh-panel-orange">
+    <!-- Header -->
+    <div class="msh-header">
       <div>
-        <div class="msh-h3" style="color:#9a3412;">
-          <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
-          <span id="menuItemsBadge" style="font-size:0.75rem; background:#ffedd5; padding:2px 7px; border-radius:6px;">21 Items</span>
-        </div>
-
-        <div class="msh-cats" id="catTabsBar">
-          <button type="button" class="msh-cat active" data-cat="all">అన్నీ (All)</button>
-          <button type="button" class="msh-cat" data-cat="food">🍗 బిర్యానీ & భోజనం</button>
-          <button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 మా సొంత స్టాక్</button>
-          <button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు</button>
-          <button type="button" class="msh-cat" data-cat="drinks">💧 వాటర్ / డ్రింక్స్</button>
-        </div>
-
-        <div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
+        <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
+        <p class="msh-sub">Auto UPI QR Scanner • OSRM Road Routing • Instant Complete & Wipe • 8-in-1 Admin Command Center</p>
       </div>
-
-      <!-- MULTI-EXTRA ITEMS BOX (Add 3-4 Extra Items Easily!) -->
-      <div class="msh-left-extra-box">
-        <span style="font-size:0.76rem; font-weight:900; color:#9a3412; display:block; margin-bottom:4px;">
-          ➕ Extra ఐటమ్స్ (3–4 ఐటమ్స్ అయినా "+ Add" నొక్కి జత చేయవచ్చు):
-        </span>
-        <div class="msh-row" style="margin-bottom:4px;">
-          <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5; padding:7px 8px; font-size:0.81rem;" placeholder="ఐటమ్ (ఉదా: Mixture)">
-          <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.55; padding:7px 5px; font-size:0.81rem;" placeholder="Qty" min="1" value="1">
-          <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.75; padding:7px 5px; font-size:0.81rem;" placeholder="ధర ₹" min="0" value="">
-          <button type="button" id="btnAddExtraToList" style="background:#ea580c; color:#fff; border:none; border-radius:7px; padding:0 9px; font-weight:900; font-size:0.78rem; cursor:pointer;">+ Add</button>
-        </div>
-        <div id="extraAddedChips" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+      <div id="masterStatusBadge" style="font-size:0.84rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 14px; border-radius:99px;">
+        🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)
       </div>
     </div>
 
-    <!-- RIGHT 50% CARD: Checkout + Swiggy-Flow Rider Panel -->
-    <div class="msh-right-col-stack">
+    <!-- Service Closed Wall -->
+    <div class="msh-closed-wall" id="serviceClosedWall">
+      🔴 ప్రస్తుతం ఫుడ్ డెలివరీ ఆర్డర్లు తాత్కాలికంగా ఆపివేయబడ్డాయి (Orders OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
+    </div>
+
+    <!-- =========================================================
+         TOP 50% LEFT + 50% RIGHT SPLIT (EXACT STRUCTURE UNTOUCHED)
+         ========================================================= -->
+    <div class="msh-main-split">
       
-      <!-- 2A. Customer Checkout Card -->
-      <div class="msh-panel msh-panel-slate">
+      <!-- LEFT 50% CARD: 7x3 Food Menu + Multi-Extra Items Box -->
+      <div class="msh-panel msh-panel-orange">
         <div>
-          <div class="msh-h3" style="color:#0f4c3a;">
-            <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
-            <span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:3px 8px; border-radius:6px;">దూరం: 1.0 km</span>
+          <div class="msh-h3" style="color:#9a3412;">
+            <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
+            <span id="menuItemsBadge" style="font-size:0.75rem; background:#ffedd5; padding:2px 7px; border-radius:6px;">21 Items</span>
           </div>
 
-          <select id="cHotelSel" class="msh-sel"></select>
-
-          <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / S.Kota)">
-
-          <div class="msh-row">
-            <input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
-            <button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
+          <div class="msh-cats" id="catTabsBar">
+            <button type="button" class="msh-cat active" data-cat="all">అన్నీ (All)</button>
+            <button type="button" class="msh-cat" data-cat="food">🍗 బిర్యానీ & భోజనం</button>
+            <button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 మా సొంత స్టాక్</button>
+            <button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు</button>
+            <button type="button" class="msh-cat" data-cat="drinks">💧 వాటర్ / డ్రింక్స్</button>
           </div>
 
-          <div class="msh-row">
-            <input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
-            <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
-          </div>
-
-          <select id="cPaymentMethodSel" class="msh-sel"></select>
-
-          <div class="msh-fees-card">
-            <div class="msh-numbered-list" id="cNumberedItemsPreview">🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి</div>
-            <div class="msh-fee-line"><span>ఐటమ్స్ ధర (Items + Extra):</span><span id="feeItemsVal">₹0</span></div>
-            <div class="msh-fee-line"><span>హోటల్ నుండి దూరం (<b id="feeExactKmLbl">1.0 km</b>):</span><span id="feeDelivVal">₹25</span></div>
-            <div class="msh-fee-line"><span>ప్యాకింగ్ & సర్వీస్ ఫీజు:</span><span id="feePackServVal">₹10</span></div>
-            <div class="msh-fee-line"><span>GST (5%):</span><span id="feeGstVal">₹0</span></div>
-            <div class="msh-fee-total">
-              <span>మొత్తం బిల్లు (Total Bill):</span>
-              <span id="feeGrandTotalVal" style="color:#15803d;">₹35</span>
-            </div>
-          </div>
+          <div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
         </div>
 
-        <button type="button" class="msh-order-btn" id="btnPlaceOrderNow">
-          🍔 ఆర్డర్ చేయండి (PLACE ORDER)
-        </button>
-
-        <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
-          <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
-            <div>
-              <span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ చూసే PIN:</span>
-              <strong style="font-size:1.25rem; color:#facc15; letter-spacing:2px;" id="custOrderPinText">----</strong>
-            </div>
-            <div style="border-left:1px solid #3b82f6; padding-left:10px;">
-              <span style="font-size:0.75rem; color:#86efac; display:block;">🔐 డెలివరీ పూర్తి చేసే కోడ్:</span>
-              <strong style="font-size:1.25rem; color:#4ade80; letter-spacing:2px;" id="custDeliveryCodeText">----</strong>
-            </div>
+        <!-- MULTI-EXTRA ITEMS BOX (Add 3-4+ Extra Items) -->
+        <div class="msh-left-extra-box">
+          <span style="font-size:0.76rem; font-weight:900; color:#9a3412; display:block; margin-bottom:4px;">
+            ➕ Extra ఐటమ్స్ (3–4 ఐటమ్స్ అయినా "+ Add" నొక్కి జత చేయవచ్చు):
+          </span>
+          <div class="msh-row" style="margin-bottom:4px;">
+            <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5; padding:7px 8px; font-size:0.81rem;" placeholder="ఐటమ్ (ఉదా: Mixture / ORS)">
+            <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.55; padding:7px 5px; font-size:0.81rem;" placeholder="Qty" min="1" value="1">
+            <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.75; padding:7px 5px; font-size:0.81rem;" placeholder="ధర ₹" min="0" value="">
+            <button type="button" id="btnAddExtraToList" style="background:#ea580c; color:#fff; border:none; border-radius:7px; padding:0 9px; font-weight:900; font-size:0.78rem; cursor:pointer;">+ Add</button>
           </div>
-          <span style="font-size:0.74rem; color:#e2e8f0; display:block; margin-top:4px;">ఫుడ్ చేతికి అందిన తర్వాతే ఈ <b>డెలివరీ కోడ్</b> రైడర్‌కు చెప్పండి!</span>
+          <div id="extraAddedChips" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
         </div>
       </div>
 
-      <!-- 2B. Swiggy-Flow Rider Duty Panel -->
-      <div class="msh-panel msh-panel-green">
+      <!-- RIGHT 50% CARD: Checkout + Swiggy-Flow Rider Panel -->
+      <div class="msh-right-col-stack">
+        
+        <!-- 2A. Customer Checkout Card -->
+        <div class="msh-panel msh-panel-slate">
+          <div>
+            <div class="msh-h3" style="color:#0f4c3a;">
+              <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
+              <span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:3px 8px; border-radius:6px;">దూరం: 1.0 km</span>
+            </div>
+
+            <select id="cHotelSel" class="msh-sel"></select>
+
+            <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు & ల్యాండ్‌మార్క్ (ఉదా: Boddavara, రామాలయం పక్కన)">
+
+            <div class="msh-row">
+              <input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
+              <button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
+            </div>
+
+            <div class="msh-row">
+              <input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
+              <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
+            </div>
+
+            <select id="cPaymentMethodSel" class="msh-sel"></select>
+
+            <!-- AUTOMATIC UPI QR SCANNER & DIRECT APP PAY BOX -->
+            <div class="msh-upi-scanner-box" id="upiAutoScannerBox">
+              <div style="font-size:0.84rem; font-weight:900; color:#1e3a8a;">
+                📲 Scan QR లేదా కింది బటన్ నొక్కి <span id="upiPayAmtTag" style="color:#15803d;">₹0</span> పే చేయండి (₹10 ఆదా!):
+              </div>
+              <div id="mshDynamicQrCanvas"></div>
+              <div style="font-size:0.75rem; color:#475569; font-weight:700; margin-bottom:5px;" id="upiIdDisplayLbl">UPI ID: 8985240287@ybl</div>
+              <a id="btnOpenDirectUpiApp" href="#" style="display:inline-block; background:#2563eb; color:#fff; text-decoration:none; padding:7px 14px; border-radius:8px; font-weight:900; font-size:0.84rem;">
+                ⚡ Open PhonePe / GPay / UPI App
+              </a>
+            </div>
+
+            <div class="msh-fees-card">
+              <div class="msh-numbered-list" id="cNumberedItemsPreview">🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి</div>
+              <div class="msh-fee-line"><span>ఐటమ్స్ ధర (Items + Extra):</span><span id="feeItemsVal">₹0</span></div>
+              <div class="msh-fee-line"><span>హోటల్ నుండి దూరం (<b id="feeExactKmLbl">1.0 km</b>):</span><span id="feeDelivVal">₹25</span></div>
+              <div class="msh-fee-line"><span>ప్యాకింగ్ & సర్వీస్ ఫీజు:</span><span id="feePackServVal">₹10</span></div>
+              <div class="msh-fee-line" id="feeSurgeLine" style="display:none; color:#b45309;"><span>⚡ Night / Rain / Road Surge:</span><span id="feeSurgeVal">₹0</span></div>
+              <div class="msh-fee-line" id="feeCodHandlingLine" style="color:#dc2626;"><span>💵 Cash Handling Fee (UPI అయితే ₹0):</span><span id="feeCodHandlingVal">+₹10</span></div>
+              <div class="msh-fee-line"><span>GST (5%):</span><span id="feeGstVal">₹0</span></div>
+              <div class="msh-fee-total">
+                <span>మొత్తం బిల్లు (Total Bill):</span>
+                <span id="feeGrandTotalVal" style="color:#15803d;">₹45</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="msh-order-btn" id="btnPlaceOrderNow">
+            🍔 ఆర్డర్ చేయండి (PLACE ORDER)
+          </button>
+
+          <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
+            <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
+              <div>
+                <span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ చూసే PIN:</span>
+                <strong style="font-size:1.25rem; color:#facc15; letter-spacing:2px;" id="custOrderPinText">----</strong>
+              </div>
+              <div style="border-left:1px solid #3b82f6; padding-left:10px;">
+                <span style="font-size:0.75rem; color:#86efac; display:block;">🔐 డెలివరీ పూర్తి చేసే కోడ్:</span>
+                <strong style="font-size:1.25rem; color:#4ade80; letter-spacing:2px;" id="custDeliveryCodeText">----</strong>
+              </div>
+            </div>
+            <span style="font-size:0.74rem; color:#e2e8f0; display:block; margin-top:4px;">ఫుడ్ చేతికి అందిన తర్వాతే ఈ <b>డెలివరీ కోడ్</b> రైడర్‌కు చెప్పండి!</span>
+          </div>
+        </div>
+
+        <!-- 2B. Swiggy-Flow Rider Duty Panel -->
+        <div class="msh-panel msh-panel-green">
+          <div>
+            <div class="msh-h3" style="color:#0f4c3a;">
+              <span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
+              <button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
+                🔔 సౌండ్ ON
+              </button>
+            </div>
+
+            <div class="msh-row">
+              <input type="password" id="riderPinLoginInp" class="msh-inp" style="margin:0; font-weight:800; letter-spacing:2px;" maxlength="4" placeholder="మీ 4-Digit Rider PIN">
+              <button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్</button>
+              <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒</button>
+            </div>
+
+            <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.83rem; font-weight:700;">
+              🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
+            </div>
+
+            <div id="riderActivePanel" style="display:none;">
+              <div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.84rem; display:flex; justify-content:space-between;">
+                <strong id="riderHeaderName">🛵 Rider</strong>
+                <span id="riderHeaderEarn" style="color:#facc15; font-weight:800;">మొత్తం సంపాదన: ₹0</span>
+              </div>
+              <div id="riderOrdersFeed" class="msh-rider-scroll-feed"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================================================
+         MIDDLE SECTION: RIDER & SHOP REGISTRATION + 24H BOARD
+         ========================================================= -->
+    <div class="msh-mid-admin-sec" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
         <div>
-          <div class="msh-h3" style="color:#0f4c3a;">
-            <span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
-            <button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
-              🔔 సౌండ్ ON
-            </button>
-          </div>
-
-          <div class="msh-row">
-            <input type="password" id="riderPinLoginInp" class="msh-inp" style="margin:0; font-weight:800; letter-spacing:2px;" maxlength="4" placeholder="మీ 4-Digit Rider PIN">
-            <button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్</button>
-            <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒</button>
-          </div>
-
-          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.83rem; font-weight:700;">
-            🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
-          </div>
-
-          <div id="riderActivePanel" style="display:none;">
-            <div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.84rem; display:flex; justify-content:space-between;">
-              <strong id="riderHeaderName">🛵 Rider</strong>
-              <span id="riderHeaderEarn" style="color:#facc15; font-weight:800;">సంపాదన: ₹0</span>
-            </div>
-            <div id="riderOrdersFeed" class="msh-rider-scroll-feed"></div>
-          </div>
+          <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ రిజిస్ట్రేషన్ + 24h Notice Board</strong>
+          <div style="font-size:0.8rem; color:#475569;">రైడర్లు & కొత్త షాప్స్ ఇక్కడ రిజిస్టర్ అవ్వచ్చు • Admin Control Room లో పూర్తి కంట్రోల్ ఉంటుంది.</div>
         </div>
+        <button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">👑 Admin Control Room</button>
       </div>
 
-    </div>
-  </div>
-
-  <!-- =========================================================
-       MIDDLE SECTION: RIDER & SHOP PARTNER REGISTRATION + CCTV ADMIN CONTROL ROOM
-       ========================================================= -->
-  <div class="msh-mid-admin-sec">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-      <div>
-        <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ రిజిస్ట్రేషన్ + CCTV Admin Control Room</strong>
-        <div style="font-size:0.8rem; color:#475569;">రైడర్లు & కొత్త షాప్స్ ఇక్కడ రిజిస్టర్ అవ్వచ్చు • Admin Control Room లో అన్ని కెమెరాలు, కంప్లీట్ & వైప్, పాస్‌వర్డ్ మార్పు ఉంటాయి.</div>
+      <!-- New Rider Registration -->
+      <div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; padding:12px; margin-bottom:10px;">
+        <strong style="font-size:0.9rem; color:#1e3a8a; display:block; margin-bottom:6px;">🛵 కొత్త రైడర్ రిజిస్ట్రేషన్ (మీ పేరు + ఫోన్ + Live GPS):</strong>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:8px;">
+          <input type="text" id="regName" class="msh-inp" style="margin:0;" placeholder="మీ పూర్తి పేరు (Name)">
+          <input type="tel" id="regPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Phone)">
+          <input type="text" id="regVillage" class="msh-inp" style="margin:0;" placeholder="మీ ఊరు (Village)">
+          <button type="button" class="msh-btn" style="background:#0284c7;" id="btnRegDeviceGps">📡 నా Device GPS</button>
+          <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSubmitReg">✅ రిజిస్టర్ చేయండి</button>
+        </div>
+        <div id="regGpsMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
       </div>
-      <button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">🔐 Admin Control Room</button>
-    </div>
 
-    <!-- New Rider Registration -->
-    <div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; padding:12px; margin-bottom:10px;">
-      <strong style="font-size:0.9rem; color:#1e3a8a; display:block; margin-bottom:6px;">🛵 కొత్త రైడర్ రిజిస్ట్రేషన్ (మీ పేరు + ఫోన్ + Live GPS):</strong>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:8px;">
-        <input type="text" id="regName" class="msh-inp" style="margin:0;" placeholder="మీ పూర్తి పేరు (Name)">
-        <input type="tel" id="regPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Phone)">
-        <input type="text" id="regVillage" class="msh-inp" style="margin:0;" placeholder="మీ ఊరు (Village)">
-        <button type="button" class="msh-btn" style="background:#0284c7;" id="btnRegDeviceGps">📡 నా Device GPS</button>
-        <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSubmitReg">✅ రిజిస్టర్ చేయండి</button>
+      <!-- New Shop / Hotel Partner Registration -->
+      <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:12px; padding:12px; margin-bottom:10px;">
+        <strong style="font-size:0.9rem; color:#92400e; display:block; margin-bottom:6px;">🏪 మీ షాప్ / హోటల్ మా యాప్‌లో పెట్టాలనుకుంటున్నారా? (Shop Partner Request):</strong>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:8px;">
+          <input type="text" id="shopRegName" class="msh-inp" style="margin:0;" placeholder="షాప్ / హోటల్ పేరు">
+          <input type="tel" id="shopRegPhone" class="msh-inp" style="margin:0;" placeholder="ఓనర్ ఫోన్ నంబర్">
+          <input type="text" id="shopRegVillage" class="msh-inp" style="margin:0;" placeholder="ఊరు / అడ్రస్">
+          <button type="button" class="msh-btn" style="background:#d97706;" id="btnShopRegGps">📍 షాప్ Live GPS</button>
+          <button type="button" class="msh-btn" style="background:#0f4c3a;" id="btnSubmitShopReg">📩 రిక్వెస్ట్ పంపండి</button>
+        </div>
+        <div id="shopRegMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
       </div>
-      <div id="regGpsMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
-    </div>
 
-    <!-- New Shop / Hotel Partner Registration (Future Expansion!) -->
-    <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:12px; padding:12px; margin-bottom:10px;">
-      <strong style="font-size:0.9rem; color:#92400e; display:block; margin-bottom:6px;">🏪 మీ షాప్ / హోటల్ మా యాప్‌లో పెట్టాలనుకుంటున్నారా? (Shop Partner Request):</strong>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:8px;">
-        <input type="text" id="shopRegName" class="msh-inp" style="margin:0;" placeholder="షాప్ / హోటల్ పేరు">
-        <input type="tel" id="shopRegPhone" class="msh-inp" style="margin:0;" placeholder="ఓనర్ ఫోన్ నంబర్">
-        <input type="text" id="shopRegVillage" class="msh-inp" style="margin:0;" placeholder="ఊరు / అడ్రస్">
-        <button type="button" class="msh-btn" style="background:#d97706;" id="btnShopRegGps">📍 షాప్ Live GPS</button>
-        <button type="button" class="msh-btn" style="background:#0f4c3a;" id="btnSubmitShopReg">📩 రిక్వెస్ట్ పంపండి</button>
+      <!-- 24-Hour Auto-Deleting Notice Board -->
+      <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:11px;">
+        <strong style="font-size:0.88rem; color:#1e3a8a; display:block; margin-bottom:6px;">⏳ 24-Hour Live Notice & Q&A (24 గంటల తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతాయి):</strong>
+        <div class="msh-row" style="margin-bottom:6px;">
+          <input type="text" id="public24hMsgInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న లేదా ఆఫర్ మెసేజ్ రాయండి...">
+          <button type="button" class="msh-btn" style="background:#2563eb;" id="btnPost24hMsg">Post (24h)</button>
+        </div>
+        <div id="public24hMsgFeed" style="max-height:90px; overflow-y:auto; font-size:0.83rem;"></div>
       </div>
-      <div id="shopRegMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
     </div>
 
-    <!-- 24-Hour Auto-Deleting Notice Board -->
-    <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:11px; margin-bottom:12px;">
-      <strong style="font-size:0.88rem; color:#1e3a8a; display:block; margin-bottom:6px;">⏳ 24-Hour Live Notice & Q&A (24 గంటల తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతాయి):</strong>
-      <div class="msh-row" style="margin-bottom:6px;">
-        <input type="text" id="public24hMsgInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న లేదా ఆఫర్ మెసేజ్ రాయండి...">
-        <button type="button" class="msh-btn" style="background:#2563eb;" id="btnPost24hMsg">Post (24h)</button>
-      </div>
-      <div id="public24hMsgFeed" style="max-height:90px; overflow-y:auto; font-size:0.83rem;"></div>
-    </div>
-
-    <!-- CCTV CONTROL ROOM STYLE ADMIN VAULT -->
-    <div id="adminMasterDashboard" class="msh-cctv-vault">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
+    <!-- =========================================================
+         BOTTOM SECTION: LIVE ROAD-ROUTE MAP + DELIVERY CODE VERIFICATION
+         ========================================================= -->
+    <div class="msh-bottom-map-sec" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
-          <strong style="color:#facc15; font-size:1.12rem;">👑 CCTV Master Control Room — పూర్తి అడ్మిన్ యాక్సెస్</strong>
-          <div style="font-size:0.78rem; color:#94a3b8;">ఇక్కడ మీరు ప్రతి రైడర్, ప్రతి హోటల్/షాప్ GPS, ప్రతి ఐటమ్ రేట్, లైవ్ ఆర్డర్లు & అడ్మిన్ పాస్‌వర్డ్ మార్చుకోవచ్చు.</div>
+          <strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. లైవ్ రోడ్-రూట్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
+          <div style="font-size:0.8rem; color:#94a3b8;">రైడర్ "ఫుడ్ తీసుకున్నాను" నొక్కగానే నేరుగా రైడర్ ➔ కస్టమర్ ఇంటి రోడ్డు దారి (Turn-by-Turn Road Line) చూపిస్తుంది.</div>
         </div>
-        <button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-weight:900; cursor:pointer;">🔒 Lock Control Room</button>
-      </div>
-
-      <!-- 1. MASTER SWITCHES & ADMIN PASSWORD CHANGE -->
-      <div class="msh-vault-card">
-        <div class="msh-vault-title">
-          <span>🎛️ 1. మాస్టర్ స్విచ్‌లు & Admin Password మార్చుకునే సదుపాయం</span>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-          <button type="button" id="admTogService" class="msh-btn" style="background:#dc2626;">🔴 Stop Service (OFF)</button>
-          <button type="button" id="admTogCod" class="msh-btn" style="background:#16a34a;">💵 COD: ON</button>
-          <button type="button" id="admTogUpi" class="msh-btn" style="background:#16a34a;">📲 Online UPI: ON</button>
-          <button type="button" id="admBackupBtn" class="msh-btn" style="background:#0284c7;">💾 Backup Data</button>
-          <button type="button" id="admRestoreBtn" class="msh-btn" style="background:#7c3aed;">♻️ Restore Backup</button>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#0f172a; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
-          <span style="font-size:0.82rem; color:#facc15; font-weight:800;">🔑 కొత్త Admin Password మార్చండి:</span>
-          <input type="text" id="admNewPasswordInp" maxlength="8" placeholder="కొత్త Password (ఉదా: 5678)" style="padding:6px 10px; border-radius:6px; border:none; font-weight:800; width:180px;">
-          <button type="button" id="admBtnChangePass" style="background:#facc15; color:#000; border:none; border-radius:6px; padding:6px 12px; font-weight:900; cursor:pointer;">Update Password</button>
+        <div class="msh-row" style="margin:0;">
+          <input type="text" id="bottomPinInp" class="msh-inp" style="margin:0; width:145px; text-align:center; font-weight:900; letter-spacing:2px;" maxlength="4" placeholder="Tracking PIN">
+          <button type="button" class="msh-btn" style="background:#0284c7;" id="btnUnlockBottomMap">🔓 మ్యాప్ ఓపెన్</button>
+          <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnLockBottomMap">🔒 లాక్</button>
         </div>
       </div>
 
-      <!-- 2. UNLIMITED HOTELS / SHOPS + FIXED LIVE GPS & PARTNER REQUESTS -->
-      <div class="msh-vault-card" style="border-color:#0284c7;">
-        <div class="msh-vault-title">
-          <span>🏨 2. హోటల్స్ & షాప్స్ ఫిక్స్‌డ్ Live GPS మేనేజర్ (Add / Approve / Remove)</span>
+      <div class="msh-dist-pills">
+        <div class="msh-dpill" style="border-color:#fc8019;">
+          <span style="color:#fdba74; font-size:0.78rem; display:block;">🏨 హోటల్ నుండి ఇంటి దూరం (Hotel ➔ House):</span>
+          <span id="pillHotelHouseKm" style="color:#fff;">🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది</span>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:7px; margin-bottom:8px;">
-          <input type="text" id="admHotelNameInp" class="msh-inp" style="margin:0; color:#000;" placeholder="హోటల్ / షాప్ పేరు">
-          <input type="text" id="admHotelCoordsInp" class="msh-inp" style="margin:0; color:#000;" placeholder="GPS Coordinates లేదా Google Link">
-          <button type="button" id="admBtnHotelMyGps" class="msh-btn" style="background:#0284c7;">📍 Hotel Live GPS</button>
-          <button type="button" id="admBtnSaveHotel" class="msh-btn" style="background:#16a34a;">✅ Save Hotel</button>
-        </div>
-        <div id="admHotelsSavedList" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;"></div>
-        <div id="admShopRequestsList"></div>
-      </div>
-
-      <!-- 3. FULL RIDER CONTROL -->
-      <div class="msh-vault-card" style="border-color:#22c55e;">
-        <div class="msh-vault-title" style="color:#4ade80;">
-          <span>🛵 3. రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Edit PIN/Details • Device GPS • Remove)</span>
-        </div>
-        <div id="admRidersList"></div>
-      </div>
-
-      <!-- 4. QUICK ADD FOOD/VEG ITEM -->
-      <div class="msh-vault-card">
-        <div class="msh-vault-title">
-          <span>➕ 4. కొత్త ఫుడ్ / కూరగాయల ఐటమ్ యాడ్ చేయండి (పైన మెనూలో ✏️ నొక్కి రేట్లు మార్చుకోవచ్చు)</span>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:7px;">
-          <select id="admNewCat" class="msh-sel" style="margin:0; color:#000;">
-            <option value="veg">🥬 Vegetables (1kg Rate)</option>
-            <option value="food">🍗 Biryani / Meals</option>
-            <option value="own">🌾 My Farm Stock</option>
-            <option value="drinks">💧 Water / Drinks</option>
-          </select>
-          <input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు">
-          <input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹">
-          <input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (Optional)">
-          <button type="button" id="admBtnSaveItem" class="msh-btn" style="background:#fc8019;">Save Item</button>
+        <div class="msh-dpill" style="border-color:#4ade80;">
+          <span style="color:#86efac; font-size:0.78rem; display:block;">🛵 రైడర్ లైవ్ మూవింగ్ దూరం & స్టేటస్ (Live Rider ➔ House):</span>
+          <span id="pillRiderLiveKm" style="color:#facc15;">🔒 Waiting for PIN...</span>
         </div>
       </div>
 
-      <!-- 5. REVENUE & LIVE CCTV ORDERS MONITOR -->
-      <div id="admProfitBanner" style="background:#0f4c3a; border:1.5px solid #4ade80; border-radius:9px; padding:10px; margin-bottom:12px; font-weight:800; font-size:0.88rem; line-height:1.5;">
-        💰 Total Billing: ₹0 | 🛵 Rider Commission: ₹0 | 🧾 GST (5%): ₹0 | 👑 Owner Net Profit: ₹0
-      </div>
-
-      <div class="msh-vault-card">
-        <div class="msh-vault-title" style="color:#facc15;">
-          <span>👁️ 5. లైవ్ ఆర్డర్స్ CCTV మానిటర్ (Delivery Codes, Maps & Force Wipe)</span>
+      <div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div style="font-size:0.84rem; color:#86efac; font-weight:800;">
+          🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
         </div>
-        <div id="admOrdersList"></div>
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="verifyDeliveryCodeInp" maxlength="4" placeholder="Delivery Code" style="width:125px; padding:6px 8px; border-radius:7px; border:none; font-weight:900; text-align:center; letter-spacing:2px;">
+          <button type="button" id="btnVerifyCodeAndComplete" style="background:#16a34a; color:#fff; border:none; border-radius:7px; padding:7px 14px; font-weight:900; font-size:0.84rem; cursor:pointer;">
+            ✅ Complete & Unlock Next Ride
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- =========================================================
-       BOTTOM SECTION: LIVE ROAD-ROUTE MAP + DELIVERY CODE VERIFICATION
-       ========================================================= -->
-  <div class="msh-bottom-map-sec">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div>
-        <strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. లైవ్ రోడ్-రూట్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
-        <div style="font-size:0.8rem; color:#94a3b8;">రైడర్ "ఫుడ్ తీసుకున్నాను" నొక్కగానే నేరుగా రైడర్ ➔ కస్టమర్ ఇంటి రోడ్డు దారి (Turn-by-Turn Road Line) చూపిస్తుంది.</div>
+      <div class="msh-map-frame">
+        <div id="mshBottomLiveMap"></div>
+        <div class="msh-lock-curtain" id="bottomMapCurtain">
+          <div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
+          <strong style="font-size:1.05rem; color:#facc15; margin-bottom:4px;">ప్రైవేట్ లైవ్ GPS మ్యాప్ & చాట్ రూమ్ (Locked)</strong>
+          <p style="font-size:0.84rem; color:#cbd5e1; margin:0; max-width:350px;">
+            కస్టమర్, యాక్సెప్ట్ చేసిన రైడర్ & అడ్మిన్ మాత్రమే తమ <b>4-Digit Tracking PIN</b> ఎంటర్ చేసి లైవ్ రోడ్డు రూట్ & మెసేజ్ చూడగలరు.
+          </p>
+        </div>
       </div>
+
       <div class="msh-row" style="margin:0;">
-        <input type="text" id="bottomPinInp" class="msh-inp" style="margin:0; width:145px; text-align:center; font-weight:900; letter-spacing:2px;" maxlength="4" placeholder="Tracking PIN">
-        <button type="button" class="msh-btn" style="background:#0284c7;" id="btnUnlockBottomMap">🔓 మ్యాప్ ఓపెన్</button>
-        <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnLockBottomMap">🔒 లాక్</button>
+        <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ఫోన్ నంబర్లు షేర్ చేయవద్దు - డెలివరీ అయ్యాక డిలీట్ అవుతుంది)...">
+        <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">పంపండి ➤</button>
       </div>
+      <div id="bottomChatFeed" style="background:#1e293b; border-radius:8px; padding:8px 10px; margin-top:6px; max-height:110px; overflow-y:auto; font-size:0.84rem;"></div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       8-IN-1 CCTV MASTER CONTROL ROOM (Remains Accessible Even During Full Lockdown!)
+       ========================================================= -->
+  <div id="adminMasterDashboard" class="msh-cctv-vault">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
+      <div>
+        <strong style="color:#facc15; font-size:1.15rem;">👑 8-in-1 CCTV Master Control Room — పూర్తి అడ్మిన్ కమాండ్ సెంటర్</strong>
+        <div style="font-size:0.78rem; color:#94a3b8;">మొత్తం సైట్ లాక్‌డౌన్, UPI QR ID, Night/Rain/Road Surge, Rates, Ticker, Riders, Hotels & Live CCTV Orders అన్నీ ఇక్కడే!</div>
+      </div>
+      <button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-weight:900; cursor:pointer;">🔒 Lock Control Room</button>
     </div>
 
-    <div class="msh-dist-pills">
-      <div class="msh-dpill" style="border-color:#fc8019;">
-        <span style="color:#fdba74; font-size:0.78rem; display:block;">🏨 హోటల్ నుండి ఇంటి దూరం (Hotel ➔ House):</span>
-        <span id="pillHotelHouseKm" style="color:#fff;">🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది</span>
+    <!-- 1. EMERGENCY KILL SWITCH + MASTER SWITCHES + SURGE CONTROLS -->
+    <div class="msh-vault-card" style="border-color:#ef4444;">
+      <div class="msh-vault-title" style="color:#fca5a5;">
+        <span>🚨 1. Emergency Full Lockdown & Live Surge Switches</span>
       </div>
-      <div class="msh-dpill" style="border-color:#4ade80;">
-        <span style="color:#86efac; font-size:0.78rem; display:block;">🛵 రైడర్ లైవ్ మూవింగ్ దూరం & స్టేటస్ (Live Rider ➔ House):</span>
-        <span id="pillRiderLiveKm" style="color:#facc15;">🔒 Waiting for PIN...</span>
-      </div>
-    </div>
-
-    <div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div style="font-size:0.84rem; color:#86efac; font-weight:800;">
-        🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
-      </div>
-      <div style="display:flex; gap:6px;">
-        <input type="text" id="verifyDeliveryCodeInp" maxlength="4" placeholder="Delivery Code" style="width:125px; padding:6px 8px; border-radius:7px; border:none; font-weight:900; text-align:center; letter-spacing:2px;">
-        <button type="button" id="btnVerifyCodeAndComplete" style="background:#16a34a; color:#fff; border:none; border-radius:7px; padding:7px 14px; font-weight:900; font-size:0.84rem; cursor:pointer;">
-          ✅ Complete & Unlock Next Ride
+      <div style="margin-bottom:10px;">
+        <button type="button" id="admTogFullLockdown" style="width:100%; background:#dc2626; color:#fff; border:2px solid #facc15; border-radius:10px; padding:11px; font-weight:900; font-size:0.95rem; cursor:pointer;">
+          🚨 EMERGENCY FULL LOCKDOWN (మొత్తం వెబ్‌సైట్ ఒక్కసారిగా ఆపేయండి)
         </button>
       </div>
-    </div>
-
-    <div class="msh-map-frame">
-      <div id="mshBottomLiveMap"></div>
-      <div class="msh-lock-curtain" id="bottomMapCurtain">
-        <div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
-        <strong style="font-size:1.05rem; color:#facc15; margin-bottom:4px;">ప్రైవేట్ లైవ్ GPS మ్యాప్ & చాట్ రూమ్ (Locked)</strong>
-        <p style="font-size:0.84rem; color:#cbd5e1; margin:0; max-width:350px;">
-          కస్టమర్, యాక్సెప్ట్ చేసిన రైడర్ & అడ్మిన్ మాత్రమే తమ <b>4-Digit Tracking PIN</b> ఎంటర్ చేసి లైవ్ రోడ్డు రూట్ & మెసేజ్ చూడగలరు.
-        </p>
+      <div style="display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px;">
+        <button type="button" id="admTogService" class="msh-btn" style="background:#dc2626;">🔴 Stop Orders (OFF)</button>
+        <button type="button" id="admTogCod" class="msh-btn" style="background:#16a34a;">💵 COD (+₹10): ON</button>
+        <button type="button" id="admTogUpi" class="msh-btn" style="background:#16a34a;">📲 Online UPI: ON</button>
+        <button type="button" id="admTogNight" class="msh-btn" style="background:#475569;">🌙 Night Fare (+₹20): OFF</button>
+        <button type="button" id="admTogRain" class="msh-btn" style="background:#475569;">🌧️ Rain Surge (+₹20): OFF</button>
+        <button type="button" id="admTogRoad" class="msh-btn" style="background:#475569;">🛣️ Bad Road (+₹15): OFF</button>
       </div>
     </div>
 
-    <div class="msh-row" style="margin:0;">
-      <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ఫోన్ నంబర్లు షేర్ చేయవద్దు - డెలివరీ అయ్యాక డిలీట్ అవుతుంది)...">
-      <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">పంపండి ➤</button>
+    <!-- 2. UPI QR SCANNER ID + DYNAMIC PRICING & COMMISSION EDITOR -->
+    <div class="msh-vault-card" style="border-color:#38bdf8;">
+      <div class="msh-vault-title">
+        <span>💰 2. మీ UPI QR Scanner ID & డెలివరీ రేట్లు / కమిషన్ సెట్టింగ్స్</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(145px, 1fr)); gap:8px; margin-bottom:8px;">
+        <div>
+          <span class="msh-adm-lbl">📲 మీ UPI ID (Auto QR):</span>
+          <input type="text" id="admUpiIdInp" class="msh-inp" style="margin:0; color:#000;" value="8985240287@ybl">
+        </div>
+        <div>
+          <span class="msh-adm-lbl">💵 COD Extra Fee (₹):</span>
+          <input type="number" id="admCodFeeInp" class="msh-inp" style="margin:0; color:#000;" value="10">
+        </div>
+        <div>
+          <span class="msh-adm-lbl">🛵 Base Deliv (≤3km ₹):</span>
+          <input type="number" id="admBaseDelivInp" class="msh-inp" style="margin:0; color:#000;" value="25">
+        </div>
+        <div>
+          <span class="msh-adm-lbl">📏 Per KM Rate (>12km ₹):</span>
+          <input type="number" id="admPerKmInp" class="msh-inp" style="margin:0; color:#000;" value="6">
+        </div>
+        <div>
+          <span class="msh-adm-lbl">📦 Pack + Platform (₹):</span>
+          <input type="number" id="admPackPlatInp" class="msh-inp" style="margin:0; color:#000;" value="10">
+        </div>
+        <div>
+          <span class="msh-adm-lbl">🏍️ Rider Share (%):</span>
+          <input type="number" id="admRiderPctInp" class="msh-inp" style="margin:0; color:#000;" value="80">
+        </div>
+      </div>
+      <button type="button" id="admSavePricingBtn" class="msh-btn" style="background:#16a34a; width:100%;">💾 Save UPI ID & All Rates Live</button>
     </div>
-    <div id="bottomChatFeed" style="background:#1e293b; border-radius:8px; padding:8px 10px; margin-top:6px; max-height:110px; overflow-y:auto; font-size:0.84rem;"></div>
+
+    <!-- 3. LIVE MOVING TICKER & SECURITY PASSWORD / BACKUP -->
+    <div class="msh-vault-card">
+      <div class="msh-vault-title">
+        <span>📢 3. పైన స్క్రోలింగ్ మెసేజ్ & Admin Password / Backup</span>
+      </div>
+      <div class="msh-row">
+        <input type="text" id="admTickerEditInp" class="msh-inp" style="margin:0; color:#000;" placeholder="స్క్రోలింగ్ మెసేజ్ మార్చండి...">
+        <button type="button" id="admSaveTickerBtn" class="msh-btn" style="background:#0284c7;">Update Ticker</button>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#0f172a; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
+        <span style="font-size:0.82rem; color:#facc15; font-weight:800;">🔑 Admin Password:</span>
+        <input type="text" id="admNewPasswordInp" maxlength="8" placeholder="కొత్త Password" style="padding:6px 10px; border-radius:6px; border:none; font-weight:800; width:150px;">
+        <button type="button" id="admBtnChangePass" style="background:#facc15; color:#000; border:none; border-radius:6px; padding:6px 12px; font-weight:900; cursor:pointer;">Update</button>
+        <button type="button" id="admBackupBtn" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:6px 12px; font-weight:800; cursor:pointer;">💾 Backup</button>
+        <button type="button" id="admRestoreBtn" style="background:#7c3aed; color:#fff; border:none; border-radius:6px; padding:6px 12px; font-weight:800; cursor:pointer;">♻️ Restore</button>
+      </div>
+    </div>
+
+    <!-- 4. UNLIMITED HOTELS / SHOPS + PARTNER APPROVAL -->
+    <div class="msh-vault-card" style="border-color:#0284c7;">
+      <div class="msh-vault-title">
+        <span>🏨 4. హోటల్స్ & షాప్స్ ఫిక్స్‌డ్ Live GPS మేనేజర్ (Add / Approve / Remove)</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:7px; margin-bottom:8px;">
+        <input type="text" id="admHotelNameInp" class="msh-inp" style="margin:0; color:#000;" placeholder="హోటల్ / షాప్ పేరు">
+        <input type="text" id="admHotelCoordsInp" class="msh-inp" style="margin:0; color:#000;" placeholder="GPS Coordinates లేదా Link">
+        <button type="button" id="admBtnHotelMyGps" class="msh-btn" style="background:#0284c7;">📍 Hotel Live GPS</button>
+        <button type="button" id="admBtnSaveHotel" class="msh-btn" style="background:#16a34a;">✅ Save Hotel</button>
+      </div>
+      <div id="admHotelsSavedList" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;"></div>
+      <div id="admShopRequestsList"></div>
+    </div>
+
+    <!-- 5. FULL RIDER CONTROL -->
+    <div class="msh-vault-card" style="border-color:#22c55e;">
+      <div class="msh-vault-title" style="color:#4ade80;">
+        <span>🛵 5. రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Suspend • Edit PIN • Reset Earn • Remove)</span>
+      </div>
+      <div id="admRidersList"></div>
+    </div>
+
+    <!-- 6. QUICK ADD FOOD/VEG ITEM -->
+    <div class="msh-vault-card">
+      <div class="msh-vault-title">
+        <span>➕ 6. కొత్త ఫుడ్ / కూరగాయల ఐటమ్ యాడ్ చేయండి (పైన మెనూలో ✏️ నొక్కి రేట్లు మార్చుకోవచ్చు)</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:7px;">
+        <select id="admNewCat" class="msh-sel" style="margin:0; color:#000;">
+          <option value="veg">🥬 Vegetables (1kg Rate)</option>
+          <option value="food">🍗 Biryani / Meals</option>
+          <option value="own">🌾 My Farm Stock</option>
+          <option value="drinks">💧 Water / Drinks</option>
+        </select>
+        <input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు">
+        <input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹">
+        <input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (Optional)">
+        <button type="button" id="admBtnSaveItem" class="msh-btn" style="background:#fc8019;">Save Item</button>
+      </div>
+    </div>
+
+    <!-- 7 & 8. REVENUE LEDGER & LIVE CCTV ORDERS MONITOR -->
+    <div id="admProfitBanner" style="background:#0f4c3a; border:1.5px solid #4ade80; border-radius:9px; padding:10px; margin-bottom:12px; font-weight:800; font-size:0.88rem; line-height:1.5;">
+      💰 Total Billing: ₹0 | 🛵 Rider Commission: ₹0 | 🧾 GST (5%): ₹0 | 👑 Owner Net Profit: ₹0
+    </div>
+
+    <div class="msh-vault-card">
+      <div class="msh-vault-title" style="color:#facc15;">
+        <span>👁️ 7. లైవ్ ఆర్డర్స్ CCTV మానిటర్ (Delivery Codes, Maps & Force Wipe)</span>
+      </div>
+      <div id="admOrdersList"></div>
+    </div>
   </div>
 
 </div>
@@ -749,8 +899,6 @@
 <script>
 (function() {
   const ADMIN_WA = "918985240287";
-  const PACKING_FEE = 5;
-  const PLATFORM_FEE = 5;
   const GST_RATE = 0.05;
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
 
@@ -825,30 +973,30 @@
   let hotelsDB = loadMergedHotels();
   let shopReqsDB = JSON.parse(localStorage.getItem("msh_unified_shopreqs") || "{}");
 
-  // Track permanently wiped PINs so Gun.js stale cache NEVER revives a completed ride!
   let wipedPinsSet = new Set(JSON.parse(localStorage.getItem("msh_wiped_pins_list") || "[]"));
   function markPinWipedLocally(pin) {
     wipedPinsSet.add(String(pin));
-    const arr = Array.from(wipedPinsSet).slice(-100);
-    localStorage.setItem("msh_wiped_pins_list", JSON.stringify(arr));
+    localStorage.setItem("msh_wiped_pins_list", JSON.stringify(Array.from(wipedPinsSet).slice(-100)));
   }
 
+  // Synthesized Audio Bell (Works for both Rider New Order & Customer Doorbell Alert!)
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
-  function playLoudRiderBell() {
-    if (!riderBellOn) return;
+  function playAlertTone(isDoorbell = false) {
+    if (!isDoorbell && !riderBellOn) return;
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      [950, 1250, 950, 1400].forEach((freq, i) => {
+      const notes = isDoorbell ? [880, 659, 880, 659] : [950, 1250, 950, 1400];
+      notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = "triangle";
+        osc.type = isDoorbell ? "sine" : "triangle";
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.35, ctx.currentTime + i * 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.32);
+        gain.gain.setValueAtTime(0.38, ctx.currentTime + i * 0.22);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.22 + 0.35);
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.2);
-        osc.stop(ctx.currentTime + i * 0.2 + 0.32);
+        osc.start(ctx.currentTime + i * 0.22);
+        osc.stop(ctx.currentTime + i * 0.22 + 0.35);
       });
     } catch {}
   }
@@ -870,7 +1018,7 @@
     riderBellOn = !riderBellOn;
     localStorage.setItem("msh_rider_bell_on", String(riderBellOn));
     updateBellBtnUI();
-    if (riderBellOn) playLoudRiderBell();
+    if (riderBellOn) playAlertTone(false);
   });
 
   function getAutoPhotoForName(itemName, customUrl) {
@@ -915,14 +1063,6 @@
     return Math.max(1.0, Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 10) / 10);
   }
 
-  function calcDeliveryFeeByKm(km) {
-    if (km <= 3) return 25;
-    if (km <= 5) return 35;
-    if (km <= 8) return 50;
-    if (km <= 12) return 65;
-    return Math.round(km * 6);
-  }
-
   function extractLatLng(str) {
     const m = String(str || "").match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/);
     return m ? { lat: parseFloat(m[1]), lng: parseFloat(m[2]) } : null;
@@ -957,18 +1097,31 @@
   const cachedMenu = JSON.parse(localStorage.getItem("msh_unified_menu") || "null");
   if (cachedMenu) menuDB = { ...menuDB, ...cachedMenu };
 
-  let appConfig = JSON.parse(localStorage.getItem("msh_unified_config") || "null") || {
+  const defaultConfig = {
+    fullLockdown: false,
     serviceOpen: true,
     codEnabled: true,
-    upiEnabled: true
+    upiEnabled: true,
+    nightSurge: false,
+    rainSurge: false,
+    badRoadSurge: false,
+    upiId: "8985240287@ybl",
+    codFee: 10,
+    baseDeliv: 25,
+    perKmRate: 6,
+    packPlatFee: 10,
+    riderSharePct: 80,
+    tickerText: "⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! అవసరమైతే Extra Item బాక్స్‌లో మందులు/ఇతర వస్తువులు రాసి తెప్పించుకోవచ్చు (Doctor Prescription తప్పనిసరి). 100% ప్రైవసీ."
   };
+
+  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_unified_config") || "null") || {}) };
 
   let ordersDB = JSON.parse(localStorage.getItem("msh_unified_orders") || "{}");
   let msgs24hDB = JSON.parse(localStorage.getItem("msh_unified_24h") || "{}");
   let liveGpsCache = {};
 
   let cart = {};
-  let extraItemsList = []; // Supports 3-4+ Extra Items cleanly!
+  let extraItemsList = [];
   let selectedWeights = {};
   let activeCat = "all";
 
@@ -977,6 +1130,8 @@
   let shopRegLat = null, shopRegLng = null;
   let loggedInRiderPin = "";
   let unlockedBottomPin = "";
+  let myPlacedOrderPin = ""; // Tracks customer's active order for Doorbell Popup Alert
+  let lastDoorbellAlertedPin = "";
   let isAdminOpen = false;
   let riderGpsTimer = null;
 
@@ -986,7 +1141,16 @@
   let lineHotelToHouse = null, lineRiderRoadPath = null;
   let lastRoutedCoordsKey = "";
 
-  // OSRM Actual Road-Path Fetcher (Fetches real turning road path instead of straight air line!)
+  function calcDeliveryFeeByKm(km) {
+    const base = Number(appConfig.baseDeliv) || 25;
+    const perKm = Number(appConfig.perKmRate) || 6;
+    if (km <= 3) return base;
+    if (km <= 5) return base + 10;
+    if (km <= 8) return base + 25;
+    if (km <= 12) return base + 40;
+    return Math.round(km * perKm);
+  }
+
   async function drawActualRoadRoute(fromLat, fromLng, toLat, toLng) {
     const key = `${fromLat.toFixed(4)},${fromLng.toFixed(4)}_${toLat.toFixed(4)},${toLng.toFixed(4)}`;
     if (key === lastRoutedCoordsKey && lineRiderRoadPath) return;
@@ -1004,7 +1168,6 @@
       }
     } catch {}
 
-    // Fallback line if offline
     if (lineRiderRoadPath) bottomMap.removeLayer(lineRiderRoadPath);
     lineRiderRoadPath = L.polyline([[fromLat, fromLng], [toLat, toLng]], { color: "#22c55e", weight: 5, dashArray: "6, 6" }).addTo(bottomMap);
   }
@@ -1026,31 +1189,95 @@
     return { lat: 18.0815, lng: 83.1285 };
   }
 
+  // =========================================================================
+  // DYNAMIC UPI QR SCANNER GENERATOR (Exact Amount + UPI ID)
+  // =========================================================================
+  let lastQrStr = "";
+  function updateLiveUpiScanner(grandTotal) {
+    const payMode = document.getElementById("cPaymentMethodSel").value;
+    const box = document.getElementById("upiAutoScannerBox");
+    if (payMode !== "ONLINE_UPI") {
+      box.style.display = "none";
+      return;
+    }
+    box.style.display = "block";
+    const upiId = (appConfig.upiId || "8985240287@ybl").trim();
+    const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Mana Seva Hub")}&am=${grandTotal}&cu=INR`;
+
+    document.getElementById("upiPayAmtTag").innerText = `₹${grandTotal}`;
+    document.getElementById("upiIdDisplayLbl").innerText = `UPI ID: ${upiId}`;
+    document.getElementById("btnOpenDirectUpiApp").href = upiDeepLink;
+
+    if (upiDeepLink !== lastQrStr) {
+      lastQrStr = upiDeepLink;
+      const qrDiv = document.getElementById("mshDynamicQrCanvas");
+      qrDiv.innerHTML = "";
+      if (typeof QRCode !== "undefined") {
+        new QRCode(qrDiv, { text: upiDeepLink, width: 128, height: 128, colorDark: "#0f172a", colorLight: "#ffffff" });
+      }
+    }
+  }
+
+  // =========================================================================
+  // APPLY CONFIG UI (Emergency Lockdown + Surge + COD Psychology + Admin Inputs)
+  // =========================================================================
   function applyConfigUI() {
+    // 1. Master Emergency Full Lockdown Check
+    const isLocked = !!appConfig.fullLockdown;
+    document.getElementById("emergencyFullLockdownScreen").style.display = isLocked ? "block" : "none";
+    document.getElementById("mshPublicSiteContent").style.display = isLocked ? "none" : "block";
+
+    const bLockdown = document.getElementById("admTogFullLockdown");
+    if (isLocked) {
+      bLockdown.innerText = "🟢 RESUME FULL WEBSITE (లాక్‌డౌన్ ఎత్తివేయండి)";
+      bLockdown.style.background = "#16a34a";
+    } else {
+      bLockdown.innerText = "🚨 EMERGENCY FULL LOCKDOWN (మొత్తం వెబ్‌సైట్ ఒక్కసారిగా ఆపేయండి)";
+      bLockdown.style.background = "#dc2626";
+    }
+
+    // 2. Ticker & Status Badge
+    document.getElementById("mshLiveTickerText").innerText = appConfig.tickerText || defaultConfig.tickerText;
     document.getElementById("serviceClosedWall").style.display = appConfig.serviceOpen ? "none" : "block";
     const badge = document.getElementById("masterStatusBadge");
-    badge.innerText = appConfig.serviceOpen ? "🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)" : "🔴 సర్వీస్ క్లోజ్‌లో ఉంది (CLOSED)";
+    badge.innerText = appConfig.serviceOpen ? "🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)" : "🔴 ఆర్డర్లు ఆపివేయబడ్డాయి (CLOSED)";
     badge.style.background = appConfig.serviceOpen ? "#dcfce7" : "#fee2e2";
     badge.style.color = appConfig.serviceOpen ? "#15803d" : "#dc2626";
 
+    // 3. Zero-Loss COD Psychology Payment Dropdown
     const paySel = document.getElementById("cPaymentMethodSel");
+    const prevPay = paySel.value;
+    const codExtra = Number(appConfig.codFee) || 0;
     let opts = "";
-    if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్)</option>`;
-    if (appConfig.upiEnabled) opts += `<option value="ONLINE_UPI">📲 Online Payment / UPI (PhonePe / GPay)</option>`;
+    if (appConfig.upiEnabled) opts += `<option value="ONLINE_UPI">📲 Online Payment / UPI — ₹0 Extra (Save ₹${codExtra}!)</option>`;
+    if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (+₹${codExtra} Cash Handling Fee)</option>`;
     if (!opts) opts = `<option value="NONE">⚠️ పేమెంట్ ఆప్షన్స్ ఆఫ్‌లో ఉన్నాయి</option>`;
     paySel.innerHTML = opts;
+    if (prevPay && Array.from(paySel.options).some(o => o.value === prevPay)) paySel.value = prevPay;
 
-    const bServ = document.getElementById("admTogService");
-    bServ.innerText = appConfig.serviceOpen ? "🔴 Stop Service (OFF)" : "🟢 Start Service (ON)";
-    bServ.style.background = appConfig.serviceOpen ? "#dc2626" : "#16a34a";
+    // 4. Admin Command Center Buttons & Fields
+    const setTog = (id, active, onTxt, offTxt, onBg = "#16a34a") => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerText = active ? onTxt : offTxt;
+      el.style.background = active ? onBg : "#475569";
+    };
+    setTog("admTogService", appConfig.serviceOpen, "🔴 Stop Orders (OFF)", "🟢 Start Orders (ON)", "#dc2626");
+    setTog("admTogCod", appConfig.codEnabled, `💵 COD (+₹${codExtra}): ON`, "💵 COD: OFF");
+    setTog("admTogUpi", appConfig.upiEnabled, "📲 Online UPI: ON", "📲 Online UPI: OFF");
+    setTog("admTogNight", appConfig.nightSurge, "🌙 Night Fare (+₹20): ON", "🌙 Night Fare (+₹20): OFF", "#d97706");
+    setTog("admTogRain", appConfig.rainSurge, "🌧️ Rain Surge (+₹20): ON", "🌧️ Rain Surge (+₹20): OFF", "#0284c7");
+    setTog("admTogRoad", appConfig.badRoadSurge, "🛣️ Bad Road (+₹15): ON", "🛣️ Bad Road (+₹15): OFF", "#ea580c");
 
-    const bCod = document.getElementById("admTogCod");
-    bCod.innerText = appConfig.codEnabled ? "💵 COD: ON" : "💵 COD: OFF";
-    bCod.style.background = appConfig.codEnabled ? "#16a34a" : "#64748b";
+    document.getElementById("admUpiIdInp").value = appConfig.upiId || "8985240287@ybl";
+    document.getElementById("admCodFeeInp").value = codExtra;
+    document.getElementById("admBaseDelivInp").value = Number(appConfig.baseDeliv) || 25;
+    document.getElementById("admPerKmInp").value = Number(appConfig.perKmRate) || 6;
+    document.getElementById("admPackPlatInp").value = Number(appConfig.packPlatFee) || 10;
+    document.getElementById("admRiderPctInp").value = Number(appConfig.riderSharePct) || 80;
+    document.getElementById("admTickerEditInp").value = appConfig.tickerText || "";
 
-    const bUpi = document.getElementById("admTogUpi");
-    bUpi.innerText = appConfig.upiEnabled ? "📲 Online UPI: ON" : "📲 Online UPI: OFF";
-    bUpi.style.background = appConfig.upiEnabled ? "#16a34a" : "#64748b";
+    calcFeesAndExactKm();
   }
 
   function saveAndSyncConfig() {
@@ -1060,9 +1287,35 @@
     fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}`, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
   }
 
+  document.getElementById("admTogFullLockdown").addEventListener("click", () => {
+    appConfig.fullLockdown = !appConfig.fullLockdown;
+    saveAndSyncConfig();
+  });
   document.getElementById("admTogService").addEventListener("click", () => { appConfig.serviceOpen = !appConfig.serviceOpen; saveAndSyncConfig(); });
   document.getElementById("admTogCod").addEventListener("click", () => { appConfig.codEnabled = !appConfig.codEnabled; saveAndSyncConfig(); });
   document.getElementById("admTogUpi").addEventListener("click", () => { appConfig.upiEnabled = !appConfig.upiEnabled; saveAndSyncConfig(); });
+  document.getElementById("admTogNight").addEventListener("click", () => { appConfig.nightSurge = !appConfig.nightSurge; saveAndSyncConfig(); });
+  document.getElementById("admTogRain").addEventListener("click", () => { appConfig.rainSurge = !appConfig.rainSurge; saveAndSyncConfig(); });
+  document.getElementById("admTogRoad").addEventListener("click", () => { appConfig.badRoadSurge = !appConfig.badRoadSurge; saveAndSyncConfig(); });
+
+  document.getElementById("admSavePricingBtn").addEventListener("click", () => {
+    appConfig.upiId = document.getElementById("admUpiIdInp").value.trim() || "8985240287@ybl";
+    appConfig.codFee = Math.max(0, Number(document.getElementById("admCodFeeInp").value) || 0);
+    appConfig.baseDeliv = Math.max(10, Number(document.getElementById("admBaseDelivInp").value) || 25);
+    appConfig.perKmRate = Math.max(1, Number(document.getElementById("admPerKmInp").value) || 6);
+    appConfig.packPlatFee = Math.max(0, Number(document.getElementById("admPackPlatInp").value) || 0);
+    appConfig.riderSharePct = Math.min(95, Math.max(50, Number(document.getElementById("admRiderPctInp").value) || 80));
+    saveAndSyncConfig();
+    alert("✅ UPI ID & Delivery/Commission రేట్లు లైవ్‌లో అప్‌డేట్ అయ్యాయి!");
+  });
+
+  document.getElementById("admSaveTickerBtn").addEventListener("click", () => {
+    const t = document.getElementById("admTickerEditInp").value.trim();
+    if (!t) return;
+    appConfig.tickerText = t;
+    saveAndSyncConfig();
+    alert("✅ పైన స్క్రోలింగ్ మెసేజ్ అప్‌డేట్ అయింది!");
+  });
 
   document.getElementById("admBtnChangePass").addEventListener("click", () => {
     const newP = document.getElementById("admNewPasswordInp").value.trim();
@@ -1074,7 +1327,7 @@
   });
 
   // =========================================================================
-  // FIXED 4-LAYER COMPLETE & WIPE (Never Revives on Rider Device!)
+  // 4-LAYER COMPLETE & WIPE + CUSTOMER DOORBELL TRIGGER
   // =========================================================================
   function syncOrder(pin, obj) {
     if (wipedPinsSet.has(String(pin))) return;
@@ -1094,15 +1347,11 @@
       syncRiders();
     }
 
-    // 1. Mark permanently wiped locally
     markPinWipedLocally(pStr);
-
-    // 2. Delete from local DB & GPS cache
     delete ordersDB[pStr];
     delete liveGpsCache[pStr];
     localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
 
-    // 3. Overwrite Gun.js node explicitly with WIPED status so it cannot merge-revive
     const wipeTombstone = {
       pin: pStr,
       wiped: true,
@@ -1117,11 +1366,27 @@
     }
     fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(wipeTombstone) }).catch(() => {});
 
-    // 4. Stop GPS timer & lock map UI immediately
     if (unlockedBottomPin === pStr) lockBottomMapUI();
+    if (myPlacedOrderPin === pStr) {
+      myPlacedOrderPin = "";
+      document.getElementById("custDoorbellPopup").style.display = "none";
+    }
     if (riderGpsTimer) { clearInterval(riderGpsTimer); riderGpsTimer = null; }
     lastRoutedCoordsKey = "";
     refreshEverything();
+  }
+
+  function checkAndTriggerCustomerDoorbell(ord) {
+    if (!ord || ord.status !== "REACHED") return;
+    const pStr = String(ord.pin);
+    // Trigger Ding-Dong Doorbell Popup if this browser placed the order OR has this order's map PIN unlocked!
+    if ((myPlacedOrderPin === pStr || unlockedBottomPin === pStr) && lastDoorbellAlertedPin !== pStr) {
+      lastDoorbellAlertedPin = pStr;
+      playAlertTone(true);
+      document.getElementById("custDoorbellPopupBody").innerHTML =
+        `రైడర్ <b>${ord.acceptedByName || "Rider"}</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!<br>ఫుడ్ తీసుకుని మీ 4-Digit Delivery Code: <span style="background:#facc15; color:#000; padding:2px 8px; border-radius:6px; font-size:1.1rem; font-weight:900;">${ord.deliveryCode}</span> చెప్పండి.`;
+      document.getElementById("custDoorbellPopup").style.display = "block";
+    }
   }
 
   function syncRiders() {
@@ -1160,7 +1425,7 @@
   if (gun) {
     gun.get(TOPIC_CONFIG).get("main").on(d => {
       if (d && typeof d.serviceOpen === "boolean") {
-        appConfig = { serviceOpen: d.serviceOpen, codEnabled: !!d.codEnabled, upiEnabled: !!d.upiEnabled };
+        appConfig = { ...appConfig, ...d };
         localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
@@ -1198,9 +1463,10 @@
         ordersDB[pStr] = d;
         localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
         if (isNew && d.status === "OPEN") {
-          playLoudRiderBell();
+          playAlertTone(false);
           document.getElementById("openOrderNotifyStrip").style.display = "flex";
         }
+        checkAndTriggerCustomerDoorbell(d);
         refreshEverything();
       }
     });
@@ -1247,7 +1513,8 @@
             } else {
               const isNew = !ordersDB[pStr];
               ordersDB[pStr] = o;
-              if (isNew && o.status === "OPEN") playLoudRiderBell();
+              if (isNew && o.status === "OPEN") playAlertTone(false);
+              checkAndTriggerCustomerDoorbell(o);
               refreshEverything();
             }
           }
@@ -1265,7 +1532,7 @@
   }
 
   // =========================================================================
-  // 1. MENU RENDERING + MULTI-EXTRA ITEMS (3-4+ ITEMS SUPPORT)
+  // 1. MENU RENDERING + OUT-OF-STOCK CONTROL + MULTI-EXTRA ITEMS
   // =========================================================================
   function getWeightMeta(it) {
     if (it.cat !== "veg") return { mult: 1, label: "" };
@@ -1296,9 +1563,18 @@
     if (isNaN(newPrice) || newPrice <= 0) { alert("సరైన ధర ఎంటర్ చేయండి."); return; }
 
     it.price = newPrice;
-    if (cart[id]) {
-      cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
-    }
+    if (cart[id]) cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
+    localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+    renderMenu7x3();
+    calcFeesAndExactKm();
+    if (gun) gun.get(TOPIC_MENU).get(id).put(it);
+  };
+
+  window.mshAdmToggleOutOfStock = function(id) {
+    const it = menuDB[id];
+    if (!it) return;
+    it.outOfStock = !it.outOfStock;
+    if (it.outOfStock) delete cart[id];
     localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
@@ -1307,7 +1583,7 @@
 
   function renderMenu7x3() {
     const grid = document.getElementById("foodMenu7x3Grid");
-    const items = Object.values(menuDB).filter(x => x && !x.deleted);
+    const items = Object.values(menuDB).filter(x => x && !x.deleted && (isAdminOpen || !x.outOfStock));
     const list = activeCat === "all" ? items : items.filter(x => x.cat === activeCat);
     document.getElementById("menuItemsBadge").innerText = `${list.length} Items`;
 
@@ -1325,19 +1601,22 @@
           </div>`
         : "";
 
-      const btn = q === 0
-        ? `<button type="button" class="msh-fadd" onclick="window.mshProQty('${it.id}', 1)">+ ADD</button>`
-        : `<div class="msh-fqty"><button type="button" onclick="window.mshProQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshProQty('${it.id}', 1)">+</button></div>`;
+      const btn = it.outOfStock
+        ? `<div style="background:#fee2e2; color:#dc2626; font-size:0.65rem; font-weight:900; padding:2px; border-radius:4px;">OUT OF STOCK</div>`
+        : (q === 0
+          ? `<button type="button" class="msh-fadd" onclick="window.mshProQty('${it.id}', 1)">+ ADD</button>`
+          : `<div class="msh-fqty"><button type="button" onclick="window.mshProQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshProQty('${it.id}', 1)">+</button></div>`);
 
       const adminControlsHtml = isAdminOpen
-        ? `<div style="display:flex; gap:3px; margin-top:3px;">
-            <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.65rem; padding:2px 0; cursor:pointer; font-weight:900;">✏️ ₹${it.price}</button>
-            <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.65rem; padding:2px 5px; cursor:pointer; font-weight:800;">✕</button>
+        ? `<div style="display:flex; gap:2px; margin-top:3px;">
+            <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.62rem; padding:2px 0; cursor:pointer; font-weight:900;">✏️₹${it.price}</button>
+            <button type="button" onclick="window.mshAdmToggleOutOfStock('${it.id}')" style="background:${it.outOfStock ? '#16a34a' : '#f59e0b'}; color:#fff; border:none; border-radius:4px; font-size:0.6rem; padding:2px 4px; cursor:pointer; font-weight:800;">${it.outOfStock ? 'In' : 'Off'}</button>
+            <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.62rem; padding:2px 4px; cursor:pointer; font-weight:800;">✕</button>
           </div>`
         : "";
 
       return `
-        <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}">
+        <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}" style="${it.outOfStock ? 'opacity:0.65;' : ''}">
           <div>
             <img src="${smartImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70'">
             <div class="msh-fname" title="${it.name}">${it.name} ${wMeta.label ? '(' + wMeta.label + ')' : ''}</div>
@@ -1354,7 +1633,7 @@
 
   window.mshProQty = function(id, d) {
     const it = menuDB[id];
-    if (!it) return;
+    if (!it || it.outOfStock) return;
     const wMeta = getWeightMeta(it);
     const unitPrice = Math.round(it.price * wMeta.mult);
 
@@ -1381,7 +1660,6 @@
     });
   });
 
-  // Add Multiple Extra Items (3-4+ items supported)
   function renderExtraChips() {
     const box = document.getElementById("extraAddedChips");
     box.innerHTML = extraItemsList.map((ex, i) =>
@@ -1415,7 +1693,7 @@
   });
 
   // =========================================================================
-  // 2. CUSTOMER ORDER PLACEMENT
+  // 2. CUSTOMER ORDER PLACEMENT + ZERO-LOSS COD FEE + SURGE + AUTO UPI QR
   // =========================================================================
   function calcFeesAndExactKm() {
     let itemsSum = 0;
@@ -1433,7 +1711,6 @@
       }
     });
 
-    // Include all added Extra Items
     extraItemsList.forEach(ex => {
       const exSub = ex.qty * ex.rate;
       itemsSum += exSub;
@@ -1441,7 +1718,6 @@
       idx++;
     });
 
-    // Also include if user typed an extra item without clicking + Add
     const liveExName = document.getElementById("cExtraName").value.trim();
     const liveExQty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
     const liveExRate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
@@ -1457,9 +1733,35 @@
     const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
     const delivFee = calcDeliveryFeeByKm(exactKm);
 
+    // Night / Rain / Bad Road Surge Calculation
+    const surgeAmt = (appConfig.nightSurge ? 20 : 0) + (appConfig.rainSurge ? 20 : 0) + (appConfig.badRoadSurge ? 15 : 0);
+    const surgeLine = document.getElementById("feeSurgeLine");
+    if (surgeAmt > 0) {
+      surgeLine.style.display = "flex";
+      document.getElementById("feeSurgeVal").innerText = `+₹${surgeAmt}`;
+    } else {
+      surgeLine.style.display = "none";
+    }
+
+    // Zero-Loss COD Psychology Fee
+    const payMode = document.getElementById("cPaymentMethodSel").value;
+    const codHandlingAmt = (payMode === "COD") ? (Number(appConfig.codFee) || 0) : 0;
+    const codLine = document.getElementById("feeCodHandlingLine");
+    if (payMode === "COD" && codHandlingAmt > 0) {
+      codLine.style.display = "flex";
+      codLine.style.color = "#dc2626";
+      document.getElementById("feeCodHandlingVal").innerText = `+₹${codHandlingAmt}`;
+    } else if (payMode === "ONLINE_UPI") {
+      codLine.style.display = "flex";
+      codLine.style.color = "#15803d";
+      document.getElementById("feeCodHandlingVal").innerText = `₹0 (Saved ₹${Number(appConfig.codFee) || 10}!)`;
+    } else {
+      codLine.style.display = "none";
+    }
+
     const gstAmt = Math.round(itemsSum * GST_RATE);
-    const packAndPlat = PACKING_FEE + PLATFORM_FEE;
-    const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
+    const packAndPlat = Number(appConfig.packPlatFee) || 10;
+    const grandTotal = itemsSum + delivFee + packAndPlat + surgeAmt + codHandlingAmt + gstAmt;
 
     document.getElementById("autoKmBadge").innerText = `దూరం: ${exactKm} km`;
     document.getElementById("feeExactKmLbl").innerText = `${exactKm} km`;
@@ -1473,9 +1775,13 @@
     document.getElementById("feePackServVal").innerText = `₹${packAndPlat}`;
     document.getElementById("feeGstVal").innerText = `₹${gstAmt}`;
     document.getElementById("feeGrandTotalVal").innerText = `₹${grandTotal}`;
+
+    // Automatically render/update Live UPI QR Scanner when Online UPI is selected!
+    updateLiveUpiScanner(grandTotal);
   }
 
   document.getElementById("cHotelSel").addEventListener("change", calcFeesAndExactKm);
+  document.getElementById("cPaymentMethodSel").addEventListener("change", calcFeesAndExactKm);
   document.getElementById("cGpsField").addEventListener("input", calcFeesAndExactKm);
   document.getElementById("cExtraName").addEventListener("input", calcFeesAndExactKm);
   document.getElementById("cExtraQty").addEventListener("input", calcFeesAndExactKm);
@@ -1493,7 +1799,7 @@
   });
 
   document.getElementById("btnPlaceOrderNow").addEventListener("click", () => {
-    if (!appConfig.serviceOpen) {
+    if (appConfig.fullLockdown || !appConfig.serviceOpen) {
       alert("🔴 ప్రస్తుతం సర్వీస్ క్లోజ్‌లో ఉంది (Service OFF).");
       return;
     }
@@ -1532,7 +1838,7 @@
     if (!plainNumberedLines.length) { alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి."); return; }
 
     const village = document.getElementById("cVillage").value.trim();
-    if (!village) { alert("దయచేసి మీ ఊరి పేరు (Village Name) రాయండి."); return; }
+    if (!village) { alert("దయచేసి మీ ఊరి పేరు & ల్యాండ్‌మార్క్ రాయండి."); return; }
 
     const hId = document.getElementById("cHotelSel").value;
     const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
@@ -1540,17 +1846,21 @@
     const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
     const delivFee = calcDeliveryFeeByKm(exactKm);
 
-    const gstAmt = Math.round(itemsSum * GST_RATE);
-    const packAndPlat = PACKING_FEE + PLATFORM_FEE;
-    const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
+    const payMode = document.getElementById("cPaymentMethodSel").value;
+    const codHandlingAmt = (payMode === "COD") ? (Number(appConfig.codFee) || 0) : 0;
+    const surgeAmt = (appConfig.nightSurge ? 20 : 0) + (appConfig.rainSurge ? 20 : 0) + (appConfig.badRoadSurge ? 15 : 0);
 
+    const gstAmt = Math.round(itemsSum * GST_RATE);
+    const packAndPlat = Number(appConfig.packPlatFee) || 10;
+    const grandTotal = itemsSum + delivFee + packAndPlat + surgeAmt + codHandlingAmt + gstAmt;
+
+    const riderShareRatio = (Number(appConfig.riderSharePct) || 80) / 100;
     const totalExtrasCount = extraItemsList.length + (liveExRate > 0 ? 1 : 0);
-    const riderComm = Math.round(delivFee * 0.80) + (totalExtrasCount * 5);
-    const ownerNetComm = Math.round(itemsSum * 0.15) + packAndPlat + (delivFee - Math.round(delivFee * 0.80)) - (totalExtrasCount * 5);
+    const riderComm = Math.round((delivFee + surgeAmt) * riderShareRatio) + (totalExtrasCount * 5);
+    const ownerNetComm = Math.round(itemsSum * 0.15) + packAndPlat + codHandlingAmt + ((delivFee + surgeAmt) - Math.round((delivFee + surgeAmt) * riderShareRatio)) - (totalExtrasCount * 5);
 
     const cName = document.getElementById("cName").value.trim() || "Customer";
     const cPhone = document.getElementById("cPhone").value.trim();
-    const payMode = document.getElementById("cPaymentMethodSel").value;
 
     const orderPin = String(Math.floor(1000 + Math.random() * 9000));
     const deliveryCode = String(Math.floor(1000 + Math.random() * 9000));
@@ -1558,7 +1868,7 @@
     const orderObj = {
       pin: orderPin,
       deliveryCode,
-      status: "OPEN", // OPEN -> ACCEPTED -> PICKED_UP -> REACHED -> WIPED
+      status: "OPEN",
       acceptedByPin: "",
       acceptedByName: "",
       hotelName: hotelObj.name,
@@ -1581,6 +1891,7 @@
       ts: Date.now()
     };
 
+    myPlacedOrderPin = orderPin;
     syncOrder(orderPin, orderObj);
 
     document.getElementById("custOrderSuccessBox").style.display = "block";
@@ -1593,7 +1904,7 @@
   });
 
   // =========================================================================
-  // 3. SWIGGY-FLOW RIDER PANEL (Accept -> Food Picked Up -> Live Road Route -> At Door)
+  // 3. SWIGGY-FLOW RIDER PANEL
   // =========================================================================
   document.getElementById("btnRiderUnlock").addEventListener("click", () => {
     const rPin = document.getElementById("riderPinLoginInp").value.trim();
@@ -1603,7 +1914,7 @@
       return;
     }
     if (!rider.approved) {
-      alert("⏳ మీ అకౌంట్ ఇంకా Admin Approval కోసం వేచి ఉంది.");
+      alert("⏳ మీ అకౌంట్ ఇంకా Admin Approval కోసం వేచి ఉంది (లేదా Suspend చేయబడింది).");
       return;
     }
     loggedInRiderPin = rPin;
@@ -1625,7 +1936,7 @@
     const me = ridersDB[loggedInRiderPin];
     if (!me) return;
     document.getElementById("riderHeaderName").innerText = `🛵 రైడర్: ${me.name} (${me.village})`;
-    document.getElementById("riderHeaderEarn").innerText = `మీ సంపాదన: ₹${me.earned}`;
+    document.getElementById("riderHeaderEarn").innerText = `మొత్తం సంపాదన: ₹${me.earned}`;
 
     const allActive = Object.values(ordersDB).reverse().filter(o => o && !o.wiped && o.status !== "WIPED" && !wipedPinsSet.has(String(o.pin)));
     const myCurrentLockedOrder = allActive.find(o => (o.status === "ACCEPTED" || o.status === "PICKED_UP" || o.status === "REACHED") && o.acceptedByPin === me.pin);
@@ -1655,21 +1966,22 @@
           <div style="background:#fff; border:2px solid #fc8019; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
             <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:4px;">
               <span style="color:#ea580c;">🔔 ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</span>
-              <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">మీ కమిషన్: ₹${o.riderComm}</span>
+              <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">ఈ ఆర్డర్ ఛార్జ్: ₹${o.riderComm}</span>
             </div>
             <div style="background:#fff7ed; padding:6px 8px; border-radius:6px; margin:5px 0; font-weight:700; max-height:115px; overflow-y:auto;">${formattedItems}</div>
             ${acceptBtnHtml}
           </div>`;
       }
 
-      // SWIGGY-STYLE STEP-BY-STEP RIDER FLOW:
-      // Step 1: ACCEPTED -> Show "🏨 ఫుడ్ తీసుకున్నాను (Picked Up)"
-      // Step 2: PICKED_UP -> Automatically switches map to Direct Live Road Route to Customer + "🧭 Live Google Nav" + "🚪 ఇంటికి వచ్చాను"
       const stageBadge = o.status === "ACCEPTED"
         ? `<span style="background:#ea580c; color:#fff; padding:2px 7px; border-radius:5px; font-size:0.74rem;">Step 1: హోటల్ నుండి ఫుడ్ తీసుకోండి</span>`
         : (o.status === "PICKED_UP"
-          ? `<span style="background:#0284c7; color:#fff; padding:2px 7px; border-radius:5px; font-size:0.74rem;">Step 2: కస్టమర్ ఇంటికి బయలుదేరారు (Live Route ON)</span>`
+          ? `<span style="background:#0284c7; color:#fff; padding:2px 7px; border-radius:5px; font-size:0.74rem;">Step 2: కస్టమర్ ఇంటికి బయలుదేరారు</span>`
           : `<span style="background:#15803d; color:#fff; padding:2px 7px; border-radius:5px; font-size:0.74rem;">Step 3: గేట్ దగ్గరకు వచ్చారు — Delivery Code అడగండి</span>`);
+
+      const payLabel = o.payMode === "ONLINE_UPI"
+        ? `<span style="color:#15803d; font-weight:900;">✅ Online UPI Paid (₹0 Cash)</span>`
+        : `<span style="color:#dc2626; font-weight:900;">💵 క్యాష్ తీసుకోవాల్సింది: ₹${o.totalBill}</span>`;
 
       return `
         <div style="background:#dcfce7; border:2px solid #16a34a; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
@@ -1680,12 +1992,12 @@
           <div style="background:#fff; padding:6px 8px; border-radius:6px; margin:5px 0; border-left:3px solid #16a34a; font-weight:700; max-height:115px; overflow-y:auto;">
             ${formattedItems}
           </div>
-          <div>👤 కస్టమర్: <b>${o.cName}</b> (${o.maskedPhone}) • 📍 ఊరు: <b>${o.village}</b> • 💰 క్యాష్: <b>₹${o.totalBill}</b></div>
+          <div>👤 కస్టమర్: <b>${o.cName}</b> (${o.maskedPhone}) • 📍 ఊరు: <b>${o.village}</b> • ${payLabel}</div>
 
           <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:7px;">
             ${o.status === "ACCEPTED"
               ? `<button type="button" onclick="window.mshRiderPickedUpFood('${o.pin}')" style="flex:1.4; background:#ea580c; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">🏨 ఫుడ్ తీసుకున్నాను (Start Live Route)</button>`
-              : `<button type="button" onclick="window.mshRiderAtCustomerDoor('${o.pin}')" style="flex:1.2; background:#0f4c3a; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">🚪 ఇంటికి వచ్చాను (At Door)</button>`
+              : `<button type="button" onclick="window.mshRiderAtCustomerDoor('${o.pin}')" style="flex:1.2; background:#0f4c3a; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">🚪 ఇంటికి వచ్చాను (Ring Doorbell)</button>`
             }
             <a href="https://www.google.com/maps/dir/?api=1&destination=${o.lat},${o.lng}&travelmode=two-wheeler" target="_blank" style="flex:1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:9px; border-radius:7px; font-weight:900;">🧭 Google Map</a>
             <a href="tel:8985240287" style="background:#475569; color:#fff; text-decoration:none; padding:9px 10px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>
@@ -1696,7 +2008,6 @@
     feed.innerHTML = html;
   }
 
-  // Step 2: Rider clicks "ఫుడ్ తీసుకున్నాను" -> Switches map to direct Rider-to-House road route!
   window.mshRiderPickedUpFood = function(orderPin) {
     const ord = ordersDB[orderPin];
     if (!ord) return;
@@ -1707,13 +2018,13 @@
     document.getElementById("mshBottomLiveMap").scrollIntoView({ behavior: "smooth" });
   };
 
-  // Step 3: Rider clicks "ఇంటికి వచ్చాను" -> Alerts customer to share 4-digit Delivery Code!
   window.mshRiderAtCustomerDoor = function(orderPin) {
     const ord = ordersDB[orderPin];
     if (!ord) return;
     ord.status = "REACHED";
     ord.chat = (ord.chat || "") + `<div style="margin-bottom:3px; color:#4ade80;"><b>🛵 రైడర్:</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చాను! దయచేసి మీ 4-Digit Delivery Code చెప్పండి.</div>`;
     syncOrder(orderPin, ord);
+    checkAndTriggerCustomerDoorbell(ord);
   };
 
   window.mshRiderTakeOrder = function(orderPin) {
@@ -1748,7 +2059,7 @@
   };
 
   // =========================================================================
-  // 4. RIDER & SHOP PARTNER REGISTRATION + CCTV ADMIN CONTROL ROOM
+  // 4. RIDER & SHOP REGISTRATION + 8-IN-1 CCTV MASTER CONTROL ROOM
   // =========================================================================
   document.getElementById("btnRegDeviceGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
@@ -1774,7 +2085,6 @@
     alert(`✅ ${name} గారు, మీ రిజిస్ట్రేషన్ పూర్తయింది! Admin (Prakash) మిమ్మల్ని Approve చేసి మీ Secret Rider PIN ఇస్తారు.`);
   });
 
-  // Future Expansion: Shop Partner Registration
   document.getElementById("btnShopRegGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
     this.innerText = "⏳...";
@@ -1796,16 +2106,29 @@
     syncShopReqs();
     document.getElementById("shopRegName").value = "";
     document.getElementById("shopRegPhone").value = "";
-    alert("✅ మీ షాప్ రిక్వెస్ట్ Admin Control Room కి వెళ్ళింది! అడ్మిన్ Approve చేసిన వెంటనే మీ షాప్ మెనూలో యాడ్ అవుతుంది.");
+    alert("✅ మీ షాప్ రిక్వెస్ట్ Admin Control Room కి వెళ్ళింది!");
   });
 
   function render24hMsgs() {
     const now = Date.now();
     const valid = Object.values(msgs24hDB).filter(m => m && (now - m.ts < DAY_24H_MS)).sort((a, b) => b.ts - a.ts);
     document.getElementById("public24hMsgFeed").innerHTML = valid.length
-      ? valid.map(m => `<div style="background:#fff; padding:5px 8px; border-radius:6px; margin-bottom:4px; border-left:3px solid #2563eb;">💬 ${m.text} <small style="color:#64748b; float:right;">(24h auto-delete)</small></div>`).join("")
+      ? valid.map(m => `<div style="background:#fff; padding:5px 8px; border-radius:6px; margin-bottom:4px; border-left:3px solid #2563eb;">
+          💬 ${m.text}
+          <span style="float:right; font-size:0.75rem; color:#64748b;">
+            (24h)
+            ${isAdminOpen ? `<button type="button" onclick="window.mshAdmDel24h('${m.id}')" style="background:#dc2626; color:#fff; border:none; border-radius:4px; padding:1px 5px; margin-left:4px; cursor:pointer;">✕</button>` : ""}
+          </span>
+        </div>`).join("")
       : "<div style='color:#64748b;'>ప్రస్తుతం మెసేజ్‌లు లేవు.</div>";
   }
+
+  window.mshAdmDel24h = function(id) {
+    delete msgs24hDB[id];
+    localStorage.setItem("msh_unified_24h", JSON.stringify(msgs24hDB));
+    render24hMsgs();
+    if (gun) gun.get(TOPIC_24H).get(id).put(null);
+  };
 
   document.getElementById("btnPost24hMsg").addEventListener("click", () => {
     const inp = document.getElementById("public24hMsgInp");
@@ -1820,21 +2143,27 @@
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
 
-  document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
+  function openAdminControlRoomFlow() {
     if (!isAdminOpen) {
       const entered = prompt("Admin Control Room Password ఎంటర్ చేయండి:");
       if (entered !== currentAdminPassword) { alert("❌ తప్పు Admin Password!"); return; }
       isAdminOpen = true;
     }
     document.getElementById("adminMasterDashboard").style.display = "block";
+    document.getElementById("adminMasterDashboard").scrollIntoView({ behavior: "smooth" });
     renderMenu7x3();
+    render24hMsgs();
     renderAdminDashboard();
-  });
+  }
+
+  document.getElementById("btnOpenAdminPanel").addEventListener("click", openAdminControlRoomFlow);
+  document.getElementById("btnUnlockFromLockdown").addEventListener("click", openAdminControlRoomFlow);
 
   document.getElementById("btnLockAdminPanel").addEventListener("click", () => {
     isAdminOpen = false;
     document.getElementById("adminMasterDashboard").style.display = "none";
     renderMenu7x3();
+    render24hMsgs();
   });
 
   document.getElementById("admBtnHotelMyGps").addEventListener("click", function() {
@@ -1884,8 +2213,15 @@
     }
   };
 
-  window.mshAdmApprove = function(p) {
-    if (ridersDB[p]) { ridersDB[p].approved = true; syncRiders(); }
+  window.mshAdmToggleRiderActive = function(p) {
+    if (ridersDB[p]) { ridersDB[p].approved = !ridersDB[p].approved; syncRiders(); }
+  };
+
+  window.mshAdmResetRiderEarn = function(p) {
+    if (ridersDB[p] && confirm(`${ridersDB[p].name} సంపాదన ₹0 కి రీసెట్ చేయాలా?`)) {
+      ridersDB[p].earned = 0;
+      syncRiders();
+    }
   };
 
   window.mshAdmEditRider = function(oldPin) {
@@ -1953,7 +2289,7 @@
       if (parsed.hotelsDB) hotelsDB = parsed.hotelsDB;
       if (parsed.ridersDB) ridersDB = parsed.ridersDB;
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
-      if (parsed.appConfig) appConfig = parsed.appConfig;
+      if (parsed.appConfig) appConfig = { ...defaultConfig, ...parsed.appConfig };
       localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
       localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB));
       localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB));
@@ -1973,7 +2309,6 @@
       </div>`
     ).join("");
 
-    // Pending Shop Partner Requests
     const sReqs = Object.values(shopReqsDB);
     document.getElementById("admShopRequestsList").innerHTML = sReqs.length
       ? `<div style="font-size:0.8rem; color:#facc15; font-weight:800; margin-top:6px;">🏪 కొత్త షాప్ అప్రూవల్ రిక్వెస్ట్‌లు:</div>` + sReqs.map(s =>
@@ -1997,13 +2332,13 @@
         <div>
           <strong>🛵 ${r.name}</strong> (${r.village}) • 📞 <a href="tel:${r.phone}" style="color:#38bdf8;">${r.phone}</a> •
           <span style="background:#facc15; color:#000; padding:1px 6px; border-radius:4px; font-weight:900;">PIN: ${r.pin}</span> •
-          <a href="https://maps.google.com/?q=${r.lat || 18.0815},${r.lng || 83.1285}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">📡 Device GPS</a>
+          <a href="https://maps.google.com/?q=${r.lat || 18.0815},${r.lng || 83.1285}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">📡 GPS</a>
         </div>
         <div style="display:flex; gap:5px; flex-wrap:wrap; align-items:center;">
-          ${!r.approved
-            ? `<button type="button" onclick="window.mshAdmApprove('${r.pin}')" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Approve</button>`
-            : `<span style="color:#4ade80; font-weight:800; margin-right:4px;">🟢 Active (₹${r.earned})</span>`
-          }
+          <button type="button" onclick="window.mshAdmToggleRiderActive('${r.pin}')" style="background:${r.approved ? '#16a34a' : '#f59e0b'}; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">
+            ${r.approved ? `🟢 Active (₹${r.earned})` : '⏳ Approve'}
+          </button>
+          <button type="button" onclick="window.mshAdmResetRiderEarn('${r.pin}')" style="background:#475569; color:#fff; border:none; border-radius:5px; padding:4px 7px; font-weight:800; cursor:pointer;">₹0 Reset</button>
           <button type="button" onclick="window.mshAdmEditRider('${r.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">✏️ Edit</button>
           <button type="button" onclick="window.mshAdmRemoveRider('${r.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">🗑️ Remove</button>
         </div>
@@ -2018,7 +2353,7 @@
             <span style="color:#4ade80; font-weight:900;">Bill: ₹${o.totalBill} | Owner: ₹${o.ownerNetComm} | GST: ₹${o.gstAmt} | Rider: ₹${o.riderComm}</span>
           </div>
           <div style="color:#cbd5e1; margin:3px 0;">${String(o.numberedItems || "").replace(/\n/g, " | ")}</div>
-          <div>👤 ${o.cName} • 📞 <a href="tel:${o.cPhone}" style="color:#38bdf8;">${o.cPhone}</a> • 🛵 Rider: <b>${o.acceptedByName || "Waiting"}</b> (${o.status})</div>
+          <div>👤 ${o.cName} • 📞 <a href="tel:${o.cPhone}" style="color:#38bdf8;">${o.cPhone}</a> • 💳 <b>${o.payMode}</b> • 🛵 Rider: <b>${o.acceptedByName || "Waiting"}</b> (${o.status})</div>
           <div style="display:flex; gap:6px; margin-top:5px;">
             <button type="button" onclick="window.mshAdmOpenBottomMap('${o.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">🗺️ View Map</button>
             <button type="button" onclick="window.mshAdmCompleteWipe('${o.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Admin Force Complete & Wipe</button>
@@ -2088,14 +2423,12 @@
 
     document.getElementById("bottomChatFeed").innerHTML = ord.chat || "<span style='color:#94a3b8;'>ఈ రైడ్ పూర్తయిన వెంటనే ఇక్కడి మెసేజ్‌లు ఆటోమేటిక్‌గా డిలీట్ అవుతాయి...</span>";
 
-    // Customer House Pin (Always visible)
     const cIcon = L.divIcon({ html: `<div style="background:#0284c7;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏠 ${ord.village}</div>`, className: "", iconSize: [110, 24], iconAnchor: [55, 12] });
     if (mCustPin) { mCustPin.setLatLng([ord.lat, ord.lng]); mCustPin.setIcon(cIcon); }
     else mCustPin = L.marker([ord.lat, ord.lng], { icon: cIcon }).addTo(bottomMap);
 
     document.getElementById("pillHotelHouseKm").innerText = `${ord.hotelName} ➔ ${ord.village}: ${ord.exactKm} km`;
 
-    // Stage 1 (Before Food Picked Up): Show Hotel Pin + Hotel-to-House Reference Line
     if (ord.status === "OPEN" || ord.status === "ACCEPTED") {
       const hIcon = L.divIcon({ html: `<div style="background:#ea580c;color:#fff;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏨 Hotel</div>`, className: "", iconSize: [75, 22], iconAnchor: [37, 11] });
       if (mHotelPin) mHotelPin.setLatLng([ord.hLat, ord.hLng]);
@@ -2104,7 +2437,6 @@
       if (lineHotelToHouse) bottomMap.removeLayer(lineHotelToHouse);
       lineHotelToHouse = L.polyline([[ord.hLat, ord.hLng], [ord.lat, ord.lng]], { color: "#fc8019", weight: 3, dashArray: "5, 7" }).addTo(bottomMap);
     } else {
-      // Stage 2 (Food Picked Up!): Hide Hotel line and focus 100% on Rider -> Customer Direct Road Path!
       if (mHotelPin) { bottomMap.removeLayer(mHotelPin); mHotelPin = null; }
       if (lineHotelToHouse) { bottomMap.removeLayer(lineHotelToHouse); lineHotelToHouse = null; }
     }
@@ -2112,7 +2444,6 @@
     let bounds = [mCustPin];
     if (mHotelPin) bounds.push(mHotelPin);
 
-    // Live Moving Rider Pin + Actual Road Path (OSRM)
     if ((ord.status === "ACCEPTED" || ord.status === "PICKED_UP" || ord.status === "REACHED") && gps && gps.lat) {
       const rIcon = L.divIcon({ html: `<div style="background:#16a34a;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:12px;border:2px solid #fff;">🛵 ${gps.rider}</div>`, className: "", iconSize: [100, 26], iconAnchor: [50, 13] });
       if (mRiderPin) { mRiderPin.setLatLng([gps.lat, gps.lng]); mRiderPin.setIcon(rIcon); }
@@ -2134,7 +2465,7 @@
       if (lineRiderRoadPath) { bottomMap.removeLayer(lineRiderRoadPath); lineRiderRoadPath = null; }
       document.getElementById("pillRiderLiveKm").innerText = ord.status === "OPEN"
         ? "⏳ రైడర్ Accept కోసం వేచి ఉంది..."
-        : `✅ ${ord.acceptedByName} హోటల్ దగ్గరకు వెళ్తున్నారు`;
+        : (ord.status === "REACHED" ? `📍 ${ord.acceptedByName} మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!` : `✅ ${ord.acceptedByName} Assigned`);
     }
 
     bottomMap.fitBounds(L.featureGroup(bounds).getBounds().pad(0.25));
@@ -2156,6 +2487,7 @@
   syncRiders();
   syncHotels();
   updateBellBtnUI();
+  populateHotelsDropdown();
   applyConfigUI();
   renderMenu7x3();
   calcFeesAndExactKm();
