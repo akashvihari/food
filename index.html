@@ -1,1941 +1,1525 @@
-<!-- 10-Server Ultra-Reliable Real-Time Mesh & Leaflet Live Distance Map -->
-<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<style>
-  .msh-pro-master {
-    --swiggy: #fc8019;
-    --swiggy-dark: #ea580c;
-    --primary: #0f4c3a;
-    --green: #16a34a;
-    --red: #dc2626;
-    --blue: #0284c7;
-    --dark: #111827;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    max-width: 1260px;
-    margin: 12px auto;
-    background: #ffffff;
-    border: 2px solid #cbd5e1;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 12px 34px rgba(0,0,0,0.09);
-    color: #1e293b;
-  }
-  .msh-pro-master * { box-sizing: border-box; }
-
-  .msh-ticker {
-    background: #fef2f2;
-    border: 1.5px solid #fca5a5;
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .msh-ticker-txt {
-    display: inline-block;
-    padding-left: 100%;
-    animation: mshRun 26s linear infinite;
-    font-size: 0.88rem;
-    font-weight: 800;
-    color: #991b1b;
-  }
-  @keyframes mshRun { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-  .msh-notify-bar {
-    display: none;
-    background: linear-gradient(135deg, #ea580c, #dc2626);
-    color: #fff;
-    padding: 11px 15px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-weight: 800;
-    font-size: 0.92rem;
-  }
-
-  .msh-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
-  }
-  .msh-title { font-size: 1.3rem; font-weight: 900; color: var(--primary); margin: 0; }
-  .msh-sub { font-size: 0.84rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
-
-  .msh-closed-wall {
-    display: none;
-    background: #fef2f2;
-    border: 2px solid #dc2626;
-    color: #991b1b;
-    padding: 16px;
-    border-radius: 14px;
-    text-align: center;
-    font-weight: 900;
-    font-size: 1.05rem;
-    margin-bottom: 14px;
-  }
-
-  /* STRICT 50% LEFT CARD + 50% RIGHT CARD SPLIT */
-  .msh-main-split {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 14px;
-    margin-bottom: 18px;
-    align-items: stretch;
-  }
-
-  .msh-right-col-stack {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .msh-panel {
-    border-radius: 16px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 0;
-  }
-  .msh-panel-orange { background: #fff7ed; border: 2px solid #fdba74; }
-  .msh-panel-slate { background: #f8fafc; border: 2px solid #94a3b8; }
-  .msh-panel-green { background: #f0fdf4; border: 2px solid #86efac; }
-
-  .msh-h3 { font-size: 1rem; font-weight: 900; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
-
-  .msh-cats { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 7px; }
-  .msh-cat {
-    background: #fff;
-    border: 1.5px solid #fdba74;
-    color: #9a3412;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 0.74rem;
-    font-weight: 800;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .msh-cat.active { background: var(--swiggy); color: #fff; border-color: var(--swiggy); }
-
-  /* COMPACT 7 ROWS x 3 COLUMNS GRID (Scrolls cleanly after 7 rows!) */
-  .msh-grid-7x3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    height: 775px; /* Fits 7 compact rows cleanly, scrolls beyond 7 */
-    overflow-y: auto;
-    padding-right: 3px;
-    align-content: start;
-  }
-  .msh-grid-7x3::-webkit-scrollbar { width: 5px; }
-  .msh-grid-7x3::-webkit-scrollbar-thumb { background: var(--swiggy); border-radius: 99px; }
-
-  .msh-fcard {
-    background: #ffffff;
-    border: 1.5px solid #fed7aa;
-    border-radius: 10px;
-    padding: 5px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 0;
-  }
-  .msh-fcard.own { background: #f0fdf4; border: 2px solid #22c55e; }
-  .msh-fimg {
-    width: 100%;
-    height: 44px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 3px;
-    background: #ffedd5;
-  }
-  .msh-fname {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1.15;
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .msh-fprice { font-size: 0.8rem; font-weight: 900; color: #c2410c; margin-bottom: 3px; }
-
-  .msh-wt-pills {
-    display: flex;
-    justify-content: center;
-    gap: 2px;
-    margin-bottom: 3px;
-  }
-  .msh-wt-btn {
-    border: 1px solid #cbd5e1;
-    background: #f8fafc;
-    color: #334155;
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 1px 4px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .msh-wt-btn.active {
-    background: #0f4c3a;
-    color: #fff;
-    border-color: #0f4c3a;
-  }
-
-  .msh-fadd {
-    width: 100%;
-    background: #fff;
-    color: var(--green);
-    border: 1.5px solid var(--green);
-    border-radius: 5px;
-    padding: 2px 0;
-    font-size: 0.72rem;
-    font-weight: 900;
-    cursor: pointer;
-  }
-  .msh-fqty {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--green);
-    color: #fff;
-    border-radius: 5px;
-    padding: 1px 5px;
-    font-size: 0.75rem;
-    font-weight: 900;
-  }
-  .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 1px 4px; }
-
-  /* Extra Item Box placed right at the bottom of Left Food Menu Card (Red Marker spot!) */
-  .msh-left-extra-box {
-    background: #ffffff;
-    border: 1.5px solid #fb923c;
-    border-radius: 10px;
-    padding: 7px 8px;
-    margin-top: 8px;
-  }
-
-  .msh-inp, .msh-sel {
-    width: 100%;
-    padding: 9px 10px;
-    border-radius: 9px;
-    border: 1.5px solid #cbd5e1;
-    font-size: 0.86rem;
-    font-weight: 600;
-    background: #fff;
-    margin-bottom: 7px;
-  }
-  .msh-row { display: flex; gap: 6px; margin-bottom: 7px; }
-  .msh-btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 9px;
-    padding: 0 11px;
-    font-weight: 800;
-    font-size: 0.82rem;
-    cursor: pointer;
-    white-space: nowrap;
-    height: 39px;
-  }
-
-  .msh-numbered-list {
-    background: #f8fafc;
-    border: 1px dashed #94a3b8;
-    border-radius: 8px;
-    padding: 7px 9px;
-    margin-bottom: 7px;
-    font-size: 0.81rem;
-    line-height: 1.45;
-    color: #0f172a;
-    max-height: 145px;
-    overflow-y: auto;
-  }
-  .msh-numbered-list::-webkit-scrollbar { width: 5px; }
-  .msh-numbered-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
-
-  .msh-rider-scroll-feed {
-    max-height: 330px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-  .msh-rider-scroll-feed::-webkit-scrollbar { width: 6px; }
-  .msh-rider-scroll-feed::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 99px; }
-
-  .msh-fees-card {
-    background: #ffffff;
-    border: 2px solid #16a34a;
-    border-radius: 11px;
-    padding: 9px 11px;
-    margin-bottom: 8px;
-    font-size: 0.83rem;
-  }
-  .msh-fee-line { display: flex; justify-content: space-between; margin-bottom: 3px; color: #334155; font-weight: 600; }
-  .msh-fee-total {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.08rem;
-    font-weight: 900;
-    color: var(--primary);
-    border-top: 1.5px dashed #86efac;
-    padding-top: 5px;
-    margin-top: 5px;
-  }
-
-  .msh-order-btn {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, var(--swiggy), var(--swiggy-dark));
-    color: #fff;
-    border: none;
-    border-radius: 11px;
-    font-size: 1.02rem;
-    font-weight: 900;
-    cursor: pointer;
-  }
-
-  /* MIDDLE SECTION */
-  .msh-mid-admin-sec {
-    background: #f1f5f9;
-    border: 2px solid #94a3b8;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 18px;
-  }
-
-  .msh-cctv-vault {
-    display: none;
-    background: #0b1120;
-    color: #f8fafc;
-    border: 2px solid #38bdf8;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
-  }
-  .msh-vault-card {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-  .msh-vault-title {
-    font-size: 0.92rem;
-    font-weight: 900;
-    color: #38bdf8;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  /* BOTTOM MAP SECTION */
-  .msh-bottom-map-sec {
-    background: #0f172a;
-    color: #fff;
-    border: 2px solid #38bdf8;
-    border-radius: 16px;
-    padding: 16px;
-  }
-  .msh-map-frame {
-    position: relative;
-    height: 340px;
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid #38bdf8;
-    margin: 10px 0;
-  }
-  #mshBottomLiveMap { height: 100%; width: 100%; z-index: 1; }
-  .msh-lock-curtain {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.96);
-    z-index: 500;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 16px;
-  }
-  .msh-dist-pills {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  @media (max-width: 640px) { .msh-dist-pills { grid-template-columns: 1fr; } }
-  .msh-dpill {
-    background: #1e293b;
-    padding: 8px 12px;
-    border-radius: 9px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    border-left: 4px solid #38bdf8;
-  }
+900;
+color: #38bdf8;
+margin-bottom: 8px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 6px;
+}
+​/* BOTTOM MAP SECTION */
+.msh-bottom-map-sec {
+background: #0f172a;
+color: #fff;
+border: 2px solid #38bdf8;
+border-radius: 16px;
+padding: 16px;
+}
+.msh-map-frame {
+position: relative;
+height: 360px;
+width: 100%;
+border-radius: 12px;
+overflow: hidden;
+border: 2px solid #38bdf8;
+margin: 10px 0;
+}
+#mshBottomLiveMap { height: 100%; width: 100%; z-index: 1; }
+.msh-lock-curtain {
+position: absolute;
+inset: 0;
+background: rgba(15, 23, 42, 0.96);
+z-index: 500;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 16px;
+}
+.msh-dist-pills {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+margin-top: 8px;
+}
+@media (max-width: 640px) { .msh-dist-pills { grid-template-columns: 1fr; } }
+.msh-dpill {
+background: #1e293b;
+padding: 8px 12px;
+border-radius: 9px;
+font-size: 0.85rem;
+font-weight: 800;
+border-left: 4px solid #38bdf8;
+}
 </style>
-
-<div class="msh-pro-master" id="mshProMasterApp">
-
-  <!-- Moving Disclaimer Ticker -->
-  <div class="msh-ticker">
-    <div class="msh-ticker-txt">
-      ⚠️ గమనిక: ఇది లోకల్ గ్రామీణ ఫుడ్ & కూరగాయల డెలివరీ సేవ (Boddavara • Kiltampalem • S.Kota • Thatipudi). కస్టమర్ ఇచ్చే 4-Digit Delivery Code ద్వారా మాత్రమే రైడ్ పూర్తవుతుంది. 100% ప్రైవసీ — ఫోన్ నంబర్లు ఎవరికీ షేర్ కావు.
-    </div>
-  </div>
-
-  <!-- Open Notification Alert -->
-  <div class="msh-notify-bar" id="openOrderNotifyStrip">
-    <span id="openOrderNotifyText">🔔 కొత్త ఆర్డర్ వచ్చింది! రైడర్లు మీ Secret PIN తో లాక్ ఓపెన్ చేసి ఆర్డర్ తీసుకోండి.</span>
-    <span style="background:#facc15; color:#000; padding:3px 10px; border-radius:99px; font-size:0.78rem;">కొత్త ఆర్డర్</span>
-  </div>
-
-  <!-- Header -->
-  <div class="msh-header">
-    <div>
-      <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-      <p class="msh-sub">సులభమైన తెలుగు & ఇంగ్లీష్ • ఆటోమేటిక్ హోటల్ KM • 100% సేఫ్ డెలివరీ కోడ్ • అడ్మిన్ కంట్రోల్</p>
-    </div>
-    <div id="masterStatusBadge" style="font-size:0.84rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 14px; border-radius:99px;">
-      🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)
-    </div>
-  </div>
-
-  <!-- Service Closed Wall -->
-  <div class="msh-closed-wall" id="serviceClosedWall">
-    🔴 ప్రస్తుతం ఫుడ్ డెలివరీ సర్వీస్ తాత్కాలికంగా ఆపివేయబడింది (Service OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
-  </div>
-
-  <!-- =========================================================
-       TOP 50% LEFT CARD + 50% RIGHT CARD SPLIT
-       ========================================================= -->
-  <div class="msh-main-split">
-    
-    <!-- LEFT 50% CARD: 7x3 Compact Food Menu + Extra Item Box at Bottom (Red Marker Spot!) -->
-    <div class="msh-panel msh-panel-orange">
-      <div>
-        <div class="msh-h3" style="color:#9a3412;">
-          <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
-          <span id="menuItemsBadge" style="font-size:0.75rem; background:#ffedd5; padding:2px 7px; border-radius:6px;">21 Items</span>
-        </div>
-
-        <div class="msh-cats" id="catTabsBar">
-          <button type="button" class="msh-cat active" data-cat="all">అన్నీ (All)</button>
-          <button type="button" class="msh-cat" data-cat="food">🍗 బిర్యానీ & భోజనం</button>
-          <button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 మా సొంత స్టాక్</button>
-          <button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు</button>
-          <button type="button" class="msh-cat" data-cat="drinks">💧 వాటర్ / డ్రింక్స్</button>
-        </div>
-
-        <!-- 7 Rows x 3 Columns Compact Grid -->
-        <div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
-      </div>
-
-      <!-- EXTRA ITEM BOX PLACED RIGHT HERE AT BOTTOM OF MENU CARD (Where you drew the Red Marker!) -->
-      <div class="msh-left-extra-box">
-        <span style="font-size:0.76rem; font-weight:900; color:#9a3412; display:block; margin-bottom:4px;">
-          ➕ మెనూలో లేని Extra ఐటమ్ కావాలంటే ఇక్కడ రాయండి:
-        </span>
-        <div class="msh-row" style="margin:0;">
-          <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5; padding:7px 9px; font-size:0.82rem;" placeholder="ఐటమ్ పేరు (ఉదా: Mixture)">
-          <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.65; padding:7px 6px; font-size:0.82rem;" placeholder="ఎన్ని" min="1" value="1">
-          <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.85; padding:7px 6px; font-size:0.82rem;" placeholder="ధర ₹" min="0" value="0">
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT 50% CARD: Hotel Address Checkout + Rider Duty Panel -->
-    <div class="msh-right-col-stack">
-      
-      <!-- 2A. Customer Checkout Card -->
-      <div class="msh-panel msh-panel-slate">
-        <div>
-          <div class="msh-h3" style="color:#0f4c3a;">
-            <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
-            <span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:3px 8px; border-radius:6px;">దూరం: 1.0 km</span>
-          </div>
-
-          <select id="cHotelSel" class="msh-sel"></select>
-
-          <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / S.Kota)">
-
-          <div class="msh-row">
-            <input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
-            <button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
-          </div>
-
-          <div class="msh-row">
-            <input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
-            <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
-          </div>
-
-          <select id="cPaymentMethodSel" class="msh-sel"></select>
-
-          <div class="msh-fees-card">
-            <div class="msh-numbered-list" id="cNumberedItemsPreview">🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి</div>
-            <div class="msh-fee-line"><span>ఐటమ్స్ ధర (Items + Extra):</span><span id="feeItemsVal">₹0</span></div>
-            <div class="msh-fee-line"><span>హోటల్ నుండి దూరం (<b id="feeExactKmLbl">1.0 km</b>):</span><span id="feeDelivVal">₹25</span></div>
-            <div class="msh-fee-line"><span>ప్యాకింగ్ & సర్వీస్ ఫీజు:</span><span id="feePackServVal">₹10</span></div>
-            <div class="msh-fee-line"><span>GST (5%):</span><span id="feeGstVal">₹0</span></div>
-            <div class="msh-fee-total">
-              <span>మొత్తం బిల్లు (Total Bill):</span>
-              <span id="feeGrandTotalVal" style="color:#15803d;">₹35</span>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="msh-order-btn" id="btnPlaceOrderNow">
-          🍔 ఆర్డర్ చేయండి (PLACE ORDER)
-        </button>
-
-        <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
-          <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
-            <div>
-              <span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ చూసే PIN:</span>
-              <strong style="font-size:1.25rem; color:#facc15; letter-spacing:2px;" id="custOrderPinText">----</strong>
-            </div>
-            <div style="border-left:1px solid #3b82f6; padding-left:10px;">
-              <span style="font-size:0.75rem; color:#86efac; display:block;">🔐 డెలివరీ పూర్తి చేసే కోడ్:</span>
-              <strong style="font-size:1.25rem; color:#4ade80; letter-spacing:2px;" id="custDeliveryCodeText">----</strong>
-            </div>
-          </div>
-          <span style="font-size:0.74rem; color:#e2e8f0; display:block; margin-top:4px;">ఫుడ్ చేతికి అందిన తర్వాతే ఈ <b>డెలివరీ కోడ్</b> రైడర్‌కు చెప్పండి!</span>
-        </div>
-      </div>
-
-      <!-- 2B. Easy & Friendly Rider Card -->
-      <div class="msh-panel msh-panel-green">
-        <div>
-          <div class="msh-h3" style="color:#0f4c3a;">
-            <span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
-            <button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
-              🔔 సౌండ్ ON
-            </button>
-          </div>
-
-          <div class="msh-row">
-            <input type="password" id="riderPinLoginInp" class="msh-inp" style="margin:0; font-weight:800; letter-spacing:2px;" maxlength="4" placeholder="మీ 4-Digit Rider PIN">
-            <button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్</button>
-            <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒</button>
-          </div>
-
-          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.83rem; font-weight:700;">
-            🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
-          </div>
-
-          <div id="riderActivePanel" style="display:none;">
-            <div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.84rem; display:flex; justify-content:space-between;">
-              <strong id="riderHeaderName">🛵 Rider</strong>
-              <span id="riderHeaderEarn" style="color:#facc15; font-weight:800;">సంపాదన: ₹0</span>
-            </div>
-            <div id="riderOrdersFeed" class="msh-rider-scroll-feed"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- =========================================================
-       MIDDLE SECTION: RIDER REGISTRATION + 24H NOTICE + CCTV ADMIN CONTROL ROOM
-       ========================================================= -->
-  <div class="msh-mid-admin-sec">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-      <div>
-        <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. కొత్త రైడర్ రిజిస్ట్రేషన్ & CCTV Admin Control Room</strong>
-        <div style="font-size:0.8rem; color:#475569;">రైడర్లు ఇక్కడ రిజిస్టర్ అవ్వచ్చు • Admin Lock ఓపెన్ చేస్తే అన్ని కెమెరాలు, రైడర్లు, హోటళ్లు, రేట్లు & పాస్‌వర్డ్ కంట్రోల్ వస్తాయి.</div>
-      </div>
-      <button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">🔐 Admin Control Room</button>
-    </div>
-
-    <!-- New Rider Registration -->
-    <div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; padding:12px; margin-bottom:12px;">
-      <strong style="font-size:0.9rem; color:#1e3a8a; display:block; margin-bottom:6px;">🛵 కొత్త రైడర్ రిజిస్ట్రేషన్ (మీ పేరు + ఫోన్ + Live GPS):</strong>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:8px;">
-        <input type="text" id="regName" class="msh-inp" style="margin:0;" placeholder="మీ పూర్తి పేరు (Name)">
-        <input type="tel" id="regPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Phone)">
-        <input type="text" id="regVillage" class="msh-inp" style="margin:0;" placeholder="మీ ఊరు (Village)">
-        <button type="button" class="msh-btn" style="background:#0284c7;" id="btnRegDeviceGps">📡 నా Device GPS</button>
-        <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSubmitReg">✅ రిజిస్టర్ చేయండి</button>
-      </div>
-      <div id="regGpsMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
-    </div>
-
-    <!-- 24-Hour Auto-Deleting Notice Board -->
-    <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:11px; margin-bottom:12px;">
-      <strong style="font-size:0.88rem; color:#1e3a8a; display:block; margin-bottom:6px;">⏳ 24-Hour Live Notice & Q&A (24 గంటల తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతాయి):</strong>
-      <div class="msh-row" style="margin-bottom:6px;">
-        <input type="text" id="public24hMsgInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న లేదా ఆఫర్ మెసేజ్ రాయండి...">
-        <button type="button" class="msh-btn" style="background:#2563eb;" id="btnPost24hMsg">Post (24h)</button>
-      </div>
-      <div id="public24hMsgFeed" style="max-height:90px; overflow-y:auto; font-size:0.83rem;"></div>
-    </div>
-
-    <!-- CCTV CONTROL ROOM STYLE ADMIN VAULT -->
-    <div id="adminMasterDashboard" class="msh-cctv-vault">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
-        <div>
-          <strong style="color:#facc15; font-size:1.12rem;">👑 CCTV Master Control Room — పూర్తి అడ్మిన్ యాక్సెస్</strong>
-          <div style="font-size:0.78rem; color:#94a3b8;">ఇక్కడ మీరు ప్రతి రైడర్, ప్రతి హోటల్ GPS, ప్రతి ఐటమ్ రేట్, లైవ్ ఆర్డర్లు & అడ్మిన్ పాస్‌వర్డ్ మార్చుకోవచ్చు.</div>
-        </div>
-        <button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-weight:900; cursor:pointer;">🔒 Lock Control Room</button>
-      </div>
-
-      <!-- 1. MASTER SWITCHES & ADMIN PASSWORD CHANGE -->
-      <div class="msh-vault-card">
-        <div class="msh-vault-title">
-          <span>🎛️ 1. మాస్టర్ స్విచ్‌లు & Admin Password మార్చుకునే సదుపాయం</span>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-          <button type="button" id="admTogService" class="msh-btn" style="background:#dc2626;">🔴 Stop Service (OFF)</button>
-          <button type="button" id="admTogCod" class="msh-btn" style="background:#16a34a;">💵 COD: ON</button>
-          <button type="button" id="admTogUpi" class="msh-btn" style="background:#16a34a;">📲 Online UPI: ON</button>
-          <button type="button" id="admBackupBtn" class="msh-btn" style="background:#0284c7;">💾 Backup Data</button>
-          <button type="button" id="admRestoreBtn" class="msh-btn" style="background:#7c3aed;">♻️ Restore Backup</button>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#0f172a; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
-          <span style="font-size:0.82rem; color:#facc15; font-weight:800;">🔑 కొత్త Admin Password మార్చండి:</span>
-          <input type="text" id="admNewPasswordInp" maxlength="8" placeholder="కొత్త Password (ఉదా: 5678)" style="padding:6px 10px; border-radius:6px; border:none; font-weight:800; width:180px;">
-          <button type="button" id="admBtnChangePass" style="background:#facc15; color:#000; border:none; border-radius:6px; padding:6px 12px; font-weight:900; cursor:pointer;">Update Password</button>
-        </div>
-      </div>
-
-      <!-- 2. UNLIMITED HOTELS + FIXED LIVE GPS MANAGEMENT -->
-      <div class="msh-vault-card" style="border-color:#0284c7;">
-        <div class="msh-vault-title">
-          <span>🏨 2. హోటల్స్ ఫిక్స్‌డ్ Live GPS మేనేజర్ (ఎన్ని హోటల్స్ అయినా Add / Remove చేయొచ్చు)</span>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:7px; margin-bottom:8px;">
-          <input type="text" id="admHotelNameInp" class="msh-inp" style="margin:0; color:#000;" placeholder="హోటల్ పేరు (ఉదా: Sri Sai Mess)">
-          <input type="text" id="admHotelCoordsInp" class="msh-inp" style="margin:0; color:#000;" placeholder="GPS Coordinates లేదా Google Link">
-          <button type="button" id="admBtnHotelMyGps" class="msh-btn" style="background:#0284c7;">📍 Hotel Live GPS</button>
-          <button type="button" id="admBtnSaveHotel" class="msh-btn" style="background:#16a34a;">✅ Save Hotel</button>
-        </div>
-        <div id="admHotelsSavedList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
-      </div>
-
-      <!-- 3. FULL RIDER CONTROL -->
-      <div class="msh-vault-card" style="border-color:#22c55e;">
-        <div class="msh-vault-title" style="color:#4ade80;">
-          <span>🛵 3. రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Edit PIN/Details • Device GPS • Remove)</span>
-        </div>
-        <div id="admRidersList"></div>
-      </div>
-
-      <!-- 4. QUICK ADD FOOD/VEG ITEM -->
-      <div class="msh-vault-card">
-        <div class="msh-vault-title">
-          <span>➕ 4. కొత్త ఫుడ్ / కూరగాయల ఐటమ్ యాడ్ చేయండి (పైన మెనూలో ✏️ నొక్కి రేట్లు మార్చుకోవచ్చు)</span>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:7px;">
-          <select id="admNewCat" class="msh-sel" style="margin:0; color:#000;">
-            <option value="veg">🥬 Vegetables (1kg Rate)</option>
-            <option value="food">🍗 Biryani / Meals</option>
-            <option value="own">🌾 My Farm Stock</option>
-            <option value="drinks">💧 Water / Drinks</option>
-          </select>
-          <input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు">
-          <input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹">
-          <input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (Optional)">
-          <button type="button" id="admBtnSaveItem" class="msh-btn" style="background:#fc8019;">Save Item</button>
-        </div>
-      </div>
-
-      <!-- 5. REVENUE & LIVE CCTV ORDERS MONITOR -->
-      <div id="admProfitBanner" style="background:#0f4c3a; border:1.5px solid #4ade80; border-radius:9px; padding:10px; margin-bottom:12px; font-weight:800; font-size:0.88rem; line-height:1.5;">
-        💰 Total Billing: ₹0 | 🛵 Rider Commission: ₹0 | 🧾 GST (5%): ₹0 | 👑 Owner Net Profit: ₹0
-      </div>
-
-      <div class="msh-vault-card">
-        <div class="msh-vault-title" style="color:#facc15;">
-          <span>👁️ 5. లైవ్ ఆర్డర్స్ CCTV మానిటర్ (Delivery Codes, Maps & Force Wipe)</span>
-        </div>
-        <div id="admOrdersList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================
-       BOTTOM SECTION: LIVE RIDER MAP + CUSTOMER DELIVERY CODE VERIFICATION
-       ========================================================= -->
-  <div class="msh-bottom-map-sec">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div>
-        <strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. లైవ్ ట్రాకింగ్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
-        <div style="font-size:0.8rem; color:#94a3b8;">కస్టమర్ ఇచ్చే 4-Digit Delivery Code లేదా Admin ద్వారా మాత్రమే రైడ్ పూర్తవుతుంది.</div>
-      </div>
-      <div class="msh-row" style="margin:0;">
-        <input type="text" id="bottomPinInp" class="msh-inp" style="margin:0; width:145px; text-align:center; font-weight:900; letter-spacing:2px;" maxlength="4" placeholder="Tracking PIN">
-        <button type="button" class="msh-btn" style="background:#0284c7;" id="btnUnlockBottomMap">🔓 మ్యాప్ ఓపెన్</button>
-        <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnLockBottomMap">🔒 లాక్</button>
-      </div>
-    </div>
-
-    <div class="msh-dist-pills">
-      <div class="msh-dpill" style="border-color:#fc8019;">
-        <span style="color:#fdba74; font-size:0.78rem; display:block;">🏨 హోటల్ నుండి ఇంటి దూరం (Hotel ➔ House):</span>
-        <span id="pillHotelHouseKm" style="color:#fff;">🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది</span>
-      </div>
-      <div class="msh-dpill" style="border-color:#4ade80;">
-        <span style="color:#86efac; font-size:0.78rem; display:block;">🛵 రైడర్ లైవ్ మూవింగ్ దూరం (Moving Rider ➔ House):</span>
-        <span id="pillRiderLiveKm" style="color:#facc15;">🔒 Waiting for PIN...</span>
-      </div>
-    </div>
-
-    <div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div style="font-size:0.84rem; color:#86efac; font-weight:800;">
-        🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
-      </div>
-      <div style="display:flex; gap:6px;">
-        <input type="text" id="verifyDeliveryCodeInp" maxlength="4" placeholder="Delivery Code" style="width:125px; padding:6px 8px; border-radius:7px; border:none; font-weight:900; text-align:center; letter-spacing:2px;">
-        <button type="button" id="btnVerifyCodeAndComplete" style="background:#16a34a; color:#fff; border:none; border-radius:7px; padding:7px 14px; font-weight:900; font-size:0.84rem; cursor:pointer;">
-          ✅ Complete & Unlock Next Ride
-        </button>
-      </div>
-    </div>
-
-    <div class="msh-map-frame">
-      <div id="mshBottomLiveMap"></div>
-      <div class="msh-lock-curtain" id="bottomMapCurtain">
-        <div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
-        <strong style="font-size:1.05rem; color:#facc15; margin-bottom:4px;">ప్రైవేట్ లైవ్ GPS మ్యాప్ & చాట్ రూమ్ (Locked)</strong>
-        <p style="font-size:0.84rem; color:#cbd5e1; margin:0; max-width:350px;">
-          కస్టమర్, యాక్సెప్ట్ చేసిన రైడర్ & అడ్మిన్ మాత్రమే తమ <b>4-Digit Tracking PIN</b> ఎంటర్ చేసి లైవ్ దూరం & మెసేజ్ చూడగలరు.
-        </p>
-      </div>
-    </div>
-
-    <div class="msh-row" style="margin:0;">
-      <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ఫోన్ నంబర్లు షేర్ చేయవద్దు - డెలివరీ అయ్యాక డిలీట్ అవుతుంది)...">
-      <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">పంపండి ➤</button>
-    </div>
-    <div id="bottomChatFeed" style="background:#1e293b; border-radius:8px; padding:8px 10px; margin-top:6px; max-height:110px; overflow-y:auto; font-size:0.84rem;"></div>
-  </div>
-
+​<div class="msh-pro-master" id="mshProMasterApp">
+​<!-- Moving Disclaimer Ticker -->
+<div class="msh-ticker">
+<div class="msh-ticker-txt">
+⚠️ గమనిక: ఇది లోకల్ గ్రామీణ ఫుడ్ & కూరగాయల డెలివరీ సేవ (Boddavara • Kiltampalem • S.Kota • Thatipudi). కస్టమర్ ఇచ్చే 4-Digit Delivery Code ద్వారా మాత్రమే రైడ్ పూర్తవుతుంది. 100% ప్రైవసీ — ఫోన్ నంబర్లు ఎవరికీ షేర్ కావు.
 </div>
-
-<script>
+</div>
+​<!-- Open Notification Alert -->
+<div class="msh-notify-bar" id="openOrderNotifyStrip">
+<span id="openOrderNotifyText">🔔 కొత్త ఆర్డర్ వచ్చింది! రైడర్లు మీ Secret PIN తో లాక్ ఓపెన్ చేసి ఆర్డర్ తీసుకోండి.</span>
+<span style="background:#facc15; color:#000; padding:3px 10px; border-radius:99px; font-size:0.78rem;">కొత్త ఆర్డర్</span>
+</div>
+​<!-- Header -->
+<div class="msh-header">
+<div>
+<h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
+<p class="msh-sub">రియల్ రోడ్ రూట్ మ్యాప్ • 3-4 Extra Items • షాప్స్ రిజిస్ట్రేషన్ • పర్మనెంట్ వైప్ సెక్యూరిటీ</p>
+</div>
+<div id="masterStatusBadge" style="font-size:0.84rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 14px; border-radius:99px;">
+🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)
+</div>
+</div>
+​<!-- Service Closed Wall -->
+<div class="msh-closed-wall" id="serviceClosedWall">
+🔴 ప్రస్తుతం ఫుడ్ డెలివరీ సర్వీస్ తాత్కాలికంగా ఆపివేయబడింది (Service OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
+</div>
+​<!-- =========================================================
+TOP 50% LEFT CARD + 50% RIGHT CARD SPLIT
+========================================================= -->
+<div class="msh-main-split">
+​<!-- LEFT 50% CARD: 7x3 Compact Food Menu + Multi-Extra Items Box -->
+<div class="msh-panel msh-panel-orange">
+<div>
+<div class="msh-h3" style="color:#9a3412;">
+<span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
+<span id="menuItemsBadge" style="font-size:0.75rem; background:#ffedd5; padding:2px 7px; border-radius:6px;">21 Items</span>
+</div>
+​<div class="msh-cats" id="catTabsBar">
+<button type="button" class="msh-cat active" data-cat="all">అన్నీ (All)</button>
+<button type="button" class="msh-cat" data-cat="food">🍗 బిర్యానీ & భోజనం</button>
+<button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 మా సొంత స్టాక్</button>
+<button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు</button>
+<button type="button" class="msh-cat" data-cat="drinks">💧 వాటర్ / డ్రింక్స్</button>
+</div>
+​<div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
+</div>
+​<!-- UNLIMITED EXTRA ITEMS BOX (Add 3, 4, 5+ extra items like Mixture, Shampoo, Drink!) -->
+<div class="msh-left-extra-box">
+<span style="font-size:0.76rem; font-weight:900; color:#9a3412; display:block; margin-bottom:4px;">
+➕ మెనూలో లేని Extra ఐటమ్స్ (3-4 ఐటమ్స్ అయినా + Add నొక్కి యాడ్ చేయొచ్చు):
+</span>
+<div class="msh-row" style="margin-bottom:4px;">
+<input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5; padding:6px 8px; font-size:0.8rem;" placeholder="ఐటమ్ (ఉదా: Mixture / Shampoo)">
+<input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.55; padding:6px 5px; font-size:0.8rem;" placeholder="Qty" min="1" value="1">
+<input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.75; padding:6px 5px; font-size:0.8rem;" placeholder="ధర ₹" min="1">
+<button type="button" id="btnAddExtraToList" style="background:#ea580c; color:#fff; border:none; border-radius:7px; padding:0 10px; font-weight:900; font-size:0.78rem; cursor:pointer; white-space:nowrap;">+ Add</button>
+</div>
+<div id="addedExtraChips" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+</div>
+</div>
+​<!-- RIGHT 50% CARD: Hotel Address Checkout + Step-by-Step Swiggy Rider Panel -->
+<div class="msh-right-col-stack">
+​<!-- 2A. Customer Checkout Card -->
+<div class="msh-panel msh-panel-slate">
+<div>
+<div class="msh-h3" style="color:#0f4c3a;">
+<span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
+<span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:3px 8px; border-radius:6px;">దూరం: 1.0 km</span>
+</div>
+​<select id="cHotelSel" class="msh-sel"></select>
+​<input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / S.Kota)">
+​<div class="msh-row">
+<input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
+<button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
+</div>
+​<div class="msh-row">
+<input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
+<input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
+</div>
+​<select id="cPaymentMethodSel" class="msh-sel"></select>
+​<div class="msh-fees-card">
+<div class="msh-numbered-list" id="cNumberedItemsPreview">🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి</div>
+<div class="msh-fee-line"><span>ఐటమ్స్ ధర (Items + Extra):</span><span id="feeItemsVal">₹0</span></div>
+<div class="msh-fee-line"><span>హోటల్ నుండి దూరం (<b id="feeExactKmLbl">1.0 km</b>):</span><span id="feeDelivVal">₹25</span></div>
+<div class="msh-fee-line"><span>ప్యాకింగ్ & సర్వీస్ ఫీజు:</span><span id="feePackServVal">₹10</span></div>
+<div class="msh-fee-line"><span>GST (5%):</span><span id="feeGstVal">₹0</span></div>
+<div class="msh-fee-total">
+<span>మొత్తం బిల్లు (Total Bill):</span>
+<span id="feeGrandTotalVal" style="color:#15803d;">₹35</span>
+</div>
+</div>
+</div>
+​<button type="button" class="msh-order-btn" id="btnPlaceOrderNow">
+🍔 ఆర్డర్ చేయండి (PLACE ORDER)
+</button>
+​<div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
+<div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
+<div>
+<span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ చూసే PIN:</span>
+<strong style="font-size:1.25rem; color:#facc15; letter-spacing:2px;" id="custOrderPinText">----</strong>
+</div>
+<div style="border-left:1px solid #3b82f6; padding-left:10px;">
+<span style="font-size:0.75rem; color:#86efac; display:block;">🔐 డెలివరీ పూర్తి చేసే కోడ్:</span>
+<strong style="font-size:1.25rem; color:#4ade80; letter-spacing:2px;" id="custDeliveryCodeText">----</strong>
+</div>
+</div>
+<span style="font-size:0.74rem; color:#e2e8f0; display:block; margin-top:4px;">ఫుడ్ చేతికి అందిన తర్వాతే ఈ <b>డెలివరీ కోడ్</b> రైడర్‌కు చెప్పండి!</span>
+</div>
+</div>
+​<!-- 2B. Swiggy-Style Step-by-Step Rider Card -->
+<div class="msh-panel msh-panel-green">
+<div>
+<div class="msh-h3" style="color:#0f4c3a;">
+<span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
+<button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
+🔔 సౌండ్ ON
+</button>
+</div>
+​<div class="msh-row">
+<input type="password" id="riderPinLoginInp" class="msh-inp" style="margin:0; font-weight:800; letter-spacing:2px;" maxlength="4" placeholder="మీ 4-Digit Rider PIN">
+<button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్</button>
+<button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒</button>
+</div>
+​<div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.83rem; font-weight:700;">
+🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
+</div>
+​<div id="riderActivePanel" style="display:none;">
+<div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.84rem; display:flex; justify-content:space-between;">
+<strong id="riderHeaderName">🛵 Rider</strong>
+<span id="riderHeaderEarn" style="color:#facc15; font-weight:800;">సంపాదన: ₹0</span>
+</div>
+<div id="riderOrdersFeed" class="msh-rider-scroll-feed"></div>
+</div>
+</div>
+</div>
+​</div>
+</div>
+​<!-- =========================================================
+MIDDLE SECTION: RIDER REGISTRATION + SHOP PARTNER REGISTRATION + CCTV ADMIN
+========================================================= -->
+<div class="msh-mid-admin-sec">
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+<div>
+<strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ పార్ట్‌నర్ రిజిస్ట్రేషన్ + CCTV Admin Control Room</strong>
+<div style="font-size:0.8rem; color:#475569;">కొత్త రైడర్లు & కొత్త హోటల్స్/షాప్స్ యజమానులు ఇక్కడ రిజిస్టర్ అవ్వచ్చు • Admin Control Room లో అన్నీ Approve & Control చేయొచ్చు.</div>
+</div>
+<button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">🔐 Admin Control Room</button>
+</div>
+​<!-- New Rider Registration -->
+<div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; padding:11px; margin-bottom:10px;">
+<strong style="font-size:0.88rem; color:#1e3a8a; display:block; margin-bottom:6px;">🛵 కొత్త రైడర్ రిజిస్ట్రేషన్ (మీ పేరు + ఫోన్ + Live GPS):</strong>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:7px;">
+<input type="text" id="regName" class="msh-inp" style="margin:0;" placeholder="రైడర్ పేరు (Name)">
+<input type="tel" id="regPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Phone)">
+<input type="text" id="regVillage" class="msh-inp" style="margin:0;" placeholder="మీ ఊరు (Village)">
+<button type="button" class="msh-btn" style="background:#0284c7;" id="btnRegDeviceGps">📡 నా Device GPS</button>
+<button type="button" class="msh-btn" style="background:#16a34a;" id="btnSubmitReg">✅ రిజిస్టర్ రైడర్</button>
+</div>
+<div id="regGpsMsg" style="font-size:0.78rem; color:#15803d; font-weight:700; margin-top:4px;"></div>
+</div>
+​<!-- Future Partner Shop / Hotel Self-Registration -->
+<div style="background:#fff7ed; border:1.5px solid #fdba74; border-radius:12px; padding:11px; margin-bottom:10px;">
+<strong style="font-size:0.88rem; color:#9a3412; display:block; margin-bottom:6px;">🏪 మీ హోటల్ / షాప్‌ను మా యాప్‌లో జత చేయండి (Shop Partner Registration):</strong>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:7px;">
+<input type="text" id="shopRegName" class="msh-inp" style="margin:0;" placeholder="హోటల్ / షాప్ పేరు">
+<input type="tel" id="shopRegPhone" class="msh-inp" style="margin:0;" placeholder="యజమాని ఫోన్ నంబర్">
+<input type="text" id="shopRegCoords" class="msh-inp" style="margin:0;" placeholder="షాప్ GPS (Live GPS నొక్కండి)">
+<button type="button" class="msh-btn" style="background:#ea580c;" id="btnShopRegGps">📍 షాప్ Live GPS</button>
+<button type="button" class="msh-btn" style="background:#0f4c3a;" id="btnSubmitShopReg">✅ షాప్ రిజిస్టర్</button>
+</div>
+</div>
+​<!-- 24-Hour Auto-Deleting Notice Board -->
+<div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:11px; margin-bottom:12px;">
+<strong style="font-size:0.88rem; color:#1e3a8a; display:block; margin-bottom:6px;">⏳ 24-Hour Live Notice & Q&A (24 గంటల తర్వాత ఆటోమేటిక్‌గా డిలీట్ అవుతాయి):</strong>
+<div class="msh-row" style="margin-bottom:6px;">
+<input type="text" id="public24hMsgInp" class="msh-inp" style="margin:0;" placeholder="ప్రశ్న లేదా ఆఫర్ మెసేజ్ రాయండి...">
+<button type="button" class="msh-btn" style="background:#2563eb;" id="btnPost24hMsg">Post (24h)</button>
+</div>
+<div id="public24hMsgFeed" style="max-height:90px; overflow-y:auto; font-size:0.83rem;"></div>
+</div>
+​<!-- CCTV CONTROL ROOM STYLE ADMIN VAULT -->
+<div id="adminMasterDashboard" class="msh-cctv-vault">
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
+<div>
+<strong style="color:#facc15; font-size:1.12rem;">👑 CCTV Master Control Room — పూర్తి అడ్మిన్ యాక్సెస్</strong>
+<div style="font-size:0.78rem; color:#94a3b8;">ఇక్కడ మీరు ప్రతి రైడర్, ప్రతి హోటల్/షాప్, ప్రతి ఐటమ్ రేట్, లైవ్ ఆర్డర్లు & అడ్మిన్ పాస్‌వర్డ్ మార్చుకోవచ్చు.</div>
+</div>
+<button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-weight:900; cursor:pointer;">🔒 Lock Control Room</button>
+</div>
+​<!-- 1. MASTER SWITCHES & ADMIN PASSWORD CHANGE -->
+<div class="msh-vault-card">
+<div class="msh-vault-title">
+<span>🎛️ 1. మాస్టర్ స్విచ్‌లు & Admin Password మార్చుకునే సదుపాయం</span>
+</div>
+<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+<button type="button" id="admTogService" class="msh-btn" style="background:#dc2626;">🔴 Stop Service (OFF)</button>
+<button type="button" id="admTogCod" class="msh-btn" style="background:#16a34a;">💵 COD: ON</button>
+<button type="button" id="admTogUpi" class="msh-btn" style="background:#16a34a;">📲 Online UPI: ON</button>
+<button type="button" id="admBackupBtn" class="msh-btn" style="background:#0284c7;">💾 Backup Data</button>
+<button type="button" id="admRestoreBtn" class="msh-btn" style="background:#7c3aed;">♻️ Restore Backup</button>
+</div>
+<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#0f172a; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
+<span style="font-size:0.82rem; color:#facc15; font-weight:800;">🔑 కొత్త Admin Password మార్చండి:</span>
+<input type="text" id="admNewPasswordInp" maxlength="8" placeholder="కొత్త Password (ఉదా: 5678)" style="padding:6px 10px; border-radius:6px; border:none; font-weight:800; width:180px;">
+<button type="button" id="admBtnChangePass" style="background:#facc15; color:#000; border:none; border-radius:6px; padding:6px 12px; font-weight:900; cursor:pointer;">Update Password</button>
+</div>
+</div>
+​<!-- 2. UNLIMITED HOTELS & SHOPS APPROVAL / LIVE GPS -->
+<div class="msh-vault-card" style="border-color:#0284c7;">
+<div class="msh-vault-title">
+<span>🏨 2. హోటల్స్ & షాప్స్ మేనేజర్ (Approve / Add / Remove Live GPS)</span>
+</div>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:7px; margin-bottom:8px;">
+<input type="text" id="admHotelNameInp" class="msh-inp" style="margin:0; color:#000;" placeholder="హోటల్ / షాప్ పేరు">
+<input type="text" id="admHotelCoordsInp" class="msh-inp" style="margin:0; color:#000;" placeholder="GPS Coordinates లేదా Google Link">
+<button type="button" id="admBtnHotelMyGps" class="msh-btn" style="background:#0284c7;">📍 Hotel Live GPS</button>
+<button type="button" id="admBtnSaveHotel" class="msh-btn" style="background:#16a34a;">✅ Save Hotel</button>
+</div>
+<div id="admHotelsSavedList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+</div>
+​<!-- 3. FULL RIDER CONTROL -->
+<div class="msh-vault-card" style="border-color:#22c55e;">
+<div class="msh-vault-title" style="color:#4ade80;">
+<span>🛵 3. రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Edit PIN/Details • Device GPS • Remove)</span>
+</div>
+<div id="admRidersList"></div>
+</div>
+​<!-- 4. QUICK ADD FOOD/VEG ITEM -->
+<div class="msh-vault-card">
+<div class="msh-vault-title">
+<span>➕ 4. కొత్త ఫుడ్ / కూరగాయల ఐటమ్ యాడ్ చేయండి (పైన మెనూలో ✏️ నొక్కి రేట్లు మార్చుకోవచ్చు)</span>
+</div>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:7px;">
+<select id="admNewCat" class="msh-sel" style="margin:0; color:#000;">
+<option value="veg">🥬 Vegetables (1kg Rate)</option>
+<option value="food">🍗 Biryani / Meals</option>
+<option value="own">🌾 My Farm Stock</option>
+<option value="drinks">💧 Water / Drinks</option>
+</select>
+<input type="text" id="admNewItemName" class="msh-inp" style="margin:0; color:#000;" placeholder="ఐటమ్ పేరు">
+<input type="number" id="admNewItemPrice" class="msh-inp" style="margin:0; color:#000;" placeholder="ధర ₹">
+<input type="text" id="admNewItemImg" class="msh-inp" style="margin:0; color:#000;" placeholder="Photo URL (Optional)">
+<button type="button" id="admBtnSaveItem" class="msh-btn" style="background:#fc8019;">Save Item</button>
+</div>
+</div>
+​<!-- 5. REVENUE & LIVE CCTV ORDERS MONITOR -->
+<div id="admProfitBanner" style="background:#0f4c3a; border:1.5px solid #4ade80; border-radius:9px; padding:10px; margin-bottom:12px; font-weight:800; font-size:0.88rem; line-height:1.5;">
+💰 Total Billing: ₹0 | 🛵 Rider Commission: ₹0 | 🧾 GST (5%): ₹0 | 👑 Owner Net Profit: ₹0
+</div>
+​<div class="msh-vault-card">
+<div class="msh-vault-title" style="color:#facc15;">
+<span>👁️ 5. లైవ్ ఆర్డర్స్ CCTV మానిటర్ (Delivery Codes, Maps & Permanent Wipe)</span>
+</div>
+<div id="admOrdersList"></div>
+</div>
+</div>
+</div>
+​<!-- =========================================================
+BOTTOM SECTION: REAL-ROAD ROUTE MAP & DELIVERY CODE VERIFICATION
+========================================================= -->
+<div class="msh-bottom-map-sec">
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+<div>
+<strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. రియల్ రోడ్ రూట్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
+<div style="font-size:0.8rem; color:#94a3b8;">రైడర్ "ఫుడ్ తీసుకున్నాను" నొక్కగానే కస్టమర్ ఇంటికి వెళ్ళే అసలైన రోడ్డు మార్గం (Real Road Route) ఇక్కడ లైవ్‌లో కనిపిస్తుంది.</div>
+</div>
+<div class="msh-row" style="margin:0;">
+<input type="text" id="bottomPinInp" class="msh-inp" style="margin:0; width:145px; text-align:center; font-weight:900; letter-spacing:2px;" maxlength="4" placeholder="Tracking PIN">
+<button type="button" class="msh-btn" style="background:#0284c7;" id="btnUnlockBottomMap">🔓 మ్యాప్ ఓపెన్</button>
+<button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnLockBottomMap">🔒 లాక్</button>
+</div>
+</div>
+​<div class="msh-dist-pills">
+<div class="msh-dpill" style="border-color:#fc8019;">
+<span style="color:#fdba74; font-size:0.78rem; display:block;">🏨 హోటల్ నుండి ఇంటి దూరం (Hotel ➔ House):</span>
+<span id="pillHotelHouseKm" style="color:#fff;">🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది</span>
+</div>
+<div class="msh-dpill" style="border-color:#4ade80;">
+<span style="color:#86efac; font-size:0.78rem; display:block;">🛵 రైడర్ లైవ్ మూవింగ్ దూరం (Moving Rider ➔ House):</span>
+<span id="pillRiderLiveKm" style="color:#facc15;">🔒 Waiting for PIN...</span>
+</div>
+</div>
+​<div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+<div style="font-size:0.84rem; color:#86efac; font-weight:800;">
+🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
+</div>
+<div style="display:flex; gap:6px;">
+<input type="text" id="verifyDeliveryCodeInp" maxlength="4" placeholder="Delivery Code" style="width:125px; padding:6px 8px; border-radius:7px; border:none; font-weight:900; text-align:center; letter-spacing:2px;">
+<button type="button" id="btnVerifyCodeAndComplete" style="background:#16a34a; color:#fff; border:none; border-radius:7px; padding:7px 14px; font-weight:900; font-size:0.84rem; cursor:pointer;">
+✅ Complete & Unlock Next Ride
+</button>
+</div>
+</div>
+​<div class="msh-map-frame">
+<div id="mshBottomLiveMap"></div>
+<div class="msh-lock-curtain" id="bottomMapCurtain">
+<div style="font-size:2.2rem; margin-bottom:6px;">🔐</div>
+<strong style="font-size:1.05rem; color:#facc15; margin-bottom:4px;">ప్రైవేట్ లైవ్ GPS మ్యాప్ & చాట్ రూమ్ (Locked)</strong>
+<p style="font-size:0.84rem; color:#cbd5e1; margin:0; max-width:350px;">
+కస్టమర్, యాక్సెప్ట్ చేసిన రైడర్ & అడ్మిన్ మాత్రమే తమ <b>4-Digit Tracking PIN</b> ఎంటర్ చేసి లైవ్ రోడ్డు మార్గం & మెసేజ్ చూడగలరు.
+</p>
+</div>
+</div>
+​<div class="msh-row" style="margin:0;">
+<input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ఫోన్ నంబర్లు షేర్ చేయవద్దు - డెలివరీ అయ్యాక డిలీట్ అవుతుంది)...">
+<button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">పంపండి ➤</button>
+</div>
+<div id="bottomChatFeed" style="background:#1e293b; border-radius:8px; padding:8px 10px; margin-top:6px; max-height:110px; overflow-y:auto; font-size:0.84rem;"></div>
+</div>
+​</div>
+​<script>
 (function() {
-  const ADMIN_WA = "918985240287";
-  const PACKING_FEE = 5;
-  const PLATFORM_FEE = 5;
-  const GST_RATE = 0.05;
-  const DAY_24H_MS = 24 * 60 * 60 * 1000;
-
-  let currentAdminPassword = localStorage.getItem("msh_custom_admin_pass") || "1234";
-
-  const PEERS_10 = [
-    "https://gun-manhattan.herokuapp.com/gun",
-    "https://relay.peer.ooo/gun",
-    "https://peer.wallie.io/gun",
-    "https://gun-us.herokuapp.com/gun",
-    "https://gun-eu.herokuapp.com/gun",
-    "https://gundb-relay.onrender.com/gun",
-    "https://gun-relay.glitch.me/gun",
-    "https://gunjs.herokuapp.com/gun"
-  ];
-  const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
-  const NTFY_PRIMARY = "https://ntfy.sh";
-
-  const TOPIC_MENU   = "msh_unified_menu_2026";
-  const TOPIC_HOTELS = "msh_unified_hotels_2026";
-  const TOPIC_ORDERS = "msh_unified_orders_2026";
-  const TOPIC_GPS    = "msh_unified_gps_2026";
-  const TOPIC_RIDERS = "msh_unified_riders_2026";
-  const TOPIC_CONFIG = "msh_unified_config_2026";
-  const TOPIC_24H    = "msh_unified_24h_2026";
-
-  function loadMergedRiders() {
-    const base = {
-      "2211": { pin: "2211", name: "Rajesh", phone: "9000000001", village: "S.Kota", approved: true, lat: 18.1118, lng: 83.1415, earned: 0 },
-      "3344": { pin: "3344", name: "Sridhar", phone: "9000000002", village: "Kiltampalem", approved: true, lat: 18.1050, lng: 83.1480, earned: 0 },
-      "9999": { pin: "9999", name: "Prakash (Head)", phone: "8985240287", village: "Boddavara", approved: true, lat: 18.0815, lng: 83.1285, earned: 0 }
-    };
-    const keysToCheck = ["msh_unified_riders", "msh_v14_riders", "msh_v13_riders", "msh_v12_riders", "msh_v11_riders", "msh_v10_riders", "msh_f1_riders_db"];
-    let merged = { ...base };
-    keysToCheck.forEach(k => {
-      try {
-        const raw = JSON.parse(localStorage.getItem(k) || "null");
-        if (raw && typeof raw === "object") {
-          Object.values(raw).forEach(r => {
-            if (r && r.pin && r.name) merged[r.pin] = r;
-          });
-        }
-      } catch {}
-    });
-    return merged;
-  }
-
-  function loadMergedHotels() {
-    const base = {
-      "h1": { id: "h1", name: "Guntur Mess (Boddavara)", lat: 18.0815, lng: 83.1285 },
-      "h2": { id: "h2", name: "Rajula Bhojanam (Boddavara)", lat: 18.0825, lng: 83.1292 },
-      "h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415 },
-      "h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285 }
-    };
-    const keysToCheck = ["msh_unified_hotels", "msh_v14_hotels", "msh_v13_hotels", "msh_v12_hotels"];
-    let merged = { ...base };
-    keysToCheck.forEach(k => {
-      try {
-        const raw = JSON.parse(localStorage.getItem(k) || "null");
-        if (raw && typeof raw === "object") {
-          Object.values(raw).forEach(h => {
-            if (h && h.id && h.name) merged[h.id] = h;
-          });
-        }
-      } catch {}
-    });
-    return merged;
-  }
-
-  let ridersDB = loadMergedRiders();
-  let hotelsDB = loadMergedHotels();
-
-  let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
-  function playLoudRiderBell() {
-    if (!riderBellOn) return;
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      [950, 1250, 950, 1400].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "triangle";
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.35, ctx.currentTime + i * 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.32);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.2);
-        osc.stop(ctx.currentTime + i * 0.2 + 0.32);
-      });
-    } catch {}
-  }
-
-  function updateBellBtnUI() {
-    const b = document.getElementById("btnRiderBellToggle");
-    if (riderBellOn) {
-      b.innerText = "🔔 సౌండ్ ON";
-      b.style.background = "#facc15";
-      b.style.color = "#000";
-    } else {
-      b.innerText = "🔕 సౌండ్ OFF";
-      b.style.background = "#cbd5e1";
-      b.style.color = "#475569";
-    }
-  }
-
-  document.getElementById("btnRiderBellToggle").addEventListener("click", () => {
-    riderBellOn = !riderBellOn;
-    localStorage.setItem("msh_rider_bell_on", String(riderBellOn));
-    updateBellBtnUI();
-    if (riderBellOn) playLoudRiderBell();
-  });
-
-  function getAutoPhotoForName(itemName, customUrl) {
-    const cleanUrl = String(customUrl || "").trim();
-    if (cleanUrl && !cleanUrl.includes("google.com/imgres") && (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://"))) {
-      return cleanUrl;
-    }
-    const n = String(itemName || "").toLowerCase();
-    if (n.includes("guava") || n.includes("జామ")) return "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75";
-    if (n.includes("mango") || n.includes("మామిడి")) return "https://images.unsplash.com/photo-1553279768-865429fa0078?w=300&q=75";
-    if (n.includes("banana") || n.includes("అరటి")) return "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75";
-    if (n.includes("lemon") || n.includes("నిమ్మ")) return "https://images.unsplash.com/photo-1590502593747-42a996133562?w=300&q=75";
-    if (n.includes("apple")) return "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&q=75";
-    if (n.includes("pomegranate") || n.includes("దానిమ్మ")) return "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&q=75";
-    if (n.includes("milk") || n.includes("పాలు")) return "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75";
-    if (n.includes("egg") || n.includes("గుడ్లు")) return "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&q=75";
-    if (n.includes("biryani") || n.includes("chicken")) return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75";
-    if (n.includes("dosa") || n.includes("idli") || n.includes("tiffin")) return "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75";
-    if (n.includes("tomato") || n.includes("టమాట")) return "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75";
-    if (n.includes("onion") || n.includes("ఉల్లి")) return "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75";
-    if (n.includes("potato") || n.includes("బంగాళాదుంప")) return "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=75";
-    if (n.includes("water") || n.includes("వాటర్")) return "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=75";
-    if (n.includes("drink") || n.includes("thumbs") || n.includes("coke") || n.includes("sprite")) return "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=75";
-    if (n.includes("veg") || n.includes("కూర")) return "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75";
-    return "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75";
-  }
-
-  function sanitizeAntiLeakChat(text) {
-    return String(text || "").replace(/\b\d{7,12}\b/g, "[Number Blocked]");
-  }
-
-  function maskPhone(p) {
-    const c = String(p || "").replace(/\D/g, "");
-    return c.length >= 6 ? c.slice(0, 2) + "XXXXXX" + c.slice(-2) : "98XXXXXX10";
-  }
-
-  function calcRoadKm(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const p1 = lat1 * Math.PI / 180, p2 = lat2 * Math.PI / 180;
-    const dp = (lat2 - lat1) * Math.PI / 180, dl = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
-    return Math.max(1.0, Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 10) / 10);
-  }
-
-  function calcDeliveryFeeByKm(km) {
-    if (km <= 3) return 25;
-    if (km <= 5) return 35;
-    if (km <= 8) return 50;
-    if (km <= 12) return 65;
-    return Math.round(km * 6);
-  }
-
-  function extractLatLng(str) {
-    const m = String(str || "").match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/);
-    return m ? { lat: parseFloat(m[1]), lng: parseFloat(m[2]) } : null;
-  }
-
-  const default21Menu = [
-    { id: "m1", cat: "food", name: "Chicken Dum Biryani", price: 150, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" },
-    { id: "m2", cat: "food", name: "Guntur Mess Full Meals", price: 110, img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75" },
-    { id: "m3", cat: "food", name: "Rajula Bhojanam Special", price: 160, img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=300&q=75" },
-    { id: "m4", cat: "own",  name: "Banana Full Gela (అరటి గెల)", price: 280, img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75" },
-    { id: "m5", cat: "own",  name: "Fresh Guava / జామకాయలు", price: 50, img: "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75" },
-    { id: "m6", cat: "own",  name: "Pure Farm Milk (1 Litre)", price: 66, img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75" },
-    { id: "m7", cat: "veg",  name: "Onions / ఉల్లిపాయలు", price: 50, img: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75" },
-    { id: "m8", cat: "veg",  name: "Fresh Tomato / టమాట", price: 40, img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75" },
-    { id: "m9", cat: "veg",  name: "Potato / బంగాళాదుంప", price: 40, img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=75" },
-    { id: "m10", cat: "food", name: "Chicken Fry Piece Biryani", price: 170, img: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=300&q=75" },
-    { id: "m11", cat: "food", name: "Egg Fried Rice / Noodles", price: 90, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&q=75" },
-    { id: "m12", cat: "food", name: "Idli & Sambar Tiffin", price: 50, img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75" },
-    { id: "m13", cat: "drinks", name: "20L Mineral Water Can", price: 35, img: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=75" },
-    { id: "m14", cat: "drinks", name: "Cool Drink (2L Bottle)", price: 95, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=75" },
-    { id: "m15", cat: "own", name: "Country Eggs / నాటుకోడి (6)", price: 90, img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&q=75" },
-    { id: "m16", cat: "food", name: "Parotta & Chicken Curry", price: 100, img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=300&q=75" },
-    { id: "m17", cat: "food", name: "Curd Rice & Pickle Pack", price: 70, img: "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=300&q=75" },
-    { id: "m18", cat: "food", name: "Chicken 65 Starter Pack", price: 140, img: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=300&q=75" },
-    { id: "m19", cat: "veg", name: "Fresh Leafy Greens Pack", price: 30, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75" },
-    { id: "m20", cat: "drinks", name: "Fresh Curd / పెరుగు (500g)", price: 40, img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&q=75" },
-    { id: "m21", cat: "food", name: "Family Biryani Pack (4 Pax)", price: 480, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" }
-  ];
-
-  let menuDB = {};
-  default21Menu.forEach(x => menuDB[x.id] = x);
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_unified_menu") || "null");
-  if (cachedMenu) menuDB = { ...menuDB, ...cachedMenu };
-
-  let appConfig = JSON.parse(localStorage.getItem("msh_unified_config") || "null") || {
-    serviceOpen: true,
-    codEnabled: true,
-    upiEnabled: true
-  };
-
-  let ordersDB = JSON.parse(localStorage.getItem("msh_unified_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_unified_24h") || "{}");
-  let liveGpsCache = {};
-
-  let cart = {};
-  let selectedWeights = {};
-  let activeCat = "all";
-
-  let custLiveLat = null, custLiveLng = null;
-  let regLat = null, regLng = null;
-  let loggedInRiderPin = "";
-  let unlockedBottomPin = "";
-  let isAdminOpen = false;
-  let riderGpsTimer = null;
-
-  const bottomMap = L.map("mshBottomLiveMap").setView([18.0950, 83.1350], 13);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(bottomMap);
-  let mHotelPin = null, mCustPin = null, mRiderPin = null;
-  let lineHotelToHouse = null, lineRiderToHouse = null;
-
-  function populateHotelsDropdown() {
-    const sel = document.getElementById("cHotelSel");
-    const prev = sel.value;
-    sel.innerHTML = Object.values(hotelsDB).map(h =>
-      `<option value="${h.id}">🏨 హోటల్: ${h.name}</option>`
-    ).join("");
-    if (prev && hotelsDB[prev]) sel.value = prev;
-  }
-
-  function getSelectedDropCoords() {
-    const rawGps = document.getElementById("cGpsField").value.trim();
-    const parsed = extractLatLng(rawGps);
-    if (parsed) return parsed;
-    if (custLiveLat !== null && custLiveLng !== null) return { lat: custLiveLat, lng: custLiveLng };
-    return { lat: 18.0815, lng: 83.1285 };
-  }
-
-  function applyConfigUI() {
-    document.getElementById("serviceClosedWall").style.display = appConfig.serviceOpen ? "none" : "block";
-    const badge = document.getElementById("masterStatusBadge");
-    badge.innerText = appConfig.serviceOpen ? "🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)" : "🔴 సర్వీస్ క్లోజ్‌లో ఉంది (CLOSED)";
-    badge.style.background = appConfig.serviceOpen ? "#dcfce7" : "#fee2e2";
-    badge.style.color = appConfig.serviceOpen ? "#15803d" : "#dc2626";
-
-    const paySel = document.getElementById("cPaymentMethodSel");
-    let opts = "";
-    if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్)</option>`;
-    if (appConfig.upiEnabled) opts += `<option value="ONLINE_UPI">📲 Online Payment / UPI (PhonePe / GPay)</option>`;
-    if (!opts) opts = `<option value="NONE">⚠️ పేమెంట్ ఆప్షన్స్ ఆఫ్‌లో ఉన్నాయి</option>`;
-    paySel.innerHTML = opts;
-
-    const bServ = document.getElementById("admTogService");
-    bServ.innerText = appConfig.serviceOpen ? "🔴 Stop Service (OFF)" : "🟢 Start Service (ON)";
-    bServ.style.background = appConfig.serviceOpen ? "#dc2626" : "#16a34a";
-
-    const bCod = document.getElementById("admTogCod");
-    bCod.innerText = appConfig.codEnabled ? "💵 COD: ON" : "💵 COD: OFF";
-    bCod.style.background = appConfig.codEnabled ? "#16a34a" : "#64748b";
-
-    const bUpi = document.getElementById("admTogUpi");
-    bUpi.innerText = appConfig.upiEnabled ? "📲 Online UPI: ON" : "📲 Online UPI: OFF";
-    bUpi.style.background = appConfig.upiEnabled ? "#16a34a" : "#64748b";
-  }
-
-  function saveAndSyncConfig() {
-    localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
-    applyConfigUI();
-    if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}`, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
-  }
-
-  document.getElementById("admTogService").addEventListener("click", () => { appConfig.serviceOpen = !appConfig.serviceOpen; saveAndSyncConfig(); });
-  document.getElementById("admTogCod").addEventListener("click", () => { appConfig.codEnabled = !appConfig.codEnabled; saveAndSyncConfig(); });
-  document.getElementById("admTogUpi").addEventListener("click", () => { appConfig.upiEnabled = !appConfig.upiEnabled; saveAndSyncConfig(); });
-
-  document.getElementById("admBtnChangePass").addEventListener("click", () => {
-    const newP = document.getElementById("admNewPasswordInp").value.trim();
-    if (newP.length < 4) { alert("కనీసం 4 అంకెలు / అక్షరాల Password ఇవ్వండి."); return; }
-    currentAdminPassword = newP;
-    localStorage.setItem("msh_custom_admin_pass", newP);
-    document.getElementById("admNewPasswordInp").value = "";
-    alert(`✅ కొత్త Admin Password "${newP}" సేవ్ అయింది!`);
-  });
-
-  function syncOrder(pin, obj) {
-    ordersDB[pin] = obj;
-    localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
-    if (gun) gun.get(TOPIC_ORDERS).get(pin).put(obj);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(obj) }).catch(() => {});
-    refreshEverything();
-  }
-
-  function completeAndWipeOrder(pin) {
-    if (!ordersDB[pin]) return;
-    const ord = ordersDB[pin];
-    if (ord.acceptedByPin && ridersDB[ord.acceptedByPin]) {
-      ridersDB[ord.acceptedByPin].earned = (Number(ridersDB[ord.acceptedByPin].earned) || 0) + Number(ord.riderComm || 0);
-      syncRiders();
-    }
-    delete ordersDB[pin];
-    delete liveGpsCache[pin];
-    localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
-
-    const wipePayload = { pin, wiped: true };
-    if (gun) {
-      gun.get(TOPIC_ORDERS).get(pin).put(wipePayload);
-      gun.get(TOPIC_GPS).get(pin).put(null);
-    }
-    fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(wipePayload) }).catch(() => {});
-
-    if (unlockedBottomPin === pin) lockBottomMapUI();
-    if (riderGpsTimer) { clearInterval(riderGpsTimer); riderGpsTimer = null; }
-    refreshEverything();
-  }
-
-  function syncRiders() {
-    localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB));
-    const p = { json: JSON.stringify(ridersDB) };
-    if (gun) gun.get(TOPIC_RIDERS).get("all").put(p);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_RIDERS}`, { method: "POST", body: JSON.stringify(p) }).catch(() => {});
-    refreshEverything();
-  }
-
-  function syncHotels() {
-    localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB));
-    populateHotelsDropdown();
-    calcFeesAndExactKm();
-    const p = { json: JSON.stringify(hotelsDB) };
-    if (gun) gun.get(TOPIC_HOTELS).get("all").put(p);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_HOTELS}`, { method: "POST", body: JSON.stringify(p) }).catch(() => {});
-    if (isAdminOpen) renderAdminDashboard();
-  }
-
-  function syncGps(pin, g) {
-    liveGpsCache[pin] = g;
-    if (gun) gun.get(TOPIC_GPS).get(pin).put(g);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_GPS}`, { method: "POST", body: JSON.stringify({ pin, ...g }) }).catch(() => {});
-    if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
-  }
-
-  if (gun) {
-    gun.get(TOPIC_CONFIG).get("main").on(d => {
-      if (d && typeof d.serviceOpen === "boolean") {
-        appConfig = { serviceOpen: d.serviceOpen, codEnabled: !!d.codEnabled, upiEnabled: !!d.upiEnabled };
-        localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
-        applyConfigUI();
-      }
-    });
-    gun.get(TOPIC_HOTELS).get("all").on(d => {
-      if (d && d.json) {
-        try { hotelsDB = { ...hotelsDB, ...JSON.parse(d.json) }; localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB)); populateHotelsDropdown(); calcFeesAndExactKm(); } catch {}
-      }
-    });
-    gun.get(TOPIC_MENU).map().on((d, id) => {
-      if (d && d.name) {
-        if (d.deleted) { delete menuDB[id]; delete cart[id]; }
-        else menuDB[id] = d;
-        localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
-        renderMenu7x3(); calcFeesAndExactKm();
-      }
-    });
-    gun.get(TOPIC_ORDERS).map().on((d, pin) => {
-      if (!d) return;
-      if (d.wiped) {
-        delete ordersDB[pin];
-        delete liveGpsCache[pin];
-        localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
-        if (unlockedBottomPin === pin) lockBottomMapUI();
-        refreshEverything();
-      } else if (d.pin) {
-        const isNew = !ordersDB[pin];
-        ordersDB[pin] = d;
-        localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
-        if (isNew && d.status === "OPEN") {
-          playLoudRiderBell();
-          document.getElementById("openOrderNotifyStrip").style.display = "flex";
-        }
-        refreshEverything();
-      }
-    });
-    gun.get(TOPIC_RIDERS).get("all").on(d => {
-      if (d && d.json) {
-        try { ridersDB = { ...ridersDB, ...JSON.parse(d.json) }; localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB)); refreshEverything(); } catch {}
-      }
-    });
-    gun.get(TOPIC_GPS).map().on((g, pin) => {
-      if (g && g.lat) { liveGpsCache[pin] = g; if (pin === unlockedBottomPin) updateBottomMapLive(pin, g); }
-    });
-    gun.get(TOPIC_24H).map().on((m, id) => {
-      if (m && m.text && m.ts) {
-        if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
-        else delete msgs24hDB[id];
-        localStorage.setItem("msh_unified_24h", JSON.stringify(msgs24hDB));
-        render24hMsgs();
-      }
-    });
-  }
-
-  setInterval(async () => {
-    try {
-      const res = await fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}/json?poll=1&since=5m`);
-      const txt = await res.text();
-      if (!txt) return;
-      txt.trim().split("\n").forEach(line => {
-        try {
-          const w = JSON.parse(line);
-          if (w && w.message) {
-            const o = JSON.parse(w.message);
-            if (o && o.wiped) {
-              delete ordersDB[o.pin];
-              if (unlockedBottomPin === o.pin) lockBottomMapUI();
-              refreshEverything();
-            } else if (o && o.pin) {
-              const isNew = !ordersDB[o.pin];
-              ordersDB[o.pin] = o;
-              if (isNew && o.status === "OPEN") playLoudRiderBell();
-              refreshEverything();
-            }
-          }
-        } catch {}
-      });
-    } catch {}
-  }, 3000);
-
-  function refreshEverything() {
-    if (loggedInRiderPin && ridersDB[loggedInRiderPin]) renderRiderPanel();
-    if (unlockedBottomPin && ordersDB[unlockedBottomPin]) updateBottomMapLive(unlockedBottomPin, liveGpsCache[unlockedBottomPin] || null);
-    if (isAdminOpen) renderAdminDashboard();
-  }
-
-  // =========================================================================
-  // 1. MENU RENDERING (Compact 7x3 Cards)
-  // =========================================================================
-  function getWeightMeta(it) {
-    if (it.cat !== "veg") return { mult: 1, label: "" };
-    const m = selectedWeights[it.id] || 1;
-    const lbl = m === 0.25 ? "250g" : (m === 0.5 ? "500g" : "1kg");
-    return { mult: m, label: lbl };
-  }
-
-  window.mshSelectVegWeight = function(id, mult) {
-    selectedWeights[id] = mult;
-    if (cart[id]) {
-      const it = menuDB[id];
-      const lbl = mult === 0.25 ? "250g" : (mult === 0.5 ? "500g" : "1kg");
-      cart[id].mult = mult;
-      cart[id].wtLabel = lbl;
-      cart[id].unitPrice = Math.round(it.price * mult);
-    }
-    renderMenu7x3();
-    calcFeesAndExactKm();
-  };
-
-  window.mshAdminQuickPriceEdit = function(id) {
-    const it = menuDB[id];
-    if (!it) return;
-    const newRateStr = prompt(`"${it.name}" కొత్త ధర (₹) ఎంటర్ చేయండి (ప్రస్తుత ధర: ₹${it.price}):`, it.price);
-    if (newRateStr === null) return;
-    const newPrice = Number(newRateStr);
-    if (isNaN(newPrice) || newPrice <= 0) { alert("సరైన ధర ఎంటర్ చేయండి."); return; }
-
-    it.price = newPrice;
-    if (cart[id]) {
-      cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
-    }
-    localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
-    renderMenu7x3();
-    calcFeesAndExactKm();
-    if (gun) gun.get(TOPIC_MENU).get(id).put(it);
-  };
-
-  function renderMenu7x3() {
-    const grid = document.getElementById("foodMenu7x3Grid");
-    const items = Object.values(menuDB).filter(x => x && !x.deleted);
-    const list = activeCat === "all" ? items : items.filter(x => x.cat === activeCat);
-    document.getElementById("menuItemsBadge").innerText = `${list.length} Items`;
-
-    grid.innerHTML = list.map(it => {
-      const wMeta = getWeightMeta(it);
-      const displayPrice = Math.round(it.price * wMeta.mult);
-      const q = cart[it.id] ? cart[it.id].qty : 0;
-      const smartImg = getAutoPhotoForName(it.name, it.img);
-
-      const weightChipsHtml = it.cat === "veg"
-        ? `<div class="msh-wt-pills">
-            <button type="button" class="msh-wt-btn ${wMeta.mult === 0.25 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 0.25)">250g</button>
-            <button type="button" class="msh-wt-btn ${wMeta.mult === 0.5 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 0.5)">500g</button>
-            <button type="button" class="msh-wt-btn ${wMeta.mult === 1 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 1)">1kg</button>
-          </div>`
-        : "";
-
-      const btn = q === 0
-        ? `<button type="button" class="msh-fadd" onclick="window.mshProQty('${it.id}', 1)">+ ADD</button>`
-        : `<div class="msh-fqty"><button type="button" onclick="window.mshProQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshProQty('${it.id}', 1)">+</button></div>`;
-
-      const adminControlsHtml = isAdminOpen
-        ? `<div style="display:flex; gap:3px; margin-top:3px;">
-            <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.65rem; padding:2px 0; cursor:pointer; font-weight:900;">✏️ ₹${it.price}</button>
-            <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.65rem; padding:2px 5px; cursor:pointer; font-weight:800;">✕</button>
-          </div>`
-        : "";
-
-      return `
-        <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}">
-          <div>
-            <img src="${smartImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70'">
-            <div class="msh-fname" title="${it.name}">${it.name} ${wMeta.label ? '(' + wMeta.label + ')' : ''}</div>
-          </div>
-          <div>
-            ${weightChipsHtml}
-            <div class="msh-fprice">₹${displayPrice}</div>
-            ${btn}
-            ${adminControlsHtml}
-          </div>
-        </div>`;
-    }).join("");
-  }
-
-  window.mshProQty = function(id, d) {
-    const it = menuDB[id];
-    if (!it) return;
-    const wMeta = getWeightMeta(it);
-    const unitPrice = Math.round(it.price * wMeta.mult);
-
-    const curQty = cart[id] ? cart[id].qty : 0;
-    const nextQty = curQty + d;
-    if (nextQty <= 0) delete cart[id];
-    else cart[id] = { qty: nextQty, mult: wMeta.mult, wtLabel: wMeta.label, unitPrice };
-    renderMenu7x3(); calcFeesAndExactKm();
-  };
-
-  window.mshAdmDelMenu = function(id) {
-    delete menuDB[id]; delete cart[id];
-    localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
-    renderMenu7x3(); calcFeesAndExactKm();
-    if (gun) gun.get(TOPIC_MENU).get(id).put({ id, name: "del", deleted: true });
-  };
-
-  document.querySelectorAll("#catTabsBar .msh-cat").forEach(b => {
-    b.addEventListener("click", function() {
-      document.querySelectorAll("#catTabsBar .msh-cat").forEach(x => x.classList.remove("active"));
-      this.classList.add("active");
-      activeCat = this.dataset.cat;
-      renderMenu7x3();
-    });
-  });
-
-  // =========================================================================
-  // 2. CUSTOMER ORDER PLACEMENT
-  // =========================================================================
-  function calcFeesAndExactKm() {
-    let itemsSum = 0;
-    let numberedLines = [];
-    let idx = 1;
-
-    Object.entries(cart).forEach(([id, entry]) => {
-      const it = menuDB[id];
-      if (it && entry.qty > 0) {
-        const sub = entry.unitPrice * entry.qty;
-        itemsSum += sub;
-        const wtTag = entry.wtLabel ? ` [${entry.wtLabel}]` : "";
-        numberedLines.push(`<b>${idx}.</b> ${it.name}${wtTag} × ${entry.qty} = ₹${sub}`);
-        idx++;
-      }
-    });
-
-    const extraName = document.getElementById("cExtraName").value.trim();
-    const extraQty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
-    const extraRate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
-    if (extraRate > 0) {
-      const exSub = extraQty * extraRate;
-      itemsSum += exSub;
-      numberedLines.push(`<b>${idx}.</b> ${extraName || "Extra Item"} × ${extraQty} = ₹${exSub}`);
-    }
-
-    const hId = document.getElementById("cHotelSel").value;
-    const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
-    const dropCoords = getSelectedDropCoords();
-    const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
-    const delivFee = calcDeliveryFeeByKm(exactKm);
-
-    const gstAmt = Math.round(itemsSum * GST_RATE);
-    const packAndPlat = PACKING_FEE + PLATFORM_FEE;
-    const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
-
-    document.getElementById("autoKmBadge").innerText = `దూరం: ${exactKm} km`;
-    document.getElementById("feeExactKmLbl").innerText = `${exactKm} km`;
-
-    document.getElementById("cNumberedItemsPreview").innerHTML = numberedLines.length
-      ? numberedLines.join("<br>")
-      : `🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి`;
-
-    document.getElementById("feeItemsVal").innerText = `₹${itemsSum}`;
-    document.getElementById("feeDelivVal").innerText = `₹${delivFee}`;
-    document.getElementById("feePackServVal").innerText = `₹${packAndPlat}`;
-    document.getElementById("feeGstVal").innerText = `₹${gstAmt}`;
-    document.getElementById("feeGrandTotalVal").innerText = `₹${grandTotal}`;
-  }
-
-  document.getElementById("cHotelSel").addEventListener("change", calcFeesAndExactKm);
-  document.getElementById("cGpsField").addEventListener("input", calcFeesAndExactKm);
-  document.getElementById("cExtraName").addEventListener("input", calcFeesAndExactKm);
-  document.getElementById("cExtraQty").addEventListener("input", calcFeesAndExactKm);
-  document.getElementById("cExtraPrice").addEventListener("input", calcFeesAndExactKm);
-
-  document.getElementById("btnGetCustGps").addEventListener("click", function() {
-    if (!navigator.geolocation) return;
-    this.innerText = "⏳...";
-    navigator.geolocation.getCurrentPosition(p => {
-      custLiveLat = p.coords.latitude; custLiveLng = p.coords.longitude;
-      document.getElementById("cGpsField").value = `https://maps.google.com/?q=${custLiveLat.toFixed(5)},${custLiveLng.toFixed(5)}`;
-      this.innerText = "✅ GPS ఓకే"; this.style.background = "#16a34a";
-      calcFeesAndExactKm();
-    }, () => { this.innerText = "📍 నా Live GPS"; alert("ఫోన్‌లో Location On చేయండి."); }, { enableHighAccuracy: true });
-  });
-
-  document.getElementById("btnPlaceOrderNow").addEventListener("click", () => {
-    if (!appConfig.serviceOpen) {
-      alert("🔴 ప్రస్తుతం సర్వీస్ క్లోజ్‌లో ఉంది (Service OFF).");
-      return;
-    }
-
-    let itemsSum = 0;
-    let plainNumberedLines = [];
-    let idx = 1;
-
-    Object.entries(cart).forEach(([id, entry]) => {
-      const it = menuDB[id];
-      if (it && entry.qty > 0) {
-        const sub = entry.unitPrice * entry.qty;
-        itemsSum += sub;
-        const wtTag = entry.wtLabel ? ` [${entry.wtLabel}]` : "";
-        plainNumberedLines.push(`${idx}. ${it.name}${wtTag} × ${entry.qty} = ₹${sub}`);
-        idx++;
-      }
-    });
-
-    const extraName = document.getElementById("cExtraName").value.trim();
-    const extraQty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
-    const extraRate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
-    if (extraRate > 0) {
-      const exSub = extraQty * extraRate;
-      itemsSum += exSub;
-      plainNumberedLines.push(`${idx}. ${extraName || "Extra Item"} × ${extraQty} = ₹${exSub}`);
-    }
-
-    if (!plainNumberedLines.length) { alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి."); return; }
-
-    const village = document.getElementById("cVillage").value.trim();
-    if (!village) { alert("దయచేసి మీ ఊరి పేరు (Village Name) రాయండి."); return; }
-
-    const hId = document.getElementById("cHotelSel").value;
-    const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
-    const dropCoords = getSelectedDropCoords();
-    const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
-    const delivFee = calcDeliveryFeeByKm(exactKm);
-
-    const gstAmt = Math.round(itemsSum * GST_RATE);
-    const packAndPlat = PACKING_FEE + PLATFORM_FEE;
-    const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
-
-    const riderComm = Math.round(delivFee * 0.80) + (extraRate > 0 ? 5 : 0);
-    const ownerNetComm = Math.round(itemsSum * 0.15) + packAndPlat + (delivFee - Math.round(delivFee * 0.80)) - (extraRate > 0 ? 5 : 0);
-
-    const cName = document.getElementById("cName").value.trim() || "Customer";
-    const cPhone = document.getElementById("cPhone").value.trim();
-    const payMode = document.getElementById("cPaymentMethodSel").value;
-
-    const orderPin = String(Math.floor(1000 + Math.random() * 9000));
-    const deliveryCode = String(Math.floor(1000 + Math.random() * 9000));
-
-    const orderObj = {
-      pin: orderPin,
-      deliveryCode,
-      status: "OPEN",
-      acceptedByPin: "",
-      acceptedByName: "",
-      hotelName: hotelObj.name,
-      hLat: hotelObj.lat,
-      hLng: hotelObj.lng,
-      village,
-      exactKm,
-      numberedItems: plainNumberedLines.join("\n"),
-      totalBill: grandTotal,
-      riderComm,
-      gstAmt,
-      ownerNetComm: Math.max(10, ownerNetComm),
-      payMode,
-      cName,
-      cPhone: cPhone || "WhatsApp",
-      maskedPhone: maskPhone(cPhone),
-      lat: dropCoords.lat,
-      lng: dropCoords.lng,
-      chat: "",
-      ts: Date.now()
-    };
-
-    syncOrder(orderPin, orderObj);
-
-    document.getElementById("custOrderSuccessBox").style.display = "block";
-    document.getElementById("custOrderPinText").innerText = orderPin;
-    document.getElementById("custDeliveryCodeText").innerText = deliveryCode;
-    unlockBottomMapWithPin(orderPin);
-
-    const waMsg = `🍔 *NEW ORDER (#${orderPin})*\n🔐 *Delivery Code:* ${deliveryCode}\n🏨 Hotel: ${hotelObj.name} (${exactKm} km)\n📋 *Items:*\n${plainNumberedLines.join("\n")}\n📍 Village: ${village}\n👤 ${cName} (${cPhone || "WhatsApp"})\n💳 ${payMode} • 💰 Total: ₹${grandTotal}`;
-    window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
-  });
-
-  // =========================================================================
-  // 3. EASY & FRIENDLY TELUGU RIDER PANEL
-  // =========================================================================
-  document.getElementById("btnRiderUnlock").addEventListener("click", () => {
-    const rPin = document.getElementById("riderPinLoginInp").value.trim();
-    const rider = ridersDB[rPin];
-    if (!rider) {
-      alert("❌ ఈ Rider PIN లేదు! అడ్మిన్ ఇచ్చిన 4-అంకెల PIN ఎంటర్ చేయండి.");
-      return;
-    }
-    if (!rider.approved) {
-      alert("⏳ మీ అకౌంట్ ఇంకా Admin Approval కోసం వేచి ఉంది.");
-      return;
-    }
-    loggedInRiderPin = rPin;
-    document.getElementById("riderLockedPlaceholder").style.display = "none";
-    document.getElementById("riderActivePanel").style.display = "block";
-    document.getElementById("btnRiderLock").style.display = "inline-block";
-    renderRiderPanel();
-  });
-
-  document.getElementById("btnRiderLock").addEventListener("click", () => {
-    loggedInRiderPin = "";
-    document.getElementById("riderPinLoginInp").value = "";
-    document.getElementById("riderLockedPlaceholder").style.display = "block";
-    document.getElementById("riderActivePanel").style.display = "none";
-    document.getElementById("btnRiderLock").style.display = "none";
-  });
-
-  function renderRiderPanel() {
-    const me = ridersDB[loggedInRiderPin];
-    if (!me) return;
-    document.getElementById("riderHeaderName").innerText = `🛵 రైడర్: ${me.name} (${me.village})`;
-    document.getElementById("riderHeaderEarn").innerText = `మీ సంపాదన: ₹${me.earned}`;
-
-    const allActive = Object.values(ordersDB).reverse().filter(o => !o.wiped);
-    const myCurrentLockedOrder = allActive.find(o => (o.status === "ACCEPTED" || o.status === "REACHED") && o.acceptedByPin === me.pin);
-    const list = allActive.filter(o => o.status === "OPEN" || o.acceptedByPin === me.pin);
-    const feed = document.getElementById("riderOrdersFeed");
-
-    if (!list.length) {
-      feed.innerHTML = `<div style="background:#fff; padding:14px; border-radius:8px; text-align:center; color:#64748b; font-size:0.84rem; font-weight:700;">ప్రస్తుతం కొత్త ఆర్డర్లు లేవు. ఆర్డర్ రాగానే ఇక్కడ వస్తుంది!</div>`;
-      return;
-    }
-
-    let html = "";
-    if (myCurrentLockedOrder) {
-      html += `<div style="background:#fef2f2; border:1.5px solid #ef4444; color:#991b1b; padding:8px 10px; border-radius:8px; margin-bottom:8px; font-size:0.8rem; font-weight:800;">
-        🔒 మీ వద్ద Order #${myCurrentLockedOrder.pin} రన్నింగ్‌లో ఉంది! ఇది పూర్తయిన తర్వాతే కొత్త ఆర్డర్ తీసుకోగలరు.
-      </div>`;
-    }
-
-    html += list.map(o => {
-      const formattedItems = String(o.numberedItems || "").replace(/\n/g, "<br>");
-      if (o.status === "OPEN") {
-        const acceptBtnHtml = myCurrentLockedOrder
-          ? `<button type="button" disabled style="width:100%; padding:10px; background:#94a3b8; color:#fff; border:none; border-radius:8px; font-weight:800; cursor:not-allowed;">🔒 లాక్ అయింది (ముందు రన్నింగ్ ఆర్డర్ పూర్తి చేయండి)</button>`
-          : `<button type="button" onclick="window.mshRiderTakeOrder('${o.pin}')" style="width:100%; padding:11px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-weight:900; font-size:0.92rem; cursor:pointer;">✅ ఈ ఆర్డర్ నేను తీసుకుంటాను (ACCEPT)</button>`;
-
-        return `
-          <div style="background:#fff; border:2px solid #fc8019; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
-            <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:4px;">
-              <span style="color:#ea580c;">🔔 ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</span>
-              <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">మీ కమిషన్: ₹${o.riderComm}</span>
-            </div>
-            <div style="background:#fff7ed; padding:6px 8px; border-radius:6px; margin:5px 0; font-weight:700; max-height:115px; overflow-y:auto;">${formattedItems}</div>
-            ${acceptBtnHtml}
-          </div>`;
-      }
-
-      return `
-        <div style="background:#dcfce7; border:2px solid #16a34a; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
-          <div style="display:flex; justify-content:space-between; font-weight:900;">
-            <span>🔓 మీ యాక్టివ్ రైడ్ #${o.pin} (${o.exactKm} km)</span>
-            <span>క్యాష్ తీసుకోవాల్సింది: ₹${o.totalBill}</span>
-          </div>
-          <div style="background:#fff; padding:6px 8px; border-radius:6px; margin:5px 0; border-left:3px solid #16a34a; font-weight:700; max-height:115px; overflow-y:auto;">
-            ${formattedItems}
-          </div>
-          <div>👤 కస్టమర్: <b>${o.cName}</b> (${o.maskedPhone}) • 📍 ఊరు: <b>${o.village}</b></div>
-          <div style="font-size:0.78rem; color:#166534; font-weight:800; margin-top:4px;">
-            ℹ️ ఫుడ్ ఇచ్చాక కస్టమర్ దగ్గర ఉన్న <b>4-అంకెల డెలివరీ కోడ్</b> అడిగి కింద మ్యాప్ బాక్స్‌లో వేయండి.
-          </div>
-
-          <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:7px;">
-            <a href="https://www.google.com/maps/dir/?api=1&origin=${o.hLat},${o.hLng}&destination=${o.lat},${o.lng}&travelmode=two-wheeler" target="_blank" style="flex:1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:8px; border-radius:7px; font-weight:900;">🧭 రూట్ మ్యాప్</a>
-            <button type="button" onclick="window.mshRiderQuickPing('${o.pin}', '🏨 హోటల్ నుండి ఫుడ్ తీసుకున్నాను, బయలుదేరాను!')" style="background:#ea580c; color:#fff; border:none; border-radius:7px; padding:8px 9px; font-weight:800; cursor:pointer;">🏨 ఫుడ్ తీసుకున్నాను</button>
-            <button type="button" onclick="window.mshRiderQuickPing('${o.pin}', '🚪 మీ ఇంటి గేట్ దగ్గరకు వచ్చాను! దయచేసి మీ Delivery Code చెప్పండి.')" style="background:#0f4c3a; color:#fff; border:none; border-radius:7px; padding:8px 9px; font-weight:800; cursor:pointer;">🚪 ఇంటికి వచ్చాను</button>
-            <a href="tel:8985240287" style="background:#475569; color:#fff; text-decoration:none; padding:8px 9px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>
-          </div>
-        </div>`;
-    }).join("");
-
-    feed.innerHTML = html;
-  }
-
-  window.mshRiderQuickPing = function(orderPin, msg) {
-    const ord = ordersDB[orderPin];
-    if (!ord) return;
-    if (msg.includes("గేట్")) ord.status = "REACHED";
-    ord.chat = (ord.chat || "") + `<div style="margin-bottom:3px; color:#4ade80;"><b>🛵 రైడర్:</b> ${msg}</div>`;
-    syncOrder(orderPin, ord);
-  };
-
-  window.mshRiderTakeOrder = function(orderPin) {
-    const ord = ordersDB[orderPin];
-    const me = ridersDB[loggedInRiderPin];
-    if (!ord || ord.status !== "OPEN" || !me) return;
-
-    const alreadyBusy = Object.values(ordersDB).some(o => !o.wiped && (o.status === "ACCEPTED" || o.status === "REACHED") && o.acceptedByPin === me.pin);
-    if (alreadyBusy) {
-      alert("⚠️ మీ దగ్గర ఇప్పటికే ఒక Active Ride ఉంది.");
-      return;
-    }
-
-    ord.status = "ACCEPTED";
-    ord.acceptedByPin = me.pin;
-    ord.acceptedByName = me.name;
-    syncOrder(orderPin, ord);
-
-    unlockBottomMapWithPin(orderPin);
-    document.getElementById("openOrderNotifyStrip").style.display = "none";
-
-    if (riderGpsTimer) clearInterval(riderGpsTimer);
-    if (navigator.geolocation) {
-      const send = () => {
-        navigator.geolocation.getCurrentPosition(p => {
-          syncGps(orderPin, { rider: me.name, lat: p.coords.latitude, lng: p.coords.longitude });
-        }, null, { enableHighAccuracy: true });
-      };
-      send();
-      riderGpsTimer = setInterval(send, 3500);
-    }
-  };
-
-  // =========================================================================
-  // 4. RIDER REGISTRATION + 24H BOARD + CCTV ADMIN CONTROL ROOM
-  // =========================================================================
-  document.getElementById("btnRegDeviceGps").addEventListener("click", function() {
-    if (!navigator.geolocation) return;
-    this.innerText = "⏳...";
-    navigator.geolocation.getCurrentPosition(p => {
-      regLat = p.coords.latitude; regLng = p.coords.longitude;
-      document.getElementById("regGpsMsg").innerText = `✅ Device GPS Captured: ${regLat.toFixed(5)}, ${regLng.toFixed(5)}`;
-      this.innerText = "✅ GPS ఓకే"; this.style.background = "#16a34a";
-    }, () => { this.innerText = "📡 నా Device GPS"; alert("Location On చేయండి."); }, { enableHighAccuracy: true });
-  });
-
-  document.getElementById("btnSubmitReg").addEventListener("click", () => {
-    const name = document.getElementById("regName").value.trim();
-    const phone = document.getElementById("regPhone").value.trim();
-    const village = document.getElementById("regVillage").value.trim() || "Boddavara";
-    if (!name || !phone) { alert("పేరు మరియు ఫోన్ నంబర్ రాయండి."); return; }
-
-    const pin = String(Math.floor(1000 + Math.random() * 8999));
-    ridersDB[pin] = { pin, name, phone, village, approved: false, lat: regLat || 18.0815, lng: regLng || 83.1285, earned: 0 };
-    syncRiders();
-    document.getElementById("regName").value = "";
-    document.getElementById("regPhone").value = "";
-    alert(`✅ ${name} గారు, మీ రిజిస్ట్రేషన్ పూర్తయింది! Admin (Prakash) మిమ్మల్ని Approve చేసి మీ Secret Rider PIN ఇస్తారు.`);
-  });
-
-  function render24hMsgs() {
-    const now = Date.now();
-    const valid = Object.values(msgs24hDB).filter(m => m && (now - m.ts < DAY_24H_MS)).sort((a, b) => b.ts - a.ts);
-    document.getElementById("public24hMsgFeed").innerHTML = valid.length
-      ? valid.map(m => `<div style="background:#fff; padding:5px 8px; border-radius:6px; margin-bottom:4px; border-left:3px solid #2563eb;">💬 ${m.text} <small style="color:#64748b; float:right;">(24h auto-delete)</small></div>`).join("")
-      : "<div style='color:#64748b;'>ప్రస్తుతం మెసేజ్‌లు లేవు.</div>";
-  }
-
-  document.getElementById("btnPost24hMsg").addEventListener("click", () => {
-    const inp = document.getElementById("public24hMsgInp");
-    const txt = inp.value.trim();
-    if (!txt) return;
-    inp.value = "";
-    const id = "m24_" + Date.now();
-    const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
-    msgs24hDB[id] = item;
-    localStorage.setItem("msh_unified_24h", JSON.stringify(msgs24hDB));
-    render24hMsgs();
-    if (gun) gun.get(TOPIC_24H).get(id).put(item);
-  });
-
-  document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
-    if (!isAdminOpen) {
-      const entered = prompt("Admin Control Room Password ఎంటర్ చేయండి:");
-      if (entered !== currentAdminPassword) { alert("❌ తప్పు Admin Password!"); return; }
-      isAdminOpen = true;
-    }
-    document.getElementById("adminMasterDashboard").style.display = "block";
-    renderMenu7x3();
-    renderAdminDashboard();
-  });
-
-  document.getElementById("btnLockAdminPanel").addEventListener("click", () => {
-    isAdminOpen = false;
-    document.getElementById("adminMasterDashboard").style.display = "none";
-    renderMenu7x3();
-  });
-
-  document.getElementById("admBtnHotelMyGps").addEventListener("click", function() {
-    if (!navigator.geolocation) return;
-    this.innerText = "⏳ Capturing...";
-    navigator.geolocation.getCurrentPosition(p => {
-      document.getElementById("admHotelCoordsInp").value = `${p.coords.latitude.toFixed(5)}, ${p.coords.longitude.toFixed(5)}`;
-      this.innerText = "✅ Hotel GPS Ready";
-      this.style.background = "#16a34a";
-    }, () => { this.innerText = "📍 Hotel Live GPS"; alert("Location On చేయండి."); }, { enableHighAccuracy: true });
-  });
-
-  document.getElementById("admBtnSaveHotel").addEventListener("click", () => {
-    const hName = document.getElementById("admHotelNameInp").value.trim();
-    const rawCoords = document.getElementById("admHotelCoordsInp").value.trim();
-    const parsed = extractLatLng(rawCoords);
-    if (!hName || !parsed) {
-      alert("హోటల్ పేరు మరియు Hotel Live GPS Coordinates ఇవ్వండి.");
-      return;
-    }
-    const hid = "h_" + Date.now();
-    hotelsDB[hid] = { id: hid, name: hName, lat: parsed.lat, lng: parsed.lng };
-    document.getElementById("admHotelNameInp").value = "";
-    document.getElementById("admHotelCoordsInp").value = "";
-    document.getElementById("admBtnHotelMyGps").innerText = "📍 Hotel Live GPS";
-    document.getElementById("admBtnHotelMyGps").style.background = "#0284c7";
-    syncHotels();
-    alert(`✅ "${hName}" హోటల్ Live GPS సేవ్ అయింది!`);
-  });
-
-  window.mshAdmDelHotel = function(hid) {
-    if (Object.keys(hotelsDB).length <= 1) { alert("కనీసం ఒక హోటల్ ఉండాలి."); return; }
-    if (confirm("ఈ హోటల్‌ను తొలగించాలా?")) {
-      delete hotelsDB[hid];
-      syncHotels();
-    }
-  };
-
-  window.mshAdmApprove = function(p) {
-    if (ridersDB[p]) { ridersDB[p].approved = true; syncRiders(); }
-  };
-
-  window.mshAdmEditRider = function(oldPin) {
-    const r = ridersDB[oldPin];
-    if (!r) return;
-    const newName = prompt("రైడర్ పేరు (Name):", r.name);
-    if (newName === null) return;
-    const newPhone = prompt("రైడర్ ఫోన్ నంబర్ (Phone):", r.phone);
-    if (newPhone === null) return;
-    const newPin = prompt("రైడర్ 4-Digit Secret PIN:", r.pin);
-    if (!newPin || newPin.trim().length !== 4) { alert("4-Digit PIN ఉండాలి."); return; }
-
-    const cleanNewPin = newPin.trim();
-    if (cleanNewPin !== oldPin) {
-      delete ridersDB[oldPin];
-    }
-    ridersDB[cleanNewPin] = {
-      ...r,
-      pin: cleanNewPin,
-      name: newName.trim() || r.name,
-      phone: newPhone.trim() || r.phone
-    };
-    syncRiders();
-    alert("✅ రైడర్ వివరాలు & PIN అప్‌డేట్ అయ్యాయి!");
-  };
-
-  window.mshAdmRemoveRider = function(p) {
-    const r = ridersDB[p];
-    if (!r) return;
-    if (confirm(`రైడర్ "${r.name}" (PIN: ${p}) ను శాశ్వతంగా తొలగించాలా?`)) {
-      delete ridersDB[p];
-      syncRiders();
-    }
-  };
-
-  document.getElementById("admBtnSaveItem").addEventListener("click", () => {
-    const cat = document.getElementById("admNewCat").value;
-    const name = document.getElementById("admNewItemName").value.trim();
-    const price = Number(document.getElementById("admNewItemPrice").value) || 0;
-    const rawImg = document.getElementById("admNewItemImg").value.trim();
-    if (!name || price <= 0) return;
-
-    const finalImg = getAutoPhotoForName(name, rawImg);
-    const id = "m_" + Date.now();
-    menuDB[id] = { id, cat, name, price, img: finalImg };
-    localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
-    document.getElementById("admNewItemName").value = "";
-    document.getElementById("admNewItemPrice").value = "";
-    document.getElementById("admNewItemImg").value = "";
-    renderMenu7x3();
-    if (gun) gun.get(TOPIC_MENU).get(id).put(menuDB[id]);
-    alert("✅ కొత్త ఐటమ్ & ఫోటో సేవ్ అయ్యాయి!");
-  });
-
-  document.getElementById("admBackupBtn").addEventListener("click", () => {
-    const backup = JSON.stringify({ menuDB, hotelsDB, ridersDB, ordersDB, appConfig });
-    navigator.clipboard?.writeText(backup);
-    alert("✅ మొత్తం Backup డేటా Clipboard లోకి కాపీ అయింది!");
-  });
-
-  document.getElementById("admRestoreBtn").addEventListener("click", () => {
-    const raw = prompt("మీ Backup JSON డేటా ఇక్కడ పేస్ట్ చేయండి:");
-    if (!raw) return;
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed.menuDB) menuDB = parsed.menuDB;
-      if (parsed.hotelsDB) hotelsDB = parsed.hotelsDB;
-      if (parsed.ridersDB) ridersDB = parsed.ridersDB;
-      if (parsed.ordersDB) ordersDB = parsed.ordersDB;
-      if (parsed.appConfig) appConfig = parsed.appConfig;
-      localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB));
-      localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
-      applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
-      alert("✅ డేటా పూర్తిగా Restore అయింది!");
-    } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
-  });
-
-  function renderAdminDashboard() {
-    document.getElementById("admHotelsSavedList").innerHTML = Object.values(hotelsDB).map(h =>
-      `<div style="background:#0f172a; border:1px solid #334155; padding:5px 10px; border-radius:7px; font-size:0.8rem; display:flex; align-items:center; gap:8px;">
-        <span>🏨 <b>${h.name}</b> (${h.lat.toFixed(4)}, ${h.lng.toFixed(4)})</span>
-        <a href="https://maps.google.com/?q=${h.lat},${h.lng}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">🗺️ Map</a>
-        <button type="button" onclick="window.mshAdmDelHotel('${h.id}')" style="background:#dc2626; color:#fff; border:none; border-radius:4px; padding:2px 6px; font-weight:900; cursor:pointer;">Remove</button>
-      </div>`
-    ).join("");
-
-    const list = Object.values(ordersDB).filter(o => !o.wiped).reverse();
-    const totBill = list.reduce((s, o) => s + (Number(o.totalBill) || 0), 0);
-    const totComm = list.reduce((s, o) => s + (Number(o.riderComm) || 0), 0);
-    const totGst = list.reduce((s, o) => s + (Number(o.gstAmt) || 0), 0);
-    const totOwner = list.reduce((s, o) => s + (Number(o.ownerNetComm) || 0), 0);
-
-    document.getElementById("admProfitBanner").innerHTML =
-      `💰 Total Customer Billing: ₹${totBill} | 🛵 Rider Commission: ₹${totComm}<br>🧾 GST Collected (Admin A/c): ₹${totGst} | 👑 Owner Net Commission: ₹${totOwner}`;
-
-    document.getElementById("admRidersList").innerHTML = Object.values(ridersDB).map(r => `
-      <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.83rem;">
-        <div>
-          <strong>🛵 ${r.name}</strong> (${r.village}) • 📞 <a href="tel:${r.phone}" style="color:#38bdf8;">${r.phone}</a> •
-          <span style="background:#facc15; color:#000; padding:1px 6px; border-radius:4px; font-weight:900;">PIN: ${r.pin}</span> •
-          <a href="https://maps.google.com/?q=${r.lat || 18.0815},${r.lng || 83.1285}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">📡 Device GPS</a>
-        </div>
-        <div style="display:flex; gap:5px; flex-wrap:wrap; align-items:center;">
-          ${!r.approved
-            ? `<button type="button" onclick="window.mshAdmApprove('${r.pin}')" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Approve</button>`
-            : `<span style="color:#4ade80; font-weight:800; margin-right:4px;">🟢 Active (₹${r.earned})</span>`
-          }
-          <button type="button" onclick="window.mshAdmEditRider('${r.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">✏️ Edit</button>
-          <button type="button" onclick="window.mshAdmRemoveRider('${r.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">🗑️ Remove</button>
-        </div>
-      </div>
-    `).join("");
-
-    document.getElementById("admOrdersList").innerHTML = list.length
-      ? list.map(o => `
-        <div style="background:#0f172a; border-left:4px solid #38bdf8; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.82rem;">
-          <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
-            <strong>Map PIN #${o.pin} • <span style="background:#16a34a; color:#fff; padding:1px 6px; border-radius:4px;">Delivery Code: ${o.deliveryCode}</span> • ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</strong>
-            <span style="color:#4ade80; font-weight:900;">Bill: ₹${o.totalBill} | Owner: ₹${o.ownerNetComm} | GST: ₹${o.gstAmt} | Rider: ₹${o.riderComm}</span>
-          </div>
-          <div style="color:#cbd5e1; margin:3px 0;">${String(o.numberedItems || "").replace(/\n/g, " | ")}</div>
-          <div>👤 ${o.cName} • 📞 <a href="tel:${o.cPhone}" style="color:#38bdf8;">${o.cPhone}</a> • 🛵 Rider: <b>${o.acceptedByName || "Waiting"}</b> (${o.status})</div>
-          <div style="display:flex; gap:6px; margin-top:5px;">
-            <button type="button" onclick="window.mshAdmOpenBottomMap('${o.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">🗺️ View Map</button>
-            <button type="button" onclick="window.mshAdmCompleteWipe('${o.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Admin Force Complete & Wipe</button>
-          </div>
-        </div>`).join("")
-      : "<div style='color:#94a3b8; font-size:0.82rem;'>ప్రస్తుతం ఆక్టివ్ ఆర్డర్లు లేవు.</div>";
-  }
-
-  window.mshAdmOpenBottomMap = function(p) { unlockBottomMapWithPin(p); document.getElementById("mshBottomLiveMap").scrollIntoView({ behavior: "smooth" }); };
-  window.mshAdmCompleteWipe = function(p) {
-    if (confirm(`Admin Force Complete: Order #${p} పూర్తయిందా? Complete నొక్కితే ఈ ఆర్డర్, మ్యాప్ & మెసేజ్‌లు తొలగించబడి రైడర్ డివైజ్ అన్‌లాక్ అవుతుంది.`)) {
-      completeAndWipeOrder(p);
-    }
-  };
-
-  // =========================================================================
-  // 5. BOTTOM LIVE MAP & CUSTOMER DELIVERY CODE COMPLETION
-  // =========================================================================
-  function unlockBottomMapWithPin(pin) {
-    const p = String(pin || "").trim();
-    if (!ordersDB[p] || ordersDB[p].wiped) {
-      alert(`❌ Tracking PIN "${p}" లేదు లేదా ఇప్పటికే డెలివరీ పూర్తయి తొలగించబడింది.`);
-      return;
-    }
-    unlockedBottomPin = p;
-    document.getElementById("bottomPinInp").value = p;
-    document.getElementById("bottomMapCurtain").style.display = "none";
-    document.getElementById("btnLockBottomMap").style.display = "inline-block";
-    document.getElementById("customerDeliveryCodeBar").style.display = "flex";
-    document.getElementById("verifyDeliveryCodeInp").value = "";
-
-    setTimeout(() => bottomMap.invalidateSize(), 120);
-    updateBottomMapLive(p, liveGpsCache[p] || null);
-  }
-
-  function lockBottomMapUI() {
-    unlockedBottomPin = "";
-    document.getElementById("bottomPinInp").value = "";
-    document.getElementById("bottomMapCurtain").style.display = "flex";
-    document.getElementById("btnLockBottomMap").style.display = "none";
-    document.getElementById("customerDeliveryCodeBar").style.display = "none";
-    document.getElementById("pillHotelHouseKm").innerText = "🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది";
-    document.getElementById("pillRiderLiveKm").innerText = "🔒 Waiting for PIN...";
-    document.getElementById("bottomChatFeed").innerHTML = "";
-  }
-
-  document.getElementById("btnUnlockBottomMap").addEventListener("click", () => unlockBottomMapWithPin(document.getElementById("bottomPinInp").value));
-  document.getElementById("btnLockBottomMap").addEventListener("click", lockBottomMapUI);
-
-  document.getElementById("btnVerifyCodeAndComplete").addEventListener("click", () => {
-    if (!unlockedBottomPin || !ordersDB[unlockedBottomPin]) return;
-    const ord = ordersDB[unlockedBottomPin];
-    const enteredCode = document.getElementById("verifyDeliveryCodeInp").value.trim();
-
-    if (enteredCode !== ord.deliveryCode) {
-      alert("❌ తప్పు Delivery Code! కస్టమర్ ఫోన్‌లో ఉన్న 4-Digit Delivery Code సరిగ్గా ఎంటర్ చేయండి.");
-      return;
-    }
-
-    completeAndWipeOrder(unlockedBottomPin);
-    alert("✅ Delivery Code Verified! ఆర్డర్ పూర్తయింది మరియు రైడర్ డివైజ్ అన్‌లాక్ అయింది.");
-  });
-
-  function updateBottomMapLive(pin, gps) {
-    const ord = ordersDB[pin];
-    if (!ord) return;
-
-    document.getElementById("bottomChatFeed").innerHTML = ord.chat || "<span style='color:#94a3b8;'>ఈ రైడ్ పూర్తయిన వెంటనే ఇక్కడి మెసేజ్‌లు ఆటోమేటిక్‌గా డిలీట్ అవుతాయి...</span>";
-
-    const hIcon = L.divIcon({ html: `<div style="background:#ea580c;color:#fff;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏨 Hotel</div>`, className: "", iconSize: [75, 22], iconAnchor: [37, 11] });
-    if (mHotelPin) mHotelPin.setLatLng([ord.hLat, ord.hLng]);
-    else mHotelPin = L.marker([ord.hLat, ord.hLng], { icon: hIcon }).addTo(bottomMap);
-
-    const cIcon = L.divIcon({ html: `<div style="background:#0284c7;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏠 ${ord.village}</div>`, className: "", iconSize: [110, 24], iconAnchor: [55, 12] });
-    if (mCustPin) { mCustPin.setLatLng([ord.lat, ord.lng]); mCustPin.setIcon(cIcon); }
-    else mCustPin = L.marker([ord.lat, ord.lng], { icon: cIcon }).addTo(bottomMap);
-
-    if (lineHotelToHouse) bottomMap.removeLayer(lineHotelToHouse);
-    lineHotelToHouse = L.polyline([[ord.hLat, ord.hLng], [ord.lat, ord.lng]], { color: "#fc8019", weight: 3, dashArray: "5, 7" }).addTo(bottomMap);
-
-    document.getElementById("pillHotelHouseKm").innerText = `${ord.hotelName} ➔ ${ord.village}: ${ord.exactKm} km`;
-
-    let bounds = [mHotelPin, mCustPin];
-
-    if ((ord.status === "ACCEPTED" || ord.status === "REACHED") && gps && gps.lat) {
-      const rIcon = L.divIcon({ html: `<div style="background:#16a34a;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:12px;border:2px solid #fff;">🛵 ${gps.rider}</div>`, className: "", iconSize: [100, 26], iconAnchor: [50, 13] });
-      if (mRiderPin) { mRiderPin.setLatLng([gps.lat, gps.lng]); mRiderPin.setIcon(rIcon); }
-      else mRiderPin = L.marker([gps.lat, gps.lng], { icon: rIcon }).addTo(bottomMap);
-
-      if (lineRiderToHouse) bottomMap.removeLayer(lineRiderToHouse);
-      lineRiderToHouse = L.polyline([[gps.lat, gps.lng], [ord.lat, ord.lng]], { color: "#22c55e", weight: 5 }).addTo(bottomMap);
-
-      bounds.push(mRiderPin);
-      const riderRemKm = calcRoadKm(gps.lat, gps.lng, ord.lat, ord.lng);
-      document.getElementById("pillRiderLiveKm").innerText = ord.status === "REACHED"
-        ? `📍 ${gps.rider} మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!`
-        : `🟢 ${gps.rider} కదులుతున్నారు — ఇంటికి ${riderRemKm} km దూరంలో`;
-    } else {
-      if (mRiderPin) { bottomMap.removeLayer(mRiderPin); mRiderPin = null; }
-      if (lineRiderToHouse) { bottomMap.removeLayer(lineRiderToHouse); lineRiderToHouse = null; }
-      document.getElementById("pillRiderLiveKm").innerText = ord.status === "OPEN"
-        ? "⏳ రైడర్ Accept కోసం వేచి ఉంది..."
-        : `✅ ${ord.acceptedByName} Assigned`;
-    }
-
-    bottomMap.fitBounds(L.featureGroup(bounds).getBounds().pad(0.25));
-  }
-
-  document.getElementById("btnSendBottomChat").addEventListener("click", () => {
-    if (!unlockedBottomPin || !ordersDB[unlockedBottomPin]) { alert("ముందు 4-Digit Tracking PIN ఎంటర్ చేయండి."); return; }
-    const inp = document.getElementById("bottomChatInp");
-    const rawTxt = inp.value.trim();
-    if (!rawTxt) return;
-    inp.value = "";
-    const safeTxt = sanitizeAntiLeakChat(rawTxt);
-    const sender = loggedInRiderPin ? `🛵 ${ridersDB[loggedInRiderPin].name}` : (isAdminOpen ? "👑 Admin" : "👤 Customer");
-    ordersDB[unlockedBottomPin].chat = (ordersDB[unlockedBottomPin].chat || "") + `<div style="margin-bottom:3px;"><b>${sender}:</b> ${safeTxt}</div>`;
-    syncOrder(unlockedBottomPin, ordersDB[unlockedBottomPin]);
-  });
-
-  // Boot Everything
-  syncRiders();
-  syncHotels();
-  updateBellBtnUI();
-  applyConfigUI();
-  renderMenu7x3();
-  calcFeesAndExactKm();
-  render24hMsgs();
+const ADMIN_WA = "918985240287";
+const PACKING_FEE = 5;
+const PLATFORM_FEE = 5;
+const GST_RATE = 0.05;
+const DAY_24H_MS = 24 * 60 * 60 * 1000;
+​let currentAdminPassword = localStorage.getItem("msh_custom_admin_pass") || "1234";
+​const PEERS_10 = [
+"https://gun-manhattan.herokuapp.com/gun",
+"https://relay.peer.ooo/gun",
+"https://peer.wallie.io/gun",
+"https://gun-us.herokuapp.com/gun",
+"https://gun-eu.herokuapp.com/gun",
+"https://gundb-relay.onrender.com/gun",
+"https://gun-relay.glitch.me/gun",
+"https://gunjs.herokuapp.com/gun"
+];
+const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
+const NTFY_PRIMARY = "https://ntfy.sh";
+​const TOPIC_MENU   = "msh_unified_menu_2026";
+const TOPIC_HOTELS = "msh_unified_hotels_2026";
+const TOPIC_ORDERS = "msh_unified_orders_2026";
+const TOPIC_WIPED  = "msh_unified_wiped_pins_2026";
+const TOPIC_GPS    = "msh_unified_gps_2026";
+const TOPIC_RIDERS = "msh_unified_riders_2026";
+const TOPIC_CONFIG = "msh_unified_config_2026";
+const TOPIC_24H    = "msh_unified_24h_2026";
+​// Permanent Blacklist of Completed/Wiped Order PINs (Solves the ghost-reappearing bug!)
+let wipedPinsSet = new Set(JSON.parse(localStorage.getItem("msh_wiped_pins_list") || "[]"));
+function markPinAsPermanentlyWiped(pin) {
+wipedPinsSet.add(String(pin));
+localStorage.setItem("msh_wiped_pins_list", JSON.stringify([...wipedPinsSet]));
+if (gun) gun.get(TOPIC_WIPED).get(String(pin)).put({ wiped: true });
+fetch(${NTFY_PRIMARY}/${TOPIC_WIPED}, { method: "POST", body: JSON.stringify({ pin: String(pin) }) }).catch(() => {});
+}
+​function loadMergedRiders() {
+const base = {
+"2211": { pin: "2211", name: "Rajesh", phone: "9000000001", village: "S.Kota", approved: true, lat: 18.1118, lng: 83.1415, earned: 0 },
+"3344": { pin: "3344", name: "Sridhar", phone: "9000000002", village: "Kiltampalem", approved: true, lat: 18.1050, lng: 83.1480, earned: 0 },
+"9999": { pin: "9999", name: "Prakash (Head)", phone: "8985240287", village: "Boddavara", approved: true, lat: 18.0815, lng: 83.1285, earned: 0 }
+};
+const keysToCheck = ["msh_unified_riders", "msh_v14_riders", "msh_v13_riders", "msh_v12_riders", "msh_v11_riders", "msh_v10_riders", "msh_f1_riders_db"];
+let merged = { ...base };
+keysToCheck.forEach(k => {
+try {
+const raw = JSON.parse(localStorage.getItem(k) || "null");
+if (raw && typeof raw === "object") {
+Object.values(raw).forEach(r => {
+if (r && r.pin && r.name) merged[r.pin] = r;
+});
+}
+} catch {}
+});
+return merged;
+}
+​function loadMergedHotels() {
+const base = {
+"h1": { id: "h1", name: "Guntur Mess (Boddavara)", lat: 18.0815, lng: 83.1285, approved: true },
+"h2": { id: "h2", name: "Rajula Bhojanam (Boddavara)", lat: 18.0825, lng: 83.1292, approved: true },
+"h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415, approved: true },
+"h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285, approved: true }
+};
+const keysToCheck = ["msh_unified_hotels", "msh_v14_hotels", "msh_v13_hotels", "msh_v12_hotels"];
+let merged = { ...base };
+keysToCheck.forEach(k => {
+try {
+const raw = JSON.parse(localStorage.getItem(k) || "null");
+if (raw && typeof raw === "object") {
+Object.values(raw).forEach(h => {
+if (h && h.id && h.name) merged[h.id] = { approved: true, ...h };
+});
+}
+} catch {}
+});
+return merged;
+}
+​let ridersDB = loadMergedRiders();
+let hotelsDB = loadMergedHotels();
+​let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
+function playLoudRiderBell() {
+if (!riderBellOn) return;
+try {
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+[950, 1250, 950, 1400].forEach((freq, i) => {
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = "triangle";
+osc.frequency.value = freq;
+gain.gain.setValueAtTime(0.35, ctx.currentTime + i * 0.2);
+gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.32);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(ctx.currentTime + i * 0.2);
+osc.stop(ctx.currentTime + i * 0.2 + 0.32);
+});
+} catch {}
+}
+​function updateBellBtnUI() {
+const b = document.getElementById("btnRiderBellToggle");
+if (riderBellOn) {
+b.innerText = "🔔 సౌండ్ ON";
+b.style.background = "#facc15";
+b.style.color = "#000";
+} else {
+b.innerText = "🔕 సౌండ్ OFF";
+b.style.background = "#cbd5e1";
+b.style.color = "#475569";
+}
+}
+​document.getElementById("btnRiderBellToggle").addEventListener("click", () => {
+riderBellOn = !riderBellOn;
+localStorage.setItem("msh_rider_bell_on", String(riderBellOn));
+updateBellBtnUI();
+if (riderBellOn) playLoudRiderBell();
+});
+​function getAutoPhotoForName(itemName, customUrl) {
+const cleanUrl = String(customUrl || "").trim();
+if (cleanUrl && !cleanUrl.includes("google.com/imgres") && (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://"))) {
+return cleanUrl;
+}
+const n = String(itemName || "").toLowerCase();
+if (n.includes("guava") || n.includes("జామ")) return "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75";
+if (n.includes("mango") || n.includes("మామిడి")) return "https://images.unsplash.com/photo-1553279768-865429fa0078?w=300&q=75";
+if (n.includes("banana") || n.includes("అరటి")) return "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75";
+if (n.includes("lemon") || n.includes("నిమ్మ")) return "https://images.unsplash.com/photo-1590502593747-42a996133562?w=300&q=75";
+if (n.includes("apple")) return "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&q=75";
+if (n.includes("pomegranate") || n.includes("దానిమ్మ")) return "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&q=75";
+if (n.includes("milk") || n.includes("పాలు")) return "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75";
+if (n.includes("egg") || n.includes("గుడ్లు")) return "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&q=75";
+if (n.includes("biryani") || n.includes("chicken")) return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75";
+if (n.includes("dosa") || n.includes("idli") || n.includes("tiffin")) return "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75";
+if (n.includes("tomato") || n.includes("టమాట")) return "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75";
+if (n.includes("onion") || n.includes("ఉల్లి")) return "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75";
+if (n.includes("potato") || n.includes("బంగాళాదుంప")) return "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=75";
+if (n.includes("water") || n.includes("వాటర్")) return "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=75";
+if (n.includes("drink") || n.includes("thumbs") || n.includes("coke") || n.includes("sprite")) return "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=75";
+if (n.includes("veg") || n.includes("కూర")) return "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75";
+return "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75";
+}
+​function sanitizeAntiLeakChat(text) {
+return String(text || "").replace(/\b\d{7,12}\b/g, "[Number Blocked]");
+}
+​function maskPhone(p) {
+const c = String(p || "").replace(/\D/g, "");
+return c.length >= 6 ? c.slice(0, 2) + "XXXXXX" + c.slice(-2) : "98XXXXXX10";
+}
+​function calcRoadKm(lat1, lon1, lat2, lon2) {
+const R = 6371;
+const p1 = lat1 * Math.PI / 180, p2 = lat2 * Math.PI / 180;
+const dp = (lat2 - lat1) * Math.PI / 180, dl = (lon2 - lon1) * Math.PI / 180;
+const a = Math.sin(dp/2)2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)2;
+return Math.max(1.0, Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 10) / 10);
+}
+​function calcDeliveryFeeByKm(km) {
+if (km <= 3) return 25;
+if (km <= 5) return 35;
+if (km <= 8) return 50;
+if (km <= 12) return 65;
+return Math.round(km * 6);
+}
+​function extractLatLng(str) {
+const m = String(str || "").match(/(-?\d{1,2}.\d{3,})\s*,\s*(-?\d{1,3}.\d{3,})/);
+return m ? { lat: parseFloat(m[1]), lng: parseFloat(m[2]) } : null;
+}
+​const default21Menu = [
+{ id: "m1", cat: "food", name: "Chicken Dum Biryani", price: 150, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" },
+{ id: "m2", cat: "food", name: "Guntur Mess Full Meals", price: 110, img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=75" },
+{ id: "m3", cat: "food", name: "Rajula Bhojanam Special", price: 160, img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=300&q=75" },
+{ id: "m4", cat: "own",  name: "Banana Full Gela (అరటి గెల)", price: 280, img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=75" },
+{ id: "m5", cat: "own",  name: "Fresh Guava / జామకాయలు", price: 50, img: "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=300&q=75" },
+{ id: "m6", cat: "own",  name: "Pure Farm Milk (1 Litre)", price: 66, img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=75" },
+{ id: "m7", cat: "veg",  name: "Onions / ఉల్లిపాయలు", price: 50, img: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&q=75" },
+{ id: "m8", cat: "veg",  name: "Fresh Tomato / టమాట", price: 40, img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&q=75" },
+{ id: "m9", cat: "veg",  name: "Potato / బంగాళాదుంప", price: 40, img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=75" },
+{ id: "m10", cat: "food", name: "Chicken Fry Piece Biryani", price: 170, img: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=300&q=75" },
+{ id: "m11", cat: "food", name: "Egg Fried Rice / Noodles", price: 90, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=300&q=75" },
+{ id: "m12", cat: "food", name: "Idli & Sambar Tiffin", price: 50, img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&q=75" },
+{ id: "m13", cat: "drinks", name: "20L Mineral Water Can", price: 35, img: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=75" },
+{ id: "m14", cat: "drinks", name: "Cool Drink (2L Bottle)", price: 95, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=75" },
+{ id: "m15", cat: "own", name: "Country Eggs / నాటుకోడి (6)", price: 90, img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&q=75" },
+{ id: "m16", cat: "food", name: "Parotta & Chicken Curry", price: 100, img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=300&q=75" },
+{ id: "m17", cat: "food", name: "Curd Rice & Pickle Pack", price: 70, img: "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=300&q=75" },
+{ id: "m18", cat: "food", name: "Chicken 65 Starter Pack", price: 140, img: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=300&q=75" },
+{ id: "m19", cat: "veg", name: "Fresh Leafy Greens Pack", price: 30, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=75" },
+{ id: "m20", cat: "drinks", name: "Fresh Curd / పెరుగు (500g)", price: 40, img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&q=75" },
+{ id: "m21", cat: "food", name: "Family Biryani Pack (4 Pax)", price: 480, img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" }
+];
+​let menuDB = {};
+default21Menu.forEach(x => menuDB[x.id] = x);
+const cachedMenu = JSON.parse(localStorage.getItem("msh_unified_menu") || "null");
+if (cachedMenu) menuDB = { ...menuDB, ...cachedMenu };
+​let appConfig = JSON.parse(localStorage.getItem("msh_unified_config") || "null") || {
+serviceOpen: true,
+codEnabled: true,
+upiEnabled: true
+};
+​let ordersDB = JSON.parse(localStorage.getItem("msh_unified_orders") || "{}");
+// Clean out any wiped pins immediately on load
+Object.keys(ordersDB).forEach(k => {
+if (wipedPinsSet.has(k) || !ordersDB[k] || ordersDB[k].wiped || ordersDB[k].status === "WIPED_DONE") {
+delete ordersDB[k];
+}
+});
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+​let msgs24hDB = JSON.parse(localStorage.getItem("msh_unified_24h") || "{}");
+let liveGpsCache = {};
+​let cart = {};
+let extraItemsList = []; // Supports multiple extra items (Mixture, Shampoo, Cool Drink, etc.)
+let selectedWeights = {};
+let activeCat = "all";
+​let custLiveLat = null, custLiveLng = null;
+let regLat = null, regLng = null;
+let loggedInRiderPin = "";
+let unlockedBottomPin = "";
+let isAdminOpen = false;
+let riderGpsTimer = null;
+​// Initialize Bottom Map with Real-Road Polyline Layer (OSRM)
+const bottomMap = L.map("mshBottomLiveMap").setView([18.0950, 83.1350], 13);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(bottomMap);
+let mHotelPin = null, mCustPin = null, mRiderPin = null;
+let lineHotelToHouse = null, lineRiderRealRoad = null;
+let lastRoadFetchKey = "";
+​// Fetch Real Road Route Geometry (OSRM) so customer & rider see exact road curves & turns!
+async function drawRealRoadPolyline(lat1, lng1, lat2, lng2) {
+const key = ${lat1.toFixed(4)},${lng1.toFixed(4)}->${lat2.toFixed(4)},${lng2.toFixed(4)};
+if (key === lastRoadFetchKey && lineRiderRealRoad) return;
+lastRoadFetchKey = key;
+​try {
+const url = [https://router.project-osrm.org/route/v1/driving/$](https://router.project-osrm.org/route/v1/driving/$){lng1},${lat1};${lng2},${lat2}?overview=full&geometries=geojson;
+const res = await fetch(url);
+const data = await res.json();
+if (data && data.routes && data.routes.length > 0) {
+const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+if (lineRiderRealRoad) bottomMap.removeLayer(lineRiderRealRoad);
+lineRiderRealRoad = L.polyline(coords, { color: "#16a34a", weight: 6, opacity: 0.92 }).addTo(bottomMap);
+return;
+}
+} catch {}
+​// Fallback straight line if OSRM offline
+if (lineRiderRealRoad) bottomMap.removeLayer(lineRiderRealRoad);
+lineRiderRealRoad = L.polyline([[lat1, lng1], [lat2, lng2]], { color: "#16a34a", weight: 5 }).addTo(bottomMap);
+}
+​function populateHotelsDropdown() {
+const sel = document.getElementById("cHotelSel");
+const prev = sel.value;
+const approvedHotels = Object.values(hotelsDB).filter(h => h && h.approved !== false);
+sel.innerHTML = approvedHotels.map(h =>
+<option value="${h.id}">🏨 హోటల్ / షాప్: ${h.name}</option>
+).join("");
+if (prev && hotelsDB[prev]) sel.value = prev;
+}
+​function getSelectedDropCoords() {
+const rawGps = document.getElementById("cGpsField").value.trim();
+const parsed = extractLatLng(rawGps);
+if (parsed) return parsed;
+if (custLiveLat !== null && custLiveLng !== null) return { lat: custLiveLat, lng: custLiveLng };
+return { lat: 18.0815, lng: 83.1285 };
+}
+​function applyConfigUI() {
+document.getElementById("serviceClosedWall").style.display = appConfig.serviceOpen ? "none" : "block";
+const badge = document.getElementById("masterStatusBadge");
+badge.innerText = appConfig.serviceOpen ? "🟢 సర్వీస్ ఓపెన్‌లో ఉంది (OPEN)" : "🔴 సర్వీస్ క్లోజ్‌లో ఉంది (CLOSED)";
+badge.style.background = appConfig.serviceOpen ? "#dcfce7" : "#fee2e2";
+badge.style.color = appConfig.serviceOpen ? "#15803d" : "#dc2626";
+​const paySel = document.getElementById("cPaymentMethodSel");
+let opts = "";
+if (appConfig.codEnabled) opts += <option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్)</option>;
+if (appConfig.upiEnabled) opts += <option value="ONLINE_UPI">📲 Online Payment / UPI (PhonePe / GPay)</option>;
+if (!opts) opts = <option value="NONE">⚠️ పేమెంట్ ఆప్షన్స్ ఆఫ్‌లో ఉన్నాయి</option>;
+paySel.innerHTML = opts;
+​const bServ = document.getElementById("admTogService");
+bServ.innerText = appConfig.serviceOpen ? "🔴 Stop Service (OFF)" : "🟢 Start Service (ON)";
+bServ.style.background = appConfig.serviceOpen ? "#dc2626" : "#16a34a";
+​const bCod = document.getElementById("admTogCod");
+bCod.innerText = appConfig.codEnabled ? "💵 COD: ON" : "💵 COD: OFF";
+bCod.style.background = appConfig.codEnabled ? "#16a34a" : "#64748b";
+​const bUpi = document.getElementById("admTogUpi");
+bUpi.innerText = appConfig.upiEnabled ? "📲 Online UPI: ON" : "📲 Online UPI: OFF";
+bUpi.style.background = appConfig.upiEnabled ? "#16a34a" : "#64748b";
+}
+​function saveAndSyncConfig() {
+localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
+applyConfigUI();
+if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
+fetch(${NTFY_PRIMARY}/${TOPIC_CONFIG}, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
+}
+​document.getElementById("admTogService").addEventListener("click", () => { appConfig.serviceOpen = !appConfig.serviceOpen; saveAndSyncConfig(); });
+document.getElementById("admTogCod").addEventListener("click", () => { appConfig.codEnabled = !appConfig.codEnabled; saveAndSyncConfig(); });
+document.getElementById("admTogUpi").addEventListener("click", () => { appConfig.upiEnabled = !appConfig.upiEnabled; saveAndSyncConfig(); });
+​document.getElementById("admBtnChangePass").addEventListener("click", () => {
+const newP = document.getElementById("admNewPasswordInp").value.trim();
+if (newP.length < 4) { alert("కనీసం 4 అంకెలు / అక్షరాల Password ఇవ్వండి."); return; }
+currentAdminPassword = newP;
+localStorage.setItem("msh_custom_admin_pass", newP);
+document.getElementById("admNewPasswordInp").value = "";
+alert(✅ కొత్త Admin Password "${newP}" సేవ్ అయింది!);
+});
+​function syncOrder(pin, obj) {
+if (wipedPinsSet.has(String(pin))) return;
+ordersDB[pin] = obj;
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+if (gun) gun.get(TOPIC_ORDERS).get(pin).put(obj);
+fetch(${NTFY_PRIMARY}/${TOPIC_ORDERS}, { method: "POST", body: JSON.stringify(obj) }).catch(() => {});
+refreshEverything();
+}
+​// PERMANENT WIPE ENGINE (Fixes Ghost Reappearing Issue 100%!)
+function completeAndWipeOrder(pin) {
+const pStr = String(pin || "").trim();
+if (!pStr) return;
+​const ord = ordersDB[pStr];
+if (ord && ord.acceptedByPin && ridersDB[ord.acceptedByPin]) {
+ridersDB[ord.acceptedByPin].earned = (Number(ridersDB[ord.acceptedByPin].earned) || 0) + Number(ord.riderComm || 0);
+syncRiders();
+}
+​// 1. Add PIN to permanent wiped blacklist so Gun.js cache can NEVER revive it
+markPinAsPermanentlyWiped(pStr);
+​// 2. Delete from active ordersDB & localStorage
+delete ordersDB[pStr];
+delete liveGpsCache[pStr];
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+​// 3. Overwrite node in Gun.js & ntfy.sh with WIPED_DONE flag
+const wipeObj = { pin: pStr, status: "WIPED_DONE", wiped: true, chat: "" };
+if (gun) {
+gun.get(TOPIC_ORDERS).get(pStr).put(wipeObj);
+gun.get(TOPIC_GPS).get(pStr).put({ lat: 0, lng: 0, wiped: true });
+}
+fetch(${NTFY_PRIMARY}/${TOPIC_ORDERS}, { method: "POST", body: JSON.stringify(wipeObj) }).catch(() => {});
+​// 4. Stop Rider GPS tracking & Lock Bottom Map immediately
+if (riderGpsTimer) { clearInterval(riderGpsTimer); riderGpsTimer = null; }
+if (unlockedBottomPin === pStr) lockBottomMapUI();
+refreshEverything();
+}
+​function syncRiders() {
+localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB));
+const p = { json: JSON.stringify(ridersDB) };
+if (gun) gun.get(TOPIC_RIDERS).get("all").put(p);
+fetch(${NTFY_PRIMARY}/${TOPIC_RIDERS}, { method: "POST", body: JSON.stringify(p) }).catch(() => {});
+refreshEverything();
+}
+​function syncHotels() {
+localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB));
+populateHotelsDropdown();
+calcFeesAndExactKm();
+const p = { json: JSON.stringify(hotelsDB) };
+if (gun) gun.get(TOPIC_HOTELS).get("all").put(p);
+fetch(${NTFY_PRIMARY}/${TOPIC_HOTELS}, { method: "POST", body: JSON.stringify(p) }).catch(() => {});
+if (isAdminOpen) renderAdminDashboard();
+}
+​function syncGps(pin, g) {
+if (wipedPinsSet.has(String(pin))) return;
+liveGpsCache[pin] = g;
+if (gun) gun.get(TOPIC_GPS).get(pin).put(g);
+fetch(${NTFY_PRIMARY}/${TOPIC_GPS}, { method: "POST", body: JSON.stringify({ pin, ...g }) }).catch(() => {});
+if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
+}
+​// Gun.js Real-Time Listeners (Respects wipedPinsSet!)
+if (gun) {
+gun.get(TOPIC_WIPED).map().on((d, pin) => {
+if (d && d.wiped) {
+wipedPinsSet.add(String(pin));
+localStorage.setItem("msh_wiped_pins_list", JSON.stringify([...wipedPinsSet]));
+if (ordersDB[pin]) {
+delete ordersDB[pin];
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+if (unlockedBottomPin === pin) lockBottomMapUI();
+refreshEverything();
+}
+}
+});
+gun.get(TOPIC_CONFIG).get("main").on(d => {
+if (d && typeof d.serviceOpen === "boolean") {
+appConfig = { serviceOpen: d.serviceOpen, codEnabled: !!d.codEnabled, upiEnabled: !!d.upiEnabled };
+localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
+applyConfigUI();
+}
+});
+gun.get(TOPIC_HOTELS).get("all").on(d => {
+if (d && d.json) {
+try { hotelsDB = { ...hotelsDB, ...JSON.parse(d.json) }; localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB)); populateHotelsDropdown(); calcFeesAndExactKm(); } catch {}
+}
+});
+gun.get(TOPIC_MENU).map().on((d, id) => {
+if (d && d.name) {
+if (d.deleted) { delete menuDB[id]; delete cart[id]; }
+else menuDB[id] = d;
+localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+renderMenu7x3(); calcFeesAndExactKm();
+}
+});
+gun.get(TOPIC_ORDERS).map().on((d, pin) => {
+if (!d) return;
+const pStr = String(pin);
+if (d.wiped || d.status === "WIPED_DONE" || wipedPinsSet.has(pStr)) {
+wipedPinsSet.add(pStr);
+delete ordersDB[pStr];
+delete liveGpsCache[pStr];
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+if (unlockedBottomPin === pStr) lockBottomMapUI();
+refreshEverything();
+} else if (d.pin) {
+const isNew = !ordersDB[pStr];
+ordersDB[pStr] = d;
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+if (isNew && d.status === "OPEN") {
+playLoudRiderBell();
+document.getElementById("openOrderNotifyStrip").style.display = "flex";
+}
+refreshEverything();
+}
+});
+gun.get(TOPIC_RIDERS).get("all").on(d => {
+if (d && d.json) {
+try { ridersDB = { ...ridersDB, ...JSON.parse(d.json) }; localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB)); refreshEverything(); } catch {}
+}
+});
+gun.get(TOPIC_GPS).map().on((g, pin) => {
+if (g && g.lat && !g.wiped && !wipedPinsSet.has(String(pin))) {
+liveGpsCache[pin] = g;
+if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
+}
+});
+gun.get(TOPIC_24H).map().on((m, id) => {
+if (m && m.text && m.ts) {
+if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
+else delete msgs24hDB[id];
+localStorage.setItem("msh_unified_24h", JSON.stringify(msgs24hDB));
+render24hMsgs();
+}
+});
+}
+​setInterval(async () => {
+try {
+const res = await fetch(${NTFY_PRIMARY}/${TOPIC_ORDERS}/json?poll=1&since=5m);
+const txt = await res.text();
+if (!txt) return;
+txt.trim().split("\n").forEach(line => {
+try {
+const w = JSON.parse(line);
+if (w && w.message) {
+const o = JSON.parse(w.message);
+if (o && (o.wiped || o.status === "WIPED_DONE")) {
+wipedPinsSet.add(String(o.pin));
+delete ordersDB[o.pin];
+if (unlockedBottomPin === o.pin) lockBottomMapUI();
+refreshEverything();
+} else if (o && o.pin && !wipedPinsSet.has(String(o.pin))) {
+const isNew = !ordersDB[o.pin];
+ordersDB[o.pin] = o;
+if (isNew && o.status === "OPEN") playLoudRiderBell();
+refreshEverything();
+}
+}
+} catch {}
+});
+} catch {}
+}, 3000);
+​function refreshEverything() {
+if (loggedInRiderPin && ridersDB[loggedInRiderPin]) renderRiderPanel();
+if (unlockedBottomPin && ordersDB[unlockedBottomPin]) updateBottomMapLive(unlockedBottomPin, liveGpsCache[unlockedBottomPin] || null);
+if (isAdminOpen) renderAdminDashboard();
+}
+​// =========================================================================
+// 1. MENU RENDERING & MULTI-EXTRA ITEMS (+ Add 3-4 Extra Items)
+// =========================================================================
+function getWeightMeta(it) {
+if (it.cat !== "veg") return { mult: 1, label: "" };
+const m = selectedWeights[it.id] || 1;
+const lbl = m === 0.25 ? "250g" : (m === 0.5 ? "500g" : "1kg");
+return { mult: m, label: lbl };
+}
+​window.mshSelectVegWeight = function(id, mult) {
+selectedWeights[id] = mult;
+if (cart[id]) {
+const it = menuDB[id];
+const lbl = mult === 0.25 ? "250g" : (mult === 0.5 ? "500g" : "1kg");
+cart[id].mult = mult;
+cart[id].wtLabel = lbl;
+cart[id].unitPrice = Math.round(it.price * mult);
+}
+renderMenu7x3();
+calcFeesAndExactKm();
+};
+​window.mshAdminQuickPriceEdit = function(id) {
+const it = menuDB[id];
+if (!it) return;
+const newRateStr = prompt("${it.name}" కొత్త ధర (₹) ఎంటర్ చేయండి (ప్రస్తుత ధర: ₹${it.price}):, it.price);
+if (newRateStr === null) return;
+const newPrice = Number(newRateStr);
+if (isNaN(newPrice) || newPrice <= 0) { alert("సరైన ధర ఎంటర్ చేయండి."); return; }
+​it.price = newPrice;
+if (cart[id]) cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
+localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+renderMenu7x3();
+calcFeesAndExactKm();
+if (gun) gun.get(TOPIC_MENU).get(id).put(it);
+};
+​function renderMenu7x3() {
+const grid = document.getElementById("foodMenu7x3Grid");
+const items = Object.values(menuDB).filter(x => x && !x.deleted);
+const list = activeCat === "all" ? items : items.filter(x => x.cat === activeCat);
+document.getElementById("menuItemsBadge").innerText = ${list.length} Items;
+​grid.innerHTML = list.map(it => {
+const wMeta = getWeightMeta(it);
+const displayPrice = Math.round(it.price * wMeta.mult);
+const q = cart[it.id] ? cart[it.id].qty : 0;
+const smartImg = getAutoPhotoForName(it.name, it.img);
+​const weightChipsHtml = it.cat === "veg"
+? <div class="msh-wt-pills"> <button type="button" class="msh-wt-btn ${wMeta.mult === 0.25 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 0.25)">250g</button> <button type="button" class="msh-wt-btn ${wMeta.mult === 0.5 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 0.5)">500g</button> <button type="button" class="msh-wt-btn ${wMeta.mult === 1 ? 'active' : ''}" onclick="window.mshSelectVegWeight('${it.id}', 1)">1kg</button> </div>
+: "";
+​const btn = q === 0
+? <button type="button" class="msh-fadd" onclick="window.mshProQty('${it.id}', 1)">+ ADD</button>
+: <div class="msh-fqty"><button type="button" onclick="window.mshProQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshProQty('${it.id}', 1)">+</button></div>;
+​const adminControlsHtml = isAdminOpen
+? <div style="display:flex; gap:3px; margin-top:3px;"> <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.65rem; padding:2px 0; cursor:pointer; font-weight:900;">✏️ ₹${it.price}</button> <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.65rem; padding:2px 5px; cursor:pointer; font-weight:800;">✕</button> </div>
+: "";
+​return  <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}"> <div> <img src="${smartImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='[https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70](https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70)'"> <div class="msh-fname" title="${it.name}">${it.name} ${wMeta.label ? '(' + wMeta.label + ')' : ''}</div> </div> <div> ${weightChipsHtml} <div class="msh-fprice">₹${displayPrice}</div> ${btn} ${adminControlsHtml} </div> </div>;
+}).join("");
+}
+​window.mshProQty = function(id, d) {
+const it = menuDB[id];
+if (!it) return;
+const wMeta = getWeightMeta(it);
+const unitPrice = Math.round(it.price * wMeta.mult);
+​const curQty = cart[id] ? cart[id].qty : 0;
+const nextQty = curQty + d;
+if (nextQty <= 0) delete cart[id];
+else cart[id] = { qty: nextQty, mult: wMeta.mult, wtLabel: wMeta.label, unitPrice };
+renderMenu7x3(); calcFeesAndExactKm();
+};
+​window.mshAdmDelMenu = function(id) {
+delete menuDB[id]; delete cart[id];
+localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+renderMenu7x3(); calcFeesAndExactKm();
+if (gun) gun.get(TOPIC_MENU).get(id).put({ id, name: "del", deleted: true });
+};
+​document.querySelectorAll("#catTabsBar .msh-cat").forEach(b => {
+b.addEventListener("click", function() {
+document.querySelectorAll("#catTabsBar .msh-cat").forEach(x => x.classList.remove("active"));
+this.classList.add("active");
+activeCat = this.dataset.cat;
+renderMenu7x3();
+});
+});
+​// Add Multiple Extra Items (3-4+ items)
+function renderExtraChips() {
+const box = document.getElementById("addedExtraChips");
+box.innerHTML = extraItemsList.map((ex, i) =>
+<span style="background:#ffedd5; color:#9a3412; border:1px solid #fdba74; padding:2px 7px; border-radius:99px; font-size:0.72rem; font-weight:800;"> ${ex.name} ×${ex.qty} (₹${ex.qty * ex.rate}) <button type="button" onclick="window.mshRemoveExtraItem(${i})" style="background:none; border:none; color:#dc2626; font-weight:900; cursor:pointer;">✕</button> </span>
+).join("");
+}
+​window.mshRemoveExtraItem = function(idx) {
+extraItemsList.splice(idx, 1);
+renderExtraChips();
+calcFeesAndExactKm();
+};
+​document.getElementById("btnAddExtraToList").addEventListener("click", () => {
+const name = document.getElementById("cExtraName").value.trim();
+const qty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
+const rate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
+if (!name || rate <= 0) {
+alert("Extra ఐటమ్ పేరు మరియు ధర (₹) రాయండి.");
+return;
+}
+extraItemsList.push({ name, qty, rate });
+document.getElementById("cExtraName").value = "";
+document.getElementById("cExtraQty").value = "1";
+document.getElementById("cExtraPrice").value = "";
+renderExtraChips();
+calcFeesAndExactKm();
+});
+​// =========================================================================
+// 2. CUSTOMER ORDER PLACEMENT
+// =========================================================================
+function calcFeesAndExactKm() {
+let itemsSum = 0;
+let numberedLines = [];
+let idx = 1;
+​Object.entries(cart).forEach(([id, entry]) => {
+const it = menuDB[id];
+if (it && entry.qty > 0) {
+const sub = entry.unitPrice * entry.qty;
+itemsSum += sub;
+const wtTag = entry.wtLabel ?  [${entry.wtLabel}] : "";
+numberedLines.push(<b>${idx}.</b> ${it.name}${wtTag} × ${entry.qty} = ₹${sub});
+idx++;
+}
+});
+​// Include all added extra items
+extraItemsList.forEach(ex => {
+const exSub = ex.qty * ex.rate;
+itemsSum += exSub;
+numberedLines.push(<b>${idx}.</b> Extra: ${ex.name} × ${ex.qty} = ₹${exSub});
+idx++;
+});
+​// Also include if user typed an extra item without clicking +Add
+const pendingExName = document.getElementById("cExtraName").value.trim();
+const pendingExQty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
+const pendingExRate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
+if (pendingExRate > 0) {
+const pSub = pendingExQty * pendingExRate;
+itemsSum += pSub;
+numberedLines.push(<b>${idx}.</b> Extra: ${pendingExName || "Item"} × ${pendingExQty} = ₹${pSub});
+}
+​const hId = document.getElementById("cHotelSel").value;
+const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
+const dropCoords = getSelectedDropCoords();
+const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
+const delivFee = calcDeliveryFeeByKm(exactKm);
+​const gstAmt = Math.round(itemsSum * GST_RATE);
+const packAndPlat = PACKING_FEE + PLATFORM_FEE;
+const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
+​document.getElementById("autoKmBadge").innerText = దూరం: ${exactKm} km;
+document.getElementById("feeExactKmLbl").innerText = ${exactKm} km;
+​document.getElementById("cNumberedItemsPreview").innerHTML = numberedLines.length
+? numberedLines.join("
+")
+: 🛒 ఎడమవైపు <b>+ ADD</b> నొక్కండి;
+​document.getElementById("feeItemsVal").innerText = ₹${itemsSum};
+document.getElementById("feeDelivVal").innerText = ₹${delivFee};
+document.getElementById("feePackServVal").innerText = ₹${packAndPlat};
+document.getElementById("feeGstVal").innerText = ₹${gstAmt};
+document.getElementById("feeGrandTotalVal").innerText = ₹${grandTotal};
+}
+​document.getElementById("cHotelSel").addEventListener("change", calcFeesAndExactKm);
+document.getElementById("cGpsField").addEventListener("input", calcFeesAndExactKm);
+document.getElementById("cExtraName").addEventListener("input", calcFeesAndExactKm);
+document.getElementById("cExtraQty").addEventListener("input", calcFeesAndExactKm);
+document.getElementById("cExtraPrice").addEventListener("input", calcFeesAndExactKm);
+​document.getElementById("btnGetCustGps").addEventListener("click", function() {
+if (!navigator.geolocation) return;
+this.innerText = "⏳...";
+navigator.geolocation.getCurrentPosition(p => {
+custLiveLat = p.coords.latitude; custLiveLng = p.coords.longitude;
+document.getElementById("cGpsField").value = [https://maps.google.com/?q=$](https://maps.google.com/?q=$){custLiveLat.toFixed(5)},${custLiveLng.toFixed(5)};
+this.innerText = "✅ GPS ఓకే"; this.style.background = "#16a34a";
+calcFeesAndExactKm();
+}, () => { this.innerText = "📍 నా Live GPS"; alert("ఫోన్‌లో Location On చేయండి."); }, { enableHighAccuracy: true });
+});
+​document.getElementById("btnPlaceOrderNow").addEventListener("click", () => {
+if (!appConfig.serviceOpen) {
+alert("🔴 ప్రస్తుతం సర్వీస్ క్లోజ్‌లో ఉంది (Service OFF).");
+return;
+}
+​let itemsSum = 0;
+let plainNumberedLines = [];
+let idx = 1;
+​Object.entries(cart).forEach(([id, entry]) => {
+const it = menuDB[id];
+if (it && entry.qty > 0) {
+const sub = entry.unitPrice * entry.qty;
+itemsSum += sub;
+const wtTag = entry.wtLabel ?  [${entry.wtLabel}] : "";
+plainNumberedLines.push(${idx}. ${it.name}${wtTag} × ${entry.qty} = ₹${sub});
+idx++;
+}
+});
+​extraItemsList.forEach(ex => {
+const exSub = ex.qty * ex.rate;
+itemsSum += exSub;
+plainNumberedLines.push(${idx}. Extra: ${ex.name} × ${ex.qty} = ₹${exSub});
+idx++;
+});
+​const pendingExName = document.getElementById("cExtraName").value.trim();
+const pendingExQty = Math.max(1, Number(document.getElementById("cExtraQty").value) || 1);
+const pendingExRate = Math.max(0, Number(document.getElementById("cExtraPrice").value) || 0);
+if (pendingExRate > 0) {
+const pSub = pendingExQty * pendingExRate;
+itemsSum += pSub;
+plainNumberedLines.push(${idx}. Extra: ${pendingExName || "Item"} × ${pendingExQty} = ₹${pSub});
+}
+​if (!plainNumberedLines.length) { alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి."); return; }
+​const village = document.getElementById("cVillage").value.trim();
+if (!village) { alert("దయచేసి మీ ఊరి పేరు (Village Name) రాయండి."); return; }
+​const hId = document.getElementById("cHotelSel").value;
+const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
+const dropCoords = getSelectedDropCoords();
+const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
+const delivFee = calcDeliveryFeeByKm(exactKm);
+​const gstAmt = Math.round(itemsSum * GST_RATE);
+const packAndPlat = PACKING_FEE + PLATFORM_FEE;
+const grandTotal = itemsSum + delivFee + packAndPlat + gstAmt;
+​const totalExtraCount = extraItemsList.length + (pendingExRate > 0 ? 1 : 0);
+const riderComm = Math.round(delivFee * 0.80) + (totalExtraCount * 5);
+const ownerNetComm = Math.round(itemsSum * 0.15) + packAndPlat + (delivFee - Math.round(delivFee * 0.80));
+​const cName = document.getElementById("cName").value.trim() || "Customer";
+const cPhone = document.getElementById("cPhone").value.trim();
+const payMode = document.getElementById("cPaymentMethodSel").value;
+​const orderPin = String(Math.floor(1000 + Math.random() * 9000));
+const deliveryCode = String(Math.floor(1000 + Math.random() * 9000));
+​const orderObj = {
+pin: orderPin,
+deliveryCode,
+status: "OPEN", // OPEN -> ACCEPTED -> PICKED_UP -> REACHED
+acceptedByPin: "",
+acceptedByName: "",
+hotelName: hotelObj.name,
+hLat: hotelObj.lat,
+hLng: hotelObj.lng,
+village,
+exactKm,
+numberedItems: plainNumberedLines.join("\n"),
+totalBill: grandTotal,
+riderComm,
+gstAmt,
+ownerNetComm: Math.max(10, ownerNetComm),
+payMode,
+cName,
+cPhone: cPhone || "WhatsApp",
+maskedPhone: maskPhone(cPhone),
+lat: dropCoords.lat,
+lng: dropCoords.lng,
+chat: "",
+ts: Date.now()
+};
+​syncOrder(orderPin, orderObj);
+​document.getElementById("custOrderSuccessBox").style.display = "block";
+document.getElementById("custOrderPinText").innerText = orderPin;
+document.getElementById("custDeliveryCodeText").innerText = deliveryCode;
+unlockBottomMapWithPin(orderPin);
+​const waMsg = 🍔 *NEW ORDER (#${orderPin})*\n🔐 *Delivery Code:* ${deliveryCode}\n🏨 Hotel: ${hotelObj.name} (${exactKm} km)\n📋 *Items:*\n${plainNumberedLines.join("\n")}\n📍 Village: ${village}\n👤 ${cName} (${cPhone || "WhatsApp"})\n💳 ${payMode} • 💰 Total: ₹${grandTotal};
+window.open([https://wa.me/$](https://wa.me/$){ADMIN_WA}?text=${encodeURIComponent(waMsg)}, "_blank");
+});
+​// =========================================================================
+// 3. SWIGGY-STYLE STEP-BY-STEP RIDER PANEL
+// =========================================================================
+document.getElementById("btnRiderUnlock").addEventListener("click", () => {
+const rPin = document.getElementById("riderPinLoginInp").value.trim();
+const rider = ridersDB[rPin];
+if (!rider) {
+alert("❌ ఈ Rider PIN లేదు! అడ్మిన్ ఇచ్చిన 4-అంకెల PIN ఎంటర్ చేయండి.");
+return;
+}
+if (!rider.approved) {
+alert("⏳ మీ అకౌంట్ ఇంకా Admin Approval కోసం వేచి ఉంది.");
+return;
+}
+loggedInRiderPin = rPin;
+document.getElementById("riderLockedPlaceholder").style.display = "none";
+document.getElementById("riderActivePanel").style.display = "block";
+document.getElementById("btnRiderLock").style.display = "inline-block";
+renderRiderPanel();
+});
+​document.getElementById("btnRiderLock").addEventListener("click", () => {
+loggedInRiderPin = "";
+document.getElementById("riderPinLoginInp").value = "";
+document.getElementById("riderLockedPlaceholder").style.display = "block";
+document.getElementById("riderActivePanel").style.display = "none";
+document.getElementById("btnRiderLock").style.display = "none";
+});
+​function renderRiderPanel() {
+const me = ridersDB[loggedInRiderPin];
+if (!me) return;
+document.getElementById("riderHeaderName").innerText = 🛵 రైడర్: ${me.name} (${me.village});
+document.getElementById("riderHeaderEarn").innerText = మీ సంపాదన: ₹${me.earned};
+​const allActive = Object.values(ordersDB).reverse().filter(o => o && !o.wiped && o.status !== "WIPED_DONE" && !wipedPinsSet.has(String(o.pin)));
+const myCurrentLockedOrder = allActive.find(o => o.acceptedByPin === me.pin);
+const list = allActive.filter(o => o.status === "OPEN" || o.acceptedByPin === me.pin);
+const feed = document.getElementById("riderOrdersFeed");
+​if (!list.length) {
+feed.innerHTML = <div style="background:#fff; padding:14px; border-radius:8px; text-align:center; color:#64748b; font-size:0.84rem; font-weight:700;">ప్రస్తుతం కొత్త ఆర్డర్లు లేవు. ఆర్డర్ రాగానే ఇక్కడ వస్తుంది!</div>;
+return;
+}
+​let html = "";
+if (myCurrentLockedOrder) {
+html += <div style="background:#fef2f2; border:1.5px solid #ef4444; color:#991b1b; padding:8px 10px; border-radius:8px; margin-bottom:8px; font-size:0.8rem; font-weight:800;"> 🔒 మీ వద్ద Order #${myCurrentLockedOrder.pin} రన్నింగ్‌లో ఉంది! ఇది పూర్తయిన తర్వాతే కొత్త ఆర్డర్ తీసుకోగలరు. </div>;
+}
+​html += list.map(o => {
+const formattedItems = String(o.numberedItems || "").replace(/\n/g, "
+");
+if (o.status === "OPEN") {
+const acceptBtnHtml = myCurrentLockedOrder
+? <button type="button" disabled style="width:100%; padding:10px; background:#94a3b8; color:#fff; border:none; border-radius:8px; font-weight:800; cursor:not-allowed;">🔒 లాక్ అయింది (ముందు రన్నింగ్ ఆర్డర్ పూర్తి చేయండి)</button>
+: <button type="button" onclick="window.mshRiderTakeOrder('${o.pin}')" style="width:100%; padding:11px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-weight:900; font-size:0.92rem; cursor:pointer;">✅ Step 1: ఆర్డర్ తీసుకోండి (ACCEPT)</button>;
+​return  <div style="background:#fff; border:2px solid #fc8019; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;"> <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:4px;"> <span style="color:#ea580c;">🔔 ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</span> <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">మీ కమిషన్: ₹${o.riderComm}</span> </div> <div style="background:#fff7ed; padding:6px 8px; border-radius:6px; margin:5px 0; font-weight:700; max-height:115px; overflow-y:auto;">${formattedItems}</div> ${acceptBtnHtml} </div>;
+}
+​// Clear Step-by-Step Swiggy Action Flow for Rider!
+const isPicked = o.status === "PICKED_UP" || o.status === "REACHED";
+const navUrl = isPicked
+? [https://www.google.com/maps/dir/?api=1&destination=$](https://www.google.com/maps/dir/?api=1&destination=$){o.lat},${o.lng}&travelmode=two-wheeler
+: [https://www.google.com/maps/dir/?api=1&destination=$](https://www.google.com/maps/dir/?api=1&destination=$){o.hLat},${o.hLng}&travelmode=two-wheeler;
+const navLabel = isPicked ? "🧭 Customer ఇంటికి Google Map" : "🧭 హోటల్‌కు Google Map";
+​return `
+<div style="background:#dcfce7; border:2px solid #16a34a; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
+<div style="display:flex; justify-content:space-between; font-weight:900;">
+<span>🔓 యాక్టివ్ రైడ్ #{o.pin} ({o.exactKm} km)</span>
+<span>క్యాష్: ₹{o.totalBill}</span>
+</div>
+<div style="background:#fff; padding:6px 8px; border-radius:6px; margin:5px 0; border-left:3px solid #16a34a; font-weight:700; max-height:115px; overflow-y:auto;">
+${formattedItems}
+</div>
+<div>👤 కస్టమర్: <b>${o.cName}</b> ({o.maskedPhone}) • 📍 ఊరు: <b>${o.village}</b></div>
+​<!-- Step-by-Step Swiggy Workflow Buttons -->
+<div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+{!isPicked
+? `<button type="button" onclick="window.mshRiderPickedUpFood('${o.pin}')" style="width:100%; background:#ea580c; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">
+🏨 Step 2: ఫుడ్ తీసుకున్నాను (Customer ఇంటి రూట్ ఓపెన్ చేయండి)
+</button>`
+: `<button type="button" onclick="window.mshRiderAtDoor('${o.pin}')" style="width:100%; background:#0f4c3a; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">
+🚪 Step 3: ఇంటి గేట్ దగ్గరకు వచ్చాను (Delivery Code అడగండి)
+</button>`
+}
+<div style="display:flex; gap:6px;">
+<a href="${navUrl}" target="_blank" style="flex:1.4; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:8px; border-radius:7px; font-weight:900;">{navLabel}</a>
+<a href="tel:8985240287" style="flex:0.6; text-align:center; background:#475569; color:#fff; text-decoration:none; padding:8px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>
+</div>
+</div>
+</div>`;
+}).join("");
+​feed.innerHTML = html;
+}
+​window.mshRiderPickedUpFood = function(orderPin) {
+const ord = ordersDB[orderPin];
+if (!ord) return;
+ord.status = "PICKED_UP";
+ord.chat = (ord.chat || "") + <div style="margin-bottom:3px; color:#facc15;"><b>🛵 రైడర్:</b> హోటల్ నుండి ఫుడ్ తీసుకున్నాను, మీ ఇంటికి బయలుదేరాను!</div>;
+syncOrder(orderPin, ord);
+unlockBottomMapWithPin(orderPin);
+// Automatically launch Google Maps turn-by-turn route to Customer House!
+window.open([https://www.google.com/maps/dir/?api=1&destination=$](https://www.google.com/maps/dir/?api=1&destination=$){ord.lat},${ord.lng}&travelmode=two-wheeler, "_blank");
+};
+​window.mshRiderAtDoor = function(orderPin) {
+const ord = ordersDB[orderPin];
+if (!ord) return;
+ord.status = "REACHED";
+ord.chat = (ord.chat || "") + <div style="margin-bottom:3px; color:#4ade80;"><b>🛵 రైడర్:</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చాను! దయచేసి మీ 4-అంకెల Delivery Code చెప్పండి.</div>;
+syncOrder(orderPin, ord);
+};
+​window.mshRiderTakeOrder = function(orderPin) {
+const ord = ordersDB[orderPin];
+const me = ridersDB[loggedInRiderPin];
+if (!ord || ord.status !== "OPEN" || !me) return;
+​const alreadyBusy = Object.values(ordersDB).some(o => o && !o.wiped && o.status !== "WIPED_DONE" && !wipedPinsSet.has(String(o.pin)) && o.acceptedByPin === me.pin);
+if (alreadyBusy) {
+alert("⚠️ మీ దగ్గర ఇప్పటికే ఒక Active Ride ఉంది.");
+return;
+}
+​ord.status = "ACCEPTED";
+ord.acceptedByPin = me.pin;
+ord.acceptedByName = me.name;
+syncOrder(orderPin, ord);
+​unlockBottomMapWithPin(orderPin);
+document.getElementById("openOrderNotifyStrip").style.display = "none";
+​if (riderGpsTimer) clearInterval(riderGpsTimer);
+if (navigator.geolocation) {
+const send = () => {
+navigator.geolocation.getCurrentPosition(p => {
+syncGps(orderPin, { rider: me.name, lat: p.coords.latitude, lng: p.coords.longitude });
+}, null, { enableHighAccuracy: true });
+};
+send();
+riderGpsTimer = setInterval(send, 3500);
+}
+};
+​// =========================================================================
+// 4. RIDER REGISTRATION + SHOP PARTNER REGISTRATION + CCTV ADMIN
+// =========================================================================
+document.getElementById("btnRegDeviceGps").addEventListener("click", function() {
+if (!navigator.geolocation) return;
+this.innerText = "⏳...";
+navigator.geolocation.getCurrentPosition(p => {
+regLat = p.coords.latitude; regLng = p.coords.longitude;
+document.getElementById("regGpsMsg").innerText = ✅ Device GPS Captured: ${regLat.toFixed(5)}, ${regLng.toFixed(5)};
+this.innerText = "✅ GPS ఓకే"; this.style.background = "#16a34a";
+}, () => { this.innerText = "📡 నా Device GPS"; alert("Location On చేయండి."); }, { enableHighAccuracy: true });
+});
+​document.getElementById("btnSubmitReg").addEventListener("click", () => {
+const name = document.getElementById("regName").value.trim();
+const phone = document.getElementById("regPhone").value.trim();
+const village = document.getElementById("regVillage").value.trim() || "Boddavara";
+if (!name || !phone) { alert("పేరు మరియు ఫోన్ నంబర్ రాయండి."); return; }
+​const pin = String(Math.floor(1000 + Math.random() * 8999));
+ridersDB[pin] = { pin, name, phone, village, approved: false, lat: regLat || 18.0815, lng: regLng || 83.1285, earned: 0 };
+syncRiders();
+document.getElementById("regName").value = "";
+document.getElementById("regPhone").value = "";
+alert(✅ ${name} గారు, మీ రిజిస్ట్రేషన్ పూర్తయింది! Admin (Prakash) మిమ్మల్ని Approve చేసి మీ Secret Rider PIN ఇస్తారు.);
+});
+​// Shop / Hotel Self-Registration (Needs Admin Approval!)
+document.getElementById("btnShopRegGps").addEventListener("click", function() {
+if (!navigator.geolocation) return;
+this.innerText = "⏳...";
+navigator.geolocation.getCurrentPosition(p => {
+document.getElementById("shopRegCoords").value = ${p.coords.latitude.toFixed(5)}, ${p.coords.longitude.toFixed(5)};
+this.innerText = "✅ షాప్ GPS ఓకే";
+this.style.background = "#16a34a";
+}, () => { this.innerText = "📍 షాప్ Live GPS"; alert("Location On చేయండి."); }, { enableHighAccuracy: true });
+});
+​document.getElementById("btnSubmitShopReg").addEventListener("click", () => {
+const sName = document.getElementById("shopRegName").value.trim();
+const sPhone = document.getElementById("shopRegPhone").value.trim();
+const parsed = extractLatLng(document.getElementById("shopRegCoords").value.trim());
+if (!sName || !parsed) {
+alert("దయచేసి షాప్ పేరు మరియు షాప్ Live GPS ఇవ్వండి.");
+return;
+}
+const hid = "h_" + Date.now();
+hotelsDB[hid] = { id: hid, name: ${sName} (${sPhone || "Partner"}), lat: parsed.lat, lng: parsed.lng, approved: false };
+syncHotels();
+document.getElementById("shopRegName").value = "";
+document.getElementById("shopRegPhone").value = "";
+document.getElementById("shopRegCoords").value = "";
+alert(✅ "${sName}" రిక్వెస్ట్ Admin (Prakash) కి వెళ్ళింది! అడ్మిన్ Approve చేయగానే కస్టమర్ లిస్ట్‌లో వస్తుంది.);
+});
+​function render24hMsgs() {
+const now = Date.now();
+const valid = Object.values(msgs24hDB).filter(m => m && (now - m.ts < DAY_24H_MS)).sort((a, b) => b.ts - a.ts);
+document.getElementById("public24hMsgFeed").innerHTML = valid.length
+? valid.map(m => <div style="background:#fff; padding:5px 8px; border-radius:6px; margin-bottom:4px; border-left:3px solid #2563eb;">💬 ${m.text} <small style="color:#64748b; float:right;">(24h auto-delete)</small></div>).join("")
+: "<div style='color:#64748b;'>ప్రస్తుతం మెసేజ్‌లు లేవు.</div>";
+}
+​document.getElementById("btnPost24hMsg").addEventListener("click", () => {
+const inp = document.getElementById("public24hMsgInp");
+const txt = inp.value.trim();
+if (!txt) return;
+inp.value = "";
+const id = "m24_" + Date.now();
+const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
+msgs24hDB[id] = item;
+localStorage.setItem("msh_unified_24h", JSON.stringify(msgs24hDB));
+render24hMsgs();
+if (gun) gun.get(TOPIC_24H).get(id).put(item);
+});
+​document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
+if (!isAdminOpen) {
+const entered = prompt("Admin Control Room Password ఎంటర్ చేయండి:");
+if (entered !== currentAdminPassword) { alert("❌ తప్పు Admin Password!"); return; }
+isAdminOpen = true;
+}
+document.getElementById("adminMasterDashboard").style.display = "block";
+renderMenu7x3();
+renderAdminDashboard();
+});
+​document.getElementById("btnLockAdminPanel").addEventListener("click", () => {
+isAdminOpen = false;
+document.getElementById("adminMasterDashboard").style.display = "none";
+renderMenu7x3();
+});
+​document.getElementById("admBtnHotelMyGps").addEventListener("click", function() {
+if (!navigator.geolocation) return;
+this.innerText = "⏳ Capturing...";
+navigator.geolocation.getCurrentPosition(p => {
+document.getElementById("admHotelCoordsInp").value = ${p.coords.latitude.toFixed(5)}, ${p.coords.longitude.toFixed(5)};
+this.innerText = "✅ Hotel GPS Ready";
+this.style.background = "#16a34a";
+}, () => { this.innerText = "📍 Hotel Live GPS"; alert("Location On చేయండి."); }, { enableHighAccuracy: true });
+});
+​document.getElementById("admBtnSaveHotel").addEventListener("click", () => {
+const hName = document.getElementById("admHotelNameInp").value.trim();
+const rawCoords = document.getElementById("admHotelCoordsInp").value.trim();
+const parsed = extractLatLng(rawCoords);
+if (!hName || !parsed) {
+alert("హోటల్ పేరు మరియు Hotel Live GPS Coordinates ఇవ్వండి.");
+return;
+}
+const hid = "h_" + Date.now();
+hotelsDB[hid] = { id: hid, name: hName, lat: parsed.lat, lng: parsed.lng, approved: true };
+document.getElementById("admHotelNameInp").value = "";
+document.getElementById("admHotelCoordsInp").value = "";
+document.getElementById("admBtnHotelMyGps").innerText = "📍 Hotel Live GPS";
+document.getElementById("admBtnHotelMyGps").style.background = "#0284c7";
+syncHotels();
+alert(✅ "${hName}" హోటల్ Live GPS సేవ్ అయింది!);
+});
+​window.mshAdmApproveHotel = function(hid) {
+if (hotelsDB[hid]) { hotelsDB[hid].approved = true; syncHotels(); }
+};
+​window.mshAdmDelHotel = function(hid) {
+if (Object.keys(hotelsDB).length <= 1) { alert("కనీసం ఒక హోటల్ ఉండాలి."); return; }
+if (confirm("ఈ హోటల్‌ను తొలగించాలా?")) {
+delete hotelsDB[hid];
+syncHotels();
+}
+};
+​window.mshAdmApprove = function(p) {
+if (ridersDB[p]) { ridersDB[p].approved = true; syncRiders(); }
+};
+​window.mshAdmEditRider = function(oldPin) {
+const r = ridersDB[oldPin];
+if (!r) return;
+const newName = prompt("రైడర్ పేరు (Name):", r.name);
+if (newName === null) return;
+const newPhone = prompt("రైడర్ ఫోన్ నంబర్ (Phone):", r.phone);
+if (newPhone === null) return;
+const newPin = prompt("రైడర్ 4-Digit Secret PIN:", r.pin);
+if (!newPin || newPin.trim().length !== 4) { alert("4-Digit PIN ఉండాలి."); return; }
+​const cleanNewPin = newPin.trim();
+if (cleanNewPin !== oldPin) delete ridersDB[oldPin];
+ridersDB[cleanNewPin] = { ...r, pin: cleanNewPin, name: newName.trim() || r.name, phone: newPhone.trim() || r.phone };
+syncRiders();
+alert("✅ రైడర్ వివరాలు & PIN అప్‌డేట్ అయ్యాయి!");
+};
+​window.mshAdmRemoveRider = function(p) {
+const r = ridersDB[p];
+if (!r) return;
+if (confirm(రైడర్ "${r.name}" (PIN: ${p}) ను శాశ్వతంగా తొలగించాలా?)) {
+delete ridersDB[p];
+syncRiders();
+}
+};
+​document.getElementById("admBtnSaveItem").addEventListener("click", () => {
+const cat = document.getElementById("admNewCat").value;
+const name = document.getElementById("admNewItemName").value.trim();
+const price = Number(document.getElementById("admNewItemPrice").value) || 0;
+const rawImg = document.getElementById("admNewItemImg").value.trim();
+if (!name || price <= 0) return;
+​const finalImg = getAutoPhotoForName(name, rawImg);
+const id = "m_" + Date.now();
+menuDB[id] = { id, cat, name, price, img: finalImg };
+localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+document.getElementById("admNewItemName").value = "";
+document.getElementById("admNewItemPrice").value = "";
+document.getElementById("admNewItemImg").value = "";
+renderMenu7x3();
+if (gun) gun.get(TOPIC_MENU).get(id).put(menuDB[id]);
+alert("✅ కొత్త ఐటమ్ & ఫోటో సేవ్ అయ్యాయి!");
+});
+​document.getElementById("admBackupBtn").addEventListener("click", () => {
+const backup = JSON.stringify({ menuDB, hotelsDB, ridersDB, ordersDB, appConfig });
+navigator.clipboard?.writeText(backup);
+alert("✅ మొత్తం Backup డేటా Clipboard లోకి కాపీ అయింది!");
+});
+​document.getElementById("admRestoreBtn").addEventListener("click", () => {
+const raw = prompt("మీ Backup JSON డేటా ఇక్కడ పేస్ట్ చేయండి:");
+if (!raw) return;
+try {
+const parsed = JSON.parse(raw);
+if (parsed.menuDB) menuDB = parsed.menuDB;
+if (parsed.hotelsDB) hotelsDB = parsed.hotelsDB;
+if (parsed.ridersDB) ridersDB = parsed.ridersDB;
+if (parsed.ordersDB) ordersDB = parsed.ordersDB;
+if (parsed.appConfig) appConfig = parsed.appConfig;
+localStorage.setItem("msh_unified_menu", JSON.stringify(menuDB));
+localStorage.setItem("msh_unified_hotels", JSON.stringify(hotelsDB));
+localStorage.setItem("msh_unified_riders", JSON.stringify(ridersDB));
+localStorage.setItem("msh_unified_orders", JSON.stringify(ordersDB));
+localStorage.setItem("msh_unified_config", JSON.stringify(appConfig));
+applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
+alert("✅ డేటా పూర్తిగా Restore అయింది!");
+} catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
+});
+​function renderAdminDashboard() {
+document.getElementById("admHotelsSavedList").innerHTML = Object.values(hotelsDB).map(h =>
+<div style="background:#0f172a; border:1px solid #334155; padding:5px 10px; border-radius:7px; font-size:0.8rem; display:flex; align-items:center; gap:8px;"> <span>🏨 <b>${h.name}</b> (${h.lat.toFixed(4)}, ${h.lng.toFixed(4)})</span> ${h.approved === false ? <button type="button" onclick="window.mshAdmApproveHotel('${h.id}')" style="background:#16a34a; color:#fff; border:none; border-radius:4px; padding:2px 6px; font-weight:900; cursor:pointer;">✅ Approve</button>:<span style="color:#4ade80; font-weight:800;">Active</span> } <a href="[https://maps.google.com/?q=$](https://maps.google.com/?q=$){h.lat},${h.lng}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">🗺️ Map</a> <button type="button" onclick="window.mshAdmDelHotel('${h.id}')" style="background:#dc2626; color:#fff; border:none; border-radius:4px; padding:2px 6px; font-weight:900; cursor:pointer;">Remove</button> </div>
+).join("");
+​const list = Object.values(ordersDB).filter(o => o && !o.wiped && o.status !== "WIPED_DONE" && !wipedPinsSet.has(String(o.pin))).reverse();
+const totBill = list.reduce((s, o) => s + (Number(o.totalBill) || 0), 0);
+const totComm = list.reduce((s, o) => s + (Number(o.riderComm) || 0), 0);
+const totGst = list.reduce((s, o) => s + (Number(o.gstAmt) || 0), 0);
+const totOwner = list.reduce((s, o) => s + (Number(o.ownerNetComm) || 0), 0);
+​document.getElementById("admProfitBanner").innerHTML =
+💰 Total Customer Billing: ₹${totBill} | 🛵 Rider Commission: ₹${totComm}<br>🧾 GST Collected (Admin A/c): ₹${totGst} | 👑 Owner Net Commission: ₹${totOwner};
+​document.getElementById("admRidersList").innerHTML = Object.values(ridersDB).map(r => <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.83rem;"> <div> <strong>🛵 ${r.name}</strong> (${r.village}) • 📞 <a href="tel:${r.phone}" style="color:#38bdf8;">${r.phone}</a> • <span style="background:#facc15; color:#000; padding:1px 6px; border-radius:4px; font-weight:900;">PIN: ${r.pin}</span> • <a href="[https://maps.google.com/?q=$](https://maps.google.com/?q=$){r.lat || 18.0815},${r.lng || 83.1285}" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:800;">📡 Device GPS</a> </div> <div style="display:flex; gap:5px; flex-wrap:wrap; align-items:center;"> ${!r.approved ?<button type="button" onclick="window.mshAdmApprove('${r.pin}')" style="background:#16a34a; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Approve</button>:<span style="color:#4ade80; font-weight:800; margin-right:4px;">🟢 Active (₹${r.earned})</span>} <button type="button" onclick="window.mshAdmEditRider('${r.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">✏️ Edit</button> <button type="button" onclick="window.mshAdmRemoveRider('${r.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 8px; font-weight:800; cursor:pointer;">🗑️ Remove</button> </div> </div>).join("");
+​document.getElementById("admOrdersList").innerHTML = list.length
+? list.map(o =>  <div style="background:#0f172a; border-left:4px solid #38bdf8; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.82rem;"> <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;"> <strong>Map PIN #${o.pin} • <span style="background:#16a34a; color:#fff; padding:1px 6px; border-radius:4px;">Delivery Code: ${o.deliveryCode}</span> • ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</strong> <span style="color:#4ade80; font-weight:900;">Bill: ₹${o.totalBill} | Owner: ₹${o.ownerNetComm} | GST: ₹${o.gstAmt} | Rider: ₹${o.riderComm}</span> </div> <div style="color:#cbd5e1; margin:3px 0;">${String(o.numberedItems || "").replace(/\n/g, " | ")}</div> <div>👤 ${o.cName} • 📞 <a href="tel:${o.cPhone}" style="color:#38bdf8;">${o.cPhone}</a> • 🛵 Rider: <b>${o.acceptedByName || "Waiting"}</b> (${o.status})</div> <div style="display:flex; gap:6px; margin-top:5px;"> <button type="button" onclick="window.mshAdmOpenBottomMap('${o.pin}')" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">🗺️ View Map</button> <button type="button" onclick="window.mshAdmCompleteWipe('${o.pin}')" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-weight:800; cursor:pointer;">✅ Permanent Complete & Wipe</button> </div> </div>).join("")
+: "<div style='color:#94a3b8; font-size:0.82rem;'>ప్రస్తుతం ఆక్టివ్ ఆర్డర్లు లేవు.</div>";
+}
+​window.mshAdmOpenBottomMap = function(p) { unlockBottomMapWithPin(p); document.getElementById("mshBottomLiveMap").scrollIntoView({ behavior: "smooth" }); };
+window.mshAdmCompleteWipe = function(p) {
+if (confirm(Order #${p} పూర్తయిందా? Complete నొక్కితే ఈ ఆర్డర్, మ్యాప్ & మెసేజ్‌లు శాశ్వతంగా తొలగించబడి రైడర్ డివైజ్ అన్‌లాక్ అవుతుంది.)) {
+completeAndWipeOrder(p);
+}
+};
+​// =========================================================================
+// 5. BOTTOM REAL-ROAD ROUTE MAP & DELIVERY CODE VERIFICATION
+// =========================================================================
+function unlockBottomMapWithPin(pin) {
+const p = String(pin || "").trim();
+if (wipedPinsSet.has(p) || !ordersDB[p] || ordersDB[p].wiped || ordersDB[p].status === "WIPED_DONE") {
+alert(❌ Tracking PIN "${p}" లేదు లేదా ఇప్పటికే డెలివరీ పూర్తయి తొలగించబడింది.);
+return;
+}
+unlockedBottomPin = p;
+lastRoadFetchKey = "";
+document.getElementById("bottomPinInp").value = p;
+document.getElementById("bottomMapCurtain").style.display = "none";
+document.getElementById("btnLockBottomMap").style.display = "inline-block";
+document.getElementById("customerDeliveryCodeBar").style.display = "flex";
+document.getElementById("verifyDeliveryCodeInp").value = "";
+​setTimeout(() => bottomMap.invalidateSize(), 120);
+updateBottomMapLive(p, liveGpsCache[p] || null);
+}
+​function lockBottomMapUI() {
+unlockedBottomPin = "";
+lastRoadFetchKey = "";
+document.getElementById("bottomPinInp").value = "";
+document.getElementById("bottomMapCurtain").style.display = "flex";
+document.getElementById("btnLockBottomMap").style.display = "none";
+document.getElementById("customerDeliveryCodeBar").style.display = "none";
+document.getElementById("pillHotelHouseKm").innerText = "🔒 Tracking PIN ఎంటర్ చేస్తే కనిపిస్తుంది";
+document.getElementById("pillRiderLiveKm").innerText = "🔒 Waiting for PIN...";
+document.getElementById("bottomChatFeed").innerHTML = "";
+}
+​document.getElementById("btnUnlockBottomMap").addEventListener("click", () => unlockBottomMapWithPin(document.getElementById("bottomPinInp").value));
+document.getElementById("btnLockBottomMap").addEventListener("click", lockBottomMapUI);
+​document.getElementById("btnVerifyCodeAndComplete").addEventListener("click", () => {
+if (!unlockedBottomPin || !ordersDB[unlockedBottomPin]) return;
+const ord = ordersDB[unlockedBottomPin];
+const enteredCode = document.getElementById("verifyDeliveryCodeInp").value.trim();
+​if (enteredCode !== ord.deliveryCode) {
+alert("❌ తప్పు Delivery Code! కస్టమర్ ఫోన్‌లో ఉన్న 4-Digit Delivery Code సరిగ్గా ఎంటర్ చేయండి.");
+return;
+}
+​completeAndWipeOrder(unlockedBottomPin);
+alert("✅ Delivery Code Verified! ఆర్డర్ పూర్తయింది మరియు రైడర్ డివైజ్ అన్‌లాక్ అయింది.");
+});
+​function updateBottomMapLive(pin, gps) {
+const ord = ordersDB[pin];
+if (!ord || ord.wiped || wipedPinsSet.has(String(pin))) return;
+​document.getElementById("bottomChatFeed").innerHTML = ord.chat || "<span style='color:#94a3b8;'>ఈ రైడ్ పూర్తయిన వెంటనే ఇక్కడి మెసేజ్‌లు ఆటోమేటిక్‌గా డిలీట్ అవుతాయి...</span>";
+​const hIcon = L.divIcon({ html: <div style="background:#ea580c;color:#fff;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏨 Hotel</div>, className: "", iconSize: [75, 22], iconAnchor: [37, 11] });
+if (mHotelPin) mHotelPin.setLatLng([ord.hLat, ord.hLng]);
+else mHotelPin = L.marker([ord.hLat, ord.hLng], { icon: hIcon }).addTo(bottomMap);
+​const cIcon = L.divIcon({ html: <div style="background:#0284c7;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:11px;border:2px solid #fff;">🏠 ${ord.village}</div>, className: "", iconSize: [110, 24], iconAnchor: [55, 12] });
+if (mCustPin) { mCustPin.setLatLng([ord.lat, ord.lng]); mCustPin.setIcon(cIcon); }
+else mCustPin = L.marker([ord.lat, ord.lng], { icon: cIcon }).addTo(bottomMap);
+​if (lineHotelToHouse) bottomMap.removeLayer(lineHotelToHouse);
+lineHotelToHouse = L.polyline([[ord.hLat, ord.hLng], [ord.lat, ord.lng]], { color: "#fc8019", weight: 3, dashArray: "5, 7" }).addTo(bottomMap);
+​document.getElementById("pillHotelHouseKm").innerText = ${ord.hotelName} ➔ ${ord.village}: ${ord.exactKm} km;
+​let bounds = [mHotelPin, mCustPin];
+​if ((ord.status === "ACCEPTED" || ord.status === "PICKED_UP" || ord.status === "REACHED") && gps && gps.lat) {
+const rIcon = L.divIcon({ html: <div style="background:#16a34a;color:#fff;padding:3px 9px;border-radius:99px;font-weight:900;font-size:12px;border:2px solid #fff;">🛵 ${gps.rider}</div>, className: "", iconSize: [100, 26], iconAnchor: [50, 13] });
+if (mRiderPin) { mRiderPin.setLatLng([gps.lat, gps.lng]); mRiderPin.setIcon(rIcon); }
+else mRiderPin = L.marker([gps.lat, gps.lng], { icon: rIcon }).addTo(bottomMap);
+​// Draw Real Road Curve Route (OSRM) between Rider & Customer House!
+drawRealRoadPolyline(gps.lat, gps.lng, ord.lat, ord.lng);
+​bounds.push(mRiderPin);
+const riderRemKm = calcRoadKm(gps.lat, gps.lng, ord.lat, ord.lng);
+const stagePrefix = ord.status === "PICKED_UP" ? "🍱 ఫుడ్ తీసుకుని వస్తున్నారు — " : (ord.status === "REACHED" ? "🚪 ఇంటి గేట్ దగ్గర ఉన్నారు! — " : "🛵 ");
+document.getElementById("pillRiderLiveKm").innerText = ${stagePrefix}${gps.rider} (${riderRemKm} km దూరంలో);
+} else {
+if (mRiderPin) { bottomMap.removeLayer(mRiderPin); mRiderPin = null; }
+if (lineRiderRealRoad) { bottomMap.removeLayer(lineRiderRealRoad); lineRiderRealRoad = null; }
+document.getElementById("pillRiderLiveKm").innerText = ord.status === "OPEN"
+? "⏳ రైడర్ Accept కోసం వేచి ఉంది..."
+: ✅ ${ord.acceptedByName} Assigned;
+}
+​bottomMap.fitBounds(L.featureGroup(bounds).getBounds().pad(0.25));
+}
+​document.getElementById("btnSendBottomChat").addEventListener("click", () => {
+if (!unlockedBottomPin || !ordersDB[unlockedBottomPin]) { alert("ముందు 4-Digit Tracking PIN ఎంటర్ చేయండి."); return; }
+const inp = document.getElementById("bottomChatInp");
+const rawTxt = inp.value.trim();
+if (!rawTxt) return;
+inp.value = "";
+const safeTxt = sanitizeAntiLeakChat(rawTxt);
+const sender = loggedInRiderPin ? 🛵 ${ridersDB[loggedInRiderPin].name} : (isAdminOpen ? "👑 Admin" : "👤 Customer");
+ordersDB[unlockedBottomPin].chat = (ordersDB[unlockedBottomPin].chat || "") + <div style="margin-bottom:3px;"><b>${sender}:</b> ${safeTxt}</div>;
+syncOrder(unlockedBottomPin, ordersDB[unlockedBottomPin]);
+});
+​// Boot Everything
+syncRiders();
+syncHotels();
+updateBellBtnUI();
+applyConfigUI();
+renderMenu7x3();
+calcFeesAndExactKm();
+render24hMsgs();
 })();
 </script>
