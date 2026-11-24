@@ -84,16 +84,13 @@
     margin-bottom: 14px;
   }
 
-  /* EXACT 50% LEFT + 50% RIGHT SPLIT (No Cramped Boxes on Mobile!) */
+  /* STRICT 50% LEFT CARD + 50% RIGHT CARD SPLIT */
   .msh-main-split {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
     margin-bottom: 18px;
     align-items: stretch;
-  }
-  @media (max-width: 760px) {
-    .msh-main-split { grid-template-columns: 1fr; }
   }
 
   .msh-right-col-stack {
@@ -101,87 +98,96 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 12px;
+    min-width: 0;
   }
 
   .msh-panel {
     border-radius: 16px;
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 0;
   }
   .msh-panel-orange { background: #fff7ed; border: 2px solid #fdba74; }
   .msh-panel-slate { background: #f8fafc; border: 2px solid #94a3b8; }
   .msh-panel-green { background: #f0fdf4; border: 2px solid #86efac; }
 
-  .msh-h3 { font-size: 1.04rem; font-weight: 900; margin: 0 0 9px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .msh-h3 { font-size: 1rem; font-weight: 900; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-  .msh-cats { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
+  .msh-cats { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 7px; }
   .msh-cat {
     background: #fff;
     border: 1.5px solid #fdba74;
     color: #9a3412;
-    padding: 5px 11px;
+    padding: 4px 9px;
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     font-weight: 800;
     cursor: pointer;
     white-space: nowrap;
   }
   .msh-cat.active { background: var(--swiggy); color: #fff; border-color: var(--swiggy); }
 
-  /* Zero Bottom Gap Scrollable Menu Grid */
+  /* COMPACT 7 ROWS x 3 COLUMNS GRID (Scrolls cleanly after 7 rows!) */
   .msh-grid-7x3 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    height: 690px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    height: 775px; /* Fits 7 compact rows cleanly, scrolls beyond 7 */
     overflow-y: auto;
-    padding-right: 4px;
+    padding-right: 3px;
     align-content: start;
   }
-  @media (max-width: 420px) {
-    .msh-grid-7x3 { grid-template-columns: repeat(2, 1fr); height: 520px; }
-  }
-  .msh-grid-7x3::-webkit-scrollbar { width: 6px; }
+  .msh-grid-7x3::-webkit-scrollbar { width: 5px; }
   .msh-grid-7x3::-webkit-scrollbar-thumb { background: var(--swiggy); border-radius: 99px; }
 
   .msh-fcard {
     background: #ffffff;
     border: 1.5px solid #fed7aa;
-    border-radius: 12px;
-    padding: 7px;
+    border-radius: 10px;
+    padding: 5px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 0;
   }
   .msh-fcard.own { background: #f0fdf4; border: 2px solid #22c55e; }
   .msh-fimg {
     width: 100%;
-    height: 74px;
+    height: 44px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 4px;
+    border-radius: 6px;
+    margin-bottom: 3px;
     background: #ffedd5;
   }
-  .msh-fname { font-size: 0.81rem; font-weight: 800; color: #0f172a; line-height: 1.22; margin-bottom: 3px; }
-  .msh-fprice { font-size: 0.9rem; font-weight: 900; color: #c2410c; margin-bottom: 4px; }
+  .msh-fname {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.15;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .msh-fprice { font-size: 0.8rem; font-weight: 900; color: #c2410c; margin-bottom: 3px; }
 
   .msh-wt-pills {
     display: flex;
     justify-content: center;
-    gap: 3px;
-    margin-bottom: 5px;
+    gap: 2px;
+    margin-bottom: 3px;
   }
   .msh-wt-btn {
     border: 1px solid #cbd5e1;
     background: #f8fafc;
     color: #334155;
-    font-size: 0.69rem;
+    font-size: 0.6rem;
     font-weight: 800;
-    padding: 2px 5px;
-    border-radius: 5px;
+    padding: 1px 4px;
+    border-radius: 4px;
     cursor: pointer;
   }
   .msh-wt-btn.active {
@@ -195,9 +201,9 @@
     background: #fff;
     color: var(--green);
     border: 1.5px solid var(--green);
-    border-radius: 7px;
-    padding: 5px 0;
-    font-size: 0.8rem;
+    border-radius: 5px;
+    padding: 2px 0;
+    font-size: 0.72rem;
     font-weight: 900;
     cursor: pointer;
   }
@@ -207,45 +213,54 @@
     align-items: center;
     background: var(--green);
     color: #fff;
-    border-radius: 7px;
-    padding: 3px 7px;
-    font-size: 0.84rem;
+    border-radius: 5px;
+    padding: 1px 5px;
+    font-size: 0.75rem;
     font-weight: 900;
   }
-  .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 2px 6px; }
+  .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 1px 4px; }
+
+  /* Extra Item Box placed right at the bottom of Left Food Menu Card (Red Marker spot!) */
+  .msh-left-extra-box {
+    background: #ffffff;
+    border: 1.5px solid #fb923c;
+    border-radius: 10px;
+    padding: 7px 8px;
+    margin-top: 8px;
+  }
 
   .msh-inp, .msh-sel {
     width: 100%;
-    padding: 10px 12px;
+    padding: 9px 10px;
     border-radius: 9px;
     border: 1.5px solid #cbd5e1;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     font-weight: 600;
     background: #fff;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
   }
-  .msh-row { display: flex; gap: 7px; margin-bottom: 8px; }
+  .msh-row { display: flex; gap: 6px; margin-bottom: 7px; }
   .msh-btn {
     background: var(--primary);
     color: #fff;
     border: none;
     border-radius: 9px;
-    padding: 0 14px;
+    padding: 0 11px;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     white-space: nowrap;
-    height: 41px;
+    height: 39px;
   }
 
   .msh-numbered-list {
     background: #f8fafc;
     border: 1px dashed #94a3b8;
     border-radius: 8px;
-    padding: 7px 10px;
+    padding: 7px 9px;
     margin-bottom: 7px;
-    font-size: 0.83rem;
-    line-height: 1.48;
+    font-size: 0.81rem;
+    line-height: 1.45;
     color: #0f172a;
     max-height: 145px;
     overflow-y: auto;
@@ -254,7 +269,7 @@
   .msh-numbered-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
 
   .msh-rider-scroll-feed {
-    max-height: 360px;
+    max-height: 330px;
     overflow-y: auto;
     padding-right: 4px;
   }
@@ -265,30 +280,30 @@
     background: #ffffff;
     border: 2px solid #16a34a;
     border-radius: 11px;
-    padding: 10px 12px;
-    margin-bottom: 9px;
-    font-size: 0.85rem;
+    padding: 9px 11px;
+    margin-bottom: 8px;
+    font-size: 0.83rem;
   }
   .msh-fee-line { display: flex; justify-content: space-between; margin-bottom: 3px; color: #334155; font-weight: 600; }
   .msh-fee-total {
     display: flex;
     justify-content: space-between;
-    font-size: 1.12rem;
+    font-size: 1.08rem;
     font-weight: 900;
     color: var(--primary);
     border-top: 1.5px dashed #86efac;
-    padding-top: 6px;
+    padding-top: 5px;
     margin-top: 5px;
   }
 
   .msh-order-btn {
     width: 100%;
-    padding: 13px;
+    padding: 12px;
     background: linear-gradient(135deg, var(--swiggy), var(--swiggy-dark));
     color: #fff;
     border: none;
     border-radius: 11px;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 900;
     cursor: pointer;
   }
@@ -409,70 +424,66 @@
   </div>
 
   <!-- =========================================================
-       TOP 50% LEFT + 50% RIGHT SPLIT (Clean & Zero Bottom Gap)
+       TOP 50% LEFT CARD + 50% RIGHT CARD SPLIT
        ========================================================= -->
   <div class="msh-main-split">
     
-    <!-- LEFT 50%: Visual Food & Weight-Select Vegetable Menu -->
+    <!-- LEFT 50% CARD: 7x3 Compact Food Menu + Extra Item Box at Bottom (Red Marker Spot!) -->
     <div class="msh-panel msh-panel-orange">
       <div>
         <div class="msh-h3" style="color:#9a3412;">
-          <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు</span>
-          <span id="menuItemsBadge" style="font-size:0.78rem; background:#ffedd5; padding:2px 8px; border-radius:6px;">21 Items</span>
+          <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
+          <span id="menuItemsBadge" style="font-size:0.75rem; background:#ffedd5; padding:2px 7px; border-radius:6px;">21 Items</span>
         </div>
 
         <div class="msh-cats" id="catTabsBar">
           <button type="button" class="msh-cat active" data-cat="all">అన్నీ (All)</button>
           <button type="button" class="msh-cat" data-cat="food">🍗 బిర్యానీ & భోజనం</button>
           <button type="button" class="msh-cat" data-cat="own" style="border-color:#16a34a; color:#15803d;">🌾 మా సొంత స్టాక్</button>
-          <button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు (250g/500g/1kg)</button>
+          <button type="button" class="msh-cat" data-cat="veg">🥬 కూరగాయలు</button>
           <button type="button" class="msh-cat" data-cat="drinks">💧 వాటర్ / డ్రింక్స్</button>
         </div>
 
+        <!-- 7 Rows x 3 Columns Compact Grid -->
         <div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
       </div>
-      <div style="margin-top:8px; font-size:0.78rem; color:#9a3412; font-weight:700; text-align:center;">
-        🥬 కూరగాయలకు 250g / 500g / 1kg నొక్కి ఎంచుకోండి • 🟢 గ్రీన్ = సొంత ఫామ్ స్టాక్
+
+      <!-- EXTRA ITEM BOX PLACED RIGHT HERE AT BOTTOM OF MENU CARD (Where you drew the Red Marker!) -->
+      <div class="msh-left-extra-box">
+        <span style="font-size:0.76rem; font-weight:900; color:#9a3412; display:block; margin-bottom:4px;">
+          ➕ మెనూలో లేని Extra ఐటమ్ కావాలంటే ఇక్కడ రాయండి:
+        </span>
+        <div class="msh-row" style="margin:0;">
+          <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5; padding:7px 9px; font-size:0.82rem;" placeholder="ఐటమ్ పేరు (ఉదా: Mixture)">
+          <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.65; padding:7px 6px; font-size:0.82rem;" placeholder="ఎన్ని" min="1" value="1">
+          <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.85; padding:7px 6px; font-size:0.82rem;" placeholder="ధర ₹" min="0" value="0">
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT 50%: CHECKOUT (Direct Village Input + Extra Row) + RIDER PANEL -->
+    <!-- RIGHT 50% CARD: Hotel Address Checkout + Rider Duty Panel -->
     <div class="msh-right-col-stack">
       
-      <!-- 2A. Customer Checkout Box -->
+      <!-- 2A. Customer Checkout Card -->
       <div class="msh-panel msh-panel-slate">
         <div>
           <div class="msh-h3" style="color:#0f4c3a;">
             <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
-            <span id="autoKmBadge" style="font-size:0.78rem; background:#dbeafe; color:#1e40af; padding:3px 9px; border-radius:6px;">దూరం: 1.0 km</span>
+            <span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:3px 8px; border-radius:6px;">దూరం: 1.0 km</span>
           </div>
 
-          <!-- Hotel Dropdown -->
           <select id="cHotelSel" class="msh-sel"></select>
 
-          <!-- Extra Item Name + Quantity + Price Row -->
-          <div style="background:#fff7ed; border:1px solid #fdba74; border-radius:9px; padding:7px; margin-bottom:8px;">
-            <span style="font-size:0.76rem; font-weight:800; color:#9a3412; display:block; margin-bottom:4px;">➕ మెనూలో లేని Extra ఐటమ్ కావాలంటే ఇక్కడ రాయండి:</span>
-            <div class="msh-row" style="margin:0;">
-              <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5;" placeholder="ఐటమ్ పేరు (ఉదా: Mixture)">
-              <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.65;" placeholder="ఎన్ని" min="1" value="1">
-              <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.85;" placeholder="ధర ₹" min="0" value="0">
-            </div>
-          </div>
+          <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / S.Kota)">
 
-          <!-- Direct Village Name Typing Box (No Dropdown!) -->
-          <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / Kiltampalem / S.Kota)">
-
-          <!-- Customer Live GPS Attach Row -->
           <div class="msh-row">
             <input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
             <button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
           </div>
 
-          <!-- Customer Name & Masked Phone -->
           <div class="msh-row">
             <input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
-            <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (రైడర్‌కు కనిపించదు)">
+            <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (Hidden)">
           </div>
 
           <select id="cPaymentMethodSel" class="msh-sel"></select>
@@ -509,7 +520,7 @@
         </div>
       </div>
 
-      <!-- 2B. Easy & Friendly Rider Box -->
+      <!-- 2B. Easy & Friendly Rider Card -->
       <div class="msh-panel msh-panel-green">
         <div>
           <div class="msh-h3" style="color:#0f4c3a;">
@@ -521,11 +532,11 @@
 
           <div class="msh-row">
             <input type="password" id="riderPinLoginInp" class="msh-inp" style="margin:0; font-weight:800; letter-spacing:2px;" maxlength="4" placeholder="మీ 4-Digit Rider PIN">
-            <button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్ (Open)</button>
-            <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒 లాక్</button>
+            <button type="button" class="msh-btn" style="background:#16a34a;" id="btnRiderUnlock">🔓 ఓపెన్</button>
+            <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒</button>
           </div>
 
-          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.84rem; font-weight:700;">
+          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.83rem; font-weight:700;">
             🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
           </div>
 
@@ -961,7 +972,6 @@
     const parsed = extractLatLng(rawGps);
     if (parsed) return parsed;
     if (custLiveLat !== null && custLiveLng !== null) return { lat: custLiveLat, lng: custLiveLng };
-    // Default near Boddavara if customer hasn't clicked Live GPS yet
     return { lat: 18.0815, lng: 83.1285 };
   }
 
@@ -974,7 +984,7 @@
 
     const paySel = document.getElementById("cPaymentMethodSel");
     let opts = "";
-    if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్ ఇస్తాను)</option>`;
+    if (appConfig.codEnabled) opts += `<option value="COD">💵 Cash on Delivery (డెలివరీ అయ్యాక క్యాష్)</option>`;
     if (appConfig.upiEnabled) opts += `<option value="ONLINE_UPI">📲 Online Payment / UPI (PhonePe / GPay)</option>`;
     if (!opts) opts = `<option value="NONE">⚠️ పేమెంట్ ఆప్షన్స్ ఆఫ్‌లో ఉన్నాయి</option>`;
     paySel.innerHTML = opts;
@@ -1159,7 +1169,7 @@
   }
 
   // =========================================================================
-  // 1. MENU RENDERING
+  // 1. MENU RENDERING (Compact 7x3 Cards)
   // =========================================================================
   function getWeightMeta(it) {
     if (it.cat !== "veg") return { mult: 1, label: "" };
@@ -1224,9 +1234,9 @@
         : `<div class="msh-fqty"><button type="button" onclick="window.mshProQty('${it.id}', -1)">−</button><span>${q}</span><button type="button" onclick="window.mshProQty('${it.id}', 1)">+</button></div>`;
 
       const adminControlsHtml = isAdminOpen
-        ? `<div style="display:flex; gap:4px; margin-top:4px;">
-            <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.7rem; padding:3px 0; cursor:pointer; font-weight:900;">✏️ ₹${it.price}</button>
-            <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.7rem; padding:3px 6px; cursor:pointer; font-weight:800;">✕</button>
+        ? `<div style="display:flex; gap:3px; margin-top:3px;">
+            <button type="button" onclick="window.mshAdminQuickPriceEdit('${it.id}')" style="flex:1; background:#dbeafe; color:#1e40af; border:none; border-radius:4px; font-size:0.65rem; padding:2px 0; cursor:pointer; font-weight:900;">✏️ ₹${it.price}</button>
+            <button type="button" onclick="window.mshAdmDelMenu('${it.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:4px; font-size:0.65rem; padding:2px 5px; cursor:pointer; font-weight:800;">✕</button>
           </div>`
         : "";
 
@@ -1234,7 +1244,7 @@
         <div class="msh-fcard ${it.cat === 'own' ? 'own' : ''}">
           <div>
             <img src="${smartImg}" class="msh-fimg" alt="${it.name}" onerror="this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&q=70'">
-            <div class="msh-fname">${it.name} ${wMeta.label ? '(' + wMeta.label + ')' : ''}</div>
+            <div class="msh-fname" title="${it.name}">${it.name} ${wMeta.label ? '(' + wMeta.label + ')' : ''}</div>
           </div>
           <div>
             ${weightChipsHtml}
@@ -1276,7 +1286,7 @@
   });
 
   // =========================================================================
-  // 2. CUSTOMER ORDER PLACEMENT (Direct Village Typing + Live GPS)
+  // 2. CUSTOMER ORDER PLACEMENT
   // =========================================================================
   function calcFeesAndExactKm() {
     let itemsSum = 0;
