@@ -18,7 +18,7 @@
     background: #ffffff;
     border: 2px solid #cbd5e1;
     border-radius: 18px;
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 12px 34px rgba(0,0,0,0.09);
     color: #1e293b;
   }
@@ -68,7 +68,7 @@
     padding-bottom: 12px;
     margin-bottom: 14px;
   }
-  .msh-title { font-size: 1.32rem; font-weight: 900; color: var(--primary); margin: 0; }
+  .msh-title { font-size: 1.3rem; font-weight: 900; color: var(--primary); margin: 0; }
   .msh-sub { font-size: 0.84rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
 
   .msh-closed-wall {
@@ -84,15 +84,15 @@
     margin-bottom: 14px;
   }
 
-  /* EXISTING TOP 2-COLUMN STRUCTURE (UNTOUCHED & BALANCED) */
+  /* EXACT 50% LEFT + 50% RIGHT SPLIT (No Cramped Boxes on Mobile!) */
   .msh-main-split {
     display: grid;
-    grid-template-columns: 1.12fr 0.88fr;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-bottom: 18px;
     align-items: stretch;
   }
-  @media (max-width: 860px) {
+  @media (max-width: 760px) {
     .msh-main-split { grid-template-columns: 1fr; }
   }
 
@@ -114,30 +114,34 @@
   .msh-panel-slate { background: #f8fafc; border: 2px solid #94a3b8; }
   .msh-panel-green { background: #f0fdf4; border: 2px solid #86efac; }
 
-  .msh-h3 { font-size: 1.04rem; font-weight: 900; margin: 0 0 9px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .msh-h3 { font-size: 1.04rem; font-weight: 900; margin: 0 0 9px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
 
   .msh-cats { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
   .msh-cat {
     background: #fff;
     border: 1.5px solid #fdba74;
     color: #9a3412;
-    padding: 4px 10px;
+    padding: 5px 11px;
     border-radius: 999px;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 800;
     cursor: pointer;
     white-space: nowrap;
   }
   .msh-cat.active { background: var(--swiggy); color: #fff; border-color: var(--swiggy); }
 
+  /* Zero Bottom Gap Scrollable Menu Grid */
   .msh-grid-7x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    height: 760px;
+    height: 690px;
     overflow-y: auto;
     padding-right: 4px;
     align-content: start;
+  }
+  @media (max-width: 420px) {
+    .msh-grid-7x3 { grid-template-columns: repeat(2, 1fr); height: 520px; }
   }
   .msh-grid-7x3::-webkit-scrollbar { width: 6px; }
   .msh-grid-7x3::-webkit-scrollbar-thumb { background: var(--swiggy); border-radius: 99px; }
@@ -155,14 +159,14 @@
   .msh-fcard.own { background: #f0fdf4; border: 2px solid #22c55e; }
   .msh-fimg {
     width: 100%;
-    height: 72px;
+    height: 74px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 4px;
     background: #ffedd5;
   }
-  .msh-fname { font-size: 0.8rem; font-weight: 800; color: #0f172a; line-height: 1.2; margin-bottom: 3px; }
-  .msh-fprice { font-size: 0.88rem; font-weight: 900; color: #c2410c; margin-bottom: 4px; }
+  .msh-fname { font-size: 0.81rem; font-weight: 800; color: #0f172a; line-height: 1.22; margin-bottom: 3px; }
+  .msh-fprice { font-size: 0.9rem; font-weight: 900; color: #c2410c; margin-bottom: 4px; }
 
   .msh-wt-pills {
     display: flex;
@@ -174,7 +178,7 @@
     border: 1px solid #cbd5e1;
     background: #f8fafc;
     color: #334155;
-    font-size: 0.67rem;
+    font-size: 0.69rem;
     font-weight: 800;
     padding: 2px 5px;
     border-radius: 5px;
@@ -191,9 +195,9 @@
     background: #fff;
     color: var(--green);
     border: 1.5px solid var(--green);
-    border-radius: 6px;
-    padding: 4px 0;
-    font-size: 0.78rem;
+    border-radius: 7px;
+    padding: 5px 0;
+    font-size: 0.8rem;
     font-weight: 900;
     cursor: pointer;
   }
@@ -203,45 +207,45 @@
     align-items: center;
     background: var(--green);
     color: #fff;
-    border-radius: 6px;
-    padding: 2px 6px;
-    font-size: 0.82rem;
+    border-radius: 7px;
+    padding: 3px 7px;
+    font-size: 0.84rem;
     font-weight: 900;
   }
-  .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 2px 5px; }
+  .msh-fqty button { background: transparent; border: none; color: #fff; font-weight: 900; cursor: pointer; padding: 2px 6px; }
 
   .msh-inp, .msh-sel {
     width: 100%;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 9px;
     border: 1.5px solid #cbd5e1;
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     font-weight: 600;
     background: #fff;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
   }
-  .msh-row { display: flex; gap: 6px; margin-bottom: 7px; }
+  .msh-row { display: flex; gap: 7px; margin-bottom: 8px; }
   .msh-btn {
     background: var(--primary);
     color: #fff;
     border: none;
     border-radius: 9px;
-    padding: 0 12px;
+    padding: 0 14px;
     font-weight: 800;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     cursor: pointer;
     white-space: nowrap;
-    height: 37px;
+    height: 41px;
   }
 
   .msh-numbered-list {
     background: #f8fafc;
     border: 1px dashed #94a3b8;
     border-radius: 8px;
-    padding: 6px 9px;
+    padding: 7px 10px;
     margin-bottom: 7px;
-    font-size: 0.81rem;
-    line-height: 1.45;
+    font-size: 0.83rem;
+    line-height: 1.48;
     color: #0f172a;
     max-height: 145px;
     overflow-y: auto;
@@ -261,35 +265,35 @@
     background: #ffffff;
     border: 2px solid #16a34a;
     border-radius: 11px;
-    padding: 9px 11px;
-    margin-bottom: 8px;
-    font-size: 0.83rem;
+    padding: 10px 12px;
+    margin-bottom: 9px;
+    font-size: 0.85rem;
   }
-  .msh-fee-line { display: flex; justify-content: space-between; margin-bottom: 2px; color: #334155; font-weight: 600; }
+  .msh-fee-line { display: flex; justify-content: space-between; margin-bottom: 3px; color: #334155; font-weight: 600; }
   .msh-fee-total {
     display: flex;
     justify-content: space-between;
-    font-size: 1.08rem;
+    font-size: 1.12rem;
     font-weight: 900;
     color: var(--primary);
     border-top: 1.5px dashed #86efac;
-    padding-top: 5px;
-    margin-top: 4px;
+    padding-top: 6px;
+    margin-top: 5px;
   }
 
   .msh-order-btn {
     width: 100%;
-    padding: 12px;
+    padding: 13px;
     background: linear-gradient(135deg, var(--swiggy), var(--swiggy-dark));
     color: #fff;
     border: none;
     border-radius: 11px;
-    font-size: 1.02rem;
+    font-size: 1.05rem;
     font-weight: 900;
     cursor: pointer;
   }
 
-  /* MIDDLE SECTION: RIDER REGISTRATION & CCTV ADMIN CONTROL ROOM */
+  /* MIDDLE SECTION */
   .msh-mid-admin-sec {
     background: #f1f5f9;
     border: 2px solid #94a3b8;
@@ -298,7 +302,6 @@
     margin-bottom: 18px;
   }
 
-  /* CCTV CONTROL ROOM STYLE ADMIN VAULT */
   .msh-cctv-vault {
     display: none;
     background: #0b1120;
@@ -406,11 +409,11 @@
   </div>
 
   <!-- =========================================================
-       TOP BALANCED SPLIT (STRUCTURE UNCHANGED)
+       TOP 50% LEFT + 50% RIGHT SPLIT (Clean & Zero Bottom Gap)
        ========================================================= -->
   <div class="msh-main-split">
     
-    <!-- LEFT COLUMN: 3-Column Visual Food & Weight-Select Vegetable Menu -->
+    <!-- LEFT 50%: Visual Food & Weight-Select Vegetable Menu -->
     <div class="msh-panel msh-panel-orange">
       <div>
         <div class="msh-h3" style="color:#9a3412;">
@@ -428,12 +431,12 @@
 
         <div class="msh-grid-7x3" id="foodMenu7x3Grid"></div>
       </div>
-      <div style="margin-top:8px; font-size:0.77rem; color:#9a3412; font-weight:700; text-align:center;">
+      <div style="margin-top:8px; font-size:0.78rem; color:#9a3412; font-weight:700; text-align:center;">
         🥬 కూరగాయలకు 250g / 500g / 1kg నొక్కి ఎంచుకోండి • 🟢 గ్రీన్ = సొంత ఫామ్ స్టాక్
       </div>
     </div>
 
-    <!-- RIGHT COLUMN: CHECKOUT + EASY TELUGU RIDER PANEL -->
+    <!-- RIGHT 50%: CHECKOUT (Direct Village Input + Extra Row) + RIDER PANEL -->
     <div class="msh-right-col-stack">
       
       <!-- 2A. Customer Checkout Box -->
@@ -441,35 +444,32 @@
         <div>
           <div class="msh-h3" style="color:#0f4c3a;">
             <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
-            <span id="autoKmBadge" style="font-size:0.76rem; background:#dbeafe; color:#1e40af; padding:2px 8px; border-radius:6px;">దూరం: 1.0 km</span>
+            <span id="autoKmBadge" style="font-size:0.78rem; background:#dbeafe; color:#1e40af; padding:3px 9px; border-radius:6px;">దూరం: 1.0 km</span>
           </div>
 
+          <!-- Hotel Dropdown -->
           <select id="cHotelSel" class="msh-sel"></select>
 
-          <div class="msh-row">
-            <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.3;" placeholder="Extra ఐటమ్ (ఉదా: Mixture)">
-            <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.6;" placeholder="Qty" min="1" value="1">
-            <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.8;" placeholder="ధర ₹" min="0" value="0">
+          <!-- Extra Item Name + Quantity + Price Row -->
+          <div style="background:#fff7ed; border:1px solid #fdba74; border-radius:9px; padding:7px; margin-bottom:8px;">
+            <span style="font-size:0.76rem; font-weight:800; color:#9a3412; display:block; margin-bottom:4px;">➕ మెనూలో లేని Extra ఐటమ్ కావాలంటే ఇక్కడ రాయండి:</span>
+            <div class="msh-row" style="margin:0;">
+              <input type="text" id="cExtraName" class="msh-inp" style="margin:0; flex:1.5;" placeholder="ఐటమ్ పేరు (ఉదా: Mixture)">
+              <input type="number" id="cExtraQty" class="msh-inp" style="margin:0; flex:0.65;" placeholder="ఎన్ని" min="1" value="1">
+              <input type="number" id="cExtraPrice" class="msh-inp" style="margin:0; flex:0.85;" placeholder="ధర ₹" min="0" value="0">
+            </div>
           </div>
 
-          <div class="msh-row">
-            <input type="text" id="cVillage" class="msh-inp" style="margin:0; flex:1;" placeholder="మీ ఊరు (Boddavara / S.Kota)">
-            <select id="cQuickDropZone" class="msh-sel" style="margin:0; flex:1;">
-              <option value="18.0815,83.1285">Boddavara Center</option>
-              <option value="18.0890,83.1210">Ithannapalem</option>
-              <option value="18.1050,83.1480">Kiltampalem / Jindal</option>
-              <option value="18.1118,83.1415">S.Kota / Srungavarapukota</option>
-              <option value="18.1320,83.1250">Dharmavaram</option>
-              <option value="18.1730,83.1880">Thatipudi</option>
-              <option value="18.0335,83.1485">L.Kota</option>
-            </select>
-          </div>
+          <!-- Direct Village Name Typing Box (No Dropdown!) -->
+          <input type="text" id="cVillage" class="msh-inp" placeholder="మీ ఊరు పేరు రాయండి (ఉదా: Boddavara / Kiltampalem / S.Kota)">
 
+          <!-- Customer Live GPS Attach Row -->
           <div class="msh-row">
             <input type="text" id="cGpsField" class="msh-inp" style="margin:0;" placeholder="ఖచ్చితమైన KM కోసం Live GPS నొక్కండి">
             <button type="button" class="msh-btn" style="background:#0284c7;" id="btnGetCustGps">📍 నా Live GPS</button>
           </div>
 
+          <!-- Customer Name & Masked Phone -->
           <div class="msh-row">
             <input type="text" id="cName" class="msh-inp" style="margin:0;" placeholder="మీ పేరు (Name)">
             <input type="tel" id="cPhone" class="msh-inp" style="margin:0;" placeholder="ఫోన్ నంబర్ (రైడర్‌కు కనిపించదు)">
@@ -514,7 +514,7 @@
         <div>
           <div class="msh-h3" style="color:#0f4c3a;">
             <span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
-            <button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:4px 10px; font-size:0.76rem; font-weight:900; cursor:pointer;">
+            <button type="button" id="btnRiderBellToggle" style="background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
               🔔 సౌండ్ ON
             </button>
           </div>
@@ -525,12 +525,12 @@
             <button type="button" class="msh-btn" style="background:#dc2626; display:none;" id="btnRiderLock">🔒 లాక్</button>
           </div>
 
-          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:10px; text-align:center; color:#475569; font-size:0.82rem; font-weight:700;">
+          <div id="riderLockedPlaceholder" style="background:#fff; border:1.5px dashed #94a3b8; border-radius:9px; padding:12px; text-align:center; color:#475569; font-size:0.84rem; font-weight:700;">
             🔐 అడ్మిన్ ఇచ్చిన మీ 4-అంకెల Rider PIN ఎంటర్ చేసి ఓపెన్ నొక్కండి — కొత్త ఆర్డర్లు ఇక్కడ కనిపిస్తాయి.
           </div>
 
           <div id="riderActivePanel" style="display:none;">
-            <div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.83rem; display:flex; justify-content:space-between;">
+            <div style="background:#0f4c3a; color:#fff; padding:7px 10px; border-radius:8px; margin-bottom:7px; font-size:0.84rem; display:flex; justify-content:space-between;">
               <strong id="riderHeaderName">🛵 Rider</strong>
               <span id="riderHeaderEarn" style="color:#facc15; font-weight:800;">సంపాదన: ₹0</span>
             </div>
@@ -577,9 +577,7 @@
       <div id="public24hMsgFeed" style="max-height:90px; overflow-y:auto; font-size:0.83rem;"></div>
     </div>
 
-    <!-- =======================================================================
-         CCTV CONTROL ROOM STYLE ADMIN VAULT (Full Access + Password Change!)
-         ======================================================================= -->
+    <!-- CCTV CONTROL ROOM STYLE ADMIN VAULT -->
     <div id="adminMasterDashboard" class="msh-cctv-vault">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
         <div>
@@ -601,7 +599,6 @@
           <button type="button" id="admBackupBtn" class="msh-btn" style="background:#0284c7;">💾 Backup Data</button>
           <button type="button" id="admRestoreBtn" class="msh-btn" style="background:#7c3aed;">♻️ Restore Backup</button>
         </div>
-        <!-- Change Admin Password Bar -->
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#0f172a; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
           <span style="font-size:0.82rem; color:#facc15; font-weight:800;">🔑 కొత్త Admin Password మార్చండి:</span>
           <input type="text" id="admNewPasswordInp" maxlength="8" placeholder="కొత్త Password (ఉదా: 5678)" style="padding:6px 10px; border-radius:6px; border:none; font-weight:800; width:180px;">
@@ -623,7 +620,7 @@
         <div id="admHotelsSavedList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
       </div>
 
-      <!-- 3. FULL RIDER CONTROL (Approve, Edit PIN/Name/Phone, View Device GPS, Remove Rider) -->
+      <!-- 3. FULL RIDER CONTROL -->
       <div class="msh-vault-card" style="border-color:#22c55e;">
         <div class="msh-vault-title" style="color:#4ade80;">
           <span>🛵 3. రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Edit PIN/Details • Device GPS • Remove)</span>
@@ -691,7 +688,6 @@
       </div>
     </div>
 
-    <!-- CUSTOMER DELIVERY CODE COMPLETION BAR -->
     <div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
       <div style="font-size:0.84rem; color:#86efac; font-weight:800;">
         🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
@@ -732,7 +728,6 @@
   const GST_RATE = 0.05;
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
 
-  // Dynamic Admin Password (Default 1234, can be changed anytime inside Admin Control Room!)
   let currentAdminPassword = localStorage.getItem("msh_custom_admin_pass") || "1234";
 
   const PEERS_10 = [
@@ -748,7 +743,6 @@
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
 
-  // Unified Persistent Topics (Migrates & keeps all previous riders & hotels safe!)
   const TOPIC_MENU   = "msh_unified_menu_2026";
   const TOPIC_HOTELS = "msh_unified_hotels_2026";
   const TOPIC_ORDERS = "msh_unified_orders_2026";
@@ -757,7 +751,6 @@
   const TOPIC_CONFIG = "msh_unified_config_2026";
   const TOPIC_24H    = "msh_unified_24h_2026";
 
-  // Auto-Recover Previously Approved Riders & Hotels from any prior version in localStorage!
   function loadMergedRiders() {
     const base = {
       "2211": { pin: "2211", name: "Rajesh", phone: "9000000001", village: "S.Kota", approved: true, lat: 18.1118, lng: 83.1415, earned: 0 },
@@ -804,7 +797,6 @@
   let ridersDB = loadMergedRiders();
   let hotelsDB = loadMergedHotels();
 
-  // Rider Bell ON/OFF Choice
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
   function playLoudRiderBell() {
     if (!riderBellOn) return;
@@ -969,8 +961,8 @@
     const parsed = extractLatLng(rawGps);
     if (parsed) return parsed;
     if (custLiveLat !== null && custLiveLng !== null) return { lat: custLiveLat, lng: custLiveLng };
-    const [zLat, zLng] = document.getElementById("cQuickDropZone").value.split(",").map(Number);
-    return { lat: zLat, lng: zLng };
+    // Default near Boddavara if customer hasn't clicked Live GPS yet
+    return { lat: 18.0815, lng: 83.1285 };
   }
 
   function applyConfigUI() {
@@ -1011,14 +1003,13 @@
   document.getElementById("admTogCod").addEventListener("click", () => { appConfig.codEnabled = !appConfig.codEnabled; saveAndSyncConfig(); });
   document.getElementById("admTogUpi").addEventListener("click", () => { appConfig.upiEnabled = !appConfig.upiEnabled; saveAndSyncConfig(); });
 
-  // Change Admin Password inside Control Room
   document.getElementById("admBtnChangePass").addEventListener("click", () => {
     const newP = document.getElementById("admNewPasswordInp").value.trim();
     if (newP.length < 4) { alert("కనీసం 4 అంకెలు / అక్షరాల Password ఇవ్వండి."); return; }
     currentAdminPassword = newP;
     localStorage.setItem("msh_custom_admin_pass", newP);
     document.getElementById("admNewPasswordInp").value = "";
-    alert(`✅ కొత్త Admin Password "${newP}" సేవ్ అయింది! ఇకపై ఈ పాస్‌వర్డ్‌తోనే Admin Control Room ఓపెన్ అవుతుంది.`);
+    alert(`✅ కొత్త Admin Password "${newP}" సేవ్ అయింది!`);
   });
 
   function syncOrder(pin, obj) {
@@ -1285,7 +1276,7 @@
   });
 
   // =========================================================================
-  // 2. CUSTOMER ORDER PLACEMENT
+  // 2. CUSTOMER ORDER PLACEMENT (Direct Village Typing + Live GPS)
   // =========================================================================
   function calcFeesAndExactKm() {
     let itemsSum = 0;
@@ -1337,11 +1328,6 @@
   }
 
   document.getElementById("cHotelSel").addEventListener("change", calcFeesAndExactKm);
-  document.getElementById("cQuickDropZone").addEventListener("change", () => {
-    custLiveLat = null; custLiveLng = null;
-    document.getElementById("cGpsField").value = "";
-    calcFeesAndExactKm();
-  });
   document.getElementById("cGpsField").addEventListener("input", calcFeesAndExactKm);
   document.getElementById("cExtraName").addEventListener("input", calcFeesAndExactKm);
   document.getElementById("cExtraQty").addEventListener("input", calcFeesAndExactKm);
@@ -1390,6 +1376,9 @@
 
     if (!plainNumberedLines.length) { alert("దయచేసి కనీసం ఒక ఐటమ్ (+ ADD) ఎంచుకోండి."); return; }
 
+    const village = document.getElementById("cVillage").value.trim();
+    if (!village) { alert("దయచేసి మీ ఊరి పేరు (Village Name) రాయండి."); return; }
+
     const hId = document.getElementById("cHotelSel").value;
     const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
     const dropCoords = getSelectedDropCoords();
@@ -1403,7 +1392,6 @@
     const riderComm = Math.round(delivFee * 0.80) + (extraRate > 0 ? 5 : 0);
     const ownerNetComm = Math.round(itemsSum * 0.15) + packAndPlat + (delivFee - Math.round(delivFee * 0.80)) - (extraRate > 0 ? 5 : 0);
 
-    const village = document.getElementById("cVillage").value.trim() || document.getElementById("cQuickDropZone").options[document.getElementById("cQuickDropZone").selectedIndex].text;
     const cName = document.getElementById("cName").value.trim() || "Customer";
     const cPhone = document.getElementById("cPhone").value.trim();
     const payMode = document.getElementById("cPaymentMethodSel").value;
@@ -1444,7 +1432,7 @@
     document.getElementById("custDeliveryCodeText").innerText = deliveryCode;
     unlockBottomMapWithPin(orderPin);
 
-    const waMsg = `🍔 *NEW ORDER (#${orderPin})*\n🔐 *Delivery Code:* ${deliveryCode}\n🏨 Hotel: ${hotelObj.name} (${exactKm} km)\n📋 *Items:*\n${plainNumberedLines.join("\n")}\n📍 Drop: ${village}\n👤 ${cName} (${cPhone || "WhatsApp"})\n💳 ${payMode} • 💰 Total: ₹${grandTotal}`;
+    const waMsg = `🍔 *NEW ORDER (#${orderPin})*\n🔐 *Delivery Code:* ${deliveryCode}\n🏨 Hotel: ${hotelObj.name} (${exactKm} km)\n📋 *Items:*\n${plainNumberedLines.join("\n")}\n📍 Village: ${village}\n👤 ${cName} (${cPhone || "WhatsApp"})\n💳 ${payMode} • 💰 Total: ₹${grandTotal}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
   });
 
@@ -1631,7 +1619,6 @@
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
 
-  // Open CCTV Admin Vault (Checks Custom Password)
   document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
     if (!isAdminOpen) {
       const entered = prompt("Admin Control Room Password ఎంటర్ చేయండి:");
@@ -1649,7 +1636,6 @@
     renderMenu7x3();
   });
 
-  // Hotel Live GPS & Management
   document.getElementById("admBtnHotelMyGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
     this.innerText = "⏳ Capturing...";
@@ -1686,7 +1672,6 @@
     }
   };
 
-  // Rider Full Access Controls inside Admin Vault (Approve, Edit PIN/Name/Phone, Remove)
   window.mshAdmApprove = function(p) {
     if (ridersDB[p]) { ridersDB[p].approved = true; syncRiders(); }
   };
@@ -1770,7 +1755,6 @@
   });
 
   function renderAdminDashboard() {
-    // Saved Hotels List with Remove Button
     document.getElementById("admHotelsSavedList").innerHTML = Object.values(hotelsDB).map(h =>
       `<div style="background:#0f172a; border:1px solid #334155; padding:5px 10px; border-radius:7px; font-size:0.8rem; display:flex; align-items:center; gap:8px;">
         <span>🏨 <b>${h.name}</b> (${h.lat.toFixed(4)}, ${h.lng.toFixed(4)})</span>
@@ -1788,7 +1772,6 @@
     document.getElementById("admProfitBanner").innerHTML =
       `💰 Total Customer Billing: ₹${totBill} | 🛵 Rider Commission: ₹${totComm}<br>🧾 GST Collected (Admin A/c): ₹${totGst} | 👑 Owner Net Commission: ₹${totOwner}`;
 
-    // Full Rider Control Table (Approve, Edit, Device GPS, Remove)
     document.getElementById("admRidersList").innerHTML = Object.values(ridersDB).map(r => `
       <div style="background:#0f172a; border:1px solid #334155; border-radius:8px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.83rem;">
         <div>
@@ -1871,7 +1854,7 @@
     const enteredCode = document.getElementById("verifyDeliveryCodeInp").value.trim();
 
     if (enteredCode !== ord.deliveryCode) {
-      alert("❌ తప్పు Delivery Code! కస్టమర్ ఫోన్‌లో ఉన్న 4-Digit Delivery Code (లేదా Admin వద్ద ఉన్న కోడ్) సరిగ్గా ఎంటర్ చేయండి.");
+      alert("❌ తప్పు Delivery Code! కస్టమర్ ఫోన్‌లో ఉన్న 4-Digit Delivery Code సరిగ్గా ఎంటర్ చేయండి.");
       return;
     }
 
@@ -1936,7 +1919,7 @@
     syncOrder(unlockedBottomPin, ordersDB[unlockedBottomPin]);
   });
 
-  // Boot Everything & Persist Merged Riders/Hotels
+  // Boot Everything
   syncRiders();
   syncHotels();
   updateBellBtnUI();
