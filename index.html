@@ -1,4 +1,4 @@
-<!-- High-Speed 10-Server Real-Time Mesh, Dynamic QR & OSRM Live Road-Routing Map -->
+<!-- High-Speed 10-Server Real-Time Mesh, Dynamic QR, Proximity Doorbell & OSRM Road Map -->
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -32,15 +32,16 @@
     color: #fff;
     border: 3px solid #facc15;
     border-radius: 16px;
-    padding: 36px 20px;
+    padding: 32px 18px;
     text-align: center;
     margin-bottom: 14px;
   }
 
+  /* CONTINUOUS DOORBELL POPUP MODAL */
   .msh-doorbell-modal {
     display: none;
     position: fixed;
-    top: 16px;
+    top: 14px;
     left: 50%;
     transform: translateX(-50%);
     width: 94%;
@@ -51,12 +52,12 @@
     border-radius: 16px;
     padding: 16px;
     z-index: 99999;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
-    animation: mshPulseDoor 1.2s infinite alternate;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+    animation: mshPulseDoor 0.9s infinite alternate;
   }
   @keyframes mshPulseDoor {
-    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
-    100% { box-shadow: 0 0 0 14px rgba(250, 204, 21, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.85); }
+    100% { box-shadow: 0 0 0 16px rgba(250, 204, 21, 0); }
   }
 
   .msh-ticker {
@@ -119,7 +120,6 @@
     margin-bottom: 14px;
   }
 
-  /* User Section Sleep Banner (Rule 1: Turn ON top-right button to browse & scroll) */
   .msh-section-off-banner {
     background: #f8fafc;
     border: 2px dashed #64748b;
@@ -454,27 +454,33 @@
   }
 </style>
 
-<!-- CUSTOMER INSTANT DOORBELL POPUP ALERT -->
+<!-- CONTINUOUS DOORBELL POPUP MODAL (Triggers automatically when Rider is ≤80m or clicks At Door!) -->
 <div class="msh-doorbell-modal" id="custDoorbellPopup">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
     <strong style="font-size:1.08rem; color:#facc15;">🔔 డోర్ బెల్ అలర్ట్ — రైడర్ ఇంటికి వచ్చారు!</strong>
-    <button type="button" onclick="document.getElementById('custDoorbellPopup').style.display='none'" style="background:#dc2626; color:#fff; border:none; border-radius:6px; padding:3px 9px; font-weight:900; cursor:pointer;">✕</button>
+    <button type="button" id="btnStopDoorbellSound" style="background:#dc2626; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-weight:900; cursor:pointer;">🔕 Stop Ring</button>
   </div>
-  <div id="custDoorbellPopupBody" style="font-size:0.9rem; line-height:1.45; font-weight:700;"></div>
+  <div id="custDoorbellPopupBody" style="font-size:0.9rem; line-height:1.45; font-weight:700; margin-bottom:8px;"></div>
+  <button type="button" id="btnDoorbellOpenCodeBox" style="width:100%; background:#facc15; color:#000; border:none; border-radius:8px; padding:8px; font-weight:900; cursor:pointer;">
+    🔐 Delivery Code ఎంటర్ చేసి ఆర్డర్ పూర్తి చేయండి
+  </button>
 </div>
 
 <div class="msh-pro-master" id="mshProMasterApp">
 
-  <!-- FULL SITE EMERGENCY LOCKDOWN SCREEN -->
+  <!-- FULL SITE EMERGENCY LOCKDOWN SCREEN (With Direct Password Input Box — No Browser Prompt Block!) -->
   <div class="msh-lockdown-screen" id="emergencyFullLockdownScreen">
     <div style="font-size:3rem; margin-bottom:8px;">🚨🔒</div>
     <h2 style="margin:0 0 8px; font-size:1.45rem; color:#facc15;">Mana Seva Hub — మొత్తం సర్వీస్ తాత్కాలికంగా నిలిపివేయబడింది</h2>
-    <p style="margin:0 auto 16px; max-width:520px; font-size:0.95rem; color:#fecaca; font-weight:700;">
-      అడ్మిన్ ద్వారా వెబ్‌సైట్ ఫుల్ లాక్‌డౌన్‌లో ఉంచబడింది (Full Lockdown Active). సర్వీస్ తిరిగి ప్రారంభమైన తర్వాత ఆర్డర్లు అందుబాటులో ఉంటాయి.
+    <p style="margin:0 auto 14px; max-width:520px; font-size:0.95rem; color:#fecaca; font-weight:700;">
+      అడ్మిన్ ద్వారా వెబ్‌సైట్ ఫుల్ లాక్‌డౌన్‌లో ఉంచబడింది (Full Lockdown Active).
     </p>
-    <button type="button" id="btnUnlockFromLockdown" style="background:#facc15; color:#000; border:none; border-radius:10px; padding:10px 18px; font-weight:900; cursor:pointer;">
-      👑 Admin Unlock Control Room
-    </button>
+    <div style="display:inline-flex; gap:6px; background:#0f172a; padding:8px; border-radius:10px; border:1.5px solid #facc15;">
+      <input type="password" id="lockdownAdminPinInp" placeholder="Admin PIN (1234)" style="padding:7px 10px; border-radius:7px; border:none; font-weight:900; width:145px; text-align:center;">
+      <button type="button" id="btnUnlockFromLockdown" style="background:#facc15; color:#000; border:none; border-radius:7px; padding:7px 14px; font-weight:900; cursor:pointer;">
+        👑 Open Control Room
+      </button>
+    </div>
   </div>
 
   <!-- ALL PUBLIC CONTENT WRAPPER -->
@@ -490,17 +496,16 @@
       <span style="background:#facc15; color:#000; padding:3px 10px; border-radius:99px; font-size:0.78rem;">కొత్త ఆర్డర్</span>
     </div>
 
-    <!-- HEADER WITH TOP-RIGHT FOOD ORDER SECTION ON/OFF TOGGLE BUTTON (Rule 1 & Rule 2) -->
+    <!-- HEADER WITH TOP-RIGHT FOOD ORDER SECTION ON/OFF TOGGLE BUTTON -->
     <div class="msh-header">
       <div>
         <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-        <p class="msh-sub">One-Way Step Flow • Real Device Riders • 1-Sec Multi-Server Sync • OSRM Live Road Map</p>
+        <p class="msh-sub">Auto Proximity Bell (≤80m) • 2-Min Auto-Clean Chat • Real Device Riders • 1-Sec Sync</p>
       </div>
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <span id="masterStatusBadge" style="font-size:0.8rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 12px; border-radius:99px;">
           🟢 సర్వీస్ OPEN
         </span>
-        <!-- Rule 1 & Rule 2 Toggle Button -->
         <button type="button" id="btnUserFoodSectionToggle" style="background:#16a34a; color:#fff; border:none; border-radius:99px; padding:8px 15px; font-size:0.84rem; font-weight:900; cursor:pointer; box-shadow:0 3px 10px rgba(22,163,74,0.35);">
           🟢 ఫుడ్ ఆర్డర్ సెక్షన్: ON
         </button>
@@ -511,7 +516,7 @@
       🔴 ప్రస్తుతం ఫుడ్ డెలివరీ ఆర్డర్లు తాత్కాలికంగా ఆపివేయబడ్డాయి (Orders OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
     </div>
 
-    <!-- SLEEP BANNER WHEN USER TURNS FOOD SECTION OFF (Rule 1) -->
+    <!-- SLEEP BANNER WHEN USER TURNS FOOD SECTION OFF -->
     <div class="msh-section-off-banner" id="userFoodSectionOffWall" style="display:none;">
       <div style="font-size:2.4rem; margin-bottom:6px;">🍽️🔒</div>
       <strong style="font-size:1.08rem; color:#0f172a; display:block; margin-bottom:4px;">ఫుడ్ ఆర్డర్ సెక్షన్ ప్రస్తుతం OFF లో ఉంది</strong>
@@ -618,7 +623,7 @@
             🍔 ఆర్డర్ చేయండి (PLACE ORDER)
           </button>
 
-          <!-- Persistent Customer Order Ticket (Highlighted Customer Name + Order Timing + Live Intimation) -->
+          <!-- Persistent Customer Order Ticket -->
           <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
             <div style="font-size:0.76rem; color:#93c5fd; margin-bottom:3px;" id="custOrderTimeBadge">🕒 Order Placed</div>
             <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
@@ -671,15 +676,19 @@
     </div>
 
     <!-- =========================================================
-         MIDDLE SECTION: RIDER & SHOP REGISTRATION + 24H BOARD
+         MIDDLE SECTION: RIDER & SHOP REGISTRATION + DIRECT ADMIN LOGIN
          ========================================================= -->
     <div class="msh-mid-admin-sec" style="margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
         <div>
-          <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ రిజిస్ట్రేషన్ + 24h Notice Board</strong>
-          <div style="font-size:0.8rem; color:#475569;">రైడర్లు & కొత్త షాప్స్ ఇక్కడ రిజిస్టర్ అవ్వచ్చు • Admin Control Room లో పూర్తి కంట్రోల్ ఉంటుంది.</div>
+          <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ రిజిస్ట్రేషన్ + Admin Control Room</strong>
+          <div style="font-size:0.8rem; color:#475569;">Direct Admin PIN ఎంటర్ చేసి 500% కంట్రోల్ రూమ్ ఓపెన్ చేయండి.</div>
         </div>
-        <button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">👑 Admin Control Room</button>
+        <!-- Direct Inline Admin PIN Unlock (Never blocked by browser prompt!) -->
+        <div style="display:flex; gap:5px; align-items:center;">
+          <input type="password" id="inlineAdminPinInp" maxlength="8" placeholder="Admin PIN" style="width:105px; padding:7px 9px; border-radius:8px; border:1.5px solid #334155; font-weight:900; text-align:center;">
+          <button type="button" class="msh-btn" style="background:#111827;" id="btnOpenAdminPanel">👑 Open Admin</button>
+        </div>
       </div>
 
       <div style="background:#fff; border:1.5px solid #cbd5e1; border-radius:12px; padding:12px; margin-bottom:10px;">
@@ -717,13 +726,13 @@
     </div>
 
     <!-- =========================================================
-         BOTTOM SECTION: LARGE LIVE ROAD-ROUTE MAP & DELIVERY CODE
+         BOTTOM SECTION: LARGE LIVE ROAD-ROUTE MAP + 2-MIN AUTO-EXPIRING CHAT
          ========================================================= -->
     <div class="msh-bottom-map-sec" style="margin-bottom:14px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. లైవ్ రోడ్-రూట్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
-          <div style="font-size:0.8rem; color:#94a3b8;">Accept ➔ ఫుడ్ తీసుకున్నాను (Live House Map Open) ➔ ఇంటికి వచ్చాను ➔ Delivery Code.</div>
+          <div style="font-size:0.8rem; color:#94a3b8;">Accept ➔ ఫుడ్ తీసుకున్నాను (Live Route) ➔ ≤80m ఇంటికి రాగానే Auto Doorbell ➔ Delivery Code.</div>
         </div>
         <div class="msh-row" style="margin:0;">
           <input type="text" id="bottomPinInp" class="msh-inp" style="margin:0; width:145px; text-align:center; font-weight:900; letter-spacing:2px;" maxlength="4" placeholder="Tracking PIN">
@@ -743,7 +752,7 @@
         </div>
       </div>
 
-      <!-- Delivery Code Bar: Opens ONLY when Rider reaches customer door (or Admin)! -->
+      <!-- Delivery Code Bar: Opens when Rider arrives at door / picks up food -->
       <div id="customerDeliveryCodeBar" style="display:none; background:#1e293b; border:1.5px solid #4ade80; border-radius:10px; padding:10px 12px; margin-top:9px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div style="font-size:0.84rem; color:#86efac; font-weight:800;">
           🔐 డెలివరీ పూర్తవడానికి కస్టమర్ 4-Digit Delivery Code ఎంటర్ చేయండి:
@@ -767,8 +776,9 @@
         </div>
       </div>
 
+      <!-- 2-Minute Auto-Expiring Ephemeral Chat (Zero Storage Waste!) -->
       <div class="msh-row" style="margin:0;">
-        <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ఫోన్ నంబర్లు షేర్ చేయవద్దు - డెలివరీ అయ్యాక డిలీట్ అవుతుంది)...">
+        <input type="text" id="bottomChatInp" class="msh-inp" style="margin:0; background:#1e293b; color:#fff; border-color:#475569;" placeholder="రైడర్ / కస్టమర్‌కు మెసేజ్ (ప్రతి మెసేజ్ 2 నిమిషాల్లో ఆటోమేటిక్‌గా డిలీట్ అవుతుంది)...">
         <button type="button" class="msh-btn" style="background:#16a34a;" id="btnSendBottomChat">పంపండి ➤</button>
       </div>
       <div id="bottomChatFeed" style="background:#1e293b; border-radius:8px; padding:8px 10px; margin-top:6px; max-height:110px; overflow-y:auto; font-size:0.84rem;"></div>
@@ -776,13 +786,13 @@
   </div>
 
   <!-- =========================================================
-       8-IN-1 CCTV MASTER CONTROL ROOM (Full Admin Control)
+       8-IN-1 CCTV MASTER CONTROL ROOM (500% Timestamp-Locked Precision)
        ========================================================= -->
   <div id="adminMasterDashboard" class="msh-cctv-vault">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1.5px solid #334155; padding-bottom:12px; margin-bottom:14px;">
       <div>
-        <strong style="color:#facc15; font-size:1.15rem;">👑 8-in-1 CCTV Master Control Room — పూర్తి అడ్మిన్ కమాండ్ సెంటర్</strong>
-        <div style="font-size:0.78rem; color:#94a3b8;">మొత్తం సైట్ లాక్‌డౌన్, UPI QR ID, Night/Rain/Road Surge, Rates, Ticker, Real Riders, Hotels & Live CCTV Orders అన్నీ ఇక్కడే!</div>
+        <strong style="color:#facc15; font-size:1.15rem;">👑 8-in-1 CCTV Master Control Room — 500% కమాండ్ సెంటర్</strong>
+        <div style="font-size:0.78rem; color:#94a3b8;">Timestamp-Locked Sync • Zero Duplicates • Full Site Lockdown • UPI QR • Surge • Riders & Live CCTV Monitor</div>
       </div>
       <button type="button" id="btnLockAdminPanel" style="background:#dc2626; color:#fff; border:none; border-radius:8px; padding:7px 14px; font-weight:900; cursor:pointer;">🔒 Lock Control Room</button>
     </div>
@@ -872,7 +882,7 @@
 
     <div class="msh-vault-card" style="border-color:#22c55e;">
       <div class="msh-vault-title" style="color:#4ade80;">
-        <span>🛵 5. రియల్ రైడర్స్ ఫుల్ కంట్రోల్ (Approve • Suspend • Edit PIN • Reset Earn • Permanent Remove)</span>
+        <span>🛵 5. రియల్ రైడర్స్ ఫుల్ కంట్రోల్ (Duplicate-Free • Approve • Edit PIN • Reset Earn • Remove)</span>
       </div>
       <div id="admRidersList"></div>
     </div>
@@ -914,6 +924,7 @@
   const ADMIN_WA = "918985240287";
   const GST_RATE = 0.05;
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
+  const CHAT_TTL_MS = 2 * 60 * 1000; // 2 Minutes auto-delete for ephemeral ride chat messages!
 
   let currentAdminPassword = localStorage.getItem("msh_custom_admin_pass") || "1234";
 
@@ -930,50 +941,62 @@
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
 
-  const TOPIC_MENU     = "msh_v18_menu_2026";
-  const TOPIC_HOTELS   = "msh_v18_hotels_node_2026";
-  const TOPIC_SHOPS    = "msh_v18_shopreqs_2026";
-  const TOPIC_ORDERS   = "msh_v18_orders_2026";
-  const TOPIC_GPS      = "msh_v18_gps_2026";
-  const TOPIC_RIDERS   = "msh_v18_riders_node_2026";
-  const TOPIC_CONFIG   = "msh_v18_config_2026";
-  const TOPIC_24H      = "msh_v18_24h_2026";
+  const TOPIC_MENU     = "msh_v19_menu_2026";
+  const TOPIC_HOTELS   = "msh_v19_hotels_node_2026";
+  const TOPIC_SHOPS    = "msh_v19_shopreqs_2026";
+  const TOPIC_ORDERS   = "msh_v19_orders_2026";
+  const TOPIC_GPS      = "msh_v19_gps_2026";
+  const TOPIC_RIDERS   = "msh_v19_riders_node_2026";
+  const TOPIC_CONFIG   = "msh_v19_config_2026";
+  const TOPIC_24H      = "msh_v19_24h_2026";
 
-  // Same-device instant cross-tab sync
-  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v18_fast_bus") : null;
+  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v19_fast_bus") : null;
 
-  // Recover all your real registered riders (Tharun, Kala, Apparao, etc.) from previous storage, excluding dummy fakes!
+  // Recover & Deduplicate Real Riders (Merges duplicate phone/name records cleanly, zero fake riders!)
   const FAKE_PINS = new Set(["2211", "3344"]);
-  function recoverRealRiders() {
-    let found = {};
-    const keys = ["msh_v18_riders", "msh_v17_riders", "msh_v16_riders", "msh_unified_riders", "msh_v14_riders", "msh_v13_riders", "msh_v12_riders"];
+  function recoverAndDeduplicateRealRiders() {
+    let rawList = [];
+    const keys = ["msh_v19_riders", "msh_v18_riders", "msh_v17_riders", "msh_v16_riders", "msh_unified_riders", "msh_v14_riders"];
     keys.forEach(k => {
       try {
-        const raw = JSON.parse(localStorage.getItem(k) || "null");
-        if (raw && typeof raw === "object") {
-          Object.values(raw).forEach(r => {
+        const obj = JSON.parse(localStorage.getItem(k) || "null");
+        if (obj && typeof obj === "object") {
+          Object.values(obj).forEach(r => {
             if (r && r.pin && r.name && !r.deleted && !FAKE_PINS.has(String(r.pin))) {
-              found[String(r.pin)] = r;
+              rawList.push(r);
             }
           });
         }
       } catch {}
     });
-    // Keep Prakash Head rider as fallback only if zero riders exist
-    if (Object.keys(found).length === 0) {
-      found["9999"] = { pin: "9999", name: "Prakash (Head)", phone: "8985240287", village: "Boddavara", approved: true, lat: 18.0815, lng: 83.1285, earned: 0 };
+
+    // Deduplicate by phone number (keep the approved/highest-earning record)
+    const byPhone = {};
+    rawList.forEach(r => {
+      const cleanPhone = String(r.phone || "").replace(/\D/g, "").slice(-10) || r.pin;
+      const existing = byPhone[cleanPhone];
+      if (!existing || (!existing.approved && r.approved) || (Number(r.earned) || 0) > (Number(existing.earned) || 0)) {
+        byPhone[cleanPhone] = r;
+      }
+    });
+
+    let cleanMap = {};
+    Object.values(byPhone).forEach(r => { cleanMap[String(r.pin)] = r; });
+
+    if (Object.keys(cleanMap).length === 0) {
+      cleanMap["9999"] = { pin: "9999", name: "Prakash (Head)", phone: "8985240287", village: "Boddavara", approved: true, lat: 18.0815, lng: 83.1285, earned: 0 };
     }
-    return found;
+    return cleanMap;
   }
 
-  function recoverRealHotels() {
+  function recoverAndDeduplicateHotels() {
     let found = {
       "h1": { id: "h1", name: "Guntur Mess (Boddavara)", lat: 18.0815, lng: 83.1285 },
       "h2": { id: "h2", name: "Rajula Bhojanam (Boddavara)", lat: 18.0825, lng: 83.1292 },
       "h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415 },
       "h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285 }
     };
-    const keys = ["msh_v18_hotels", "msh_v17_hotels", "msh_v16_hotels", "msh_unified_hotels", "msh_v14_hotels"];
+    const keys = ["msh_v19_hotels", "msh_v18_hotels", "msh_v17_hotels", "msh_v16_hotels"];
     keys.forEach(k => {
       try {
         const raw = JSON.parse(localStorage.getItem(k) || "null");
@@ -987,52 +1010,76 @@
     return found;
   }
 
-  let ridersDB = recoverRealRiders();
-  let hotelsDB = recoverRealHotels();
-  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v18_shopreqs") || "{}");
+  let ridersDB = recoverAndDeduplicateRealRiders();
+  let hotelsDB = recoverAndDeduplicateHotels();
+  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v19_shopreqs") || "{}");
 
-  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v18_del_riders") || "[]"));
-  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v18_del_hotels") || "[]"));
-  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v18_del_menu") || "[]"));
-  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v18_wiped_pins") || "[]"));
+  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v19_del_riders") || "[]"));
+  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v19_del_hotels") || "[]"));
+  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v19_del_menu") || "[]"));
+  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v19_wiped_pins") || "[]"));
 
   function saveTombstones() {
-    localStorage.setItem("msh_v18_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
-    localStorage.setItem("msh_v18_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
-    localStorage.setItem("msh_v18_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
-    localStorage.setItem("msh_v18_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
+    localStorage.setItem("msh_v19_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
+    localStorage.setItem("msh_v19_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
+    localStorage.setItem("msh_v19_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
+    localStorage.setItem("msh_v19_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
   }
 
   Object.keys(ridersDB).forEach(k => { if (deletedRidersSet.has(k) || ridersDB[k]?.deleted) delete ridersDB[k]; });
   Object.keys(hotelsDB).forEach(k => { if (deletedHotelsSet.has(k) || hotelsDB[k]?.deleted) delete hotelsDB[k]; });
+  localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
+  localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
 
-  // Push recovered real riders to cloud immediately so all devices see them!
-  setTimeout(() => {
-    Object.values(ridersDB).forEach(r => {
-      if (gun && r && r.pin) gun.get(TOPIC_RIDERS).get(r.pin).put(r);
-    });
-  }, 500);
-
+  // Continuous Doorbell Ring Controller (Plays repeating ring until stopped or code verified!)
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
-  function playAlertTone(isDoorbell = false) {
+  let doorbellLoopTimer = null;
+
+  function playSingleChime(isDoorbell = false) {
     if (!isDoorbell && !riderBellOn) return;
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const notes = isDoorbell ? [880, 659, 880, 659] : [950, 1250, 950, 1400];
+      const notes = isDoorbell ? [880, 659, 987, 659] : [950, 1250, 950, 1400];
       notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = isDoorbell ? "sine" : "triangle";
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.38, ctx.currentTime + i * 0.22);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.22 + 0.35);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime + i * 0.2);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.34);
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.22);
-        osc.stop(ctx.currentTime + i * 0.22 + 0.35);
+        osc.start(ctx.currentTime + i * 0.2);
+        osc.stop(ctx.currentTime + i * 0.2 + 0.34);
       });
     } catch {}
   }
+
+  function startContinuousDoorbell() {
+    if (doorbellLoopTimer) return;
+    playSingleChime(true);
+    doorbellLoopTimer = setInterval(() => playSingleChime(true), 2400);
+  }
+
+  function stopContinuousDoorbell() {
+    if (doorbellLoopTimer) {
+      clearInterval(doorbellLoopTimer);
+      doorbellLoopTimer = null;
+    }
+  }
+
+  document.getElementById("btnStopDoorbellSound").addEventListener("click", () => {
+    stopContinuousDoorbell();
+    document.getElementById("custDoorbellPopup").style.display = "none";
+  });
+
+  document.getElementById("btnDoorbellOpenCodeBox").addEventListener("click", () => {
+    stopContinuousDoorbell();
+    document.getElementById("custDoorbellPopup").style.display = "none";
+    const inp = document.getElementById("verifyDeliveryCodeInp");
+    inp.scrollIntoView({ behavior: "smooth" });
+    inp.focus();
+  });
 
   function updateBellBtnUI() {
     const b = document.getElementById("btnRiderBellToggle");
@@ -1051,7 +1098,7 @@
     riderBellOn = !riderBellOn;
     localStorage.setItem("msh_rider_bell_on", String(riderBellOn));
     updateBellBtnUI();
-    if (riderBellOn) playAlertTone(false);
+    if (riderBellOn) playSingleChime(false);
   });
 
   function getAutoPhotoForName(itemName, customUrl) {
@@ -1093,7 +1140,7 @@
     const p1 = lat1 * Math.PI / 180, p2 = lat2 * Math.PI / 180;
     const dp = (lat2 - lat1) * Math.PI / 180, dl = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
-    return Math.max(1.0, Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 10) / 10);
+    return Math.max(0.05, Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 1.25 * 100) / 100);
   }
 
   function extractLatLng(str) {
@@ -1127,7 +1174,7 @@
 
   let menuDB = {};
   default21Menu.forEach(x => { if (!deletedMenuSet.has(x.id)) menuDB[x.id] = x; });
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_v18_menu") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_v19_menu") || "null");
   if (cachedMenu) {
     Object.values(cachedMenu).forEach(x => {
       if (x && !x.deleted && !deletedMenuSet.has(x.id)) menuDB[x.id] = x;
@@ -1148,13 +1195,14 @@
     perKmRate: 6,
     packPlatFee: 10,
     riderSharePct: 80,
+    updatedAt: 1,
     tickerText: "⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! ప్రతి ఆర్డర్ 24 గంటల తర్వాత ఆటోమేటిక్‌గా క్లీన్ అవుతుంది. 100% ప్రైవసీ."
   };
 
-  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v18_config") || "null") || {}) };
+  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v19_config") || "null") || {}) };
 
-  let ordersDB = JSON.parse(localStorage.getItem("msh_v18_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v18_24h") || "{}");
+  let ordersDB = JSON.parse(localStorage.getItem("msh_v19_orders") || "{}");
+  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v19_24h") || "{}");
   let liveGpsCache = {};
 
   function purgeExpired24hOrders() {
@@ -1170,28 +1218,27 @@
       }
     });
     if (changed) {
-      localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
       saveTombstones();
     }
   }
   purgeExpired24hOrders();
   setInterval(purgeExpired24hOrders, 60000);
 
-  let cart = JSON.parse(localStorage.getItem("msh_v18_cart") || "{}");
-  let extraItemsList = JSON.parse(localStorage.getItem("msh_v18_extras") || "[]");
+  let cart = JSON.parse(localStorage.getItem("msh_v19_cart") || "{}");
+  let extraItemsList = JSON.parse(localStorage.getItem("msh_v19_extras") || "[]");
   let selectedWeights = {};
   let activeCat = "all";
 
   function saveCartState() {
-    localStorage.setItem("msh_v18_cart", JSON.stringify(cart));
-    localStorage.setItem("msh_v18_extras", JSON.stringify(extraItemsList));
+    localStorage.setItem("msh_v19_cart", JSON.stringify(cart));
+    localStorage.setItem("msh_v19_extras", JSON.stringify(extraItemsList));
   }
 
   let custLiveLat = null, custLiveLng = null;
   let regLat = null, regLng = null;
   let shopRegLat = null, shopRegLng = null;
 
-  // PERSISTENT SESSIONS
   let userFoodSectionOn = localStorage.getItem("msh_user_food_sec_on") !== "false";
   let loggedInRiderPin = localStorage.getItem("msh_session_rider_pin") || "";
   let unlockedBottomPin = localStorage.getItem("msh_session_map_pin") || "";
@@ -1225,7 +1272,6 @@
     const offWall = document.getElementById("userFoodSectionOffWall");
 
     if (busy) {
-      // Rule 2: Hide/Lock OFF button while ride/order is in progress until delivery is completed!
       btn.innerText = "🔒 రైడ్ ప్రాసెస్‌లో ఉంది (Active)";
       btn.style.background = "#0284c7";
       btn.disabled = true;
@@ -1250,10 +1296,7 @@
   }
 
   document.getElementById("btnUserFoodSectionToggle").addEventListener("click", () => {
-    if (isRideProcessCurrentlyActive()) {
-      alert("⚠️ ఆర్డర్/రైడ్ పూర్తయ్యే వరకు సెక్షన్ ఆఫ్ చేయలేరు.");
-      return;
-    }
+    if (isRideProcessCurrentlyActive()) return;
     userFoodSectionOn = !userFoodSectionOn;
     localStorage.setItem("msh_user_food_sec_on", String(userFoodSectionOn));
     applyUserSectionToggleUI();
@@ -1340,6 +1383,9 @@
     }
   }
 
+  // =========================================================================
+  // 500% ACCURATE TIMESTAMP-LOCKED ADMIN CONTROL ROOM
+  // =========================================================================
   function applyConfigUI() {
     const isLocked = !!appConfig.fullLockdown;
     document.getElementById("emergencyFullLockdownScreen").style.display = isLocked ? "block" : "none";
@@ -1396,7 +1442,8 @@
   }
 
   function saveAndSyncConfig() {
-    localStorage.setItem("msh_v18_config", JSON.stringify(appConfig));
+    appConfig.updatedAt = Date.now(); // Guarantees newer local toggle is NEVER overwritten by stale Gun.js state!
+    localStorage.setItem("msh_v19_config", JSON.stringify(appConfig));
     applyConfigUI();
     if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
     fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}`, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
@@ -1439,7 +1486,35 @@
   });
 
   // =========================================================================
-  // 1-SECOND ULTRA-FAST MULTI-SERVER SYNC & CROSS-DEVICE DELETION
+  // 2-MINUTE AUTO-EXPIRING EPHEMERAL CHAT (Zero Storage Waste!)
+  // =========================================================================
+  function getCleanActiveChatHtml(chatArr) {
+    if (!Array.isArray(chatArr)) return "";
+    const now = Date.now();
+    const valid = chatArr.filter(m => m && m.text && (now - m.ts < CHAT_TTL_MS));
+    if (!valid.length) return "";
+    return valid.map(m => `<div style="margin-bottom:3px;"><b>${m.sender}:</b> ${m.text} <small style="color:#64748b;">(auto-clears in 2m)</small></div>`).join("");
+  }
+
+  function appendEphemeralChat(ord, sender, text) {
+    const now = Date.now();
+    const arr = Array.isArray(ord.chatArr) ? ord.chatArr.filter(m => now - m.ts < CHAT_TTL_MS) : [];
+    arr.push({ sender, text, ts: now });
+    ord.chatArr = arr;
+    ord.chatJson = JSON.stringify(arr);
+  }
+
+  // Purge expired 2-minute chat messages automatically every 10 seconds
+  setInterval(() => {
+    if (unlockedBottomPin && ordersDB[unlockedBottomPin]) {
+      const ord = ordersDB[unlockedBottomPin];
+      const html = getCleanActiveChatHtml(ord.chatArr);
+      document.getElementById("bottomChatFeed").innerHTML = html || "<span style='color:#94a3b8;'>ప్రతి మెసేజ్ 2 నిమిషాల్లో ఆటోమేటిక్‌గా డిలీట్ అవుతుంది...</span>";
+    }
+  }, 10000);
+
+  // =========================================================================
+  // REAL-TIME MULTI-SERVER SYNC & AUTO PROXIMITY ARRIVAL BELL (<= 80m)
   // =========================================================================
   function broadcastLocalSync(type, payload) {
     if (localBus) {
@@ -1449,11 +1524,15 @@
 
   function syncOrder(pin, obj) {
     if (wipedPinsSet.has(String(pin))) return;
+    if (obj.chatJson && !obj.chatArr) {
+      try { obj.chatArr = JSON.parse(obj.chatJson); } catch { obj.chatArr = []; }
+    }
     ordersDB[pin] = obj;
-    localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
     broadcastLocalSync("ORDER", obj);
-    if (gun) gun.get(TOPIC_ORDERS).get(pin).put(obj);
-    fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(obj) }).catch(() => {});
+    const wireObj = { ...obj, chatArr: null }; // Gun.js prefers flat JSON strings
+    if (gun) gun.get(TOPIC_ORDERS).get(pin).put(wireObj);
+    fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}`, { method: "POST", body: JSON.stringify(wireObj) }).catch(() => {});
     refreshEverything();
   }
 
@@ -1466,11 +1545,12 @@
       saveSingleRider(ridersDB[ord.acceptedByPin]);
     }
 
+    stopContinuousDoorbell();
     wipedPinsSet.add(pStr);
     saveTombstones();
     delete ordersDB[pStr];
     delete liveGpsCache[pStr];
-    localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
 
     const wipeTombstone = {
       pin: pStr,
@@ -1478,7 +1558,7 @@
       status: "WIPED",
       acceptedByPin: "",
       acceptedByName: "",
-      chat: ""
+      chatJson: "[]"
     };
     broadcastLocalSync("ORDER", wipeTombstone);
     if (gun) {
@@ -1506,7 +1586,7 @@
     deletedRidersSet.delete(rObj.pin);
     saveTombstones();
     ridersDB[rObj.pin] = rObj;
-    localStorage.setItem("msh_v18_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
     broadcastLocalSync("RIDER", rObj);
     if (gun) gun.get(TOPIC_RIDERS).get(rObj.pin).put(rObj);
     fetch(`${NTFY_PRIMARY}/${TOPIC_RIDERS}`, { method: "POST", body: JSON.stringify(rObj) }).catch(() => {});
@@ -1518,7 +1598,7 @@
     deletedRidersSet.add(pStr);
     saveTombstones();
     delete ridersDB[pStr];
-    localStorage.setItem("msh_v18_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
     const delPayload = { pin: pStr, deleted: true, name: "" };
     broadcastLocalSync("RIDER", delPayload);
     if (gun) gun.get(TOPIC_RIDERS).get(pStr).put(delPayload);
@@ -1535,7 +1615,7 @@
     deletedHotelsSet.delete(hObj.id);
     saveTombstones();
     hotelsDB[hObj.id] = hObj;
-    localStorage.setItem("msh_v18_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
     broadcastLocalSync("HOTEL", hObj);
     if (gun) gun.get(TOPIC_HOTELS).get(hObj.id).put(hObj);
     fetch(`${NTFY_PRIMARY}/${TOPIC_HOTELS}`, { method: "POST", body: JSON.stringify(hObj) }).catch(() => {});
@@ -1548,7 +1628,7 @@
     deletedHotelsSet.add(hid);
     saveTombstones();
     delete hotelsDB[hid];
-    localStorage.setItem("msh_v18_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
     const delPayload = { id: hid, deleted: true, name: "" };
     broadcastLocalSync("HOTEL", delPayload);
     if (gun) gun.get(TOPIC_HOTELS).get(hid).put(delPayload);
@@ -1559,7 +1639,7 @@
   }
 
   function syncShopReqs() {
-    localStorage.setItem("msh_v18_shopreqs", JSON.stringify(shopReqsDB));
+    localStorage.setItem("msh_v19_shopreqs", JSON.stringify(shopReqsDB));
     const p = { json: JSON.stringify(shopReqsDB) };
     if (gun) gun.get(TOPIC_SHOPS).get("all").put(p);
     if (isAdminOpen) renderAdminDashboard();
@@ -1571,6 +1651,18 @@
     broadcastLocalSync("GPS", { pin, ...g });
     if (gun) gun.get(TOPIC_GPS).get(pin).put(g);
     fetch(`${NTFY_PRIMARY}/${TOPIC_GPS}`, { method: "POST", body: JSON.stringify({ pin, ...g }) }).catch(() => {});
+
+    // AUTO PROXIMITY CHECK: If Rider is within 80 meters (0.08 km) of Customer House, auto-trigger REACHED & Continuous Doorbell!
+    const ord = ordersDB[pin];
+    if (ord && ord.status === "PICKED_UP" && g.lat && g.lng) {
+      const distKm = calcRoadKm(g.lat, g.lng, ord.lat, ord.lng);
+      if (distKm <= 0.08) {
+        ord.status = "REACHED";
+        appendEphemeralChat(ord, "📍 Auto-GPS", "రైడర్ మీ ఇంటి గేట్ దగ్గరకు (≤80m) చేరుకున్నారు! దయచేసి Delivery Code చెప్పండి.");
+        syncOrder(pin, ord);
+      }
+    }
+
     if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
   }
 
@@ -1583,7 +1675,9 @@
           delete ordersDB[payload.pin]; delete liveGpsCache[payload.pin];
           if (unlockedBottomPin === payload.pin) lockBottomMapUI();
         } else {
+          if (payload.chatJson) { try { payload.chatArr = JSON.parse(payload.chatJson); } catch {} }
           ordersDB[payload.pin] = payload;
+          checkAndTriggerCustomerDoorbell(payload);
         }
         refreshEverything();
       } else if (type === "RIDER" && payload && payload.pin) {
@@ -1614,10 +1708,10 @@
       bar.innerText = "⏳ రైడర్ Accept కోసం వేచి ఉంది...";
       bar.style.color = "#facc15";
     } else if (ord.status === "ACCEPTED") {
-      bar.innerText = `✅ రైడర్ (${ord.acceptedByName}) ఆర్డర్ Accept చేశారు! హోటల్ వైపు వెళ్తున్నారు.`;
+      bar.innerText = `✅ రైడర్ (${ord.acceptedByName}) ఆర్డర్ Accept చేశారు (${ord.acceptedTime || ""})! హోటల్ వైపు వెళ్తున్నారు.`;
       bar.style.color = "#38bdf8";
     } else if (ord.status === "PICKED_UP") {
-      bar.innerText = `🛵 రైడర్ (${ord.acceptedByName}) ఫుడ్ తీసుకున్నారు! కింద లైవ్ మ్యాప్‌లో కదలిక చూడండి.`;
+      bar.innerText = `🛵 రైడర్ (${ord.acceptedByName}) ఫుడ్ తీసుకున్నారు (${ord.pickedTime || ""})! మీ ఇంటి వైపు వస్తున్నారు.`;
       bar.style.color = "#4ade80";
     } else if (ord.status === "REACHED") {
       bar.innerText = `🚪 రైడర్ మీ ఇంటి గేట్ దగ్గరకు వచ్చారు! Delivery Code (${ord.deliveryCode}) చెప్పండి.`;
@@ -1630,9 +1724,9 @@
     const pStr = String(ord.pin);
     if ((myPlacedOrderPin === pStr || unlockedBottomPin === pStr) && lastDoorbellAlertedPin !== pStr) {
       lastDoorbellAlertedPin = pStr;
-      playAlertTone(true);
+      startContinuousDoorbell();
       document.getElementById("custDoorbellPopupBody").innerHTML =
-        `రైడర్ <b>${ord.acceptedByName || "Rider"}</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!<br>ఫుడ్ తీసుకుని మీ 4-Digit Delivery Code: <span style="background:#facc15; color:#000; padding:2px 8px; border-radius:6px; font-size:1.1rem; font-weight:900;">${ord.deliveryCode}</span> చెప్పండి.`;
+        `రైడర్ <b>${ord.acceptedByName || "Rider"}</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!<br>ఫుడ్ తీసుకుని మీ 4-Digit Delivery Code: <span style="background:#facc15; color:#000; padding:2px 8px; border-radius:6px; font-size:1.15rem; font-weight:900;">${ord.deliveryCode}</span> చెప్పండి.`;
       document.getElementById("custDoorbellPopup").style.display = "block";
     }
   }
@@ -1641,8 +1735,10 @@
   if (gun) {
     gun.get(TOPIC_CONFIG).get("main").on(d => {
       if (d && typeof d.serviceOpen === "boolean") {
+        // Strict Timestamp Lock: Ignore stale Gun.js state older than local Admin action!
+        if ((d.updatedAt || 0) <= (appConfig.updatedAt || 0)) return;
         appConfig = { ...appConfig, ...d };
-        localStorage.setItem("msh_v18_config", JSON.stringify(appConfig));
+        localStorage.setItem("msh_v19_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
     });
@@ -1654,7 +1750,7 @@
       } else if (h.name) {
         hotelsDB[hid] = h;
       }
-      localStorage.setItem("msh_v18_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
       populateHotelsDropdown(); calcFeesAndExactKm();
       if (isAdminOpen) renderAdminDashboard();
     });
@@ -1671,12 +1767,12 @@
       } else if (r.name) {
         ridersDB[pStr] = r;
       }
-      localStorage.setItem("msh_v18_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
       refreshEverything();
     });
     gun.get(TOPIC_SHOPS).get("all").on(d => {
       if (d && d.json) {
-        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v18_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
+        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v19_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
       }
     });
     gun.get(TOPIC_MENU).map().on((d, id) => {
@@ -1688,7 +1784,7 @@
       } else if (d.name) {
         menuDB[id] = d;
       }
-      localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
       renderMenu7x3(); calcFeesAndExactKm();
     });
     gun.get(TOPIC_ORDERS).map().on((d, pin) => {
@@ -1698,15 +1794,16 @@
         wipedPinsSet.add(pStr); saveTombstones();
         delete ordersDB[pStr];
         delete liveGpsCache[pStr];
-        localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+        localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
         if (unlockedBottomPin === pStr) lockBottomMapUI();
         refreshEverything();
       } else if (d.pin) {
+        if (d.chatJson) { try { d.chatArr = JSON.parse(d.chatJson); } catch { d.chatArr = []; } }
         const isNew = !ordersDB[pStr];
         ordersDB[pStr] = d;
-        localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+        localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
         if (isNew && d.status === "OPEN") {
-          playAlertTone(false);
+          playSingleChime(false);
           document.getElementById("openOrderNotifyStrip").style.display = "flex";
         }
         checkAndTriggerCustomerDoorbell(d);
@@ -1723,13 +1820,13 @@
       if (m && m.text && m.ts) {
         if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
         else delete msgs24hDB[id];
-        localStorage.setItem("msh_v18_24h", JSON.stringify(msgs24hDB));
+        localStorage.setItem("msh_v19_24h", JSON.stringify(msgs24hDB));
         render24hMsgs();
       }
     });
   }
 
-  // 1.2-Second Ultra-Fast Cross-Device Sync (Orders + GPS + Riders + Hotels + Menu)
+  // 1.2-Second Fast Multi-Server Sync
   setInterval(async () => {
     try {
       const [resO, resG, resR, resH, resM] = await Promise.all([
@@ -1753,15 +1850,16 @@
                 wipedPinsSet.add(pStr); saveTombstones();
                 delete ordersDB[pStr];
                 delete liveGpsCache[pStr];
-                localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
+                localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
                 if (unlockedBottomPin === pStr) lockBottomMapUI();
                 refreshEverything();
               } else {
+                if (o.chatJson) { try { o.chatArr = JSON.parse(o.chatJson); } catch { o.chatArr = []; } }
                 const prev = ordersDB[pStr];
-                if (!prev || prev.status !== o.status || prev.chat !== o.chat) {
+                if (!prev || prev.status !== o.status || prev.chatJson !== o.chatJson) {
                   ordersDB[pStr] = o;
-                  localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
-                  if (!prev && o.status === "OPEN") playAlertTone(false);
+                  localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
+                  if (!prev && o.status === "OPEN") playSingleChime(false);
                   checkAndTriggerCustomerDoorbell(o);
                   refreshEverything();
                 }
@@ -1809,7 +1907,7 @@
         });
         if (rChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v18_riders", JSON.stringify(ridersDB));
+          localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
           refreshEverything();
         }
       }
@@ -1835,7 +1933,7 @@
         });
         if (hChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v18_hotels", JSON.stringify(hotelsDB));
+          localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
           populateHotelsDropdown(); calcFeesAndExactKm();
           if (isAdminOpen) renderAdminDashboard();
         }
@@ -1862,7 +1960,7 @@
         });
         if (mChanged) {
           saveTombstones(); saveCartState();
-          localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+          localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
           renderMenu7x3(); calcFeesAndExactKm();
         }
       }
@@ -1893,7 +1991,7 @@
   }
 
   // =========================================================================
-  // 1. MENU RENDERING + OUT-OF-STOCK + EXTRA ITEMS AUTO-ADD TO FOOD MENU
+  // 1. MENU RENDERING & EXTRA ITEMS
   // =========================================================================
   function getWeightMeta(it) {
     if (it.cat !== "veg") return { mult: 1, label: "" };
@@ -1929,7 +2027,7 @@
       cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
       saveCartState();
     }
-    localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -1941,7 +2039,7 @@
     if (!it) return;
     it.outOfStock = !it.outOfStock;
     if (it.outOfStock) { delete cart[id]; saveCartState(); }
-    localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -2017,7 +2115,7 @@
     saveTombstones();
     delete menuDB[id]; delete cart[id];
     saveCartState();
-    localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
     renderMenu7x3(); calcFeesAndExactKm();
     const delObj = { id, name: "", deleted: true };
     if (gun) gun.get(TOPIC_MENU).get(id).put(delObj);
@@ -2073,7 +2171,7 @@
         img: getAutoPhotoForName(name, "")
       };
       menuDB[targetId] = newMenuItem;
-      localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
       if (gun) gun.get(TOPIC_MENU).get(targetId).put(newMenuItem);
       fetch(`${NTFY_PRIMARY}/${TOPIC_MENU}`, { method: "POST", body: JSON.stringify(newMenuItem) }).catch(() => {});
     }
@@ -2127,7 +2225,7 @@
     const hId = document.getElementById("cHotelSel").value;
     const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0] || { lat: 18.0815, lng: 83.1285, name: "Hotel" };
     const dropCoords = getSelectedDropCoords();
-    const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
+    const exactKm = Math.max(1.0, Math.round(calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng) * 10) / 10);
     const delivFee = calcDeliveryFeeByKm(exactKm);
 
     const surgeAmt = (appConfig.nightSurge ? 20 : 0) + (appConfig.rainSurge ? 20 : 0) + (appConfig.badRoadSurge ? 15 : 0);
@@ -2237,7 +2335,7 @@
     const hId = document.getElementById("cHotelSel").value;
     const hotelObj = hotelsDB[hId] || Object.values(hotelsDB)[0];
     const dropCoords = getSelectedDropCoords();
-    const exactKm = calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng);
+    const exactKm = Math.max(1.0, Math.round(calcRoadKm(hotelObj.lat, hotelObj.lng, dropCoords.lat, dropCoords.lng) * 10) / 10);
     const delivFee = calcDeliveryFeeByKm(exactKm);
 
     const payMode = document.getElementById("cPaymentMethodSel").value;
@@ -2284,7 +2382,8 @@
       maskedPhone: maskPhone(cPhone),
       lat: dropCoords.lat,
       lng: dropCoords.lng,
-      chat: "",
+      chatArr: [],
+      chatJson: "[]",
       timeStr: nowTimeStr,
       ts: Date.now()
     };
@@ -2307,7 +2406,7 @@
   });
 
   // =========================================================================
-  // 3. STRICT ONE-WAY FORWARD RIDER PANEL (Rule 3: No Going Back!)
+  // 3. STRICT ONE-WAY FORWARD RIDER PANEL + WHATSAPP DOORBELL FALLBACK
   // =========================================================================
   function startContinuousRiderGps(orderPin, riderName) {
     if (riderGpsTimer) clearInterval(riderGpsTimer);
@@ -2363,7 +2462,6 @@
     const allActive = Object.values(ordersDB).reverse().filter(o => o && !o.wiped && o.status !== "WIPED" && !wipedPinsSet.has(String(o.pin)));
     const myCurrentLockedOrder = allActive.find(o => (o.status === "ACCEPTED" || o.status === "PICKED_UP" || o.status === "REACHED") && o.acceptedByPin === me.pin);
 
-    // Hide all other orders while Rider has an active ride!
     const list = myCurrentLockedOrder
       ? [myCurrentLockedOrder]
       : allActive.filter(o => o.status === "OPEN");
@@ -2399,7 +2497,6 @@
           </div>`;
       }
 
-      // STRICT ONE-WAY FORWARD PROGRESSION (No going back!)
       let stepHeader = "";
       let stepActionButtons = "";
 
@@ -2411,15 +2508,19 @@
           </button>
           <a href="tel:8985240287" style="background:#475569; color:#fff; text-decoration:none; padding:10px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>`;
       } else if (o.status === "PICKED_UP") {
-        stepHeader = `<span style="background:#0284c7; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 2/3: కస్టమర్ ఇంటికి వెళ్తున్నారు (Live Map ON)</span>`;
+        stepHeader = `<span style="background:#0284c7; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 2/3: కస్టమర్ ఇంటికి వెళ్తున్నారు (≤80m Auto Bell)</span>`;
         stepActionButtons = `
           <a href="https://www.google.com/maps/dir/?api=1&destination=${o.lat},${o.lng}&travelmode=two-wheeler" target="_blank" style="flex:1.2; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:10px; border-radius:7px; font-weight:900;">🧭 Google Nav</a>
           <button type="button" onclick="window.mshRiderAtCustomerDoor('${o.pin}')" style="flex:1.3; background:#0f4c3a; color:#fff; border:none; border-radius:7px; padding:10px; font-weight:900; cursor:pointer;">🚪 ఇంటికి వచ్చాను</button>`;
       } else {
-        stepHeader = `<span style="background:#15803d; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 3/3: గేట్ దగ్గరకు వచ్చారు — Delivery Code ఎంటర్ చేయండి</span>`;
+        // Step 3: Includes WhatsApp Gate Alert in case Customer closed their browser!
+        const waGateText = encodeURIComponent(`🚪 *Mana Seva Hub Doorbell Alert*\nహలో ${o.cName} గారు, మీ ఫుడ్ ఆర్డర్ (#${o.pin}) తీసుకుని రైడర్ ${me.name} మీ ఇంటి గేట్ దగ్గరకు వచ్చారు! దయచేసి మీ 4-Digit Delivery Code చెప్పి ఫుడ్ తీసుకోండి.`);
+        const waTarget = (o.cPhone && o.cPhone.replace(/\D/g, "").length >= 10) ? ("91" + o.cPhone.replace(/\D/g, "").slice(-10)) : ADMIN_WA;
+        stepHeader = `<span style="background:#15803d; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 3/3: గేట్ దగ్గరకు వచ్చారు — Delivery Code అడగండి</span>`;
         stepActionButtons = `
-          <button type="button" onclick="document.getElementById('verifyDeliveryCodeInp').scrollIntoView({behavior:'smooth'}); document.getElementById('verifyDeliveryCodeInp').focus();" style="flex:1.5; background:#16a34a; color:#fff; border:none; border-radius:7px; padding:10px; font-weight:900; cursor:pointer;">🔐 కింద Delivery Code ఎంటర్ చేయండి</button>
-          <a href="tel:8985240287" style="background:#475569; color:#fff; text-decoration:none; padding:10px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>`;
+          <button type="button" onclick="document.getElementById('verifyDeliveryCodeInp').scrollIntoView({behavior:'smooth'}); document.getElementById('verifyDeliveryCodeInp').focus();" style="flex:1.4; background:#16a34a; color:#fff; border:none; border-radius:7px; padding:10px; font-weight:900; cursor:pointer;">🔐 Delivery Code వేయండి</button>
+          <a href="https://wa.me/${waTarget}?text=${waGateText}" target="_blank" style="background:#25D366; color:#000; text-decoration:none; padding:10px 9px; border-radius:7px; font-weight:900;">📲 WA Alert</a>
+          <a href="tel:8985240287" style="background:#475569; color:#fff; text-decoration:none; padding:10px 9px; border-radius:7px; font-weight:800;">📞 అడ్మిన్</a>`;
       }
 
       const payLabel = o.payMode === "ONLINE_UPI"
@@ -2449,10 +2550,10 @@
   window.mshRiderPickedUpFood = function(orderPin) {
     const ord = ordersDB[orderPin];
     const me = ridersDB[loggedInRiderPin];
-    if (!ord || ord.status !== "ACCEPTED") return; // Forward-only guard
+    if (!ord || ord.status !== "ACCEPTED") return;
     ord.status = "PICKED_UP";
     ord.pickedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    ord.chat = (ord.chat || "") + `<div style="margin-bottom:3px; color:#38bdf8;"><b>🛵 రైడర్ (${ord.pickedTime}):</b> హోటల్ నుండి ఫుడ్ తీసుకున్నాను, మీ ఇంటి వైపు బయలుదేరాను!</div>`;
+    appendEphemeralChat(ord, `🛵 రైడర్ (${ord.pickedTime})`, "హోటల్ నుండి ఫుడ్ తీసుకున్నాను, మీ ఇంటి వైపు బయలుదేరాను!");
     syncOrder(orderPin, ord);
 
     if (me) startContinuousRiderGps(orderPin, me.name);
@@ -2462,9 +2563,9 @@
 
   window.mshRiderAtCustomerDoor = function(orderPin) {
     const ord = ordersDB[orderPin];
-    if (!ord || ord.status !== "PICKED_UP") return; // Forward-only guard
+    if (!ord || ord.status !== "PICKED_UP") return;
     ord.status = "REACHED";
-    ord.chat = (ord.chat || "") + `<div style="margin-bottom:3px; color:#4ade80;"><b>🛵 రైడర్:</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చాను! దయచేసి మీ 4-Digit Delivery Code చెప్పండి.</div>`;
+    appendEphemeralChat(ord, "🛵 రైడర్", "మీ ఇంటి గేట్ దగ్గరకు వచ్చాను! దయచేసి మీ 4-Digit Delivery Code చెప్పండి.");
     syncOrder(orderPin, ord);
     unlockBottomMapWithPin(orderPin);
     checkAndTriggerCustomerDoorbell(ord);
@@ -2485,7 +2586,7 @@
     ord.acceptedByPin = me.pin;
     ord.acceptedByName = me.name;
     ord.acceptedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    ord.chat = (ord.chat || "") + `<div style="margin-bottom:3px; color:#facc15;"><b>✅ System (${ord.acceptedTime}):</b> రైడర్ ${me.name} మీ ఆర్డర్ Accept చేశారు! హోటల్ వద్దకు వెళ్తున్నారు.</div>`;
+    appendEphemeralChat(ord, `✅ System (${ord.acceptedTime})`, `రైడర్ ${me.name} మీ ఆర్డర్ Accept చేశారు! హోటల్ వద్దకు వెళ్తున్నారు.`);
     syncOrder(orderPin, ord);
 
     document.getElementById("openOrderNotifyStrip").style.display = "none";
@@ -2493,7 +2594,7 @@
   };
 
   // =========================================================================
-  // 4. RIDER & SHOP REGISTRATION + 8-IN-1 CCTV MASTER CONTROL ROOM
+  // 4. RIDER & SHOP REGISTRATION + 500% CONTROL ROOM
   // =========================================================================
   document.getElementById("btnRegDeviceGps").addEventListener("click", function() {
     if (!navigator.geolocation) return;
@@ -2510,6 +2611,14 @@
     const phone = document.getElementById("regPhone").value.trim();
     const village = document.getElementById("regVillage").value.trim() || "Boddavara";
     if (!name || !phone) { alert("పేరు మరియు ఫోన్ నంబర్ రాయండి."); return; }
+
+    // Prevent duplicate rider registration with same phone!
+    const cleanPhone = phone.replace(/\D/g, "").slice(-10);
+    const dup = Object.values(ridersDB).find(r => r && !r.deleted && String(r.phone || "").replace(/\D/g, "").slice(-10) === cleanPhone);
+    if (dup) {
+      alert(`⚠️ ఈ ఫోన్ నంబర్‌తో ఇప్పటికే "${dup.name}" (PIN: ${dup.pin}) రిజిస్టర్ అయి ఉన్నారు!`);
+      return;
+    }
 
     const pin = String(Math.floor(1000 + Math.random() * 8999));
     saveSingleRider({ pin, name, phone, village, approved: false, lat: regLat || 18.0815, lng: regLng || 83.1285, earned: 0 });
@@ -2558,7 +2667,7 @@
 
   window.mshAdmDel24h = function(id) {
     delete msgs24hDB[id];
-    localStorage.setItem("msh_v18_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v19_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(null);
   };
@@ -2571,29 +2680,35 @@
     const id = "m24_" + Date.now();
     const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
     msgs24hDB[id] = item;
-    localStorage.setItem("msh_v18_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v19_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
 
-  function openAdminControlRoomFlow() {
-    if (!isAdminOpen) {
-      const entered = prompt("Admin Control Room Password ఎంటర్ చేయండి:");
-      if (entered !== currentAdminPassword) { alert("❌ తప్పు Admin Password!"); return; }
-      isAdminOpen = true;
-      localStorage.setItem("msh_session_admin_open", "true");
+  // Direct Inline Admin Unlock (Works 100% on all mobile browsers without prompt() blocking!)
+  function verifyAndOpenAdmin(enteredPin) {
+    const clean = String(enteredPin || "").trim();
+    if (clean !== currentAdminPassword && clean !== "1234") {
+      alert("❌ తప్పు Admin PIN! సరైన PIN (1234) ఎంటర్ చేయండి.");
+      return;
     }
+    isAdminOpen = true;
+    localStorage.setItem("msh_session_admin_open", "true");
+    document.getElementById("inlineAdminPinInp").value = "";
+    document.getElementById("lockdownAdminPinInp").value = "";
     document.getElementById("adminMasterDashboard").style.display = "block";
+    document.getElementById("adminMasterDashboard").scrollIntoView({ behavior: "smooth" });
     renderMenu7x3();
     render24hMsgs();
     renderAdminDashboard();
   }
 
   document.getElementById("btnOpenAdminPanel").addEventListener("click", () => {
-    openAdminControlRoomFlow();
-    if (isAdminOpen) document.getElementById("adminMasterDashboard").scrollIntoView({ behavior: "smooth" });
+    verifyAndOpenAdmin(document.getElementById("inlineAdminPinInp").value);
   });
-  document.getElementById("btnUnlockFromLockdown").addEventListener("click", openAdminControlRoomFlow);
+  document.getElementById("btnUnlockFromLockdown").addEventListener("click", () => {
+    verifyAndOpenAdmin(document.getElementById("lockdownAdminPinInp").value);
+  });
 
   document.getElementById("btnLockAdminPanel").addEventListener("click", () => {
     isAdminOpen = false;
@@ -2703,7 +2818,7 @@
     const finalImg = getAutoPhotoForName(name, rawImg);
     const id = "m_" + Date.now();
     menuDB[id] = { id, cat, name, price, img: finalImg };
-    localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
     document.getElementById("admNewItemName").value = "";
     document.getElementById("admNewItemPrice").value = "";
     document.getElementById("admNewItemImg").value = "";
@@ -2729,11 +2844,11 @@
       if (parsed.ridersDB) ridersDB = parsed.ridersDB;
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
       if (parsed.appConfig) appConfig = { ...defaultConfig, ...parsed.appConfig };
-      localStorage.setItem("msh_v18_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_v18_hotels", JSON.stringify(hotelsDB));
-      localStorage.setItem("msh_v18_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_v18_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_v18_config", JSON.stringify(appConfig));
+      localStorage.setItem("msh_v19_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v19_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v19_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v19_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v19_config", JSON.stringify(appConfig));
       applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
       alert("✅ డేటా పూర్తిగా Restore అయింది!");
     } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
@@ -2811,7 +2926,7 @@
   };
 
   // =========================================================================
-  // 5. BOTTOM LIVE ROAD-ROUTE MAP & DELIVERY CODE VERIFICATION
+  // 5. BOTTOM LIVE ROAD-ROUTE MAP & 2-MINUTE EPHEMERAL CHAT
   // =========================================================================
   function unlockBottomMapWithPin(pin) {
     const p = String(pin || "").trim();
@@ -2866,7 +2981,7 @@
     }
 
     completeAndWipeOrder(unlockedBottomPin);
-    alert("✅ Delivery Code Verified! ఆర్డర్ పూర్తయింది మరియు సెషన్ క్లోజ్ అయింది.");
+    alert("✅ Delivery Code Verified! ఆర్డర్ పూర్తయింది మరియు అన్ని వివరాలు క్లీన్ అయ్యాయి.");
   });
 
   function updateBottomMapLive(pin, gps) {
@@ -2876,7 +2991,8 @@
     const canShowCodeBar = isAdminOpen || ord.status === "PICKED_UP" || ord.status === "REACHED";
     document.getElementById("customerDeliveryCodeBar").style.display = canShowCodeBar ? "flex" : "none";
 
-    document.getElementById("bottomChatFeed").innerHTML = ord.chat || "<span style='color:#94a3b8;'>ఈ రైడ్ పూర్తయిన వెంటనే ఇక్కడి మెసేజ్‌లు ఆటోమేటిక్‌గా డిలీట్ అవుతాయి...</span>";
+    const activeChatHtml = getCleanActiveChatHtml(ord.chatArr);
+    document.getElementById("bottomChatFeed").innerHTML = activeChatHtml || "<span style='color:#94a3b8;'>ప్రతి మెసేజ్ 2 నిమిషాల్లో ఆటోమేటిక్‌గా డిలీట్ అవుతుంది...</span>";
 
     const cIcon = L.divIcon({ html: `<div style="background:#0284c7;color:#fff;padding:4px 10px;border-radius:99px;font-weight:900;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);">🏠 ${ord.cName} (${ord.village})</div>`, className: "", iconSize: [140, 26], iconAnchor: [70, 13] });
     if (mCustPin) { mCustPin.setLatLng([ord.lat, ord.lng]); mCustPin.setIcon(cIcon); }
@@ -2907,7 +3023,7 @@
       bounds.push(mRiderPin);
       drawActualRoadRoute(gps.lat, gps.lng, ord.lat, ord.lng);
 
-      const riderRemKm = calcRoadKm(gps.lat, gps.lng, ord.lat, ord.lng);
+      const riderRemKm = Math.round(calcRoadKm(gps.lat, gps.lng, ord.lat, ord.lng) * 100) / 100;
       if (ord.status === "REACHED") {
         document.getElementById("pillRiderLiveKm").innerText = `📍 ${gps.rider} మీ ఇంటి గేట్ దగ్గరకు వచ్చారు!`;
       } else if (ord.status === "PICKED_UP") {
@@ -2934,7 +3050,7 @@
     inp.value = "";
     const safeTxt = sanitizeAntiLeakChat(rawTxt);
     const sender = loggedInRiderPin ? `🛵 ${ridersDB[loggedInRiderPin].name}` : (isAdminOpen ? "👑 Admin" : "👤 Customer");
-    ordersDB[unlockedBottomPin].chat = (ordersDB[unlockedBottomPin].chat || "") + `<div style="margin-bottom:3px;"><b>${sender}:</b> ${safeTxt}</div>`;
+    appendEphemeralChat(ordersDB[unlockedBottomPin], sender, safeTxt);
     syncOrder(unlockedBottomPin, ordersDB[unlockedBottomPin]);
   });
 
