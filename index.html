@@ -1,4 +1,4 @@
-<!-- Mana Seva Hub: Zero-Mistake Real-Time Sync, 1-Click Role Switcher, Auto-Pin Link, 80m Doorbell & Full-Screen Focus -->
+<!-- Mana Seva Hub: Ultra-Fast Multi-Server Sync, Stage Bells (Accept / Picked Up / 80m Doorbell), Live watchPosition Route & Full-Screen Focus -->
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -52,11 +52,11 @@
     padding: 16px;
     z-index: 999999;
     box-shadow: 0 20px 50px rgba(0,0,0,0.75);
-    animation: mshPulseDoor 0.8s infinite alternate;
+    animation: mshPulseDoor 0.75s infinite alternate;
   }
   @keyframes mshPulseDoor {
-    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.9); }
-    100% { box-shadow: 0 0 0 18px rgba(250, 204, 21, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.95); }
+    100% { box-shadow: 0 0 0 20px rgba(250, 204, 21, 0); }
   }
 
   .msh-focus-mode-banner {
@@ -468,7 +468,7 @@
   }
 </style>
 
-<!-- CONTINUOUS DOORBELL POPUP MODAL (CUSTOMER ONLY) -->
+<!-- CONTINUOUS DOORBELL POPUP MODAL (CUSTOMER ONLY — RINGS UNTIL STOPPED!) -->
 <div class="msh-doorbell-modal" id="custDoorbellPopup">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
     <strong style="font-size:1.08rem; color:#facc15;">🔔 డోర్ బెల్ అలర్ట్ — రైడర్ ఇంటికి వచ్చారు!</strong>
@@ -514,7 +514,7 @@
     <div class="msh-header">
       <div>
         <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-        <p class="msh-sub">1-Click Role Switcher • Auto-PIN Live Map • 80m Rider Doorbell • 100% Secret Code</p>
+        <p class="msh-sub">High-Speed Multi-Server Sync • Stage Alert Bells • 80m Rider Doorbell • 100% Secret Code</p>
       </div>
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <span id="masterStatusBadge" style="font-size:0.8rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 12px; border-radius:99px;">
@@ -532,12 +532,14 @@
 
     <!-- =========================================================
          FULL-SCREEN FOCUS PANEL (AUTO-EXPANDS WHEN ORDER IS PLACED OR ACCEPTED!)
-         Includes 1-Click Switch between Rider View & Customer View!
          ========================================================= -->
     <div class="msh-focus-mode-banner" id="activeRideFullScreenPanel">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <strong style="font-size:1.1rem; color:#facc15;" id="focusModeHeaderTitle">🚀 లైవ్ డెలివరీ ఫుల్ స్క్రీన్ మోడ్ (Active Ride)</strong>
         <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <button type="button" id="btnTestCustomerBellSound" style="background:#0284c7; color:#fff; border:none; border-radius:99px; padding:5px 11px; font-size:0.78rem; font-weight:900; cursor:pointer;">
+            🔊 Sound Test
+          </button>
           <button type="button" id="btnToggleTestRoleView" style="display:none; background:#facc15; color:#000; border:none; border-radius:99px; padding:5px 12px; font-size:0.8rem; font-weight:900; cursor:pointer;">
             👁️ Customer View చూడండి
           </button>
@@ -941,24 +943,28 @@
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
   const CHAT_TTL_MS = 2 * 60 * 1000;
 
-  const PEERS_10 = [
+  // Multi-Server Mesh (Active Gun Relays + Primary & Backup ntfy Servers)
+  const PEERS_MULTI = [
     "https://relay.peer.ooo/gun",
     "https://peer.wallie.io/gun",
-    "https://gundb-relay.onrender.com/gun"
+    "https://gundb-relay.onrender.com/gun",
+    "https://gun-manhattan.herokuapp.com/gun",
+    "https://gun-us.herokuapp.com/gun",
+    "https://gun-eu.herokuapp.com/gun"
   ];
-  const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
+  const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_MULTI, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
 
-  const TOPIC_MENU     = "msh_v26_menu_2026";
-  const TOPIC_HOTELS   = "msh_v26_hotels_node_2026";
-  const TOPIC_SHOPS    = "msh_v26_shopreqs_2026";
-  const TOPIC_ORDERS   = "msh_v26_orders_2026";
-  const TOPIC_GPS      = "msh_v26_gps_2026";
-  const TOPIC_RIDERS   = "msh_v26_riders_node_2026";
-  const TOPIC_CONFIG   = "msh_v26_config_2026";
-  const TOPIC_24H      = "msh_v26_24h_2026";
+  const TOPIC_MENU     = "msh_v27_menu_2026";
+  const TOPIC_HOTELS   = "msh_v27_hotels_node_2026";
+  const TOPIC_SHOPS    = "msh_v27_shopreqs_2026";
+  const TOPIC_ORDERS   = "msh_v27_orders_2026";
+  const TOPIC_GPS      = "msh_v27_gps_2026";
+  const TOPIC_RIDERS   = "msh_v27_riders_node_2026";
+  const TOPIC_CONFIG   = "msh_v27_config_2026";
+  const TOPIC_24H      = "msh_v27_24h_2026";
 
-  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v26_fast_bus") : null;
+  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v27_fast_bus") : null;
 
   function publishToCloud(topic, obj) {
     try {
@@ -970,10 +976,25 @@
     } catch {}
   }
 
+  // Unlock WebAudio Context automatically on user's first touch/click so remote bells ALWAYS play!
+  let sharedAudioCtx = null;
+  function unlockBrowserAudio() {
+    try {
+      if (!sharedAudioCtx) {
+        sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (sharedAudioCtx.state === "suspended") {
+        sharedAudioCtx.resume();
+      }
+    } catch {}
+  }
+  document.addEventListener("touchstart", unlockBrowserAudio, { passive: true });
+  document.addEventListener("click", unlockBrowserAudio, { passive: true });
+
   const FAKE_PINS = new Set(["2211", "3344"]);
   function recoverAndDeduplicateRealRiders() {
     let rawList = [];
-    const keys = ["msh_v26_riders", "msh_v25_riders", "msh_v24_riders", "msh_v23_riders", "msh_v22_riders", "msh_v21_riders", "msh_v20_riders", "msh_unified_riders"];
+    const keys = ["msh_v27_riders", "msh_v26_riders", "msh_v25_riders", "msh_v24_riders", "msh_v23_riders", "msh_v22_riders", "msh_v21_riders", "msh_unified_riders"];
     keys.forEach(k => {
       try {
         const obj = JSON.parse(localStorage.getItem(k) || "null");
@@ -1012,7 +1033,7 @@
       "h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415 },
       "h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285 }
     };
-    const keys = ["msh_v26_hotels", "msh_v25_hotels", "msh_v24_hotels", "msh_v23_hotels", "msh_v22_hotels"];
+    const keys = ["msh_v27_hotels", "msh_v26_hotels", "msh_v25_hotels", "msh_v24_hotels", "msh_v23_hotels"];
     keys.forEach(k => {
       try {
         const raw = JSON.parse(localStorage.getItem(k) || "null");
@@ -1028,25 +1049,25 @@
 
   let ridersDB = recoverAndDeduplicateRealRiders();
   let hotelsDB = recoverAndDeduplicateHotels();
-  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v26_shopreqs") || "{}");
-  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v26_completed_history") || "[]");
+  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v27_shopreqs") || "{}");
+  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v27_completed_history") || "[]");
 
-  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v26_del_riders") || "[]"));
-  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v26_del_hotels") || "[]"));
-  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v26_del_menu") || "[]"));
-  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v26_wiped_pins") || "[]"));
+  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v27_del_riders") || "[]"));
+  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v27_del_hotels") || "[]"));
+  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v27_del_menu") || "[]"));
+  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v27_wiped_pins") || "[]"));
 
   function saveTombstones() {
-    localStorage.setItem("msh_v26_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
-    localStorage.setItem("msh_v26_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
-    localStorage.setItem("msh_v26_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
-    localStorage.setItem("msh_v26_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
+    localStorage.setItem("msh_v27_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
+    localStorage.setItem("msh_v27_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
+    localStorage.setItem("msh_v27_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
+    localStorage.setItem("msh_v27_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
   }
 
   Object.keys(ridersDB).forEach(k => { if (deletedRidersSet.has(k) || ridersDB[k]?.deleted) delete ridersDB[k]; });
   Object.keys(hotelsDB).forEach(k => { if (deletedHotelsSet.has(k) || hotelsDB[k]?.deleted) delete hotelsDB[k]; });
-  localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
-  localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
+  localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
+  localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
 
   setTimeout(() => {
     Object.values(ridersDB).forEach(r => {
@@ -1057,33 +1078,53 @@
     });
   }, 500);
 
+  // =========================================================================
+  // SOUND & STAGE ALERTS (Accept Bell, Food Picked Up Bell, Continuous 80m Doorbell)
+  // =========================================================================
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
   let doorbellLoopTimer = null;
 
-  function playSingleChime(isDoorbell = false) {
-    if (!isDoorbell && !riderBellOn) return;
+  function playToneSequence(notes, waveType = "sine", vol = 0.5) {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const notes = isDoorbell ? [880, 659, 987, 659] : [950, 1250, 950, 1400];
+      unlockBrowserAudio();
+      const ctx = sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
       notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = isDoorbell ? "sine" : "triangle";
+        osc.type = waveType;
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.45, ctx.currentTime + i * 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.34);
+        gain.gain.setValueAtTime(vol, ctx.currentTime + i * 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.35);
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.2);
-        osc.stop(ctx.currentTime + i * 0.2 + 0.34);
+        osc.start(ctx.currentTime + i * 0.18);
+        osc.stop(ctx.currentTime + i * 0.18 + 0.35);
       });
     } catch {}
+  }
+
+  function playSingleChime(isDoorbell = false) {
+    if (!isDoorbell && !riderBellOn) return;
+    if (isDoorbell) {
+      playToneSequence([880, 659, 987, 659], "sine", 0.6);
+    } else {
+      playToneSequence([950, 1250, 950, 1400], "triangle", 0.5);
+    }
+  }
+
+  // Stage Chime on Customer Phone when Rider Accepts or Picks Up Food!
+  function playCustomerStageBell(stageType) {
+    if (stageType === "ACCEPTED") {
+      playToneSequence([587, 880, 1174], "sine", 0.55); // Pleasant 3-note chime
+    } else if (stageType === "PICKED_UP") {
+      playToneSequence([659, 880, 1318, 1567], "triangle", 0.55); // Exciting 4-note dispatch chime
+    }
   }
 
   function startContinuousDoorbell() {
     if (doorbellLoopTimer) return;
     playSingleChime(true);
-    doorbellLoopTimer = setInterval(() => playSingleChime(true), 2400);
+    doorbellLoopTimer = setInterval(() => playSingleChime(true), 2200);
   }
 
   function stopContinuousDoorbell() {
@@ -1092,6 +1133,10 @@
       doorbellLoopTimer = null;
     }
   }
+
+  document.getElementById("btnTestCustomerBellSound").addEventListener("click", () => {
+    playSingleChime(true);
+  });
 
   document.getElementById("btnStopDoorbellSound").addEventListener("click", () => {
     stopContinuousDoorbell();
@@ -1205,7 +1250,7 @@
 
   let menuDB = {};
   default21Menu.forEach(x => { if (!deletedMenuSet.has(x.id)) menuDB[x.id] = x; });
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_v26_menu") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_v27_menu") || "null");
   if (cachedMenu) {
     Object.values(cachedMenu).forEach(x => {
       if (x && !x.deleted && !deletedMenuSet.has(x.id)) menuDB[x.id] = x;
@@ -1231,10 +1276,10 @@
     tickerText: "⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! ప్రతి ఆర్డర్ 24 గంటల తర్వాత ఆటోమేటిక్‌గా క్లీన్ అవుతుంది. 100% ప్రైవసీ."
   };
 
-  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v26_config") || "null") || {}) };
+  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v27_config") || "null") || {}) };
 
-  let ordersDB = JSON.parse(localStorage.getItem("msh_v26_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v26_24h") || "{}");
+  let ordersDB = JSON.parse(localStorage.getItem("msh_v27_orders") || "{}");
+  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v27_24h") || "{}");
   let liveGpsCache = {};
 
   function purgeExpired24hOrders() {
@@ -1250,21 +1295,21 @@
       }
     });
     if (changed) {
-      localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
       saveTombstones();
     }
   }
   purgeExpired24hOrders();
   setInterval(purgeExpired24hOrders, 60000);
 
-  let cart = JSON.parse(localStorage.getItem("msh_v26_cart") || "{}");
-  let extraItemsList = JSON.parse(localStorage.getItem("msh_v26_extras") || "[]");
+  let cart = JSON.parse(localStorage.getItem("msh_v27_cart") || "{}");
+  let extraItemsList = JSON.parse(localStorage.getItem("msh_v27_extras") || "[]");
   let selectedWeights = {};
   let activeCat = "all";
 
   function saveCartState() {
-    localStorage.setItem("msh_v26_cart", JSON.stringify(cart));
-    localStorage.setItem("msh_v26_extras", JSON.stringify(extraItemsList));
+    localStorage.setItem("msh_v27_cart", JSON.stringify(cart));
+    localStorage.setItem("msh_v27_extras", JSON.stringify(extraItemsList));
   }
 
   let custLiveLat = null, custLiveLng = null;
@@ -1278,10 +1323,8 @@
   let myPlacedOrderPin = localStorage.getItem("msh_session_cust_pin") || "";
   let isAdminOpen = localStorage.getItem("msh_session_admin_open") === "true";
 
-  // 1-Click Role View Switcher State (Allows testing Customer View & Rider View on 1 phone!)
   let previewCustomerModeOnSinglePhone = false;
 
-  // Support Auto-Unlock from URL (?pin=4593) when customer opens WhatsApp tracking link!
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const urlPin = urlParams.get("pin");
@@ -1294,7 +1337,9 @@
   } catch {}
 
   let lastDoorbellAlertedTs = 0;
-  let riderGpsTimer = null;
+  let lastStageBellKey = "";
+  let riderGpsWatchId = null;
+  let riderGpsHeartbeatTimer = null;
 
   function isRideProcessCurrentlyActive() {
     if (myPlacedOrderPin && ordersDB[myPlacedOrderPin] && !ordersDB[myPlacedOrderPin].wiped && ordersDB[myPlacedOrderPin].status !== "WIPED") return true;
@@ -1311,7 +1356,7 @@
   });
 
   // =========================================================================
-  // FULL-SCREEN ACTIVE RIDE FOCUS MODE (With 1-Click Customer/Rider Switch)
+  // FULL-SCREEN ACTIVE RIDE FOCUS MODE
   // =========================================================================
   function updateFullScreenFocusUI() {
     const focusBox = document.getElementById("activeRideFullScreenPanel");
@@ -1334,7 +1379,6 @@
       ? ordersDB[myPlacedOrderPin]
       : (riderActiveOrd && previewCustomerModeOnSinglePhone ? riderActiveOrd : null);
 
-    // Show 1-Click Switcher if Rider is logged in and has an active ride
     if (riderActiveOrd && !isAdminOpen) {
       switchRoleBtn.style.display = "inline-block";
       switchRoleBtn.innerText = previewCustomerModeOnSinglePhone ? "🛵 Back to Rider View" : "👁️ Customer View చూడండి";
@@ -1387,7 +1431,7 @@
             <a href="https://wa.me/${waTarget}?text=${waNotifyText}" target="_blank" style="flex:1.2; text-align:center; background:#25D366; color:#000; text-decoration:none; padding:11px; border-radius:9px; font-weight:900;">📲 Customer కి Live Link</a>
           </div>
           <button type="button" onclick="window.mshRiderPickedUpFood('${riderActiveOrd.pin}')" style="width:100%; background:#ea580c; color:#fff; border:none; border-radius:9px; padding:12px; font-weight:900; font-size:0.95rem; cursor:pointer;">
-            🏨 ఫుడ్ తీసుకున్నాను (Open Customer Route)
+            🏨 ఫుడ్ తీసుకున్నాను (Ring Customer Bell & Open Route)
           </button>`;
       } else {
         const bellBtnHtml = isWithin80m
@@ -1437,7 +1481,7 @@
       return;
     }
 
-    // CASE B: CUSTOMER ACTIVE ORDER FULL-SCREEN FOCUS MODE (Shows Rider Live Map Only!)
+    // CASE B: CUSTOMER ACTIVE ORDER FULL-SCREEN FOCUS MODE
     if (custActiveOrd && !isAdminOpen) {
       focusBox.style.display = "block";
       topSplit.style.display = "none";
@@ -1456,11 +1500,11 @@
       if (custActiveOrd.status === "OPEN") {
         statusAlertHtml = `<div style="background:#fef3c7; color:#92400e; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">⏳ రైడర్ మీ ఆర్డర్ Accept చేయడం కోసం వేచి ఉంది...</div>`;
       } else if (custActiveOrd.status === "ACCEPTED") {
-        statusAlertHtml = `<div style="background:#dbeafe; color:#1e40af; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">✅ రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఆర్డర్ Accept చేశారు (${custActiveOrd.acceptedTime || ""})! హోటల్ వద్దకు వెళ్తున్నారు.</div>`;
+        statusAlertHtml = `<div style="background:#dbeafe; color:#1e40af; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🔔 రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఆర్డర్ Accept చేశారు (${custActiveOrd.acceptedTime || ""})! హోటల్ వద్దకు వెళ్తున్నారు.</div>`;
       } else if (custActiveOrd.status === "PICKED_UP") {
-        statusAlertHtml = `<div style="background:#dcfce7; color:#15803d; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🛵 రైడర్ <b>${custActiveOrd.acceptedByName}</b> హోటల్ నుండి ఫుడ్ తీసుకున్నారు (${custActiveOrd.pickedTime || ""})! మీ ఇంటి వైపు వస్తున్నారు.</div>`;
+        statusAlertHtml = `<div style="background:#dcfce7; color:#15803d; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🔔 రైడర్ <b>${custActiveOrd.acceptedByName}</b> హోటల్ నుండి ఫుడ్ తీసుకున్నారు (${custActiveOrd.pickedTime || ""})! మీ ఇంటి వైపు వస్తున్నారు.</div>`;
       } else {
-        statusAlertHtml = `<div style="background:#16a34a; color:#fff; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🔔 రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చారు! మీ Secret Delivery Code చెప్పండి.</div>`;
+        statusAlertHtml = `<div style="background:#16a34a; color:#fff; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🔔 రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఇంటి గేట్ (80m) దగ్గరకు వచ్చి బెల్ కొట్టారు! మీ Secret Delivery Code చెప్పండి.</div>`;
       }
 
       const formattedItems = String(custActiveOrd.numberedItems || "").replace(/\n/g, "<br>");
@@ -1537,7 +1581,7 @@
   }
 
   async function drawActualRoadRoute(fromLat, fromLng, toLat, toLng) {
-    const key = `${fromLat.toFixed(4)},${fromLng.toFixed(4)}_${toLat.toFixed(4)},${toLng.toFixed(4)}`;
+    const key = `${fromLat.toFixed(5)},${fromLng.toFixed(5)}_${toLat.toFixed(5)},${toLng.toFixed(5)}`;
     if (key === lastRoutedCoordsKey && lineRiderRoadPath) return;
     lastRoutedCoordsKey = key;
 
@@ -1658,7 +1702,7 @@
 
   function saveAndSyncConfig() {
     appConfig.updatedAt = Date.now();
-    localStorage.setItem("msh_v26_config", JSON.stringify(appConfig));
+    localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
     applyConfigUI();
     if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
     publishToCloud(TOPIC_CONFIG, appConfig);
@@ -1729,7 +1773,7 @@
   }, 10000);
 
   // =========================================================================
-  // TIMESTAMP-LOCKED REAL-TIME SYNC + SCREEN WAKE-UP REFRESH
+  // TIMESTAMP-LOCKED REAL-TIME SYNC + STAGE ALERTS
   // =========================================================================
   function broadcastLocalSync(type, payload) {
     if (localBus) {
@@ -1744,7 +1788,7 @@
       try { obj.chatArr = JSON.parse(obj.chatJson); } catch { obj.chatArr = []; }
     }
     ordersDB[pin] = obj;
-    localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
     broadcastLocalSync("ORDER", obj);
 
     const wireObj = { ...obj };
@@ -1781,7 +1825,7 @@
         payMode: ord.payMode
       });
       completedHistoryDB = completedHistoryDB.slice(0, 150);
-      localStorage.setItem("msh_v26_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v27_completed_history", JSON.stringify(completedHistoryDB));
     }
 
     stopContinuousDoorbell();
@@ -1790,7 +1834,7 @@
     saveTombstones();
     delete ordersDB[pStr];
     delete liveGpsCache[pStr];
-    localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
 
     const wipeTombstone = {
       pin: pStr,
@@ -1816,7 +1860,11 @@
     if (unlockedBottomPin === pStr) {
       lockBottomMapUI();
     }
-    if (riderGpsTimer) { clearInterval(riderGpsTimer); riderGpsTimer = null; }
+    if (riderGpsWatchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(riderGpsWatchId);
+      riderGpsWatchId = null;
+    }
+    if (riderGpsHeartbeatTimer) { clearInterval(riderGpsHeartbeatTimer); riderGpsHeartbeatTimer = null; }
     lastRoutedCoordsKey = "";
     refreshEverything();
   }
@@ -1826,7 +1874,7 @@
     deletedRidersSet.delete(rObj.pin);
     saveTombstones();
     ridersDB[rObj.pin] = rObj;
-    localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
     broadcastLocalSync("RIDER", rObj);
     if (gun) gun.get(TOPIC_RIDERS).get(rObj.pin).put(rObj);
     publishToCloud(TOPIC_RIDERS, rObj);
@@ -1838,7 +1886,7 @@
     deletedRidersSet.add(pStr);
     saveTombstones();
     delete ridersDB[pStr];
-    localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
     const delPayload = { pin: pStr, deleted: true, name: "" };
     broadcastLocalSync("RIDER", delPayload);
     if (gun) gun.get(TOPIC_RIDERS).get(pStr).put(delPayload);
@@ -1855,7 +1903,7 @@
     deletedHotelsSet.delete(hObj.id);
     saveTombstones();
     hotelsDB[hObj.id] = hObj;
-    localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
     broadcastLocalSync("HOTEL", hObj);
     if (gun) gun.get(TOPIC_HOTELS).get(hObj.id).put(hObj);
     publishToCloud(TOPIC_HOTELS, hObj);
@@ -1868,7 +1916,7 @@
     deletedHotelsSet.add(hid);
     saveTombstones();
     delete hotelsDB[hid];
-    localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
     const delPayload = { id: hid, deleted: true, name: "" };
     broadcastLocalSync("HOTEL", delPayload);
     if (gun) gun.get(TOPIC_HOTELS).get(hid).put(delPayload);
@@ -1879,7 +1927,7 @@
   }
 
   function syncShopReqs() {
-    localStorage.setItem("msh_v26_shopreqs", JSON.stringify(shopReqsDB));
+    localStorage.setItem("msh_v27_shopreqs", JSON.stringify(shopReqsDB));
     const p = { json: JSON.stringify(shopReqsDB) };
     if (gun) gun.get(TOPIC_SHOPS).get("all").put(p);
     if (isAdminOpen) renderAdminDashboard();
@@ -1921,12 +1969,27 @@
     };
   }
 
-  function checkAndTriggerCustomerDoorbell(ord) {
+  // Plays Stage Bells & Continuous 80m Doorbell on Customer Phone!
+  function checkAndTriggerCustomerAlerts(ord, prevStatus) {
     if (!ord) return;
     if (loggedInRiderPin && !previewCustomerModeOnSinglePhone) return;
     const pStr = String(ord.pin);
+    if (myPlacedOrderPin !== pStr && unlockedBottomPin !== pStr) return;
+
+    // 1. Ring Stage Chime when Order becomes ACCEPTED or PICKED_UP
+    const stageKey = `${pStr}_${ord.status}`;
+    if (prevStatus && prevStatus !== ord.status && lastStageBellKey !== stageKey) {
+      lastStageBellKey = stageKey;
+      if (ord.status === "ACCEPTED") {
+        playCustomerStageBell("ACCEPTED");
+      } else if (ord.status === "PICKED_UP") {
+        playCustomerStageBell("PICKED_UP");
+      }
+    }
+
+    // 2. Continuous Doorbell when Rider presses Doorbell button within 80m!
     const bellTs = Number(ord.doorbellTs) || 0;
-    if ((myPlacedOrderPin === pStr || unlockedBottomPin === pStr) && bellTs > lastDoorbellAlertedTs) {
+    if (bellTs > lastDoorbellAlertedTs) {
       lastDoorbellAlertedTs = bellTs;
       startContinuousDoorbell();
       document.getElementById("custDoorbellPopupBody").innerHTML =
@@ -1953,7 +2016,7 @@
       wipedPinsSet.add(pStr); saveTombstones();
       delete ordersDB[pStr];
       delete liveGpsCache[pStr];
-      localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
       if (myPlacedOrderPin === pStr) {
         myPlacedOrderPin = "";
         localStorage.removeItem("msh_session_cust_pin");
@@ -1968,15 +2031,16 @@
       const prev = ordersDB[pStr];
       if (prev && (prev.updatedAt || 0) > (d.updatedAt || 0)) return;
 
+      const prevStatus = prev ? prev.status : null;
       if (d.chatJson) { try { d.chatArr = JSON.parse(d.chatJson); } catch { d.chatArr = []; } }
       ordersDB[pStr] = d;
-      localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
 
       if (!prev && d.status === "OPEN") {
         playSingleChime(false);
         document.getElementById("openOrderNotifyStrip").style.display = "flex";
       }
-      checkAndTriggerCustomerDoorbell(d);
+      checkAndTriggerCustomerAlerts(d, prevStatus);
       refreshEverything();
     }
   }
@@ -1988,7 +2052,7 @@
         if ((d.updatedAt || 0) <= (appConfig.updatedAt || 0)) return;
         appConfig = { ...appConfig, ...d };
         if (d.adminPass) localStorage.setItem("msh_custom_admin_pass", d.adminPass);
-        localStorage.setItem("msh_v26_config", JSON.stringify(appConfig));
+        localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
     });
@@ -2000,7 +2064,7 @@
       } else if (h.name) {
         hotelsDB[hid] = h;
       }
-      localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
       populateHotelsDropdown(); calcFeesAndExactKm();
       if (isAdminOpen) renderAdminDashboard();
     });
@@ -2022,12 +2086,12 @@
         }
         ridersDB[pStr] = r;
       }
-      localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
       refreshEverything();
     });
     gun.get(TOPIC_SHOPS).get("all").on(d => {
       if (d && d.json) {
-        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v26_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
+        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v27_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
       }
     });
     gun.get(TOPIC_MENU).map().on((d, id) => {
@@ -2039,7 +2103,7 @@
       } else if (d.name) {
         menuDB[id] = d;
       }
-      localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
       renderMenu7x3(); calcFeesAndExactKm();
     });
     gun.get(TOPIC_ORDERS).map().on((d, pin) => {
@@ -2055,7 +2119,7 @@
       if (m && m.text && m.ts) {
         if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
         else delete msgs24hDB[id];
-        localStorage.setItem("msh_v26_24h", JSON.stringify(msgs24hDB));
+        localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
         render24hMsgs();
       }
     });
@@ -2102,7 +2166,7 @@
             if (cfg && (cfg.updatedAt || 0) > (appConfig.updatedAt || 0)) {
               appConfig = { ...appConfig, ...cfg };
               if (cfg.adminPass) localStorage.setItem("msh_custom_admin_pass", cfg.adminPass);
-              localStorage.setItem("msh_v26_config", JSON.stringify(appConfig));
+              localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
               applyConfigUI();
             }
           } catch {}
@@ -2156,7 +2220,7 @@
         });
         if (rChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
+          localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
           refreshEverything();
         }
       }
@@ -2179,7 +2243,7 @@
         });
         if (hChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
+          localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
           populateHotelsDropdown(); calcFeesAndExactKm();
           if (isAdminOpen) renderAdminDashboard();
         }
@@ -2203,14 +2267,15 @@
         });
         if (mChanged) {
           saveTombstones(); saveCartState();
-          localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+          localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
           renderMenu7x3(); calcFeesAndExactKm();
         }
       }
     } catch {}
   }
 
-  setInterval(runCloudPollNow, 1000);
+  // 450ms High-Speed Sync Loop for Real-Time Tracking
+  setInterval(runCloudPollNow, 450);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") runCloudPollNow();
   });
@@ -2274,7 +2339,7 @@
       cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
       saveCartState();
     }
-    localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -2286,7 +2351,7 @@
     if (!it) return;
     it.outOfStock = !it.outOfStock;
     if (it.outOfStock) { delete cart[id]; saveCartState(); }
-    localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -2362,7 +2427,7 @@
     saveTombstones();
     delete menuDB[id]; delete cart[id];
     saveCartState();
-    localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
     renderMenu7x3(); calcFeesAndExactKm();
     const delObj = { id, name: "", deleted: true };
     if (gun) gun.get(TOPIC_MENU).get(id).put(delObj);
@@ -2418,7 +2483,7 @@
         img: getAutoPhotoForName(name, "")
       };
       menuDB[targetId] = newMenuItem;
-      localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
       if (gun) gun.get(TOPIC_MENU).get(targetId).put(newMenuItem);
       publishToCloud(TOPIC_MENU, newMenuItem);
     }
@@ -2557,6 +2622,7 @@
   });
 
   document.getElementById("btnPlaceOrderNow").addEventListener("click", () => {
+    unlockBrowserAudio();
     if (appConfig.fullLockdown || !appConfig.serviceOpen) {
       alert("🔴 ప్రస్తుతం సర్వీస్ క్లోజ్‌లో ఉంది (Service OFF).");
       return;
@@ -2681,26 +2747,44 @@
   });
 
   // =========================================================================
-  // 3. RIDER PANEL & ACTIONS (FULL-SCREEN MODE + 80m BELL + CODE COMPLETION)
+  // 3. RIDER PANEL & ULTRA-FAST CONTINUOUS GPS TRACKER (watchPosition)
   // =========================================================================
   function startContinuousRiderGps(orderPin, riderName) {
-    if (riderGpsTimer) clearInterval(riderGpsTimer);
+    if (riderGpsWatchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(riderGpsWatchId);
+      riderGpsWatchId = null;
+    }
+    if (riderGpsHeartbeatTimer) {
+      clearInterval(riderGpsHeartbeatTimer);
+      riderGpsHeartbeatTimer = null;
+    }
     if (!navigator.geolocation) return;
-    const send = () => {
+
+    // 1. Instant watchPosition pushes GPS every single step the Rider moves!
+    riderGpsWatchId = navigator.geolocation.watchPosition(p => {
       if (!ordersDB[orderPin] || ordersDB[orderPin].wiped) {
-        clearInterval(riderGpsTimer);
-        riderGpsTimer = null;
+        navigator.geolocation.clearWatch(riderGpsWatchId);
+        riderGpsWatchId = null;
+        return;
+      }
+      syncGps(orderPin, { rider: riderName, lat: p.coords.latitude, lng: p.coords.longitude });
+    }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
+
+    // 2. Heartbeat every 1.2s so map stays locked live
+    riderGpsHeartbeatTimer = setInterval(() => {
+      if (!ordersDB[orderPin] || ordersDB[orderPin].wiped) {
+        clearInterval(riderGpsHeartbeatTimer);
+        riderGpsHeartbeatTimer = null;
         return;
       }
       navigator.geolocation.getCurrentPosition(p => {
         syncGps(orderPin, { rider: riderName, lat: p.coords.latitude, lng: p.coords.longitude });
       }, null, { enableHighAccuracy: true, maximumAge: 0 });
-    };
-    send();
-    riderGpsTimer = setInterval(send, 2500);
+    }, 1200);
   }
 
   document.getElementById("btnRiderUnlock").addEventListener("click", () => {
+    unlockBrowserAudio();
     const rPin = document.getElementById("riderPinLoginInp").value.trim();
     const rider = ridersDB[rPin];
     if (!rider || rider.deleted || deletedRidersSet.has(rPin)) {
@@ -2764,6 +2848,7 @@
   }
 
   window.mshRiderPickedUpFood = function(orderPin) {
+    unlockBrowserAudio();
     const ord = ordersDB[orderPin];
     const me = ridersDB[loggedInRiderPin];
     if (!ord || ord.status !== "ACCEPTED") return;
@@ -2779,6 +2864,7 @@
   };
 
   window.mshRiderRingDoorbell80m = function(orderPin) {
+    unlockBrowserAudio();
     const ord = ordersDB[orderPin];
     if (!ord) return;
     const curGps = liveGpsCache[orderPin] || (riderSelfLiveLat ? { lat: riderSelfLiveLat, lng: riderSelfLiveLng } : null);
@@ -2820,6 +2906,7 @@
   };
 
   window.mshRiderTakeOrder = function(orderPin) {
+    unlockBrowserAudio();
     const ord = ordersDB[orderPin];
     const me = ridersDB[loggedInRiderPin];
     if (!ord || ord.status !== "OPEN" || !me) return;
@@ -2915,7 +3002,7 @@
 
   window.mshAdmDel24h = function(id) {
     delete msgs24hDB[id];
-    localStorage.setItem("msh_v26_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(null);
   };
@@ -2928,7 +3015,7 @@
     const id = "m24_" + Date.now();
     const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
     msgs24hDB[id] = item;
-    localStorage.setItem("msh_v26_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
@@ -2969,7 +3056,7 @@
   document.getElementById("admBtnResetLedger").addEventListener("click", () => {
     if (confirm("మీరు లెక్కలు రాసుకున్నారా? Total Revenue Ledger ను ₹0 కి క్లియర్ చేయాలా?")) {
       completedHistoryDB = [];
-      localStorage.setItem("msh_v26_completed_history", "[]");
+      localStorage.setItem("msh_v27_completed_history", "[]");
       renderAdminDashboard();
       alert("✅ Revenue Ledger ₹0 కి రీసెట్ అయింది!");
     }
@@ -3076,7 +3163,7 @@
     const finalImg = getAutoPhotoForName(name, rawImg);
     const id = "m_" + Date.now();
     menuDB[id] = { id, cat, name, price, img: finalImg };
-    localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
     document.getElementById("admNewItemName").value = "";
     document.getElementById("admNewItemPrice").value = "";
     document.getElementById("admNewItemImg").value = "";
@@ -3103,12 +3190,12 @@
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
       if (parsed.completedHistoryDB) completedHistoryDB = parsed.completedHistoryDB;
       if (parsed.appConfig) appConfig = { ...defaultConfig, ...parsed.appConfig };
-      localStorage.setItem("msh_v26_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_v26_hotels", JSON.stringify(hotelsDB));
-      localStorage.setItem("msh_v26_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_v26_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_v26_completed_history", JSON.stringify(completedHistoryDB));
-      localStorage.setItem("msh_v26_config", JSON.stringify(appConfig));
+      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v27_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
       applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
       alert("✅ డేటా పూర్తిగా Restore అయింది!");
     } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
