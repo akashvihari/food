@@ -1,4 +1,4 @@
-<!-- Mana Seva Hub: Ultra-Fast Multi-Server Sync, Stage Bells (Accept / Picked Up / 80m Doorbell), Live watchPosition Route & Full-Screen Focus -->
+<!-- Mana Seva Hub: Single-Channel Ultra-Fast Real-Time Sync (Zero Rate-Limit), Stage Bells, 80m Doorbell & Full-Screen Focus -->
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -514,9 +514,12 @@
     <div class="msh-header">
       <div>
         <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-        <p class="msh-sub">High-Speed Multi-Server Sync • Stage Alert Bells • 80m Rider Doorbell • 100% Secret Code</p>
+        <p class="msh-sub">Instant SSE Stream Sync • Stage Alert Bells • 80m Rider Doorbell • 100% Secret Code</p>
       </div>
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span id="liveCloudConnBadge" style="font-size:0.76rem; font-weight:800; background:#dbeafe; color:#1e40af; padding:5px 10px; border-radius:99px;">
+          ⚡ Live Sync
+        </span>
         <span id="masterStatusBadge" style="font-size:0.8rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 12px; border-radius:99px;">
           🟢 సర్వీస్ OPEN
         </span>
@@ -943,40 +946,39 @@
   const DAY_24H_MS = 24 * 60 * 60 * 1000;
   const CHAT_TTL_MS = 2 * 60 * 1000;
 
-  // Multi-Server Mesh (Active Gun Relays + Primary & Backup ntfy Servers)
-  const PEERS_MULTI = [
-    "https://relay.peer.ooo/gun",
+  // Live Working GUN.js Relays + Single-Channel Rate-Limit-Free ntfy.sh Stream
+  const PEERS_LIVE = [
     "https://peer.wallie.io/gun",
     "https://gundb-relay.onrender.com/gun",
-    "https://gun-manhattan.herokuapp.com/gun",
-    "https://gun-us.herokuapp.com/gun",
-    "https://gun-eu.herokuapp.com/gun"
+    "https://relay.peer.ooo/gun"
   ];
-  const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_MULTI, localStorage: true }) : null;
+  const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_LIVE, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
+  const SINGLE_MASTER_STREAM = "msh_v28_master_stream_2026";
 
-  const TOPIC_MENU     = "msh_v27_menu_2026";
-  const TOPIC_HOTELS   = "msh_v27_hotels_node_2026";
-  const TOPIC_SHOPS    = "msh_v27_shopreqs_2026";
-  const TOPIC_ORDERS   = "msh_v27_orders_2026";
-  const TOPIC_GPS      = "msh_v27_gps_2026";
-  const TOPIC_RIDERS   = "msh_v27_riders_node_2026";
-  const TOPIC_CONFIG   = "msh_v27_config_2026";
-  const TOPIC_24H      = "msh_v27_24h_2026";
+  const TOPIC_MENU     = "msh_v28_menu_2026";
+  const TOPIC_HOTELS   = "msh_v28_hotels_node_2026";
+  const TOPIC_SHOPS    = "msh_v28_shopreqs_2026";
+  const TOPIC_ORDERS   = "msh_v28_orders_2026";
+  const TOPIC_GPS      = "msh_v28_gps_2026";
+  const TOPIC_RIDERS   = "msh_v28_riders_node_2026";
+  const TOPIC_CONFIG   = "msh_v28_config_2026";
+  const TOPIC_24H      = "msh_v28_24h_2026";
 
-  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v27_fast_bus") : null;
+  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v28_fast_bus") : null;
 
-  function publishToCloud(topic, obj) {
+  // Single Unified Cloud Publisher (Zero Rate-Limit!)
+  function publishUnifiedPacket(packetType, dataObj) {
     try {
-      fetch(`${NTFY_PRIMARY}/${topic}`, {
+      const envelope = JSON.stringify({ _t: packetType, _d: dataObj, _ts: Date.now() });
+      fetch(`${NTFY_PRIMARY}/${SINGLE_MASTER_STREAM}`, {
         method: "POST",
-        headers: { "Title": "MSH_SYNC" },
-        body: JSON.stringify(obj)
+        headers: { "Title": "MSH" },
+        body: envelope
       }).catch(() => {});
     } catch {}
   }
 
-  // Unlock WebAudio Context automatically on user's first touch/click so remote bells ALWAYS play!
   let sharedAudioCtx = null;
   function unlockBrowserAudio() {
     try {
@@ -994,7 +996,7 @@
   const FAKE_PINS = new Set(["2211", "3344"]);
   function recoverAndDeduplicateRealRiders() {
     let rawList = [];
-    const keys = ["msh_v27_riders", "msh_v26_riders", "msh_v25_riders", "msh_v24_riders", "msh_v23_riders", "msh_v22_riders", "msh_v21_riders", "msh_unified_riders"];
+    const keys = ["msh_v28_riders", "msh_v27_riders", "msh_v26_riders", "msh_v25_riders", "msh_v24_riders", "msh_v23_riders", "msh_unified_riders"];
     keys.forEach(k => {
       try {
         const obj = JSON.parse(localStorage.getItem(k) || "null");
@@ -1033,7 +1035,7 @@
       "h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415 },
       "h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285 }
     };
-    const keys = ["msh_v27_hotels", "msh_v26_hotels", "msh_v25_hotels", "msh_v24_hotels", "msh_v23_hotels"];
+    const keys = ["msh_v28_hotels", "msh_v27_hotels", "msh_v26_hotels", "msh_v25_hotels", "msh_v24_hotels"];
     keys.forEach(k => {
       try {
         const raw = JSON.parse(localStorage.getItem(k) || "null");
@@ -1049,42 +1051,39 @@
 
   let ridersDB = recoverAndDeduplicateRealRiders();
   let hotelsDB = recoverAndDeduplicateHotels();
-  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v27_shopreqs") || "{}");
-  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v27_completed_history") || "[]");
+  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v28_shopreqs") || "{}");
+  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v28_completed_history") || "[]");
 
-  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v27_del_riders") || "[]"));
-  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v27_del_hotels") || "[]"));
-  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v27_del_menu") || "[]"));
-  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v27_wiped_pins") || "[]"));
+  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v28_del_riders") || "[]"));
+  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v28_del_hotels") || "[]"));
+  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v28_del_menu") || "[]"));
+  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v28_wiped_pins") || "[]"));
 
   function saveTombstones() {
-    localStorage.setItem("msh_v27_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
-    localStorage.setItem("msh_v27_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
-    localStorage.setItem("msh_v27_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
-    localStorage.setItem("msh_v27_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
+    localStorage.setItem("msh_v28_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
+    localStorage.setItem("msh_v28_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
+    localStorage.setItem("msh_v28_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
+    localStorage.setItem("msh_v28_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
   }
 
   Object.keys(ridersDB).forEach(k => { if (deletedRidersSet.has(k) || ridersDB[k]?.deleted) delete ridersDB[k]; });
   Object.keys(hotelsDB).forEach(k => { if (deletedHotelsSet.has(k) || hotelsDB[k]?.deleted) delete hotelsDB[k]; });
-  localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
-  localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
+  localStorage.setItem("msh_v28_riders", JSON.stringify(ridersDB));
+  localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
 
   setTimeout(() => {
     Object.values(ridersDB).forEach(r => {
-      if (r && r.pin) {
-        if (gun) gun.get(TOPIC_RIDERS).get(r.pin).put(r);
-        publishToCloud(TOPIC_RIDERS, r);
-      }
+      if (r && r.pin && gun) gun.get(TOPIC_RIDERS).get(r.pin).put(r);
     });
   }, 500);
 
   // =========================================================================
-  // SOUND & STAGE ALERTS (Accept Bell, Food Picked Up Bell, Continuous 80m Doorbell)
+  // SOUND & STAGE ALERTS
   // =========================================================================
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
   let doorbellLoopTimer = null;
 
-  function playToneSequence(notes, waveType = "sine", vol = 0.5) {
+  function playToneSequence(notes, waveType = "sine", vol = 0.55) {
     try {
       unlockBrowserAudio();
       const ctx = sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
@@ -1106,18 +1105,17 @@
   function playSingleChime(isDoorbell = false) {
     if (!isDoorbell && !riderBellOn) return;
     if (isDoorbell) {
-      playToneSequence([880, 659, 987, 659], "sine", 0.6);
+      playToneSequence([880, 659, 987, 659], "sine", 0.65);
     } else {
-      playToneSequence([950, 1250, 950, 1400], "triangle", 0.5);
+      playToneSequence([950, 1250, 950, 1400], "triangle", 0.55);
     }
   }
 
-  // Stage Chime on Customer Phone when Rider Accepts or Picks Up Food!
   function playCustomerStageBell(stageType) {
     if (stageType === "ACCEPTED") {
-      playToneSequence([587, 880, 1174], "sine", 0.55); // Pleasant 3-note chime
+      playToneSequence([587, 880, 1174], "sine", 0.6);
     } else if (stageType === "PICKED_UP") {
-      playToneSequence([659, 880, 1318, 1567], "triangle", 0.55); // Exciting 4-note dispatch chime
+      playToneSequence([659, 880, 1318, 1567], "triangle", 0.6);
     }
   }
 
@@ -1250,7 +1248,7 @@
 
   let menuDB = {};
   default21Menu.forEach(x => { if (!deletedMenuSet.has(x.id)) menuDB[x.id] = x; });
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_v27_menu") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_v28_menu") || "null");
   if (cachedMenu) {
     Object.values(cachedMenu).forEach(x => {
       if (x && !x.deleted && !deletedMenuSet.has(x.id)) menuDB[x.id] = x;
@@ -1276,10 +1274,10 @@
     tickerText: "⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! ప్రతి ఆర్డర్ 24 గంటల తర్వాత ఆటోమేటిక్‌గా క్లీన్ అవుతుంది. 100% ప్రైవసీ."
   };
 
-  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v27_config") || "null") || {}) };
+  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v28_config") || "null") || {}) };
 
-  let ordersDB = JSON.parse(localStorage.getItem("msh_v27_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v27_24h") || "{}");
+  let ordersDB = JSON.parse(localStorage.getItem("msh_v28_orders") || "{}");
+  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v28_24h") || "{}");
   let liveGpsCache = {};
 
   function purgeExpired24hOrders() {
@@ -1295,21 +1293,21 @@
       }
     });
     if (changed) {
-      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
       saveTombstones();
     }
   }
   purgeExpired24hOrders();
   setInterval(purgeExpired24hOrders, 60000);
 
-  let cart = JSON.parse(localStorage.getItem("msh_v27_cart") || "{}");
-  let extraItemsList = JSON.parse(localStorage.getItem("msh_v27_extras") || "[]");
+  let cart = JSON.parse(localStorage.getItem("msh_v28_cart") || "{}");
+  let extraItemsList = JSON.parse(localStorage.getItem("msh_v28_extras") || "[]");
   let selectedWeights = {};
   let activeCat = "all";
 
   function saveCartState() {
-    localStorage.setItem("msh_v27_cart", JSON.stringify(cart));
-    localStorage.setItem("msh_v27_extras", JSON.stringify(extraItemsList));
+    localStorage.setItem("msh_v28_cart", JSON.stringify(cart));
+    localStorage.setItem("msh_v28_extras", JSON.stringify(extraItemsList));
   }
 
   let custLiveLat = null, custLiveLng = null;
@@ -1702,10 +1700,10 @@
 
   function saveAndSyncConfig() {
     appConfig.updatedAt = Date.now();
-    localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
+    localStorage.setItem("msh_v28_config", JSON.stringify(appConfig));
     applyConfigUI();
     if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
-    publishToCloud(TOPIC_CONFIG, appConfig);
+    publishUnifiedPacket("CONFIG", appConfig);
   }
 
   document.getElementById("admTogFullLockdown").addEventListener("click", () => { appConfig.fullLockdown = !appConfig.fullLockdown; saveAndSyncConfig(); });
@@ -1773,7 +1771,7 @@
   }, 10000);
 
   // =========================================================================
-  // TIMESTAMP-LOCKED REAL-TIME SYNC + STAGE ALERTS
+  // SINGLE-CHANNEL ULTRA-FAST REAL-TIME SYNC (ZERO RATE-LIMIT)
   // =========================================================================
   function broadcastLocalSync(type, payload) {
     if (localBus) {
@@ -1788,14 +1786,14 @@
       try { obj.chatArr = JSON.parse(obj.chatJson); } catch { obj.chatArr = []; }
     }
     ordersDB[pin] = obj;
-    localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
     broadcastLocalSync("ORDER", obj);
 
     const wireObj = { ...obj };
     delete wireObj.chatArr;
 
     if (gun) gun.get(TOPIC_ORDERS).get(pin).put(wireObj);
-    publishToCloud(TOPIC_ORDERS, wireObj);
+    publishUnifiedPacket("ORDER", wireObj);
     refreshEverything();
   }
 
@@ -1825,7 +1823,7 @@
         payMode: ord.payMode
       });
       completedHistoryDB = completedHistoryDB.slice(0, 150);
-      localStorage.setItem("msh_v27_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v28_completed_history", JSON.stringify(completedHistoryDB));
     }
 
     stopContinuousDoorbell();
@@ -1834,7 +1832,7 @@
     saveTombstones();
     delete ordersDB[pStr];
     delete liveGpsCache[pStr];
-    localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
 
     const wipeTombstone = {
       pin: pStr,
@@ -1850,7 +1848,7 @@
       gun.get(TOPIC_ORDERS).get(pStr).put(wipeTombstone);
       gun.get(TOPIC_GPS).get(pStr).put({ wiped: true, lat: 0, lng: 0 });
     }
-    publishToCloud(TOPIC_ORDERS, wipeTombstone);
+    publishUnifiedPacket("ORDER", wipeTombstone);
 
     if (myPlacedOrderPin === pStr) {
       myPlacedOrderPin = "";
@@ -1874,10 +1872,10 @@
     deletedRidersSet.delete(rObj.pin);
     saveTombstones();
     ridersDB[rObj.pin] = rObj;
-    localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v28_riders", JSON.stringify(ridersDB));
     broadcastLocalSync("RIDER", rObj);
     if (gun) gun.get(TOPIC_RIDERS).get(rObj.pin).put(rObj);
-    publishToCloud(TOPIC_RIDERS, rObj);
+    publishUnifiedPacket("RIDER", rObj);
     refreshEverything();
   }
 
@@ -1886,11 +1884,11 @@
     deletedRidersSet.add(pStr);
     saveTombstones();
     delete ridersDB[pStr];
-    localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v28_riders", JSON.stringify(ridersDB));
     const delPayload = { pin: pStr, deleted: true, name: "" };
     broadcastLocalSync("RIDER", delPayload);
     if (gun) gun.get(TOPIC_RIDERS).get(pStr).put(delPayload);
-    publishToCloud(TOPIC_RIDERS, delPayload);
+    publishUnifiedPacket("RIDER", delPayload);
     if (loggedInRiderPin === pStr) {
       loggedInRiderPin = "";
       localStorage.removeItem("msh_session_rider_pin");
@@ -1903,10 +1901,10 @@
     deletedHotelsSet.delete(hObj.id);
     saveTombstones();
     hotelsDB[hObj.id] = hObj;
-    localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
     broadcastLocalSync("HOTEL", hObj);
     if (gun) gun.get(TOPIC_HOTELS).get(hObj.id).put(hObj);
-    publishToCloud(TOPIC_HOTELS, hObj);
+    publishUnifiedPacket("HOTEL", hObj);
     populateHotelsDropdown();
     calcFeesAndExactKm();
     if (isAdminOpen) renderAdminDashboard();
@@ -1916,18 +1914,18 @@
     deletedHotelsSet.add(hid);
     saveTombstones();
     delete hotelsDB[hid];
-    localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
     const delPayload = { id: hid, deleted: true, name: "" };
     broadcastLocalSync("HOTEL", delPayload);
     if (gun) gun.get(TOPIC_HOTELS).get(hid).put(delPayload);
-    publishToCloud(TOPIC_HOTELS, delPayload);
+    publishUnifiedPacket("HOTEL", delPayload);
     populateHotelsDropdown();
     calcFeesAndExactKm();
     if (isAdminOpen) renderAdminDashboard();
   }
 
   function syncShopReqs() {
-    localStorage.setItem("msh_v27_shopreqs", JSON.stringify(shopReqsDB));
+    localStorage.setItem("msh_v28_shopreqs", JSON.stringify(shopReqsDB));
     const p = { json: JSON.stringify(shopReqsDB) };
     if (gun) gun.get(TOPIC_SHOPS).get("all").put(p);
     if (isAdminOpen) renderAdminDashboard();
@@ -1937,13 +1935,14 @@
     if (wipedPinsSet.has(String(pin))) return;
     riderSelfLiveLat = g.lat;
     riderSelfLiveLng = g.lng;
-    liveGpsCache[pin] = g;
-    broadcastLocalSync("GPS", { pin, ...g });
-    if (gun) gun.get(TOPIC_GPS).get(pin).put(g);
-    publishToCloud(TOPIC_GPS, { pin, ...g });
+    const gpsPacket = { pin, ...g };
+    liveGpsCache[pin] = gpsPacket;
+    broadcastLocalSync("GPS", gpsPacket);
+    if (gun) gun.get(TOPIC_GPS).get(pin).put(gpsPacket);
+    publishUnifiedPacket("GPS", gpsPacket);
 
     if (loggedInRiderPin && !previewCustomerModeOnSinglePhone) updateFullScreenFocusUI();
-    if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
+    if (pin === unlockedBottomPin) updateBottomMapLive(pin, gpsPacket);
   }
 
   if (localBus) {
@@ -1952,16 +1951,7 @@
       if (type === "ORDER" && payload && payload.pin) {
         handleIncomingOrderUpdate(payload, payload.pin);
       } else if (type === "RIDER" && payload && payload.pin) {
-        if (payload.deleted) { deletedRidersSet.add(String(payload.pin)); saveTombstones(); delete ridersDB[payload.pin]; }
-        else {
-          const localR = ridersDB[payload.pin];
-          if (localR && (localR.earnedUpdatedAt || 0) > (payload.earnedUpdatedAt || 0)) {
-            payload.earned = localR.earned;
-            payload.earnedUpdatedAt = localR.earnedUpdatedAt;
-          }
-          ridersDB[payload.pin] = payload;
-        }
-        refreshEverything();
+        handleIncomingRiderUpdate(payload);
       } else if (type === "GPS" && payload && payload.pin) {
         liveGpsCache[payload.pin] = payload;
         if (payload.pin === unlockedBottomPin) updateBottomMapLive(payload.pin, payload);
@@ -1969,14 +1959,12 @@
     };
   }
 
-  // Plays Stage Bells & Continuous 80m Doorbell on Customer Phone!
   function checkAndTriggerCustomerAlerts(ord, prevStatus) {
     if (!ord) return;
     if (loggedInRiderPin && !previewCustomerModeOnSinglePhone) return;
     const pStr = String(ord.pin);
     if (myPlacedOrderPin !== pStr && unlockedBottomPin !== pStr) return;
 
-    // 1. Ring Stage Chime when Order becomes ACCEPTED or PICKED_UP
     const stageKey = `${pStr}_${ord.status}`;
     if (prevStatus && prevStatus !== ord.status && lastStageBellKey !== stageKey) {
       lastStageBellKey = stageKey;
@@ -1987,7 +1975,6 @@
       }
     }
 
-    // 2. Continuous Doorbell when Rider presses Doorbell button within 80m!
     const bellTs = Number(ord.doorbellTs) || 0;
     if (bellTs > lastDoorbellAlertedTs) {
       lastDoorbellAlertedTs = bellTs;
@@ -1996,15 +1983,6 @@
         `రైడర్ <b>${ord.acceptedByName || "Rider"}</b> మీ ఇంటి గేట్ (80 మీటర్ల) దగ్గరకు వచ్చి బెల్ కొట్టారు!<br>ఫుడ్ తీసుకుని మీ 4-Digit Delivery Code: <span style="background:#facc15; color:#000; padding:2px 8px; border-radius:6px; font-size:1.15rem; font-weight:900;">${ord.deliveryCode}</span> చెప్పండి.`;
       document.getElementById("custDoorbellPopup").style.display = "block";
     }
-  }
-
-  function parseNtfyPayload(w) {
-    if (!w) return null;
-    if (typeof w.message === "string" && w.message.trim().startsWith("{")) {
-      try { return JSON.parse(w.message); } catch {}
-    }
-    if (w.pin || w.id || w.serviceOpen !== undefined) return w;
-    return null;
   }
 
   function handleIncomingOrderUpdate(d, pin) {
@@ -2016,7 +1994,7 @@
       wipedPinsSet.add(pStr); saveTombstones();
       delete ordersDB[pStr];
       delete liveGpsCache[pStr];
-      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
       if (myPlacedOrderPin === pStr) {
         myPlacedOrderPin = "";
         localStorage.removeItem("msh_session_cust_pin");
@@ -2034,7 +2012,7 @@
       const prevStatus = prev ? prev.status : null;
       if (d.chatJson) { try { d.chatArr = JSON.parse(d.chatJson); } catch { d.chatArr = []; } }
       ordersDB[pStr] = d;
-      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
 
       if (!prev && d.status === "OPEN") {
         playSingleChime(false);
@@ -2045,6 +2023,67 @@
     }
   }
 
+  function handleIncomingRiderUpdate(r) {
+    if (!r || !r.pin) return;
+    const pStr = String(r.pin);
+    if (r.deleted) {
+      deletedRidersSet.add(pStr); saveTombstones();
+      delete ridersDB[pStr];
+      if (loggedInRiderPin === pStr) {
+        loggedInRiderPin = "";
+        localStorage.removeItem("msh_session_rider_pin");
+      }
+    } else if (r.name && !deletedRidersSet.has(pStr) && !FAKE_PINS.has(pStr)) {
+      const localR = ridersDB[pStr];
+      if (localR && (localR.earnedUpdatedAt || 0) > (r.earnedUpdatedAt || 0)) {
+        r.earned = localR.earned;
+        r.earnedUpdatedAt = localR.earnedUpdatedAt;
+      }
+      ridersDB[pStr] = r;
+    }
+    localStorage.setItem("msh_v28_riders", JSON.stringify(ridersDB));
+    refreshEverything();
+  }
+
+  function processUnifiedEnvelope(rawObj) {
+    if (!rawObj) return;
+    let envelope = rawObj;
+    if (typeof rawObj.message === "string" && rawObj.message.trim().startsWith("{")) {
+      try { envelope = JSON.parse(rawObj.message); } catch {}
+    }
+    const { _t, _d } = envelope;
+    if (!_t || !_d) return;
+
+    if (_t === "ORDER") {
+      handleIncomingOrderUpdate(_d, _d.pin);
+    } else if (_t === "GPS") {
+      if (_d.pin && _d.lat && !wipedPinsSet.has(String(_d.pin))) {
+        liveGpsCache[_d.pin] = _d;
+        if (_d.pin === unlockedBottomPin) updateBottomMapLive(_d.pin, _d);
+      }
+    } else if (_t === "RIDER") {
+      handleIncomingRiderUpdate(_d);
+    } else if (_t === "HOTEL") {
+      if (_d.deleted) { deletedHotelsSet.add(_d.id); saveTombstones(); delete hotelsDB[_d.id]; }
+      else if (_d.name && !deletedHotelsSet.has(_d.id)) { hotelsDB[_d.id] = _d; }
+      localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
+      populateHotelsDropdown(); calcFeesAndExactKm();
+      if (isAdminOpen) renderAdminDashboard();
+    } else if (_t === "MENU") {
+      if (_d.deleted) { deletedMenuSet.add(_d.id); saveTombstones(); delete menuDB[_d.id]; delete cart[_d.id]; saveCartState(); }
+      else if (_d.name && !deletedMenuSet.has(_d.id)) { menuDB[_d.id] = _d; }
+      localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
+      renderMenu7x3(); calcFeesAndExactKm();
+    } else if (_t === "CONFIG") {
+      if ((_d.updatedAt || 0) > (appConfig.updatedAt || 0)) {
+        appConfig = { ...appConfig, ..._d };
+        if (_d.adminPass) localStorage.setItem("msh_custom_admin_pass", _d.adminPass);
+        localStorage.setItem("msh_v28_config", JSON.stringify(appConfig));
+        applyConfigUI();
+      }
+    }
+  }
+
   // Gun.js Live Listeners
   if (gun) {
     gun.get(TOPIC_CONFIG).get("main").on(d => {
@@ -2052,58 +2091,31 @@
         if ((d.updatedAt || 0) <= (appConfig.updatedAt || 0)) return;
         appConfig = { ...appConfig, ...d };
         if (d.adminPass) localStorage.setItem("msh_custom_admin_pass", d.adminPass);
-        localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
+        localStorage.setItem("msh_v28_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
     });
     gun.get(TOPIC_HOTELS).map().on((h, hid) => {
       if (!h) return;
-      if (h.deleted || deletedHotelsSet.has(hid)) {
-        deletedHotelsSet.add(hid); saveTombstones();
-        delete hotelsDB[hid];
-      } else if (h.name) {
-        hotelsDB[hid] = h;
-      }
-      localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
+      if (h.deleted || deletedHotelsSet.has(hid)) { deletedHotelsSet.add(hid); saveTombstones(); delete hotelsDB[hid]; }
+      else if (h.name) { hotelsDB[hid] = h; }
+      localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
       populateHotelsDropdown(); calcFeesAndExactKm();
       if (isAdminOpen) renderAdminDashboard();
     });
     gun.get(TOPIC_RIDERS).map().on((r, rpin) => {
-      if (!r) return;
-      const pStr = String(rpin);
-      if (r.deleted || deletedRidersSet.has(pStr) || FAKE_PINS.has(pStr)) {
-        deletedRidersSet.add(pStr); saveTombstones();
-        delete ridersDB[pStr];
-        if (loggedInRiderPin === pStr) {
-          loggedInRiderPin = "";
-          localStorage.removeItem("msh_session_rider_pin");
-        }
-      } else if (r.name) {
-        const localR = ridersDB[pStr];
-        if (localR && (localR.earnedUpdatedAt || 0) > (r.earnedUpdatedAt || 0)) {
-          r.earned = localR.earned;
-          r.earnedUpdatedAt = localR.earnedUpdatedAt;
-        }
-        ridersDB[pStr] = r;
-      }
-      localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
-      refreshEverything();
+      if (r) handleIncomingRiderUpdate({ ...r, pin: rpin });
     });
     gun.get(TOPIC_SHOPS).get("all").on(d => {
       if (d && d.json) {
-        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v27_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
+        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v28_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
       }
     });
     gun.get(TOPIC_MENU).map().on((d, id) => {
       if (!d) return;
-      if (d.deleted || deletedMenuSet.has(id)) {
-        deletedMenuSet.add(id); saveTombstones();
-        delete menuDB[id]; delete cart[id];
-        saveCartState();
-      } else if (d.name) {
-        menuDB[id] = d;
-      }
-      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+      if (d.deleted || deletedMenuSet.has(id)) { deletedMenuSet.add(id); saveTombstones(); delete menuDB[id]; delete cart[id]; saveCartState(); }
+      else if (d.name) { menuDB[id] = d; }
+      localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
       renderMenu7x3(); calcFeesAndExactKm();
     });
     gun.get(TOPIC_ORDERS).map().on((d, pin) => {
@@ -2119,165 +2131,52 @@
       if (m && m.text && m.ts) {
         if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
         else delete msgs24hDB[id];
-        localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
+        localStorage.setItem("msh_v28_24h", JSON.stringify(msgs24hDB));
         render24hMsgs();
       }
     });
   }
 
-  // Real-Time SSE Push Stream
-  try {
-    const esOrders = new EventSource(`${NTFY_PRIMARY}/${TOPIC_ORDERS}/sse?since=10m`);
-    esOrders.onmessage = ev => {
-      try {
-        const o = parseNtfyPayload(JSON.parse(ev.data));
-        if (o) handleIncomingOrderUpdate(o, o.pin);
-      } catch {}
-    };
-
-    const esGps = new EventSource(`${NTFY_PRIMARY}/${TOPIC_GPS}/sse?since=5m`);
-    esGps.onmessage = ev => {
-      try {
-        const g = parseNtfyPayload(JSON.parse(ev.data));
-        if (g && g.pin && g.lat && !wipedPinsSet.has(String(g.pin))) {
-          liveGpsCache[g.pin] = g;
-          if (g.pin === unlockedBottomPin) updateBottomMapLive(g.pin, g);
-        }
-      } catch {}
-    };
-  } catch {}
-
-  async function runCloudPollNow() {
+  // Single Persistent Real-Time SSE Stream (Zero Rate-Limit + Instant Mobile Push!)
+  let activeSse = null;
+  function connectSingleMasterSse() {
+    if (activeSse) { try { activeSse.close(); } catch {} }
     try {
-      const [resO, resG, resR, resH, resM, resC] = await Promise.all([
-        fetch(`${NTFY_PRIMARY}/${TOPIC_ORDERS}/json?poll=1&since=15m`),
-        fetch(`${NTFY_PRIMARY}/${TOPIC_GPS}/json?poll=1&since=5m`),
-        fetch(`${NTFY_PRIMARY}/${TOPIC_RIDERS}/json?poll=1&since=15m`),
-        fetch(`${NTFY_PRIMARY}/${TOPIC_HOTELS}/json?poll=1&since=15m`),
-        fetch(`${NTFY_PRIMARY}/${TOPIC_MENU}/json?poll=1&since=15m`),
-        fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}/json?poll=1&since=15m`)
-      ]);
-
-      const txtC = await resC.text();
-      if (txtC) {
-        txtC.trim().split("\n").forEach(line => {
-          try {
-            const cfg = parseNtfyPayload(JSON.parse(line));
-            if (cfg && (cfg.updatedAt || 0) > (appConfig.updatedAt || 0)) {
-              appConfig = { ...appConfig, ...cfg };
-              if (cfg.adminPass) localStorage.setItem("msh_custom_admin_pass", cfg.adminPass);
-              localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
-              applyConfigUI();
-            }
-          } catch {}
-        });
-      }
-
-      const txtO = await resO.text();
-      if (txtO) {
-        txtO.trim().split("\n").forEach(line => {
-          try {
-            const o = parseNtfyPayload(JSON.parse(line));
-            if (o) handleIncomingOrderUpdate(o, o.pin);
-          } catch {}
-        });
-      }
-
-      const txtG = await resG.text();
-      if (txtG) {
-        txtG.trim().split("\n").forEach(line => {
-          try {
-            const g = parseNtfyPayload(JSON.parse(line));
-            if (g && g.pin && g.lat && !wipedPinsSet.has(String(g.pin))) {
-              liveGpsCache[g.pin] = g;
-              if (g.pin === unlockedBottomPin) updateBottomMapLive(g.pin, g);
-            }
-          } catch {}
-        });
-      }
-
-      const txtR = await resR.text();
-      if (txtR) {
-        let rChanged = false;
-        txtR.trim().split("\n").forEach(line => {
-          try {
-            const r = parseNtfyPayload(JSON.parse(line));
-            if (r && r.pin) {
-              const pStr = String(r.pin);
-              if (r.deleted) {
-                if (ridersDB[pStr]) { delete ridersDB[pStr]; rChanged = true; }
-                deletedRidersSet.add(pStr);
-              } else if (r.name && !deletedRidersSet.has(pStr) && !FAKE_PINS.has(pStr)) {
-                const localR = ridersDB[pStr];
-                if (localR && (localR.earnedUpdatedAt || 0) > (r.earnedUpdatedAt || 0)) {
-                  r.earned = localR.earned;
-                  r.earnedUpdatedAt = localR.earnedUpdatedAt;
-                }
-                ridersDB[pStr] = r; rChanged = true;
-              }
-            }
-          } catch {}
-        });
-        if (rChanged) {
-          saveTombstones();
-          localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
-          refreshEverything();
-        }
-      }
-
-      const txtH = await resH.text();
-      if (txtH) {
-        let hChanged = false;
-        txtH.trim().split("\n").forEach(line => {
-          try {
-            const h = parseNtfyPayload(JSON.parse(line));
-            if (h && h.id) {
-              if (h.deleted) {
-                if (hotelsDB[h.id]) { delete hotelsDB[h.id]; hChanged = true; }
-                deletedHotelsSet.add(h.id);
-              } else if (h.name && !deletedHotelsSet.has(h.id)) {
-                hotelsDB[h.id] = h; hChanged = true;
-              }
-            }
-          } catch {}
-        });
-        if (hChanged) {
-          saveTombstones();
-          localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
-          populateHotelsDropdown(); calcFeesAndExactKm();
-          if (isAdminOpen) renderAdminDashboard();
-        }
-      }
-
-      const txtM = await resM.text();
-      if (txtM) {
-        let mChanged = false;
-        txtM.trim().split("\n").forEach(line => {
-          try {
-            const m = parseNtfyPayload(JSON.parse(line));
-            if (m && m.id) {
-              if (m.deleted) {
-                if (menuDB[m.id]) { delete menuDB[m.id]; delete cart[m.id]; mChanged = true; }
-                deletedMenuSet.add(m.id);
-              } else if (m.name && !deletedMenuSet.has(m.id)) {
-                menuDB[m.id] = m; mChanged = true;
-              }
-            }
-          } catch {}
-        });
-        if (mChanged) {
-          saveTombstones(); saveCartState();
-          localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
-          renderMenu7x3(); calcFeesAndExactKm();
-        }
-      }
+      activeSse = new EventSource(`${NTFY_PRIMARY}/${SINGLE_MASTER_STREAM}/sse?since=15m`);
+      activeSse.onopen = () => {
+        const b = document.getElementById("liveCloudConnBadge");
+        if (b) { b.innerText = "⚡ Live Connected"; b.style.background = "#dcfce7"; b.style.color = "#15803d"; }
+      };
+      activeSse.onmessage = ev => {
+        try {
+          processUnifiedEnvelope(JSON.parse(ev.data));
+        } catch {}
+      };
+      activeSse.onerror = () => {
+        const b = document.getElementById("liveCloudConnBadge");
+        if (b) { b.innerText = "🔄 Reconnecting..."; b.style.background = "#fef3c7"; b.style.color = "#92400e"; }
+      };
     } catch {}
   }
+  connectSingleMasterSse();
 
-  // 450ms High-Speed Sync Loop for Real-Time Tracking
-  setInterval(runCloudPollNow, 450);
+  // Lightweight 2.5s Single-Request Fallback Poll (Never triggers 429 rate limits!)
+  async function runSingleCloudPoll() {
+    try {
+      const res = await fetch(`${NTFY_PRIMARY}/${SINGLE_MASTER_STREAM}/json?poll=1&since=15m`);
+      const txt = await res.text();
+      if (!txt) return;
+      txt.trim().split("\n").forEach(line => {
+        try { processUnifiedEnvelope(JSON.parse(line)); } catch {}
+      });
+    } catch {}
+  }
+  setInterval(runSingleCloudPoll, 2500);
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") runCloudPollNow();
+    if (document.visibilityState === "visible") {
+      connectSingleMasterSse();
+      runSingleCloudPoll();
+    }
   });
 
   function refreshEverything() {
@@ -2339,11 +2238,11 @@
       cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
       saveCartState();
     }
-    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
-    publishToCloud(TOPIC_MENU, it);
+    publishUnifiedPacket("MENU", it);
   };
 
   window.mshAdmToggleOutOfStock = function(id) {
@@ -2351,11 +2250,11 @@
     if (!it) return;
     it.outOfStock = !it.outOfStock;
     if (it.outOfStock) { delete cart[id]; saveCartState(); }
-    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
-    publishToCloud(TOPIC_MENU, it);
+    publishUnifiedPacket("MENU", it);
   };
 
   function renderMenu7x3() {
@@ -2427,11 +2326,11 @@
     saveTombstones();
     delete menuDB[id]; delete cart[id];
     saveCartState();
-    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
     renderMenu7x3(); calcFeesAndExactKm();
     const delObj = { id, name: "", deleted: true };
     if (gun) gun.get(TOPIC_MENU).get(id).put(delObj);
-    publishToCloud(TOPIC_MENU, delObj);
+    publishUnifiedPacket("MENU", delObj);
   };
 
   document.querySelectorAll("#catTabsBar .msh-cat").forEach(b => {
@@ -2483,9 +2382,9 @@
         img: getAutoPhotoForName(name, "")
       };
       menuDB[targetId] = newMenuItem;
-      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
       if (gun) gun.get(TOPIC_MENU).get(targetId).put(newMenuItem);
-      publishToCloud(TOPIC_MENU, newMenuItem);
+      publishUnifiedPacket("MENU", newMenuItem);
     }
 
     const prevQty = cart[targetId] ? cart[targetId].qty : 0;
@@ -2747,7 +2646,7 @@
   });
 
   // =========================================================================
-  // 3. RIDER PANEL & ULTRA-FAST CONTINUOUS GPS TRACKER (watchPosition)
+  // 3. RIDER PANEL & CONTINUOUS GPS TRACKER
   // =========================================================================
   function startContinuousRiderGps(orderPin, riderName) {
     if (riderGpsWatchId !== null && navigator.geolocation) {
@@ -2760,7 +2659,6 @@
     }
     if (!navigator.geolocation) return;
 
-    // 1. Instant watchPosition pushes GPS every single step the Rider moves!
     riderGpsWatchId = navigator.geolocation.watchPosition(p => {
       if (!ordersDB[orderPin] || ordersDB[orderPin].wiped) {
         navigator.geolocation.clearWatch(riderGpsWatchId);
@@ -2770,7 +2668,6 @@
       syncGps(orderPin, { rider: riderName, lat: p.coords.latitude, lng: p.coords.longitude });
     }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
 
-    // 2. Heartbeat every 1.2s so map stays locked live
     riderGpsHeartbeatTimer = setInterval(() => {
       if (!ordersDB[orderPin] || ordersDB[orderPin].wiped) {
         clearInterval(riderGpsHeartbeatTimer);
@@ -2780,7 +2677,7 @@
       navigator.geolocation.getCurrentPosition(p => {
         syncGps(orderPin, { rider: riderName, lat: p.coords.latitude, lng: p.coords.longitude });
       }, null, { enableHighAccuracy: true, maximumAge: 0 });
-    }, 1200);
+    }, 1500);
   }
 
   document.getElementById("btnRiderUnlock").addEventListener("click", () => {
@@ -3002,7 +2899,7 @@
 
   window.mshAdmDel24h = function(id) {
     delete msgs24hDB[id];
-    localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v28_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(null);
   };
@@ -3015,7 +2912,7 @@
     const id = "m24_" + Date.now();
     const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
     msgs24hDB[id] = item;
-    localStorage.setItem("msh_v27_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v28_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
@@ -3056,7 +2953,7 @@
   document.getElementById("admBtnResetLedger").addEventListener("click", () => {
     if (confirm("మీరు లెక్కలు రాసుకున్నారా? Total Revenue Ledger ను ₹0 కి క్లియర్ చేయాలా?")) {
       completedHistoryDB = [];
-      localStorage.setItem("msh_v27_completed_history", "[]");
+      localStorage.setItem("msh_v28_completed_history", "[]");
       renderAdminDashboard();
       alert("✅ Revenue Ledger ₹0 కి రీసెట్ అయింది!");
     }
@@ -3163,13 +3060,13 @@
     const finalImg = getAutoPhotoForName(name, rawImg);
     const id = "m_" + Date.now();
     menuDB[id] = { id, cat, name, price, img: finalImg };
-    localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
     document.getElementById("admNewItemName").value = "";
     document.getElementById("admNewItemPrice").value = "";
     document.getElementById("admNewItemImg").value = "";
     renderMenu7x3();
     if (gun) gun.get(TOPIC_MENU).get(id).put(menuDB[id]);
-    publishToCloud(TOPIC_MENU, menuDB[id]);
+    publishUnifiedPacket("MENU", menuDB[id]);
     alert("✅ కొత్త ఐటమ్ & ఫోటో సేవ్ అయ్యాయి!");
   });
 
@@ -3190,12 +3087,12 @@
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
       if (parsed.completedHistoryDB) completedHistoryDB = parsed.completedHistoryDB;
       if (parsed.appConfig) appConfig = { ...defaultConfig, ...parsed.appConfig };
-      localStorage.setItem("msh_v27_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_v27_hotels", JSON.stringify(hotelsDB));
-      localStorage.setItem("msh_v27_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_v27_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_v27_completed_history", JSON.stringify(completedHistoryDB));
-      localStorage.setItem("msh_v27_config", JSON.stringify(appConfig));
+      localStorage.setItem("msh_v28_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v28_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v28_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v28_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v28_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v28_config", JSON.stringify(appConfig));
       applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
       alert("✅ డేటా పూర్తిగా Restore అయింది!");
     } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
@@ -3328,7 +3225,13 @@
       alert(`❌ Tracking PIN "${p}" లేదు లేదా ఇప్పటికే డెలివరీ పూర్తయి తొలగించబడింది.`);
       return;
     }
+    // Also attach this device as customer viewer for this PIN so full-screen focus & bells work!
+    if (!loggedInRiderPin && !isAdminOpen) {
+      myPlacedOrderPin = p;
+      localStorage.setItem("msh_session_cust_pin", p);
+    }
     unlockBottomMapWithPin(p, false);
+    refreshEverything();
   });
   document.getElementById("btnLockBottomMap").addEventListener("click", lockBottomMapUI);
 
@@ -3465,6 +3368,6 @@
     unlockBottomMapWithPin(unlockedBottomPin, true);
   }
   refreshEverything();
-  runCloudPollNow();
+  runSingleCloudPoll();
 })();
 </script>
