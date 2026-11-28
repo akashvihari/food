@@ -1,4 +1,4 @@
-<!-- High-Speed 10-Server Real-Time Mesh, Dynamic QR, 80m Proximity Doorbell & Exact GPS Routing -->
+<!-- High-Speed 10-Server Real-Time Mesh, Dynamic QR, 80m Proximity Doorbell & Full-Screen Focus Mode -->
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -15,11 +15,11 @@
     --dark: #111827;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     max-width: 1260px;
-    margin: 12px auto;
+    margin: 10px auto;
     background: #ffffff;
     border: 2px solid #cbd5e1;
     border-radius: 18px;
-    padding: 16px;
+    padding: 14px;
     box-shadow: 0 12px 34px rgba(0,0,0,0.09);
     color: #1e293b;
     position: relative;
@@ -37,26 +37,46 @@
     margin-bottom: 14px;
   }
 
+  /* CONTINUOUS DOORBELL POPUP MODAL (CUSTOMER ONLY) */
   .msh-doorbell-modal {
     display: none;
     position: fixed;
-    top: 14px;
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 94%;
+    width: 95%;
     max-width: 480px;
     background: linear-gradient(135deg, #064e3b, #15803d);
     color: #fff;
     border: 3px solid #facc15;
     border-radius: 16px;
     padding: 16px;
-    z-index: 99999;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.65);
-    animation: mshPulseDoor 0.9s infinite alternate;
+    z-index: 999999;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+    animation: mshPulseDoor 0.8s infinite alternate;
   }
   @keyframes mshPulseDoor {
-    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.85); }
-    100% { box-shadow: 0 0 0 16px rgba(250, 204, 21, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.9); }
+    100% { box-shadow: 0 0 0 18px rgba(250, 204, 21, 0); }
+  }
+
+  /* FULL-SCREEN ACTIVE RIDE FOCUS MODE (Hides browsing clutter while ride is active!) */
+  .msh-focus-mode-banner {
+    display: none;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: #fff;
+    border: 2px solid #38bdf8;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .msh-focus-card {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid #cbd5e1;
   }
 
   .msh-ticker {
@@ -100,11 +120,11 @@
     flex-wrap: wrap;
     gap: 10px;
     border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
   }
-  .msh-title { font-size: 1.3rem; font-weight: 900; color: var(--primary); margin: 0; }
-  .msh-sub { font-size: 0.84rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
+  .msh-title { font-size: 1.28rem; font-weight: 900; color: var(--primary); margin: 0; }
+  .msh-sub { font-size: 0.82rem; color: #475569; margin: 2px 0 0; font-weight: 600; }
 
   .msh-closed-wall {
     display: none;
@@ -409,11 +429,11 @@
     color: #fff;
     border: 2px solid #38bdf8;
     border-radius: 16px;
-    padding: 16px;
+    padding: 14px;
   }
   .msh-map-frame {
     position: relative;
-    height: 450px;
+    height: 430px;
     width: 100%;
     border-radius: 12px;
     overflow: hidden;
@@ -453,7 +473,7 @@
 <!-- CONTINUOUS DOORBELL POPUP MODAL (CUSTOMER ONLY — TRIGGERS WHEN RIDER RINGS BELL WITHIN 80m!) -->
 <div class="msh-doorbell-modal" id="custDoorbellPopup">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-    <strong style="font-size:1.08rem; color:#facc15;">🔔 డోర్ బెల్ అలర్ట్ — రైడర్ 80m దగ్గరకు వచ్చారు!</strong>
+    <strong style="font-size:1.08rem; color:#facc15;">🔔 డోర్ బెల్ అలర్ట్ — రైడర్ ఇంటికి వచ్చారు!</strong>
     <button type="button" id="btnStopDoorbellSound" style="background:#dc2626; color:#fff; border:none; border-radius:6px; padding:4px 10px; font-weight:900; cursor:pointer;">🔕 Stop Ring</button>
   </div>
   <div id="custDoorbellPopupBody" style="font-size:0.9rem; line-height:1.45; font-weight:700; margin-bottom:8px;"></div>
@@ -481,7 +501,7 @@
 
   <!-- ALL PUBLIC CONTENT WRAPPER -->
   <div id="mshPublicSiteContent">
-    <div class="msh-ticker">
+    <div class="msh-ticker" id="mshTickerWrap">
       <div class="msh-ticker-txt" id="mshLiveTickerText">
         ⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! ప్రతి ఆర్డర్ 24 గంటల తర్వాత ఆటోమేటిక్‌గా క్లీన్ అవుతుంది. 100% ప్రైవసీ.
       </div>
@@ -496,7 +516,7 @@
     <div class="msh-header">
       <div>
         <h2 class="msh-title">🍔 Mana Seva Hub — ఫుడ్ & కూరగాయల డెలివరీ</h2>
-        <p class="msh-sub">2-Stage Live Map (Hotel➔Rider / Rider➔House) • 80m Rider Doorbell • 100% Secret Code</p>
+        <p class="msh-sub">Full-Screen Active Ride Focus • 2-Stage Live Map • 80m Rider Doorbell • 100% Secret Code</p>
       </div>
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <span id="masterStatusBadge" style="font-size:0.8rem; font-weight:800; background:#dcfce7; color:#15803d; padding:6px 12px; border-radius:99px;">
@@ -512,6 +532,19 @@
       🔴 ప్రస్తుతం ఫుడ్ డెలివరీ ఆర్డర్లు తాత్కాలికంగా ఆపివేయబడ్డాయి (Orders OFF). మళ్ళీ ఓపెన్ అయ్యాక ఆర్డర్ చేయండి.
     </div>
 
+    <!-- =========================================================
+         FULL-SCREEN FOCUS PANEL (AUTO-EXPANDS WHEN ORDER IS PLACED OR ACCEPTED!)
+         Hides browsing clutter until delivery is completed!
+         ========================================================= -->
+    <div class="msh-focus-mode-banner" id="activeRideFullScreenPanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <strong style="font-size:1.1rem; color:#facc15;" id="focusModeHeaderTitle">🚀 లైవ్ డెలివరీ ఫుల్ స్క్రీన్ మోడ్ (Active Ride)</strong>
+        <span id="focusModeRoleBadge" style="background:#16a34a; color:#fff; padding:4px 12px; border-radius:99px; font-size:0.8rem; font-weight:900;">Live Session</span>
+      </div>
+      <!-- Dynamic Full-Screen Content for Customer OR Rider -->
+      <div id="activeRideFullScreenBody"></div>
+    </div>
+
     <div class="msh-section-off-banner" id="userFoodSectionOffWall" style="display:none;">
       <div style="font-size:2.4rem; margin-bottom:6px;">🍽️🔒</div>
       <strong style="font-size:1.08rem; color:#0f172a; display:block; margin-bottom:4px;">ఫుడ్ ఆర్డర్ సెక్షన్ ప్రస్తుతం OFF లో ఉంది</strong>
@@ -524,12 +557,12 @@
     </div>
 
     <!-- =========================================================
-         TOP 50% LEFT + 50% RIGHT SPLIT (EXACT STRUCTURE UNTOUCHED)
+         TOP 50% LEFT + 50% RIGHT SPLIT (BROWSING & ORDERING)
          ========================================================= -->
     <div class="msh-main-split" id="mshTopFoodOrderSection">
       
       <!-- LEFT 50% CARD -->
-      <div class="msh-panel msh-panel-orange">
+      <div class="msh-panel msh-panel-orange" id="leftFoodMenuCard">
         <div>
           <div class="msh-h3" style="color:#9a3412;">
             <span>🍽️ 1. ఫుడ్ మెనూ & కూరగాయలు (7×3)</span>
@@ -565,7 +598,7 @@
       <div class="msh-right-col-stack">
         
         <!-- 2A. Customer Checkout Card -->
-        <div class="msh-panel msh-panel-slate">
+        <div class="msh-panel msh-panel-slate" id="rightCheckoutCard">
           <div>
             <div class="msh-h3" style="color:#0f4c3a;">
               <span>📍 2. హోటల్ & మీ అడ్రస్ వివరాలు</span>
@@ -617,28 +650,10 @@
           <button type="button" class="msh-order-btn" id="btnPlaceOrderNow">
             🍔 ఆర్డర్ చేయండి (PLACE ORDER)
           </button>
-
-          <!-- Persistent Customer Order Ticket -->
-          <div id="custOrderSuccessBox" style="display:none; background:#1e3a8a; color:#fff; border-radius:10px; padding:9px; margin-top:7px; text-align:center;">
-            <div style="font-size:0.76rem; color:#93c5fd; margin-bottom:3px;" id="custOrderTimeBadge">🕒 Order Placed</div>
-            <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:6px;">
-              <div>
-                <span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ చూసే PIN:</span>
-                <strong style="font-size:1.25rem; color:#facc15; letter-spacing:2px;" id="custOrderPinText">----</strong>
-              </div>
-              <div style="border-left:1px solid #3b82f6; padding-left:10px;">
-                <span style="font-size:0.75rem; color:#86efac; display:block;">🔐 డెలివరీ పూర్తి చేసే కోడ్ (Secret):</span>
-                <strong style="font-size:1.25rem; color:#4ade80; letter-spacing:2px;" id="custDeliveryCodeText">----</strong>
-              </div>
-            </div>
-            <div id="custLiveIntimationBar" style="background:#0f172a; color:#facc15; font-size:0.8rem; font-weight:800; padding:6px 8px; border-radius:6px; margin-top:5px;">
-              ⏳ రైడర్ Accept కోసం వేచి ఉంది...
-            </div>
-          </div>
         </div>
 
-        <!-- 2B. Strict One-Way Forward Rider Duty Panel -->
-        <div class="msh-panel msh-panel-green">
+        <!-- 2B. Rider Duty Panel -->
+        <div class="msh-panel msh-panel-green" id="rightRiderLoginCard">
           <div>
             <div class="msh-h3" style="color:#0f4c3a;">
               <span>🛵 3. రైడర్ డ్యూటీ ప్యానెల్ (Rider Login)</span>
@@ -673,7 +688,7 @@
     <!-- =========================================================
          MIDDLE SECTION: RIDER & SHOP REGISTRATION + DIRECT ADMIN LOGIN
          ========================================================= -->
-    <div class="msh-mid-admin-sec" style="margin-bottom:12px;">
+    <div class="msh-mid-admin-sec" id="middleRegAndAdminSec" style="margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
         <div>
           <strong style="font-size:1.05rem; color:#0f4c3a;">📋 4. రైడర్ & షాప్ రిజిస్ట్రేషన్ + Admin Control Room</strong>
@@ -722,7 +737,7 @@
     <!-- =========================================================
          BOTTOM SECTION: 2-STAGE CUSTOMER & ADMIN LIVE TRACKING MAP
          ========================================================= -->
-    <div class="msh-bottom-map-sec" style="margin-bottom:14px;">
+    <div class="msh-bottom-map-sec" id="bottomLiveMapSection" style="margin-bottom:14px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
           <strong style="font-size:1.08rem; color:#38bdf8;">🗺️ 5. కస్టమర్ లైవ్ ట్రాకింగ్ మ్యాప్ & డెలివరీ కోడ్ వెరిఫికేషన్</strong>
@@ -937,21 +952,21 @@
   const gun = (typeof Gun !== "undefined") ? Gun({ peers: PEERS_10, localStorage: true }) : null;
   const NTFY_PRIMARY = "https://ntfy.sh";
 
-  const TOPIC_MENU     = "msh_v23_menu_2026";
-  const TOPIC_HOTELS   = "msh_v23_hotels_node_2026";
-  const TOPIC_SHOPS    = "msh_v23_shopreqs_2026";
-  const TOPIC_ORDERS   = "msh_v23_orders_2026";
-  const TOPIC_GPS      = "msh_v23_gps_2026";
-  const TOPIC_RIDERS   = "msh_v23_riders_node_2026";
-  const TOPIC_CONFIG   = "msh_v23_config_2026";
-  const TOPIC_24H      = "msh_v23_24h_2026";
+  const TOPIC_MENU     = "msh_v24_menu_2026";
+  const TOPIC_HOTELS   = "msh_v24_hotels_node_2026";
+  const TOPIC_SHOPS    = "msh_v24_shopreqs_2026";
+  const TOPIC_ORDERS   = "msh_v24_orders_2026";
+  const TOPIC_GPS      = "msh_v24_gps_2026";
+  const TOPIC_RIDERS   = "msh_v24_riders_node_2026";
+  const TOPIC_CONFIG   = "msh_v24_config_2026";
+  const TOPIC_24H      = "msh_v24_24h_2026";
 
-  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v23_fast_bus") : null;
+  const localBus = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("msh_v24_fast_bus") : null;
 
   const FAKE_PINS = new Set(["2211", "3344"]);
   function recoverAndDeduplicateRealRiders() {
     let rawList = [];
-    const keys = ["msh_v23_riders", "msh_v22_riders", "msh_v21_riders", "msh_v20_riders", "msh_v19_riders", "msh_v18_riders", "msh_unified_riders"];
+    const keys = ["msh_v24_riders", "msh_v23_riders", "msh_v22_riders", "msh_v21_riders", "msh_v20_riders", "msh_v19_riders", "msh_unified_riders"];
     keys.forEach(k => {
       try {
         const obj = JSON.parse(localStorage.getItem(k) || "null");
@@ -990,7 +1005,7 @@
       "h3": { id: "h3", name: "S.Kota Main Hotels & Biryani", lat: 18.1118, lng: 83.1415 },
       "h4": { id: "h4", name: "Prakash Own Farm Stock (Boddavara)", lat: 18.0815, lng: 83.1285 }
     };
-    const keys = ["msh_v23_hotels", "msh_v22_hotels", "msh_v21_hotels", "msh_v20_hotels", "msh_v19_hotels"];
+    const keys = ["msh_v24_hotels", "msh_v23_hotels", "msh_v22_hotels", "msh_v21_hotels", "msh_v20_hotels"];
     keys.forEach(k => {
       try {
         const raw = JSON.parse(localStorage.getItem(k) || "null");
@@ -1006,25 +1021,25 @@
 
   let ridersDB = recoverAndDeduplicateRealRiders();
   let hotelsDB = recoverAndDeduplicateHotels();
-  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v23_shopreqs") || "{}");
-  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v23_completed_history") || "[]");
+  let shopReqsDB = JSON.parse(localStorage.getItem("msh_v24_shopreqs") || "{}");
+  let completedHistoryDB = JSON.parse(localStorage.getItem("msh_v24_completed_history") || "[]");
 
-  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v23_del_riders") || "[]"));
-  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v23_del_hotels") || "[]"));
-  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v23_del_menu") || "[]"));
-  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v23_wiped_pins") || "[]"));
+  let deletedRidersSet = new Set(JSON.parse(localStorage.getItem("msh_v24_del_riders") || "[]"));
+  let deletedHotelsSet = new Set(JSON.parse(localStorage.getItem("msh_v24_del_hotels") || "[]"));
+  let deletedMenuSet   = new Set(JSON.parse(localStorage.getItem("msh_v24_del_menu") || "[]"));
+  let wipedPinsSet     = new Set(JSON.parse(localStorage.getItem("msh_v24_wiped_pins") || "[]"));
 
   function saveTombstones() {
-    localStorage.setItem("msh_v23_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
-    localStorage.setItem("msh_v23_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
-    localStorage.setItem("msh_v23_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
-    localStorage.setItem("msh_v23_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
+    localStorage.setItem("msh_v24_del_riders", JSON.stringify(Array.from(deletedRidersSet)));
+    localStorage.setItem("msh_v24_del_hotels", JSON.stringify(Array.from(deletedHotelsSet)));
+    localStorage.setItem("msh_v24_del_menu", JSON.stringify(Array.from(deletedMenuSet)));
+    localStorage.setItem("msh_v24_wiped_pins", JSON.stringify(Array.from(wipedPinsSet).slice(-120)));
   }
 
   Object.keys(ridersDB).forEach(k => { if (deletedRidersSet.has(k) || ridersDB[k]?.deleted) delete ridersDB[k]; });
   Object.keys(hotelsDB).forEach(k => { if (deletedHotelsSet.has(k) || hotelsDB[k]?.deleted) delete hotelsDB[k]; });
-  localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
-  localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
+  localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
+  localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
 
   setTimeout(() => {
     Object.values(ridersDB).forEach(r => {
@@ -1032,7 +1047,7 @@
     });
   }, 400);
 
-  // Doorbell Ring Controller (CUSTOMER ONLY — Triggers when Rider rings bell within 80m!)
+  // Doorbell Ring Controller (CUSTOMER ONLY)
   let riderBellOn = localStorage.getItem("msh_rider_bell_on") !== "false";
   let doorbellLoopTimer = null;
 
@@ -1046,7 +1061,7 @@
         const gain = ctx.createGain();
         osc.type = isDoorbell ? "sine" : "triangle";
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.4, ctx.currentTime + i * 0.2);
+        gain.gain.setValueAtTime(0.45, ctx.currentTime + i * 0.2);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.34);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -1078,8 +1093,7 @@
     stopContinuousDoorbell();
     document.getElementById("custDoorbellPopup").style.display = "none";
     const inp = document.getElementById("verifyDeliveryCodeInp");
-    inp.scrollIntoView({ behavior: "smooth" });
-    inp.focus();
+    if (inp) { inp.scrollIntoView({ behavior: "smooth" }); inp.focus(); }
   });
 
   function updateBellBtnUI() {
@@ -1182,7 +1196,7 @@
 
   let menuDB = {};
   default21Menu.forEach(x => { if (!deletedMenuSet.has(x.id)) menuDB[x.id] = x; });
-  const cachedMenu = JSON.parse(localStorage.getItem("msh_v23_menu") || "null");
+  const cachedMenu = JSON.parse(localStorage.getItem("msh_v24_menu") || "null");
   if (cachedMenu) {
     Object.values(cachedMenu).forEach(x => {
       if (x && !x.deleted && !deletedMenuSet.has(x.id)) menuDB[x.id] = x;
@@ -1208,10 +1222,10 @@
     tickerText: "⚠️ గమనిక: Online UPI ద్వారా పే చేస్తే ₹10 Cash Handling Fee పూర్తిగా ఆదా అవుతుంది! ప్రతి ఆర్డర్ 24 గంటల తర్వాత ఆటోమేటిక్‌గా క్లీన్ అవుతుంది. 100% ప్రైవసీ."
   };
 
-  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v23_config") || "null") || {}) };
+  let appConfig = { ...defaultConfig, ...(JSON.parse(localStorage.getItem("msh_v24_config") || "null") || {}) };
 
-  let ordersDB = JSON.parse(localStorage.getItem("msh_v23_orders") || "{}");
-  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v23_24h") || "{}");
+  let ordersDB = JSON.parse(localStorage.getItem("msh_v24_orders") || "{}");
+  let msgs24hDB = JSON.parse(localStorage.getItem("msh_v24_24h") || "{}");
   let liveGpsCache = {};
 
   function purgeExpired24hOrders() {
@@ -1227,21 +1241,21 @@
       }
     });
     if (changed) {
-      localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
       saveTombstones();
     }
   }
   purgeExpired24hOrders();
   setInterval(purgeExpired24hOrders, 60000);
 
-  let cart = JSON.parse(localStorage.getItem("msh_v23_cart") || "{}");
-  let extraItemsList = JSON.parse(localStorage.getItem("msh_v23_extras") || "[]");
+  let cart = JSON.parse(localStorage.getItem("msh_v24_cart") || "{}");
+  let extraItemsList = JSON.parse(localStorage.getItem("msh_v24_extras") || "[]");
   let selectedWeights = {};
   let activeCat = "all";
 
   function saveCartState() {
-    localStorage.setItem("msh_v23_cart", JSON.stringify(cart));
-    localStorage.setItem("msh_v23_extras", JSON.stringify(extraItemsList));
+    localStorage.setItem("msh_v24_cart", JSON.stringify(cart));
+    localStorage.setItem("msh_v24_extras", JSON.stringify(extraItemsList));
   }
 
   let custLiveLat = null, custLiveLng = null;
@@ -1259,7 +1273,7 @@
   let riderGpsTimer = null;
 
   function isRideProcessCurrentlyActive() {
-    if (myPlacedOrderPin && ordersDB[myPlacedOrderPin] && !ordersDB[myPlacedOrderPin].wiped) return true;
+    if (myPlacedOrderPin && ordersDB[myPlacedOrderPin] && !ordersDB[myPlacedOrderPin].wiped && ordersDB[myPlacedOrderPin].status !== "WIPED") return true;
     if (loggedInRiderPin) {
       const hasActiveRide = Object.values(ordersDB).some(o => o && !o.wiped && o.status !== "WIPED" && o.acceptedByPin === loggedInRiderPin);
       if (hasActiveRide) return true;
@@ -1267,38 +1281,187 @@
     return false;
   }
 
-  function applyUserSectionToggleUI() {
-    const busy = isRideProcessCurrentlyActive();
-    if (busy) {
-      userFoodSectionOn = true;
-      localStorage.setItem("msh_user_food_sec_on", "true");
+  // =========================================================================
+  // FULL-SCREEN ACTIVE RIDE FOCUS MODE (Hides unrelated UI until delivery ends!)
+  // =========================================================================
+  function updateFullScreenFocusUI() {
+    const focusBox = document.getElementById("activeRideFullScreenPanel");
+    const focusBody = document.getElementById("activeRideFullScreenBody");
+    const focusTitle = document.getElementById("focusModeHeaderTitle");
+    const focusBadge = document.getElementById("focusModeRoleBadge");
+
+    const topSplit = document.getElementById("mshTopFoodOrderSection");
+    const midSec = document.getElementById("middleRegAndAdminSec");
+    const mapSec = document.getElementById("bottomLiveMapSection");
+    const offWall = document.getElementById("userFoodSectionOffWall");
+    const headerBtn = document.getElementById("btnUserFoodSectionToggle");
+
+    // Check if logged-in Rider has an accepted active ride
+    const riderActiveOrd = loggedInRiderPin
+      ? Object.values(ordersDB).find(o => o && !o.wiped && o.status !== "WIPED" && o.acceptedByPin === loggedInRiderPin && (o.status === "ACCEPTED" || o.status === "PICKED_UP" || o.status === "REACHED"))
+      : null;
+
+    // Check if Customer has a live placed order
+    const custActiveOrd = (myPlacedOrderPin && ordersDB[myPlacedOrderPin] && !ordersDB[myPlacedOrderPin].wiped && ordersDB[myPlacedOrderPin].status !== "WIPED")
+      ? ordersDB[myPlacedOrderPin]
+      : null;
+
+    // CASE A: RIDER ACTIVE FULL-SCREEN FOCUS MODE
+    if (riderActiveOrd && !isAdminOpen) {
+      const me = ridersDB[loggedInRiderPin] || { name: "Rider", earned: 0 };
+      focusBox.style.display = "block";
+      topSplit.style.display = "none";
+      midSec.style.display = "none";
+      mapSec.style.display = "none";
+      offWall.style.display = "none";
+
+      headerBtn.innerText = "🔒 రైడ్ రన్నింగ్‌లో ఉంది";
+      headerBtn.style.background = "#0284c7";
+      headerBtn.disabled = true;
+
+      focusTitle.innerText = `🛵 యాక్టివ్ డెలివరీ మోడ్ — రైడ్ #${riderActiveOrd.pin} (${riderActiveOrd.exactKm} km)`;
+      focusBadge.innerText = `మొత్తం సంపాదన: ₹${me.earned}`;
+
+      const formattedItems = String(riderActiveOrd.numberedItems || "").replace(/\n/g, "<br>");
+      const directCustomerNavUrl = `https://www.google.com/maps/dir/?api=1&destination=${riderActiveOrd.lat},${riderActiveOrd.lng}&travelmode=two-wheeler`;
+      const hotelPickupNavUrl = `https://www.google.com/maps/dir/?api=1&destination=${riderActiveOrd.hLat},${riderActiveOrd.hLng}&travelmode=two-wheeler`;
+
+      const curGps = liveGpsCache[riderActiveOrd.pin] || (riderSelfLiveLat ? { lat: riderSelfLiveLat, lng: riderSelfLiveLng } : null);
+      let metersToHouse = null;
+      if (curGps && curGps.lat && curGps.lng) {
+        metersToHouse = Math.round(calcRoadKm(curGps.lat, curGps.lng, riderActiveOrd.lat, riderActiveOrd.lng) * 1000);
+      }
+      const isWithin80m = (metersToHouse !== null && metersToHouse <= 80);
+
+      let stepControlsHtml = "";
+      if (riderActiveOrd.status === "ACCEPTED") {
+        stepControlsHtml = `
+          <div style="background:#fff7ed; border:1.5px solid #fdba74; padding:9px; border-radius:9px; margin-bottom:8px; font-weight:800; color:#9a3412;">
+            📍 Step 1/3: ముందుగా <b>${riderActiveOrd.hotelName}</b> నుండి ఫుడ్ తీసుకోండి.
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="${hotelPickupNavUrl}" target="_blank" style="flex:1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:12px; border-radius:9px; font-weight:900;">🏨 Hotel Map</a>
+            <button type="button" onclick="window.mshRiderPickedUpFood('${riderActiveOrd.pin}')" style="flex:1.6; background:#ea580c; color:#fff; border:none; border-radius:9px; padding:12px; font-weight:900; font-size:0.95rem; cursor:pointer;">
+              🏨 ఫుడ్ తీసుకున్నాను (Open Customer Route)
+            </button>
+          </div>`;
+      } else {
+        const bellBtnHtml = isWithin80m
+          ? `<button type="button" onclick="window.mshRiderRingDoorbell80m('${riderActiveOrd.pin}')" style="flex:1.3; background:#facc15; color:#000; border:2px solid #0f4c3a; border-radius:9px; padding:11px; font-weight:900; font-size:0.92rem; cursor:pointer;">🔔 కస్టమర్ ఇంటి బెల్ కొట్టండి (${metersToHouse}m)</button>`
+          : `<button type="button" disabled style="flex:1.3; background:#94a3b8; color:#fff; border:none; border-radius:9px; padding:11px; font-weight:800; font-size:0.82rem; cursor:not-allowed;">🔕 బెల్ (80m లోపల మాత్రమే • ${metersToHouse !== null ? metersToHouse + 'm దూరం' : 'GPS లోడ్ అవుతోంది'})</button>`;
+
+        stepControlsHtml = `
+          <div style="background:#eff6ff; border:1.5px solid #93c5fd; padding:9px; border-radius:9px; margin-bottom:8px; font-weight:800; color:#1e3a8a;">
+            ${isWithin80m ? '🚪 Step 3/3: మీరు ఇంటికి 80m లోపలికి వచ్చారు! బెల్ కొట్టి కస్టమర్ కోడ్ అడగండి.' : '🛣️ Step 2/3: కస్టమర్ ఇంటికి వెళ్తున్నారు. 80m లోపలికి రాగానే బెల్ బటన్ ఆన్ అవుతుంది.'}
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+            <a href="${directCustomerNavUrl}" target="_blank" style="flex:1.1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:11px; border-radius:9px; font-weight:900;">🧭 Customer Live Route</a>
+            ${bellBtnHtml}
+          </div>
+          <div style="background:#f0fdf4; border:2px solid #16a34a; border-radius:10px; padding:10px;">
+            <div style="font-size:0.84rem; font-weight:900; color:#0f4c3a; margin-bottom:6px;">🔐 డెలివరీ పూర్తి చేయడానికి కస్టమర్ ఫోన్‌లోని 4-Digit కోడ్ వేయండి:</div>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="riderSecretCodeInp_${riderActiveOrd.pin}" maxlength="4" placeholder="4-Digit Code" style="flex:1; padding:10px; border-radius:8px; border:2px solid #16a34a; font-weight:900; text-align:center; letter-spacing:3px; font-size:1.1rem;">
+              <button type="button" onclick="window.mshRiderSubmitCustomerCode('${riderActiveOrd.pin}')" style="background:#16a34a; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:900; font-size:0.95rem; cursor:pointer;">✅ Verify & Complete</button>
+            </div>
+          </div>`;
+      }
+
+      const payBanner = riderActiveOrd.payMode === "ONLINE_UPI"
+        ? `<div style="background:#dcfce7; color:#15803d; padding:8px; border-radius:8px; font-weight:900; margin-bottom:8px;">✅ Online UPI Paid (కస్టమర్ వద్ద ₹0 క్యాష్ తీసుకోవాలి)</div>`
+        : `<div style="background:#fee2e2; color:#dc2626; padding:8px; border-radius:8px; font-weight:900; margin-bottom:8px;">💵 కస్టమర్ వద్ద తీసుకోవాల్సిన క్యాష్: ₹${riderActiveOrd.totalBill} (మీ కమిషన్: ₹${riderActiveOrd.riderComm})</div>`;
+
+      focusBody.innerHTML = `
+        <div class="msh-focus-card">
+          ${payBanner}
+          <div style="font-size:0.9rem; margin-bottom:6px;">
+            👤 కస్టమర్: <b>${riderActiveOrd.cName}</b> (${riderActiveOrd.maskedPhone}) • 📍 ఊరు: <b>${riderActiveOrd.village}</b>
+          </div>
+          <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:8px; padding:9px; margin-bottom:10px; font-size:0.9rem; font-weight:700; line-height:1.5;">
+            <div style="font-size:0.78rem; color:#64748b; margin-bottom:3px;">📋 డెలివరీ చేయాల్సిన ఫుడ్ ఐటమ్స్:</div>
+            ${formattedItems}
+          </div>
+          ${stepControlsHtml}
+          <div style="margin-top:8px; text-align:right;">
+            <a href="tel:8985240287" style="color:#475569; font-weight:800; font-size:0.82rem; text-decoration:none;">📞 అత్యవసరమైతే Admin కి కాల్ చేయండి</a>
+          </div>
+        </div>`;
+      return;
     }
 
-    const btn = document.getElementById("btnUserFoodSectionToggle");
-    const mainSplit = document.getElementById("mshTopFoodOrderSection");
-    const offWall = document.getElementById("userFoodSectionOffWall");
+    // CASE B: CUSTOMER ACTIVE ORDER FULL-SCREEN FOCUS MODE
+    if (custActiveOrd && !isAdminOpen) {
+      focusBox.style.display = "block";
+      topSplit.style.display = "none";
+      midSec.style.display = "none";
+      offWall.style.display = "none";
+      mapSec.style.display = "block"; // Keep Live 2-Stage Map visible right below!
 
-    if (busy) {
-      btn.innerText = "🔒 రైడ్ ప్రాసెస్‌లో ఉంది (Active)";
-      btn.style.background = "#0284c7";
-      btn.disabled = true;
-      btn.style.cursor = "not-allowed";
-      mainSplit.style.display = "grid";
+      headerBtn.innerText = "🔒 ఆర్డర్ రన్నింగ్‌లో ఉంది";
+      headerBtn.style.background = "#0284c7";
+      headerBtn.disabled = true;
+
+      focusTitle.innerText = `🍔 మీ ఆర్డర్ #${custActiveOrd.pin} లైవ్ ట్రాకింగ్ (🕒 ${custActiveOrd.timeStr || ""})`;
+      focusBadge.innerText = custActiveOrd.status === "OPEN" ? "⏳ Waiting for Rider" : (custActiveOrd.status === "ACCEPTED" ? "✅ Rider Accepted" : (custActiveOrd.status === "PICKED_UP" ? "🛵 Food On The Way" : "🔔 Rider At Gate!"));
+
+      let statusAlertHtml = "";
+      if (custActiveOrd.status === "OPEN") {
+        statusAlertHtml = `<div style="background:#fef3c7; color:#92400e; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">⏳ రైడర్ మీ ఆర్డర్ Accept చేయడం కోసం వేచి ఉంది...</div>`;
+      } else if (custActiveOrd.status === "ACCEPTED") {
+        statusAlertHtml = `<div style="background:#dbeafe; color:#1e40af; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">✅ రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఆర్డర్ Accept చేశారు (${custActiveOrd.acceptedTime || ""})! హోటల్ వద్దకు వెళ్తున్నారు.</div>`;
+      } else if (custActiveOrd.status === "PICKED_UP") {
+        statusAlertHtml = `<div style="background:#dcfce7; color:#15803d; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🛵 రైడర్ <b>${custActiveOrd.acceptedByName}</b> హోటల్ నుండి ఫుడ్ తీసుకున్నారు (${custActiveOrd.pickedTime || ""})! మీ ఇంటి వైపు వస్తున్నారు.</div>`;
+      } else {
+        statusAlertHtml = `<div style="background:#16a34a; color:#fff; padding:10px; border-radius:8px; font-weight:900; font-size:0.95rem;">🔔 రైడర్ <b>${custActiveOrd.acceptedByName}</b> మీ ఇంటి గేట్ దగ్గరకు వచ్చారు! మీ Secret Delivery Code చెప్పండి.</div>`;
+      }
+
+      const formattedItems = String(custActiveOrd.numberedItems || "").replace(/\n/g, "<br>");
+      focusBody.innerHTML = `
+        <div class="msh-focus-card">
+          ${statusAlertHtml}
+          <div style="display:flex; justify-content:space-around; background:#1e3a8a; color:#fff; padding:10px; border-radius:10px; margin:9px 0; text-align:center;">
+            <div>
+              <span style="font-size:0.75rem; color:#93c5fd; display:block;">🗺️ మ్యాప్ PIN:</span>
+              <strong style="font-size:1.35rem; color:#facc15; letter-spacing:2px;">${custActiveOrd.pin}</strong>
+            </div>
+            <div style="border-left:1px solid #3b82f6; padding-left:14px;">
+              <span style="font-size:0.75rem; color:#86efac; display:block;">🔐 Secret Delivery Code (రైడర్‌కు చెప్పండి):</span>
+              <strong style="font-size:1.35rem; color:#4ade80; letter-spacing:3px;">${custActiveOrd.deliveryCode}</strong>
+            </div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px; font-size:0.86rem; font-weight:700; margin-bottom:6px;">
+            <div style="font-size:0.76rem; color:#64748b;">📋 మీ ఆర్డర్ ఐటమ్స్ (${custActiveOrd.hotelName}):</div>
+            ${formattedItems}
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:900; font-size:0.95rem; color:#0f4c3a;">
+            <span>💳 ${custActiveOrd.payMode}</span>
+            <span>మొత్తం బిల్లు: ₹${custActiveOrd.totalBill}</span>
+          </div>
+        </div>`;
+
+      if (unlockedBottomPin !== custActiveOrd.pin) {
+        unlockBottomMapWithPin(custActiveOrd.pin);
+      }
+      return;
+    }
+
+    // CASE C: NORMAL BROWSING / IDLE STATE (All normal sections restored!)
+    focusBox.style.display = "none";
+    midSec.style.display = "block";
+    mapSec.style.display = "block";
+
+    headerBtn.disabled = false;
+    headerBtn.style.cursor = "pointer";
+    if (userFoodSectionOn) {
+      headerBtn.innerText = "🟢 ఫుడ్ ఆర్డర్ సెక్షన్: ON";
+      headerBtn.style.background = "#16a34a";
+      topSplit.style.display = "grid";
       offWall.style.display = "none";
     } else {
-      btn.disabled = false;
-      btn.style.cursor = "pointer";
-      if (userFoodSectionOn) {
-        btn.innerText = "🟢 ఫుడ్ ఆర్డర్ సెక్షన్: ON";
-        btn.style.background = "#16a34a";
-        mainSplit.style.display = "grid";
-        offWall.style.display = "none";
-      } else {
-        btn.innerText = "🔴 ఫుడ్ ఆర్డర్ సెక్షన్: OFF";
-        btn.style.background = "#dc2626";
-        mainSplit.style.display = "none";
-        offWall.style.display = "block";
-      }
+      headerBtn.innerText = "🔴 ఫుడ్ ఆర్డర్ సెక్షన్: OFF";
+      headerBtn.style.background = "#dc2626";
+      topSplit.style.display = "none";
+      offWall.style.display = "block";
     }
   }
 
@@ -1306,7 +1469,7 @@
     if (isRideProcessCurrentlyActive()) return;
     userFoodSectionOn = !userFoodSectionOn;
     localStorage.setItem("msh_user_food_sec_on", String(userFoodSectionOn));
-    applyUserSectionToggleUI();
+    updateFullScreenFocusUI();
   });
 
   const bottomMap = L.map("mshBottomLiveMap").setView([18.0950, 83.1350], 13);
@@ -1447,7 +1610,7 @@
 
   function saveAndSyncConfig() {
     appConfig.updatedAt = Date.now();
-    localStorage.setItem("msh_v23_config", JSON.stringify(appConfig));
+    localStorage.setItem("msh_v24_config", JSON.stringify(appConfig));
     applyConfigUI();
     if (gun) gun.get(TOPIC_CONFIG).get("main").put(appConfig);
     fetch(`${NTFY_PRIMARY}/${TOPIC_CONFIG}`, { method: "POST", body: JSON.stringify(appConfig) }).catch(() => {});
@@ -1518,7 +1681,7 @@
   }, 10000);
 
   // =========================================================================
-  // REAL-TIME MULTI-SERVER SYNC (GUN.JS + NTFY SSE + FAST POLL)
+  // TIMESTAMP-LOCKED REAL-TIME SYNC (Prevents stale polls from reverting status!)
   // =========================================================================
   function broadcastLocalSync(type, payload) {
     if (localBus) {
@@ -1528,11 +1691,12 @@
 
   function syncOrder(pin, obj) {
     if (wipedPinsSet.has(String(pin))) return;
+    obj.updatedAt = Date.now();
     if (obj.chatJson && !obj.chatArr) {
       try { obj.chatArr = JSON.parse(obj.chatJson); } catch { obj.chatArr = []; }
     }
     ordersDB[pin] = obj;
-    localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
     broadcastLocalSync("ORDER", obj);
 
     const wireObj = { ...obj };
@@ -1569,7 +1733,7 @@
         payMode: ord.payMode
       });
       completedHistoryDB = completedHistoryDB.slice(0, 150);
-      localStorage.setItem("msh_v23_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v24_completed_history", JSON.stringify(completedHistoryDB));
     }
 
     stopContinuousDoorbell();
@@ -1577,12 +1741,13 @@
     saveTombstones();
     delete ordersDB[pStr];
     delete liveGpsCache[pStr];
-    localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
+    localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
 
     const wipeTombstone = {
       pin: pStr,
       wiped: true,
       status: "WIPED",
+      updatedAt: Date.now(),
       acceptedByPin: "",
       acceptedByName: "",
       chatJson: "[]"
@@ -1597,7 +1762,6 @@
     if (myPlacedOrderPin === pStr) {
       myPlacedOrderPin = "";
       localStorage.removeItem("msh_session_cust_pin");
-      document.getElementById("custOrderSuccessBox").style.display = "none";
       document.getElementById("custDoorbellPopup").style.display = "none";
     }
     if (unlockedBottomPin === pStr) {
@@ -1613,7 +1777,7 @@
     deletedRidersSet.delete(rObj.pin);
     saveTombstones();
     ridersDB[rObj.pin] = rObj;
-    localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
     broadcastLocalSync("RIDER", rObj);
     if (gun) gun.get(TOPIC_RIDERS).get(rObj.pin).put(rObj);
     fetch(`${NTFY_PRIMARY}/${TOPIC_RIDERS}`, { method: "POST", body: JSON.stringify(rObj) }).catch(() => {});
@@ -1625,7 +1789,7 @@
     deletedRidersSet.add(pStr);
     saveTombstones();
     delete ridersDB[pStr];
-    localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
+    localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
     const delPayload = { pin: pStr, deleted: true, name: "" };
     broadcastLocalSync("RIDER", delPayload);
     if (gun) gun.get(TOPIC_RIDERS).get(pStr).put(delPayload);
@@ -1642,7 +1806,7 @@
     deletedHotelsSet.delete(hObj.id);
     saveTombstones();
     hotelsDB[hObj.id] = hObj;
-    localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
     broadcastLocalSync("HOTEL", hObj);
     if (gun) gun.get(TOPIC_HOTELS).get(hObj.id).put(hObj);
     fetch(`${NTFY_PRIMARY}/${TOPIC_HOTELS}`, { method: "POST", body: JSON.stringify(hObj) }).catch(() => {});
@@ -1655,7 +1819,7 @@
     deletedHotelsSet.add(hid);
     saveTombstones();
     delete hotelsDB[hid];
-    localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
+    localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
     const delPayload = { id: hid, deleted: true, name: "" };
     broadcastLocalSync("HOTEL", delPayload);
     if (gun) gun.get(TOPIC_HOTELS).get(hid).put(delPayload);
@@ -1666,7 +1830,7 @@
   }
 
   function syncShopReqs() {
-    localStorage.setItem("msh_v23_shopreqs", JSON.stringify(shopReqsDB));
+    localStorage.setItem("msh_v24_shopreqs", JSON.stringify(shopReqsDB));
     const p = { json: JSON.stringify(shopReqsDB) };
     if (gun) gun.get(TOPIC_SHOPS).get("all").put(p);
     if (isAdminOpen) renderAdminDashboard();
@@ -1681,8 +1845,7 @@
     if (gun) gun.get(TOPIC_GPS).get(pin).put(g);
     fetch(`${NTFY_PRIMARY}/${TOPIC_GPS}`, { method: "POST", body: JSON.stringify({ pin, ...g }) }).catch(() => {});
 
-    // Refresh Rider Panel so the 80m Doorbell button dynamically unlocks when Rider enters 80m!
-    if (loggedInRiderPin) renderRiderPanel();
+    if (loggedInRiderPin) updateFullScreenFocusUI();
     if (pin === unlockedBottomPin) updateBottomMapLive(pin, g);
   }
 
@@ -1690,16 +1853,7 @@
     localBus.onmessage = (ev) => {
       const { type, payload } = ev.data || {};
       if (type === "ORDER" && payload && payload.pin) {
-        if (payload.wiped || payload.status === "WIPED") {
-          wipedPinsSet.add(String(payload.pin)); saveTombstones();
-          delete ordersDB[payload.pin]; delete liveGpsCache[payload.pin];
-          if (unlockedBottomPin === payload.pin) lockBottomMapUI();
-        } else {
-          if (payload.chatJson) { try { payload.chatArr = JSON.parse(payload.chatJson); } catch {} }
-          ordersDB[payload.pin] = payload;
-          checkAndTriggerCustomerDoorbell(payload);
-        }
-        refreshEverything();
+        handleIncomingOrderUpdate(payload, payload.pin);
       } else if (type === "RIDER" && payload && payload.pin) {
         if (payload.deleted) { deletedRidersSet.add(String(payload.pin)); saveTombstones(); delete ridersDB[payload.pin]; }
         else {
@@ -1718,38 +1872,10 @@
     };
   }
 
-  function updateCustomerActiveTicketUI() {
-    const box = document.getElementById("custOrderSuccessBox");
-    if (!myPlacedOrderPin || !ordersDB[myPlacedOrderPin] || ordersDB[myPlacedOrderPin].wiped) {
-      box.style.display = "none";
-      return;
-    }
-    const ord = ordersDB[myPlacedOrderPin];
-    box.style.display = "block";
-    document.getElementById("custOrderTimeBadge").innerHTML = `🕒 Order Time: <b>${ord.timeStr || "Just now"}</b> • 👤 <span style="background:#facc15; color:#000; padding:1px 6px; border-radius:4px; font-weight:900;">${ord.cName}</span>`;
-    document.getElementById("custOrderPinText").innerText = ord.pin;
-    document.getElementById("custDeliveryCodeText").innerText = ord.deliveryCode;
-
-    const bar = document.getElementById("custLiveIntimationBar");
-    if (ord.status === "OPEN") {
-      bar.innerText = "⏳ రైడర్ Accept కోసం వేచి ఉంది...";
-      bar.style.color = "#facc15";
-    } else if (ord.status === "ACCEPTED") {
-      bar.innerText = `✅ రైడర్ (${ord.acceptedByName}) ఆర్డర్ Accept చేశారు (${ord.acceptedTime || ""})! హోటల్ వద్దకు వెళ్తున్నారు.`;
-      bar.style.color = "#38bdf8";
-    } else if (ord.status === "PICKED_UP") {
-      bar.innerText = `🛵 రైడర్ (${ord.acceptedByName}) ఫుడ్ తీసుకున్నారు (${ord.pickedTime || ""})! మీ ఇంటి వైపు వస్తున్నారు.`;
-      bar.style.color = "#4ade80";
-    } else if (ord.status === "REACHED") {
-      bar.innerText = `🔔 రైడర్ మీ ఇంటి గేట్ (80m) దగ్గరకు వచ్చి బెల్ కొట్టారు! Delivery Code (${ord.deliveryCode}) చెప్పండి.`;
-      bar.style.color = "#4ade80";
-    }
-  }
-
-  // CUSTOMER-ONLY DOORBELL POPUP (Triggers when Rider clicks the 80m Doorbell button!)
+  // CUSTOMER-ONLY DOORBELL POPUP (Triggers when Rider rings bell within 80m!)
   function checkAndTriggerCustomerDoorbell(ord) {
     if (!ord) return;
-    if (loggedInRiderPin) return; // Never expose Delivery Code to a logged-in Rider!
+    if (loggedInRiderPin) return; // Never show to Rider!
     const pStr = String(ord.pin);
     const bellTs = Number(ord.doorbellTs) || 0;
     if ((myPlacedOrderPin === pStr || unlockedBottomPin === pStr) && bellTs > lastDoorbellAlertedTs) {
@@ -1761,7 +1887,7 @@
     }
   }
 
-  // Incoming Order Processor (Instant updates on Customer & Rider phones!)
+  // Timestamp-Guarded Order Update Handler (Never lets stale events overwrite newer status!)
   function handleIncomingOrderUpdate(d, pin) {
     if (!d) return;
     const pStr = String(pin || d.pin);
@@ -1771,17 +1897,25 @@
       wipedPinsSet.add(pStr); saveTombstones();
       delete ordersDB[pStr];
       delete liveGpsCache[pStr];
-      localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
+      if (myPlacedOrderPin === pStr) {
+        myPlacedOrderPin = "";
+        localStorage.removeItem("msh_session_cust_pin");
+        document.getElementById("custDoorbellPopup").style.display = "none";
+      }
       if (unlockedBottomPin === pStr) lockBottomMapUI();
       refreshEverything();
       return;
     }
 
     if (d.lat && d.lng) {
-      if (d.chatJson) { try { d.chatArr = JSON.parse(d.chatJson); } catch { d.chatArr = []; } }
       const prev = ordersDB[pStr];
+      // Ignore stale older messages!
+      if (prev && (prev.updatedAt || 0) > (d.updatedAt || 0)) return;
+
+      if (d.chatJson) { try { d.chatArr = JSON.parse(d.chatJson); } catch { d.chatArr = []; } }
       ordersDB[pStr] = d;
-      localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
 
       if (!prev && d.status === "OPEN") {
         playSingleChime(false);
@@ -1799,7 +1933,7 @@
         if ((d.updatedAt || 0) <= (appConfig.updatedAt || 0)) return;
         appConfig = { ...appConfig, ...d };
         if (d.adminPass) localStorage.setItem("msh_custom_admin_pass", d.adminPass);
-        localStorage.setItem("msh_v23_config", JSON.stringify(appConfig));
+        localStorage.setItem("msh_v24_config", JSON.stringify(appConfig));
         applyConfigUI();
       }
     });
@@ -1811,7 +1945,7 @@
       } else if (h.name) {
         hotelsDB[hid] = h;
       }
-      localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
       populateHotelsDropdown(); calcFeesAndExactKm();
       if (isAdminOpen) renderAdminDashboard();
     });
@@ -1833,12 +1967,12 @@
         }
         ridersDB[pStr] = r;
       }
-      localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
       refreshEverything();
     });
     gun.get(TOPIC_SHOPS).get("all").on(d => {
       if (d && d.json) {
-        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v23_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
+        try { shopReqsDB = JSON.parse(d.json); localStorage.setItem("msh_v24_shopreqs", JSON.stringify(shopReqsDB)); if (isAdminOpen) renderAdminDashboard(); } catch {}
       }
     });
     gun.get(TOPIC_MENU).map().on((d, id) => {
@@ -1850,7 +1984,7 @@
       } else if (d.name) {
         menuDB[id] = d;
       }
-      localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
       renderMenu7x3(); calcFeesAndExactKm();
     });
     gun.get(TOPIC_ORDERS).map().on((d, pin) => {
@@ -1866,13 +2000,13 @@
       if (m && m.text && m.ts) {
         if (Date.now() - m.ts < DAY_24H_MS) msgs24hDB[id] = m;
         else delete msgs24hDB[id];
-        localStorage.setItem("msh_v23_24h", JSON.stringify(msgs24hDB));
+        localStorage.setItem("msh_v24_24h", JSON.stringify(msgs24hDB));
         render24hMsgs();
       }
     });
   }
 
-  // Real-Time SSE Push Stream (Zero-delay mobile-to-mobile update when Rider clicks Accept / Picked Up / Doorbell!)
+  // Real-Time SSE Push Stream
   try {
     const esOrders = new EventSource(`${NTFY_PRIMARY}/${TOPIC_ORDERS}/sse?since=10m`);
     esOrders.onmessage = ev => {
@@ -1922,7 +2056,7 @@
               if (cfg && (cfg.updatedAt || 0) > (appConfig.updatedAt || 0)) {
                 appConfig = { ...appConfig, ...cfg };
                 if (cfg.adminPass) localStorage.setItem("msh_custom_admin_pass", cfg.adminPass);
-                localStorage.setItem("msh_v23_config", JSON.stringify(appConfig));
+                localStorage.setItem("msh_v24_config", JSON.stringify(appConfig));
                 applyConfigUI();
               }
             }
@@ -1986,7 +2120,7 @@
         });
         if (rChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
+          localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
           refreshEverything();
         }
       }
@@ -2012,7 +2146,7 @@
         });
         if (hChanged) {
           saveTombstones();
-          localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
+          localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
           populateHotelsDropdown(); calcFeesAndExactKm();
           if (isAdminOpen) renderAdminDashboard();
         }
@@ -2039,7 +2173,7 @@
         });
         if (mChanged) {
           saveTombstones(); saveCartState();
-          localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+          localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
           renderMenu7x3(); calcFeesAndExactKm();
         }
       }
@@ -2047,8 +2181,7 @@
   }, 1000);
 
   function refreshEverything() {
-    applyUserSectionToggleUI();
-    updateCustomerActiveTicketUI();
+    updateFullScreenFocusUI();
     if (loggedInRiderPin && ridersDB[loggedInRiderPin] && !ridersDB[loggedInRiderPin].deleted) {
       document.getElementById("riderPinLoginInp").style.display = "none";
       document.getElementById("btnRiderUnlock").style.display = "none";
@@ -2106,7 +2239,7 @@
       cart[id].unitPrice = Math.round(newPrice * (cart[id].mult || 1));
       saveCartState();
     }
-    localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -2118,7 +2251,7 @@
     if (!it) return;
     it.outOfStock = !it.outOfStock;
     if (it.outOfStock) { delete cart[id]; saveCartState(); }
-    localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
     renderMenu7x3();
     calcFeesAndExactKm();
     if (gun) gun.get(TOPIC_MENU).get(id).put(it);
@@ -2194,7 +2327,7 @@
     saveTombstones();
     delete menuDB[id]; delete cart[id];
     saveCartState();
-    localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
     renderMenu7x3(); calcFeesAndExactKm();
     const delObj = { id, name: "", deleted: true };
     if (gun) gun.get(TOPIC_MENU).get(id).put(delObj);
@@ -2250,7 +2383,7 @@
         img: getAutoPhotoForName(name, "")
       };
       menuDB[targetId] = newMenuItem;
-      localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
       if (gun) gun.get(TOPIC_MENU).get(targetId).put(newMenuItem);
       fetch(`${NTFY_PRIMARY}/${TOPIC_MENU}`, { method: "POST", body: JSON.stringify(newMenuItem) }).catch(() => {});
     }
@@ -2490,7 +2623,8 @@
       chatArr: [],
       chatJson: "[]",
       timeStr: nowTimeStr,
-      ts: Date.now()
+      ts: Date.now(),
+      updatedAt: Date.now()
     };
 
     myPlacedOrderPin = orderPin;
@@ -2505,13 +2639,14 @@
 
     syncOrder(orderPin, orderObj);
     unlockBottomMapWithPin(orderPin);
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     const waMsg = `🍔 *NEW ORDER (#${orderPin})* at ${nowTimeStr}\n🔐 *Delivery Code:* ${deliveryCode}\n🏨 Hotel: ${hotelObj.name} (${exactKm} km)\n📋 *Items:*\n${plainNumberedLines.join("\n")}\n📍 Village: ${village}\n🗺️ Customer GPS: https://maps.google.com/?q=${dropCoords.lat},${dropCoords.lng}\n👤 ${cName} (${cPhone || "WhatsApp"})\n💳 ${payMode} • 💰 Total: ₹${grandTotal}`;
     window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`, "_blank");
   });
 
   // =========================================================================
-  // 3. RIDER PANEL (EXACT CUSTOMER LOCATION + 80m PROXIMITY DOORBELL BUTTON)
+  // 3. RIDER PANEL & ACTIONS (FULL-SCREEN MODE + 80m BELL + CODE COMPLETION)
   // =========================================================================
   function startContinuousRiderGps(orderPin, riderName) {
     if (riderGpsTimer) clearInterval(riderGpsTimer);
@@ -2568,12 +2703,7 @@
     document.getElementById("riderHeaderEarn").innerText = `మొత్తం సంపాదన: ₹${me.earned}`;
 
     const allActive = Object.values(ordersDB).reverse().filter(o => o && !o.wiped && o.status !== "WIPED" && !wipedPinsSet.has(String(o.pin)));
-    const myCurrentLockedOrder = allActive.find(o => (o.status === "ACCEPTED" || o.status === "PICKED_UP" || o.status === "REACHED") && o.acceptedByPin === me.pin);
-
-    const list = myCurrentLockedOrder
-      ? [myCurrentLockedOrder]
-      : allActive.filter(o => o.status === "OPEN");
-
+    const list = allActive.filter(o => o.status === "OPEN");
     const feed = document.getElementById("riderOrdersFeed");
 
     if (!list.length) {
@@ -2581,98 +2711,23 @@
       return;
     }
 
-    let html = "";
-    if (myCurrentLockedOrder) {
-      html += `<div style="background:#fef2f2; border:1.5px solid #ef4444; color:#991b1b; padding:8px 10px; border-radius:8px; margin-bottom:8px; font-size:0.8rem; font-weight:800;">
-        🔒 మీ వద్ద Order #${myCurrentLockedOrder.pin} రన్నింగ్‌లో ఉంది! ఈ రైడ్ పూర్తయిన తర్వాతే మిగతా ఆర్డర్లు కనిపిస్తాయి.
-      </div>`;
-    }
-
-    html += list.map(o => {
+    feed.innerHTML = list.map(o => {
       const formattedItems = String(o.numberedItems || "").replace(/\n/g, "<br>");
-      const directCustomerNavUrl = `https://www.google.com/maps/dir/?api=1&destination=${o.lat},${o.lng}&travelmode=two-wheeler`;
-      const hotelPickupNavUrl = `https://www.google.com/maps/dir/?api=1&destination=${o.hLat},${o.hLng}&travelmode=two-wheeler`;
-
-      if (o.status === "OPEN") {
-        return `
-          <div style="background:#fff; border:2px solid #fc8019; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
-            <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:4px;">
-              <span style="color:#ea580c;">🔔 ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</span>
-              <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">మీ ఛార్జ్: ₹${o.riderComm}</span>
-            </div>
-            <div style="font-size:0.76rem; color:#334155; margin-bottom:4px;">
-              🕒 టైమ్: <b>${o.timeStr || "--"}</b> • 👤 కస్టమర్: <span style="background:#fef08a; padding:1px 5px; border-radius:4px; font-weight:900;">${o.cName}</span>
-            </div>
-            <div style="background:#fff7ed; padding:6px 8px; border-radius:6px; margin:5px 0; font-weight:700; max-height:115px; overflow-y:auto;">${formattedItems}</div>
-            <button type="button" onclick="window.mshRiderTakeOrder('${o.pin}')" style="width:100%; padding:11px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-weight:900; font-size:0.92rem; cursor:pointer;">✅ ఈ ఆర్డర్ నేను తీసుకుంటాను (ACCEPT)</button>
-          </div>`;
-      }
-
-      // Check live distance in meters between Rider's current GPS and Customer's House GPS
-      const curGps = liveGpsCache[o.pin] || (riderSelfLiveLat ? { lat: riderSelfLiveLat, lng: riderSelfLiveLng } : null);
-      let metersToHouse = null;
-      if (curGps && curGps.lat && curGps.lng) {
-        metersToHouse = Math.round(calcRoadKm(curGps.lat, curGps.lng, o.lat, o.lng) * 1000);
-      }
-      const isWithin80m = (metersToHouse !== null && metersToHouse <= 80);
-
-      let stepHeader = "";
-      let stepActionButtons = "";
-
-      if (o.status === "ACCEPTED") {
-        stepHeader = `<span style="background:#ea580c; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 1/3: హోటల్ నుండి ఫుడ్ తీసుకోండి</span>`;
-        stepActionButtons = `
-          <a href="${hotelPickupNavUrl}" target="_blank" style="flex:1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:9px; border-radius:7px; font-weight:900;">🏨 Hotel Map</a>
-          <button type="button" onclick="window.mshRiderPickedUpFood('${o.pin}')" style="flex:1.6; background:#ea580c; color:#fff; border:none; border-radius:7px; padding:10px; font-weight:900; font-size:0.86rem; cursor:pointer;">
-            🏨 ఫుడ్ తీసుకున్నాను (Customer Route)
-          </button>`;
-      } else {
-        // Step 2 & 3 (PICKED_UP or REACHED): Show Customer Location + 80m Doorbell Button + Code Input
-        const bellBtnHtml = isWithin80m
-          ? `<button type="button" onclick="window.mshRiderRingDoorbell80m('${o.pin}')" style="flex:1.3; background:#facc15; color:#000; border:2px solid #0f4c3a; border-radius:7px; padding:9px; font-weight:900; cursor:pointer;">🔔 కస్టమర్ బెల్ కొట్టండి (${metersToHouse}m)</button>`
-          : `<button type="button" disabled style="flex:1.3; background:#94a3b8; color:#fff; border:none; border-radius:7px; padding:9px; font-weight:800; font-size:0.78rem; cursor:not-allowed;">🔕 బెల్ (80m లోపల మాత్రమే • ${metersToHouse !== null ? metersToHouse + 'm దూరం' : 'GPS వేచి ఉంది'})</button>`;
-
-        stepHeader = isWithin80m
-          ? `<span style="background:#15803d; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 3/3: 80m లోపలికి వచ్చారు — బెల్ కొట్టి కోడ్ అడగండి</span>`
-          : `<span style="background:#0284c7; color:#fff; padding:2px 8px; border-radius:5px; font-size:0.74rem;">Step 2/3: కస్టమర్ ఇంటికి వెళ్తున్నారు (${o.exactKm} km)</span>`;
-
-        stepActionButtons = `
-          <a href="${directCustomerNavUrl}" target="_blank" style="flex:1.1; text-align:center; background:#0284c7; color:#fff; text-decoration:none; padding:9px; border-radius:7px; font-weight:900;">🧭 Customer Location</a>
-          ${bellBtnHtml}
-          <div style="width:100%; display:flex; gap:5px; align-items:center; background:#fff; padding:6px; border-radius:8px; border:1.5px solid #16a34a; margin-top:4px;">
-            <input type="text" id="riderSecretCodeInp_${o.pin}" maxlength="4" placeholder="కస్టమర్ 4-Digit కోడ్" style="flex:1; padding:7px; border-radius:6px; border:1.5px solid #cbd5e1; font-weight:900; text-align:center; letter-spacing:2px; font-size:0.9rem;">
-            <button type="button" onclick="window.mshRiderSubmitCustomerCode('${o.pin}')" style="background:#16a34a; color:#fff; border:none; border-radius:6px; padding:8px 12px; font-weight:900; cursor:pointer;">✅ Complete</button>
-          </div>`;
-      }
-
-      const payLabel = o.payMode === "ONLINE_UPI"
-        ? `<span style="color:#15803d; font-weight:900;">✅ Online UPI Paid (₹0 Cash)</span>`
-        : `<span style="color:#dc2626; font-weight:900;">💵 క్యాష్ తీసుకోవాల్సింది: ₹${o.totalBill}</span>`;
-
       return `
-        <div style="background:#dcfce7; border:2px solid #16a34a; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px; font-weight:900; margin-bottom:4px;">
-            <span>🔓 రైడ్ #${o.pin} • మీ ఛార్జ్: ₹${o.riderComm} (${o.exactKm} km)</span>
-            ${stepHeader}
+        <div style="background:#fff; border:2px solid #fc8019; border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.84rem;">
+          <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:4px;">
+            <span style="color:#ea580c;">🔔 ${o.hotelName} ➔ ${o.village} (${o.exactKm} km)</span>
+            <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:5px;">మీ ఛార్జ్: ₹${o.riderComm}</span>
           </div>
-          <div style="background:#fff; padding:6px 8px; border-radius:6px; margin:5px 0; border-left:3px solid #16a34a; font-weight:700; max-height:115px; overflow-y:auto;">
-            ${formattedItems}
+          <div style="font-size:0.76rem; color:#334155; margin-bottom:4px;">
+            🕒 టైమ్: <b>${o.timeStr || "--"}</b> • 👤 కస్టమర్: <span style="background:#fef08a; padding:1px 5px; border-radius:4px; font-weight:900;">${o.cName}</span>
           </div>
-          <div>👤 కస్టమర్: <span style="background:#fef08a; padding:1px 6px; border-radius:4px; font-weight:900; color:#000;">${o.cName}</span> (${o.maskedPhone}) • 📍 ఊరు: <b>${o.village}</b></div>
-          <div style="font-size:0.76rem; color:#0f4c3a; font-weight:800; margin:3px 0;">
-            📌 Exact GPS: <a href="${directCustomerNavUrl}" target="_blank" style="color:#0284c7; text-decoration:underline;">${Number(o.lat).toFixed(5)}, ${Number(o.lng).toFixed(5)}</a> • ${payLabel}
-          </div>
-
-          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
-            ${stepActionButtons}
-          </div>
+          <div style="background:#fff7ed; padding:6px 8px; border-radius:6px; margin:5px 0; font-weight:700; max-height:115px; overflow-y:auto;">${formattedItems}</div>
+          <button type="button" onclick="window.mshRiderTakeOrder('${o.pin}')" style="width:100%; padding:11px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-weight:900; font-size:0.92rem; cursor:pointer;">✅ ఈ ఆర్డర్ నేను తీసుకుంటాను (ACCEPT)</button>
         </div>`;
     }).join("");
-
-    feed.innerHTML = html;
   }
 
-  // Step 2: Rider clicks "ఫుడ్ తీసుకున్నాను" -> Opens Customer Location Route & Switches Customer Map to Rider->House!
   window.mshRiderPickedUpFood = function(orderPin) {
     const ord = ordersDB[orderPin];
     const me = ridersDB[loggedInRiderPin];
@@ -2688,7 +2743,6 @@
     window.open(directCustomerNavUrl, "_blank");
   };
 
-  // Step 3: Rider clicks Doorbell Button (Allowed ONLY within 80m radius!)
   window.mshRiderRingDoorbell80m = function(orderPin) {
     const ord = ordersDB[orderPin];
     if (!ord) return;
@@ -2706,7 +2760,7 @@
     ord.doorbellTs = Date.now();
     appendEphemeralChat(ord, "🔔 Doorbell", `రైడర్ మీ ఇంటి గేట్ (${meters}m) దగ్గరకు వచ్చి బెల్ కొట్టారు! దయచేసి Delivery Code చెప్పండి.`);
     syncOrder(orderPin, ord);
-    alert("🔔 కస్టమర్ ఫోన్‌లో డోర్‌బెల్ అలర్ట్ వెళ్ళింది!");
+    alert("🔔 కస్టమర్ ఫోన్‌లో డోర్‌బెల్ అలర్ట్ వెళ్ళింది! కస్టమర్ చెప్పే 4-Digit కోడ్ వేసి ఆర్డర్ పూర్తి చేయండి.");
   };
 
   window.mshRiderSubmitCustomerCode = function(orderPin) {
@@ -2742,6 +2796,7 @@
 
     document.getElementById("openOrderNotifyStrip").style.display = "none";
     startContinuousRiderGps(orderPin, me.name);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // =========================================================================
@@ -2817,7 +2872,7 @@
 
   window.mshAdmDel24h = function(id) {
     delete msgs24hDB[id];
-    localStorage.setItem("msh_v23_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v24_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(null);
   };
@@ -2830,7 +2885,7 @@
     const id = "m24_" + Date.now();
     const item = { id, text: sanitizeAntiLeakChat(txt), ts: Date.now() };
     msgs24hDB[id] = item;
-    localStorage.setItem("msh_v23_24h", JSON.stringify(msgs24hDB));
+    localStorage.setItem("msh_v24_24h", JSON.stringify(msgs24hDB));
     render24hMsgs();
     if (gun) gun.get(TOPIC_24H).get(id).put(item);
   });
@@ -2871,7 +2926,7 @@
   document.getElementById("admBtnResetLedger").addEventListener("click", () => {
     if (confirm("మీరు లెక్కలు రాసుకున్నారా? Total Revenue Ledger ను ₹0 కి క్లియర్ చేయాలా?")) {
       completedHistoryDB = [];
-      localStorage.setItem("msh_v23_completed_history", "[]");
+      localStorage.setItem("msh_v24_completed_history", "[]");
       renderAdminDashboard();
       alert("✅ Revenue Ledger ₹0 కి రీసెట్ అయింది!");
     }
@@ -2978,7 +3033,7 @@
     const finalImg = getAutoPhotoForName(name, rawImg);
     const id = "m_" + Date.now();
     menuDB[id] = { id, cat, name, price, img: finalImg };
-    localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
+    localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
     document.getElementById("admNewItemName").value = "";
     document.getElementById("admNewItemPrice").value = "";
     document.getElementById("admNewItemImg").value = "";
@@ -3005,12 +3060,12 @@
       if (parsed.ordersDB) ordersDB = parsed.ordersDB;
       if (parsed.completedHistoryDB) completedHistoryDB = parsed.completedHistoryDB;
       if (parsed.appConfig) appConfig = { ...defaultConfig, ...parsed.appConfig };
-      localStorage.setItem("msh_v23_menu", JSON.stringify(menuDB));
-      localStorage.setItem("msh_v23_hotels", JSON.stringify(hotelsDB));
-      localStorage.setItem("msh_v23_riders", JSON.stringify(ridersDB));
-      localStorage.setItem("msh_v23_orders", JSON.stringify(ordersDB));
-      localStorage.setItem("msh_v23_completed_history", JSON.stringify(completedHistoryDB));
-      localStorage.setItem("msh_v23_config", JSON.stringify(appConfig));
+      localStorage.setItem("msh_v24_menu", JSON.stringify(menuDB));
+      localStorage.setItem("msh_v24_hotels", JSON.stringify(hotelsDB));
+      localStorage.setItem("msh_v24_riders", JSON.stringify(ridersDB));
+      localStorage.setItem("msh_v24_orders", JSON.stringify(ordersDB));
+      localStorage.setItem("msh_v24_completed_history", JSON.stringify(completedHistoryDB));
+      localStorage.setItem("msh_v24_config", JSON.stringify(appConfig));
       applyConfigUI(); populateHotelsDropdown(); renderMenu7x3(); refreshEverything();
       alert("✅ డేటా పూర్తిగా Restore అయింది!");
     } catch { alert("❌ తప్పు Backup ఫార్మాట్."); }
@@ -3100,12 +3155,10 @@
 
   // =========================================================================
   // 5. 2-STAGE CUSTOMER & ADMIN LIVE TRACKING MAP
-  //    Stage 1 (ACCEPTED): Hotel -> Moving Rider
-  //    Stage 2 (PICKED_UP / REACHED): Hotel removed! Only Rider -> Customer House!
   // =========================================================================
   function unlockBottomMapWithPin(pin) {
     if (loggedInRiderPin && !isAdminOpen) {
-      alert("ℹ️ రైడర్‌కు పైన ఉన్న 'Customer Location' బటన్ ద్వారా నేరుగా Google Maps Route ఓపెన్ అవుతుంది. ఈ లైవ్ మ్యాప్ కస్టమర్ & అడ్మిన్‌కు మాత్రమే.");
+      alert("ℹ️ రైడర్‌కు పైన ఉన్న 'Customer Live Route' బటన్ ద్వారా నేరుగా Google Maps Route ఓపెన్ అవుతుంది.");
       return;
     }
     const p = String(pin || "").trim();
@@ -3175,12 +3228,11 @@
 
     let bounds = [];
 
-    // STAGE 1 (OPEN / ACCEPTED): Show Hotel Pin + Live Moving Rider (Going to Hotel)
+    // STAGE 1 (OPEN / ACCEPTED): Hotel -> Moving Rider
     if (ord.status === "OPEN" || ord.status === "ACCEPTED") {
       document.getElementById("pillStage1Title").innerText = "🏨 స్టేజ్ 1: హోటల్ లొకేషన్ (Hotel Pickup):";
       document.getElementById("pillHotelHouseKm").innerText = `${ord.hotelName} (మొత్తం దూరం: ${ord.exactKm} km)`;
 
-      // Remove Customer House pin & Rider->House road line in Stage 1 so Customer clearly sees Hotel + Rider
       if (mCustPin) { bottomMap.removeLayer(mCustPin); mCustPin = null; }
       if (lineRiderRoadPath) { bottomMap.removeLayer(lineRiderRoadPath); lineRiderRoadPath = null; }
 
@@ -3208,7 +3260,7 @@
           : `✅ ${ord.acceptedByName} హోటల్ వద్దకు వెళ్తున్నారు`;
       }
     } else {
-      // STAGE 2 (PICKED_UP / REACHED): COMPLETELY REMOVE HOTEL MAP! Show ONLY Rider -> Customer House Live Map!
+      // STAGE 2 (PICKED_UP / REACHED): Hotel removed! Only Rider -> Customer House Live Map!
       if (mHotelPin) { bottomMap.removeLayer(mHotelPin); mHotelPin = null; }
       if (lineHotelToRider) { bottomMap.removeLayer(lineHotelToRider); lineHotelToRider = null; }
 
